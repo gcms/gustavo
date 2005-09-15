@@ -5,7 +5,6 @@ import java.net.URI;
 
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
 
 import base.Connection;
 
