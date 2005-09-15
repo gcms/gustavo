@@ -1,0 +1,101 @@
+
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.util.Map;
+
+import com.caucho.burlap.client.BurlapProxyFactory;
+import com.caucho.hessian.client.HessianProxyFactory;
+
+public class HessianClient implements TransferClient {
+
+    private int numRequests;
+
+    private int maxSize;
+
+    private String url;
+
+    private int interval;
+
+    public HessianClient(int numRequests, int maxSize, String url, int interval)
+            throws URISyntaxException {
+        this.numRequests = numRequests;
+        this.maxSize = maxSize;
+        this.url = url;
+        this.interval = interval;
+    }
+
+    public void requestString(Logger logger) throws ClassNotFoundException,
+            MalformedURLException {
+        HessianProxyFactory factory = new HessianProxyFactory();
+
+        Transfer transfer = (Transfer) factory.create(
+                Class.forName("Transfer"), url);
+
+        int[][] tmp = new int[maxSize / interval][numRequests];
+
+        transfer.getString(maxSize);
+
+        for (int i = 0; i < numRequests; i++) {
+            int pos = 0;
+            for (int j = interval; j <= maxSize; j += interval) {
+                long start = System.currentTimeMillis();
+                String result = transfer.getString(j);
+                long end = System.currentTimeMillis();
+
+                tmp[pos++][i] = (int) (end - start);
+            }
+        }
+        for (int i = 0; i < tmp.length; i++) {
+            logger.log((i + 1) * interval, medium(tmp[i]));
+        }
+    }
+
+    public void requestIntegers(Logger logger) throws ClassNotFoundException,
+            MalformedURLException {
+    }
+
+    public void requestMap(Logger logger) throws ClassNotFoundException,
+            MalformedURLException {
+        HessianProxyFactory factory = new HessianProxyFactory();
+
+        Transfer transfer = (Transfer) factory.create(
+                Class.forName("Transfer"), url);
+
+        int[][] tmp = new int[maxSize / interval][numRequests];
+
+        transfer.getString(maxSize);
+
+        for (int i = 0; i < numRequests; i++) {
+            int pos = 0;
+            for (int j = interval; j <= maxSize; j += interval) {
+                long start = System.currentTimeMillis();
+                Map m = transfer.getMap(j);
+                long end = System.currentTimeMillis();
+
+                tmp[pos++][i] = (int) (end - start);
+            }
+        }
+
+        for (int i = 0; i < tmp.length; i++) {
+            logger.log((i + 1) * interval, medium(tmp[i]));
+        }
+    }
+
+    private static double medium(int[] array) {
+        if (array.length < 3) {
+            return medium(array, 0, array.length - 1);
+        } else {
+            java.util.Arrays.sort(array);
+            return medium(array, 1, array.length - 2);
+        }
+    }
+
+    private static double medium(int[] array, int beg, int end) {
+        long sum = 0;
+        for (int i = beg; i <= end; i++) {
+            sum += array[i];
+        }
+
+        return (double) sum / (double) (end - beg);
+    }
+}
