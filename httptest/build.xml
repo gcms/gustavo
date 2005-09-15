@@ -1,0 +1,49 @@
+<project name="Http Test" default="build" basedir=".">
+
+
+  <property name="dist.dir"      value="${basedir}/dist"/>
+  <property name="src.dir"       value="${basedir}/src"/>
+  <property name="lib.dir"       value="${basedir}/lib"/>
+  <property name="share.dir"     value="${basedir}/share/"/>
+  <property name="manifest.file" value="${share.dir}/MANIFEST.MF"/>
+  <property name="jar.file"      value="${basedir}/httptest.jar"/>
+
+
+  <path id="compile.classpath">
+    <pathelement location="${basedir}/lib/"/>
+  </path>
+
+  <target name="all" depends="compile"/>
+
+
+  <target name="clean" description="Clean">
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  <target name="build" depends="compile,jar" description="Build"/>
+
+
+  <target name="compile" depends="prepare" description="Compile">
+    <javac srcdir="${src.dir}" destdir="${dist.dir}">
+        <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+
+  <target name="jar" depends="compile" description="Jar file">
+    <jar destfile="${jar.file}" manifest="${manifest.file}">
+      <fileset dir="${dist.dir}"/>
+      <fileset dir="${lib.dir}"/>
+    </jar>
+  </target>
+
+  <target name="run" depends="jar" description="Run jar file">
+    <java jar="${jar.file}" fork="true"/>
+  </target>
+
+
+  <target name="prepare">
+    <mkdir  dir="${dist.dir}"/>
+  </target>
+
+</project>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Copyright 2004 The Apache Software Foundation
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <servlet>
+        <servlet-name>Teste</servlet-name>
+        <servlet-class>Teste</servlet-class>
+    </servlet>
+    
+	<servlet>
+   		<servlet-name>hello</servlet-name>
+		<servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
+    	<init-param>
+      		<param-name>home-class</param-name>
+		    <param-value>HelloService</param-value>
+	    </init-param>
+    	<init-param>
+      		<param-name>home-api</param-name>
+		    <param-value>Hello</param-value>
+	    </init-param>
+	</servlet>
+	
+	<servlet>
+   		<servlet-name>mapfactory</servlet-name>
+		<servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
+    	<init-param>
+      		<param-name>home-class</param-name>
+		    <param-value>MapFactoryService</param-value>
+	    </init-param>
+    	<init-param>
+      		<param-name>home-api</param-name>
+		    <param-value>MapFactory</param-value>
+	    </init-param>
+	</servlet>
+	
+		<servlet>
+   		<servlet-name>sorter</servlet-name>
+		<servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
+    	<init-param>
+      		<param-name>home-class</param-name>
+		    <param-value>SorterService</param-value>
+	    </init-param>
+    	<init-param>
+      		<param-name>home-api</param-name>
+		    <param-value>Sorter</param-value>
+	    </init-param>
+	</servlet>
+	
+	<servlet>
+   		<servlet-name>transfer</servlet-name>
+		<servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
+    	<init-param>
+      		<param-name>home-class</param-name>
+		    <param-value>HessianTransferService</param-value>
+	    </init-param>
+    	<init-param>
+      		<param-name>home-api</param-name>
+		    <param-value>Transfer</param-value>
+	    </init-param>
+	</servlet>
+
+	<servlet>
+   		<servlet-name>burlaptransfer</servlet-name>
+		<servlet-class>BurlapTransferService</servlet-class>
+	</servlet>
+
+	<servlet>
+   		<servlet-name>dictionary</servlet-name>
+		<servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
+    	<init-param>
+      		<param-name>home-class</param-name>
+		    <param-value>DictionaryService</param-value>
+	    </init-param>
+    	<init-param>
+      		<param-name>home-api</param-name>
+		    <param-value>Dictionary</param-value>
+	    </init-param>
+	</servlet>
+
+    <servlet-mapping>
+        <servlet-name>Teste</servlet-name>
+        <url-pattern>/teste</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+    	<servlet-name>hello</servlet-name>
+    	<url-pattern>/hello</url-pattern>
+   	</servlet-mapping>
+   	
+    <servlet-mapping>
+    	<servlet-name>mapfactory</servlet-name>
+    	<url-pattern>/mapfactory</url-pattern>
+   	</servlet-mapping>
+   	
+   	<servlet-mapping>
+    	<servlet-name>sorter</servlet-name>
+    	<url-pattern>/sorter</url-pattern>
+   	</servlet-mapping>
+   	
+   	   	
+   	<servlet-mapping>
+    	<servlet-name>transfer</servlet-name>
+    	<url-pattern>/transfer</url-pattern>
+   	</servlet-mapping>
+   	
+   	   	<servlet-mapping>
+    	<servlet-name>burlaptransfer</servlet-name>
+    	<url-pattern>/burlaptransfer</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+    	<servlet-name>dictionary</servlet-name>
+    	<url-pattern>/dictionary</url-pattern>
+   	</servlet-mapping>
+ 
+   	
+</web-app>
