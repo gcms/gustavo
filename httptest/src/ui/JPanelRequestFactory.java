@@ -1,87 +1,93 @@
 package ui;
 
+import java.awt.FlowLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.ButtonGroup;
 
 import base.Request;
 import base.RequestFactory;
 
-import java.awt.FlowLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
-
-import http.RequestBase;
-import http.GetRequest;
-import http.PostRequest;
-
 public class JPanelRequestFactory extends JPanel implements RequestFactory,
-        ObjectFactory {
-    public static final String GET = "GET";
+		ObjectFactory {
+	private JComboBox optionsJComboBox;
 
-    public static final String POST = "POST";
+	private JTextField sizeJTextField;
 
-    private JRadioButton getJRadioButton;
+	private RequestFactory reqFactory;
 
-    private JRadioButton postJRadioButton;
+	public JPanelRequestFactory(RequestFactory reqFactory) {
+		setRequestFactory(reqFactory);
+		setLayout(new FlowLayout(FlowLayout.LEFT));
 
-    private JTextField sizeJTextField;
+		add(getOptionsJComboBox());
 
-    public JPanelRequestFactory() {
-        setLayout(new FlowLayout(FlowLayout.LEFT));
+		add(getSizeJTextField());
+	}
 
-        getJRadioButton = new JRadioButton("GET");
-        getJRadioButton.setMnemonic(KeyEvent.VK_G);
-        getJRadioButton.setSelected(true);
-        add(getJRadioButton);
+	private void setRequestFactory(RequestFactory reqFactory) {
+		this.reqFactory = reqFactory;
+	}
 
-        postJRadioButton = new JRadioButton("POST");
-        postJRadioButton.setMnemonic(KeyEvent.VK_P);
-        add(postJRadioButton);
+	public Request getRequest() {
+		if (sizeJTextField.getText().length() == 0) {
+			return null;
+		}
 
-        ButtonGroup group = new ButtonGroup();
-        group.add(getJRadioButton);
-        group.add(postJRadioButton);
+		long l = Long.valueOf(sizeJTextField.getText()).longValue();
 
-        sizeJTextField = new JTextField(10);
-        sizeJTextField.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                if (!Character.isDigit(e.getKeyChar())
-                        && e.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
-                    e.consume();
-                }
-            }
-        });
-        add(sizeJTextField);
-    }
+		return getRequest((String) getOptionsJComboBox().getSelectedItem(), l);
+	}
 
-    public Request getRequest() {
-        if (sizeJTextField.getText().length() == 0) {
-            return null;
-        }
+	public Request getRequest(String param) {
+		if (sizeJTextField.getText().length() == 0) {
+			return null;
+		}
 
-        long l = Long.valueOf(sizeJTextField.getText()).longValue();
-        return getJRadioButton.isSelected() ? (RequestBase) new GetRequest(l)
-                : (RequestBase) new PostRequest(l);
-    }
+		long l = Long.valueOf(sizeJTextField.getText()).longValue();
+		return getRequest(param, l);
+	}
 
-    public Request getRequest(String param) {
-        if (sizeJTextField.getText().length() == 0) {
-            return null;
-        }
+	public Object createObject() {
+		return getRequest();
+	}
 
-        long l = Long.valueOf(sizeJTextField.getText()).longValue();
-        return getRequest(param, l);
-    }
+	public Request getRequest(String param, long size) {
+		return reqFactory.getRequest(param, size);
+	}
 
-    public Object createObject() {
-        return getRequest();
-    }
+	private void setOptions(String[] options) {
+		setOptions(options);
+	}
 
-    public Request getRequest(String param, long size) {
-        return param.equals(GET) ? (RequestBase) new GetRequest(size) : param
-                .equals(POST) ? (RequestBase) new PostRequest(size) : null;
+	public String[] getOptions() {
+		return reqFactory.getOptions();
+	}
 
-    }
+	private JComboBox getOptionsJComboBox() {
+		if (optionsJComboBox == null) {
+			optionsJComboBox = new JComboBox(getOptions());
+		}
+
+		return optionsJComboBox;
+	}
+
+	private JTextField getSizeJTextField() {
+		if (sizeJTextField == null) {
+			sizeJTextField = new JTextField(10);
+			sizeJTextField.addKeyListener(new KeyAdapter() {
+				public void keyTyped(KeyEvent e) {
+					if (!Character.isDigit(e.getKeyChar())
+							&& e.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
+						e.consume();
+					}
+				}
+			});
+		}
+
+		return sizeJTextField;
+	}
 }

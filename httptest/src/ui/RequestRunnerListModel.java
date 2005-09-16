@@ -1,36 +1,33 @@
 package ui;
 
-import java.net.URI;
-
-import http.HttpConnectionConnectionFactory;
-import http.HttpStateStateFactory;
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
+import base.ConnectionFactory;
 import base.ErrorHandler;
 import base.Request;
 import base.RequestLogger;
 import base.RequestRunner;
+import base.StateFactory;
 
 public class RequestRunnerListModel extends RequestRunner implements ListModel,
 		SimpleList {
 	protected List listeners;
 
-	public RequestRunnerListModel(URI uri, RequestLogger logger,
+	public RequestRunnerListModel(ConnectionFactory connFactory,
+			StateFactory stateFactory, RequestLogger logger,
 			ErrorHandler handler) {
-		super(new HttpConnectionConnectionFactory(uri),
-				new HttpStateStateFactory(), logger, handler);
+		super(connFactory, stateFactory, logger, handler);
 		listeners = new ArrayList();
 	}
 
 	public RequestRunnerListModel(RequestLogger logger, ErrorHandler handler) {
-		this(null, logger, handler);
+		this(null, null, logger, handler);
 	}
 
 	public RequestRunnerListModel() {

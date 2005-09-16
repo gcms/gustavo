@@ -7,191 +7,199 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class RequestRunner extends Runner {
-    static {
-        System.setProperty("org.apache.commons.logging.Log",
-                "org.apache.commons.logging.impl.NoOpLog");
-    }
+	static {
+		System.setProperty("org.apache.commons.logging.Log",
+				"org.apache.commons.logging.impl.NoOpLog");
+	}
 
-    private Connection conn;
+	private Connection conn;
 
-    private ConnectionFactory connFactory;
+	private ConnectionFactory connFactory;
 
-    private StateFactory stateFactory;
+	private StateFactory stateFactory;
 
-    private RequestLogger logger;
+	private RequestLogger logger;
 
-    private ErrorHandler handler;
+	private ErrorHandler handler;
 
-    private boolean wantStop;
+	private boolean wantStop;
 
-    protected List requests;
+	protected List requests;
 
-    public RequestRunner(List requests, ConnectionFactory connFactory,
-            StateFactory stateFactory, RequestLogger logger,
-            ErrorHandler handler) {
-        this.requests = requests;
-        this.stateFactory = stateFactory;
-        this.connFactory = connFactory;
-        this.logger = logger;
-        this.handler = handler;
-    }
+	public RequestRunner(List requests, ConnectionFactory connFactory,
+			StateFactory stateFactory, RequestLogger logger,
+			ErrorHandler handler) {
+		this.requests = requests;
+		this.stateFactory = stateFactory;
+		this.connFactory = connFactory;
+		this.logger = logger;
+		this.handler = handler;
+	}
 
-    public RequestRunner(ConnectionFactory connFactory,
-            StateFactory stateFactory, RequestLogger logger,
-            ErrorHandler handler) {
-        this(new ArrayList(), connFactory, stateFactory, logger, handler);
-    }
+	public RequestRunner(ConnectionFactory connFactory,
+			StateFactory stateFactory, RequestLogger logger,
+			ErrorHandler handler) {
+		this(new ArrayList(), connFactory, stateFactory, logger, handler);
+	}
 
-    public RequestRunner(ConnectionFactory connFactory) {
-        this(connFactory, new NoStateFactory(), new OutputStreamRequestLogger(
-                System.out), new OutputStreamErrorHandler(System.err));
-    }
+	public RequestRunner(ConnectionFactory connFactory) {
+		this(connFactory, new NoStateFactory(), new OutputStreamRequestLogger(
+				System.out), new OutputStreamErrorHandler(System.err));
+	}
 
-    public RequestRunner(RequestRunner runner) {
-        this(runner.requests, runner.connFactory, runner.stateFactory,
-                runner.logger, runner.handler);
-    }
+	public RequestRunner(RequestRunner runner) {
+		this(runner.requests, runner.connFactory, runner.stateFactory,
+				runner.logger, runner.handler);
+	}
 
-    public RequestRunner() {
-        this(null, null, null, null, null);
-    }
+	public RequestRunner() {
+		this(null, null, null, null, null);
+	}
 
-    public void setConnectionFactory(ConnectionFactory connFactory) {
-        this.connFactory = connFactory;
-    }
+	public void setConnectionFactory(ConnectionFactory connFactory) {
+		this.connFactory = connFactory;
+	}
 
-    public ConnectionFactory getConnectionFactory() {
-        return connFactory;
-    }
+	public ConnectionFactory getConnectionFactory() {
+		return connFactory;
+	}
 
-    public void setRequestLogger(RequestLogger logger) {
-        this.logger = logger;
-    }
+	public void setStateFactory(StateFactory stateFactory) {
+		this.stateFactory = stateFactory;
+	}
 
-    public RequestLogger getRequestLogger() {
-        return logger;
-    }
+	public StateFactory getStateFactory() {
+		return stateFactory;
+	}
 
-    public void setErrorHandler(ErrorHandler handler) {
-        this.handler = handler;
-    }
+	public void setRequestLogger(RequestLogger logger) {
+		this.logger = logger;
+	}
 
-    public ErrorHandler getErrorHandler() {
-        return handler;
-    }
+	public RequestLogger getRequestLogger() {
+		return logger;
+	}
 
-    public Object clone() {
-        RequestRunner runner = new RequestRunner(connFactory, stateFactory,
-                logger, handler);
-        for (Iterator it = requests.iterator(); it.hasNext(); /* */) {
-            runner.requests.add(it.next());
-        }
+	public void setErrorHandler(ErrorHandler handler) {
+		this.handler = handler;
+	}
 
-        return runner;
-    }
+	public ErrorHandler getErrorHandler() {
+		return handler;
+	}
 
-    /*
-     * public RequestRunner(RequestRunner runner) { this.requests = (List)
-     * runner.requests.clone(); this.uri = runner.uri; this.logger =
-     * runner.logger; this.handler = runner.handler; }
-     */
+	public Object clone() {
+		RequestRunner runner = new RequestRunner(connFactory, stateFactory,
+				logger, handler);
+		for (Iterator it = requests.iterator(); it.hasNext(); /* */) {
+			runner.requests.add(it.next());
+		}
 
-    public void addRequest(Request req) {
-        requests.add(req);
-    }
+		return runner;
+	}
 
-    public void addRequest(int index, Request req) {
-        requests.add(index, req);
-    }
+	/*
+	 * public RequestRunner(RequestRunner runner) { this.requests = (List)
+	 * runner.requests.clone(); this.uri = runner.uri; this.logger =
+	 * runner.logger; this.handler = runner.handler; }
+	 */
 
-    public Object removeRequest(int index) {
-        return requests.remove(index);
-    }
+	public void addRequest(Request req) {
+		requests.add(req);
+	}
 
-    public boolean removeRequest(Request req) {
-        return requests.remove(req);
-    }
+	public void addRequest(int index, Request req) {
+		requests.add(index, req);
+	}
 
-    public Object getRequest(int index) {
-        return requests.get(index);
-    }
+	public Object removeRequest(int index) {
+		return requests.remove(index);
+	}
 
-    public int numRequests() {
-        return requests.size();
-    }
+	public boolean removeRequest(Request req) {
+		return requests.remove(req);
+	}
 
-    /**
-     * Asks for the run to stop, a flag will be set to this run stating that it
-     * wants to stop. If it's called before the run() method starts, or after it
-     * ends, it will have no effect. It can be useful if you're dealing with
-     * threads though.
-     */
-    public void stop() {
-        if (!wantStop) {
-            wantStop = true;
-            if (conn != null && conn.isOpen()) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        conn.close();
-                    }
-                }).start();
-            }
-        }
-    }
+	public Object getRequest(int index) {
+		return requests.get(index);
+	}
 
-    public void run() {
-        try {
-            conn = connFactory.getConnection();
-        } catch (IllegalArgumentException e) {
-            handler.debug(e.getMessage());
-            notifyListeners(new NotifyEvent(this));
-            return;
-        }
+	public int numRequests() {
+		return requests.size();
+	}
 
-        State state = stateFactory.getState();
+	/**
+	 * Asks for the run to stop, a flag will be set to this run stating that it
+	 * wants to stop. If it's called before the run() method starts, or after it
+	 * ends, it will have no effect. It can be useful if you're dealing with
+	 * threads though.
+	 */
+	public void stop() {
+		if (!wantStop) {
+			wantStop = true;
+			if (conn != null && conn.isOpen()) {
+				new Thread(new Runnable() {
+					public void run() {
+						conn.close();
+					}
+				}).start();
+			}
+		}
+	}
 
-        if (wantStop) {
-            notifyListeners(new NotifyEvent(this));
-            return;
-        }
+	public void run() {
+		try {
+			conn = connFactory.getConnection();
+		} catch (IllegalArgumentException e) {
+			handler.debug(e.getMessage());
+			notifyListeners(new NotifyEvent(this));
+			return;
+		}
 
-        try {
-            conn.open();
-        } catch (IOException e) {
-            handler.debug(e.getMessage());
-            notifyListeners(new NotifyEvent(this));
-            return;
-        }
+		State state = stateFactory.getState();
 
-        for (Iterator it = requests.iterator(); it.hasNext(); /* */) {
-            Request req = (Request) it.next();
+		if (wantStop) {
+			notifyListeners(new NotifyEvent(this));
+			return;
+		}
 
-            try {
-                req.request(conn, state, logger, handler);
-            } catch (IOException e) {
-                if (wantStop) {
-                    /* if we want it to stop, we just break the loop */
-                    break;
-                } else {
-                    handler.debug(e.getMessage());
-                    continue;
-                }
-            } catch (IllegalStateException e) {
-                if (!wantStop) {
-                    handler.debug(e.getMessage());
-                }
-                break;
-            } catch (IllegalArgumentException e) {
-                if (!wantStop) {
-                    handler.debug(e.getMessage());
-                }
-                break;
-            }
-        }
+		try {
+			conn.open();
+		} catch (IOException e) {
+			handler.debug(e.getMessage());
+			notifyListeners(new NotifyEvent(this));
+			return;
+		}
 
-        conn.close();
+		for (Iterator it = requests.iterator(); it.hasNext(); /* */) {
+			Request req = (Request) it.next();
 
-        /* notify listeners that this runner finished running */
-        notifyListeners(new NotifyEvent(this));
-    }
+			try {
+				req.request(conn, state, logger, handler);
+			} catch (IOException e) {
+				if (wantStop) {
+					/* if we want it to stop, we just break the loop */
+					break;
+				} else {
+					handler.debug(e.getMessage());
+					continue;
+				}
+			} catch (IllegalStateException e) {
+				if (!wantStop) {
+					handler.debug(e.getMessage());
+				}
+				break;
+			} catch (IllegalArgumentException e) {
+				if (!wantStop) {
+					handler.debug(e.getMessage());
+				}
+				break;
+			}
+		}
+
+		conn.close();
+
+		/* notify listeners that this runner finished running */
+		notifyListeners(new NotifyEvent(this));
+	}
 }

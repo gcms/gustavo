@@ -15,4 +15,6 @@ public interface RequestFactory {
     public Request getRequest();
 
     public Request getRequest(String param, long size);
+
+	public String[] getOptions();
 }
