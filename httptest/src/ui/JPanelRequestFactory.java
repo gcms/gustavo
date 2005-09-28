@@ -40,8 +40,20 @@ public class JPanelRequestFactory extends JPanel implements RequestFactory,
         return handler;
     }
 
-    private void setRequestFactory(RequestFactory reqFactory) {
+    public void setRequestFactory(RequestFactory reqFactory) {
+        while (getOptionsJComboBox().getItemCount() > 0) {
+            getOptionsJComboBox().removeItemAt(0);
+        }
+
+        for (int i = 0; i < reqFactory.getOptions().length; i++) {
+            optionsJComboBox.addItem(reqFactory.getOptions()[i]);
+        }
+
         this.reqFactory = reqFactory;
+    }
+
+    public RequestFactory getRequestFactory() {
+        return reqFactory;
     }
 
     public Request getRequest() {
@@ -77,17 +89,13 @@ public class JPanelRequestFactory extends JPanel implements RequestFactory,
         return reqFactory.getRequest(param, size);
     }
 
-    private void setOptions(String[] options) {
-        setOptions(options);
-    }
-
     public String[] getOptions() {
         return reqFactory.getOptions();
     }
 
     private JComboBox getOptionsJComboBox() {
         if (optionsJComboBox == null) {
-            optionsJComboBox = new JComboBox(getOptions());
+            optionsJComboBox = new JComboBox();
         }
 
         return optionsJComboBox;
