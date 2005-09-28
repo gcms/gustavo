@@ -4,10 +4,12 @@ import javax.swing.JOptionPane;
 
 import base.ErrorHandler;
 
-
 public class JOptionPaneErrorHandler implements ErrorHandler {
     public void debug(Object o) {
-        JOptionPane.showMessageDialog(null, o);
+        if (o != null && o instanceof Exception) {
+            JOptionPane.showMessageDialog(null, ((Exception) o).getMessage());
+        } else {
+            JOptionPane.showMessageDialog(null, o);
+        }
     }
-
 }

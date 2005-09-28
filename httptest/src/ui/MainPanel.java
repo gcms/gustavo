@@ -1,9 +1,5 @@
 package ui;
 
-import http.HttpConnectionConnectionFactory;
-import http.HttpRequestFactory;
-import http.HttpStateStateFactory;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -60,7 +56,11 @@ public class MainPanel extends JPanel {
 
     private Properties configuration;
 
-    public MainPanel(Properties configuration, ErrorHandler errorHandler) {
+    private ModuleLoader.Module module;
+
+    public MainPanel(Properties configuration, ErrorHandler errorHandler,
+            ModuleLoader.Module module) {
+        this.module = module;
         this.configuration = configuration;
         this.errorHandler = errorHandler;
 
@@ -71,7 +71,7 @@ public class MainPanel extends JPanel {
         /* -- start packing left pane -- */
         JPanel leftPane = new JPanel(new BorderLayout());
 
-        requestFactory = new JPanelRequestFactory(new HttpRequestFactory(),
+        requestFactory = new JPanelRequestFactory(module.getRequestFactory(),
                 errorHandler);
         requestJPanel = new RequestJPanel(listModel, requestFactory, listModel);
 
@@ -134,6 +134,30 @@ public class MainPanel extends JPanel {
             }
         }
 
+    }
+
+    public void setModule(ModuleLoader.Module module) {
+        if (!this.module.equals(module)) {
+
+            RequestFactory reqFactory = module.getRequestFactory();
+
+            if (reqFactory == null) {
+                return;
+            }
+
+            /* clearing older requests */
+            listModel = new RequestRunnerListModel();
+            requestJPanel.setListModel(listModel);
+            requestJPanel.setSimpleList(listModel);
+
+            requestFactory.setRequestFactory(reqFactory);
+
+            this.module = module;
+        }
+    }
+
+    public ModuleLoader.Module getModule() {
+        return module;
     }
 
     private JLabelSpeedObserver getSpeedLabel() {
@@ -217,8 +241,8 @@ public class MainPanel extends JPanel {
 
         try {
             currentRunner
-                    .setConnectionFactory(new HttpConnectionConnectionFactory(
-                            new URI(getUrlJTextField().getText())));
+                    .setConnectionFactory(module.getConnectionFactory(new URI(
+                            getUrlJTextField().getText())));
             // currentRunner.setUri(new URI(getUrlJTextField().getText()));
         } catch (java.net.URISyntaxException e) {
             errorHandler.debug(e.getMessage());
@@ -227,7 +251,7 @@ public class MainPanel extends JPanel {
 
         resetLogger();
 
-        currentRunner.setStateFactory(new HttpStateStateFactory());
+        currentRunner.setStateFactory(module.getStateFactory());
 
         currentRunner.setRequestLogger(logger);
 

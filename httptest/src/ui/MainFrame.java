@@ -1,6 +1,5 @@
 package ui;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -23,7 +22,6 @@ import base.BufferRequestLogger;
 import base.ErrorHandler;
 import base.OutputStreamRequestLogger;
 
-
 public class MainFrame extends JFrame {
     private Properties configuration;
 
@@ -39,7 +37,13 @@ public class MainFrame extends JFrame {
 
         loadProperties();
 
-        mainPanel = new MainPanel(configuration, getErrorHandler());
+        ModuleLoader moduleLoader = new ModuleLoader(
+                "C:\\Documents and Settings\\warnoleto\\Desktop\\modules\\");
+        
+
+        ModuleLoader.Module module = moduleLoader.getModule("http");
+
+        mainPanel = new MainPanel(configuration, getErrorHandler(), module);
         setContentPane(mainPanel);
 
         /* save configuration before closing */
