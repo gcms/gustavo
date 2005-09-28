@@ -1,6 +1,6 @@
 package ui;
 
-
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import base.Request;
@@ -17,8 +17,12 @@ public class DefaultTableModelRequestLogger implements RequestLogger {
         return false;
     }
 
-    public void log(Request req, long start, long end) {
-        model.addRow(new Object[] { req, new Long(req.getSize()),
-                new Long(start == -1 ? -1 : (end - start)) });
+    public void log(final Request req, final long start, final long end) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                model.addRow(new Object[] { req, new Long(req.getSize()),
+                        new Long(start == -1 ? -1 : (end - start)) });
+            }
+        });
     }
 }

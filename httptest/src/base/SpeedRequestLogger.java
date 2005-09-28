@@ -28,7 +28,11 @@ public class SpeedRequestLogger extends Observable implements RequestLogger {
             BufferRequestLogger.Log log = (BufferRequestLogger.Log) it.next();
             // data += log.req.getSize();
             // delay += log.end - log.start;
-            s += (double) log.req.getSize() / (double) (log.end - log.start);
+
+            if (log.start > 0 && log.end > 0) {
+                s += (double) log.req.getSize()
+                        / (double) (log.end - log.start);
+            }
         }
 
         clearChanged();

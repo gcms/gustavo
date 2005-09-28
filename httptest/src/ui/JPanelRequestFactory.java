@@ -8,86 +8,104 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import base.ErrorHandler;
 import base.Request;
 import base.RequestFactory;
 
 public class JPanelRequestFactory extends JPanel implements RequestFactory,
-		ObjectFactory {
-	private JComboBox optionsJComboBox;
+        ObjectFactory {
+    private JComboBox optionsJComboBox;
 
-	private JTextField sizeJTextField;
+    private JTextField sizeJTextField;
 
-	private RequestFactory reqFactory;
+    private RequestFactory reqFactory;
 
-	public JPanelRequestFactory(RequestFactory reqFactory) {
-		setRequestFactory(reqFactory);
-		setLayout(new FlowLayout(FlowLayout.LEFT));
+    private ErrorHandler handler;
 
-		add(getOptionsJComboBox());
+    public JPanelRequestFactory(RequestFactory reqFactory, ErrorHandler handler) {
+        setErrorHandler(handler);
+        setRequestFactory(reqFactory);
+        setLayout(new FlowLayout(FlowLayout.LEFT));
 
-		add(getSizeJTextField());
-	}
+        add(getOptionsJComboBox());
 
-	private void setRequestFactory(RequestFactory reqFactory) {
-		this.reqFactory = reqFactory;
-	}
+        add(getSizeJTextField());
+    }
 
-	public Request getRequest() {
-		if (sizeJTextField.getText().length() == 0) {
-			return null;
-		}
+    public void setErrorHandler(ErrorHandler handler) {
+        this.handler = handler;
+    }
 
-		long l = Long.valueOf(sizeJTextField.getText()).longValue();
+    public ErrorHandler getErrorHandler() {
+        return handler;
+    }
 
-		return getRequest((String) getOptionsJComboBox().getSelectedItem(), l);
-	}
+    private void setRequestFactory(RequestFactory reqFactory) {
+        this.reqFactory = reqFactory;
+    }
 
-	public Request getRequest(String param) {
-		if (sizeJTextField.getText().length() == 0) {
-			return null;
-		}
+    public Request getRequest() {
+        if (sizeJTextField.getText().length() == 0) {
+            return null;
+        }
 
-		long l = Long.valueOf(sizeJTextField.getText()).longValue();
-		return getRequest(param, l);
-	}
+        try {
+            long l = Long.valueOf(sizeJTextField.getText()).longValue();
 
-	public Object createObject() {
-		return getRequest();
-	}
+            return getRequest((String) getOptionsJComboBox().getSelectedItem(),
+                    l);
+        } catch (NumberFormatException e) {
+            handler.debug(e);
+            return null;
+        }
+    }
 
-	public Request getRequest(String param, long size) {
-		return reqFactory.getRequest(param, size);
-	}
+    public Request getRequest(String param) {
+        if (sizeJTextField.getText().length() == 0) {
+            return null;
+        }
 
-	private void setOptions(String[] options) {
-		setOptions(options);
-	}
+        long l = Long.valueOf(sizeJTextField.getText()).longValue();
+        return getRequest(param, l);
+    }
 
-	public String[] getOptions() {
-		return reqFactory.getOptions();
-	}
+    public Object createObject() {
+        return getRequest();
+    }
 
-	private JComboBox getOptionsJComboBox() {
-		if (optionsJComboBox == null) {
-			optionsJComboBox = new JComboBox(getOptions());
-		}
+    public Request getRequest(String param, long size) {
+        return reqFactory.getRequest(param, size);
+    }
 
-		return optionsJComboBox;
-	}
+    private void setOptions(String[] options) {
+        setOptions(options);
+    }
 
-	private JTextField getSizeJTextField() {
-		if (sizeJTextField == null) {
-			sizeJTextField = new JTextField(10);
-			sizeJTextField.addKeyListener(new KeyAdapter() {
-				public void keyTyped(KeyEvent e) {
-					if (!Character.isDigit(e.getKeyChar())
-							&& e.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
-						e.consume();
-					}
-				}
-			});
-		}
+    public String[] getOptions() {
+        return reqFactory.getOptions();
+    }
 
-		return sizeJTextField;
-	}
+    private JComboBox getOptionsJComboBox() {
+        if (optionsJComboBox == null) {
+            optionsJComboBox = new JComboBox(getOptions());
+        }
+
+        return optionsJComboBox;
+    }
+
+    private JTextField getSizeJTextField() {
+        if (sizeJTextField == null) {
+            sizeJTextField = new JTextField(10);
+            sizeJTextField.addKeyListener(new KeyAdapter() {
+                public void keyTyped(KeyEvent e) {
+                    if (!Character.isDigit(e.getKeyChar())
+                            && e.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
+                        e.consume();
+                    }
+                }
+            });
+        }
+
+        return sizeJTextField;
+    }
 }

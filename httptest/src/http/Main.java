@@ -78,7 +78,7 @@ public class Main {
             try {
                 runner.run();
             } catch (Exception e) {
-                handler.debug(e.getMessage());
+                handler.debug(e);
             }
         }
     }
