@@ -11,11 +11,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
 import base.BufferRequestLogger;
@@ -23,161 +25,185 @@ import base.ErrorHandler;
 import base.OutputStreamRequestLogger;
 
 public class MainFrame extends JFrame {
-    private Properties configuration;
+	private Properties configuration;
 
-    private MainPanel mainPanel;
+	private MainPanel mainPanel;
 
-    private ErrorHandler errorHandler;
+	private ErrorHandler errorHandler;
 
-    private static final String confFile = ".httptestrc";
+	private static final String confFile = ".httptestrc";
 
-    public MainFrame() {
+	public MainFrame() {
 
-        setTitle("HttpTest");
+		setTitle("HttpTest");
 
-        loadProperties();
+		loadProperties();
 
-        ModuleLoader moduleLoader = new ModuleLoader(
-                "C:\\Documents and Settings\\warnoleto\\Desktop\\modules\\");
-        
+		final ModuleLoader moduleLoader = new ModuleLoader(
+				"C:\\Documents and Settings\\gustavo\\Desktop\\modules\\");
 
-        ModuleLoader.Module module = moduleLoader.getModule("http");
+		String[] modules = moduleLoader.getAvailableModulesNames();
 
-        mainPanel = new MainPanel(configuration, getErrorHandler(), module);
-        setContentPane(mainPanel);
+		/* set content */
+		ModuleLoader.Module module = moduleLoader.getModule(modules[0]);
+		mainPanel = new MainPanel(configuration, getErrorHandler(), module);
+		setContentPane(mainPanel);
 
-        /* save configuration before closing */
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent ev) {
-                storeProperties();
-            }
-        });
+		/* add menus */
+		JMenuBar menuBar = new JMenuBar();
 
-        /* add menus */
+		JMenu menuFile = new JMenu("Arquivo");
+		menuFile.setMnemonic(KeyEvent.VK_A);
 
-        JMenuBar menuBar = new JMenuBar();
+		JMenuItem menuViewLog = new JMenuItem("Ver log");
+		menuViewLog.setMnemonic(KeyEvent.VK_V);
+		menuViewLog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ev) {
+				String lastDir = configuration.getProperty("lastdir");
 
-        JMenu menuFile = new JMenu("Arquivo");
-        menuFile.setMnemonic(KeyEvent.VK_A);
+				JFileChooser fc = lastDir != null ? new JFileChooser(lastDir)
+						: new JFileChooser();
 
-        JMenuItem menuViewLog = new JMenuItem("Ver log");
-        menuViewLog.setMnemonic(KeyEvent.VK_V);
-        menuViewLog.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ev) {
-                String lastDir = configuration.getProperty("lastdir");
+				if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					try {
+						BufferRequestLogger newLogger = new BufferRequestLogger();
 
-                JFileChooser fc = lastDir != null ? new JFileChooser(lastDir)
-                        : new JFileChooser();
+						newLogger.loadFromFile(fc.getSelectedFile(), mainPanel
+								.getRequestFactory());
+						mainPanel.loadLog(newLogger);
+					} catch (FileNotFoundException e) {
+						getErrorHandler().debug(e);
+					} catch (IllegalArgumentException e) {
+						getErrorHandler().debug(e);
+					} catch (IOException e) {
+						getErrorHandler().debug(e);
+					}
+				}
 
-                if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        BufferRequestLogger newLogger = new BufferRequestLogger();
+				configuration.setProperty("lastdir", fc.getSelectedFile()
+						.getParent());
 
-                        newLogger.loadFromFile(fc.getSelectedFile(), mainPanel
-                                .getRequestFactory());
-                        mainPanel.loadLog(newLogger);
-                    } catch (FileNotFoundException e) {
-                        getErrorHandler().debug(e);
-                    } catch (IllegalArgumentException e) {
-                        getErrorHandler().debug(e);
-                    } catch (IOException e) {
-                        getErrorHandler().debug(e);
-                    }
-                }
+			}
+		});
 
-                configuration.setProperty("lastdir", fc.getSelectedFile()
-                        .getParent());
+		menuFile.add(menuViewLog);
 
-            }
-        });
+		JMenuItem menuSaveLog = new JMenuItem("Salvar log");
+		menuSaveLog.setMnemonic(KeyEvent.VK_S);
+		menuSaveLog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				KeyEvent.CTRL_DOWN_MASK));
+		menuSaveLog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ev) {
+				String lastDir = configuration.getProperty("lastdir");
 
-        menuFile.add(menuViewLog);
+				JFileChooser fc = lastDir != null ? new JFileChooser(lastDir)
+						: new JFileChooser();
 
-        JMenuItem menuSaveLog = new JMenuItem("Salvar log");
-        menuSaveLog.setMnemonic(KeyEvent.VK_S);
-        menuSaveLog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                KeyEvent.CTRL_DOWN_MASK));
-        menuSaveLog.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ev) {
-                String lastDir = configuration.getProperty("lastdir");
+				if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					try {
+						mainPanel.getBufferRequestLogger().logTo(
+								new OutputStreamRequestLogger(
+										new FileOutputStream(fc
+												.getSelectedFile())));
+					} catch (FileNotFoundException e) {
+						getErrorHandler().debug(e);
+					}
+				}
+				configuration.setProperty("lastdir", fc.getSelectedFile()
+						.getParent());
 
-                JFileChooser fc = lastDir != null ? new JFileChooser(lastDir)
-                        : new JFileChooser();
+			}
+		});
 
-                if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        mainPanel.getBufferRequestLogger().logTo(
-                                new OutputStreamRequestLogger(
-                                        new FileOutputStream(fc
-                                                .getSelectedFile())));
-                    } catch (FileNotFoundException e) {
-                        getErrorHandler().debug(e);
-                    }
-                }
-                configuration.setProperty("lastdir", fc.getSelectedFile()
-                        .getParent());
+		menuFile.add(menuSaveLog);
+		menuFile.addSeparator();
 
-            }
-        });
+		JMenuItem menuExit = new JMenuItem("Sair");
+		menuExit.setMnemonic(KeyEvent.VK_R);
+		menuExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+				KeyEvent.CTRL_DOWN_MASK));
+		menuExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				storeProperties();
+				System.exit(0);
+			}
 
-        menuFile.add(menuSaveLog);
-        menuFile.addSeparator();
+		});
 
-        JMenuItem menuExit = new JMenuItem("Sair");
-        menuExit.setMnemonic(KeyEvent.VK_R);
-        menuExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-                KeyEvent.CTRL_DOWN_MASK));
-        menuExit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                storeProperties();
-                System.exit(0);
-            }
+		menuFile.add(menuExit);
 
-        });
+		menuBar.add(menuFile);
 
-        menuFile.add(menuExit);
+		JMenu menuOption = new JMenu("Opções");
+		menuOption.setMnemonic(KeyEvent.VK_O);
 
-        menuBar.add(menuFile);
+		JMenu menuModule = new JMenu("Módulo");
+		menuModule.setMnemonic(KeyEvent.VK_M);
 
-        JMenu menuHelp = new JMenu("Ajuda");
-        menuHelp.setMnemonic(KeyEvent.VK_J);
+		ButtonGroup group = new ButtonGroup();
+		for (int i = 0; i < modules.length; i++) {
+			JRadioButtonMenuItem item = new JRadioButtonMenuItem(modules[i],
+					i == 0);
+			item.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ev) {
+					mainPanel.setModule(moduleLoader.getModule(((JMenuItem) ev
+							.getSource()).getText()));
+				}
+			});
+			menuModule.add(item);
+			group.add(item);
+		}
 
-        JMenuItem menuAbout = new JMenuItem("Sobre");
-        menuAbout.setMnemonic(KeyEvent.VK_S);
+		menuOption.add(menuModule);
 
-        menuHelp.add(menuAbout);
+		menuBar.add(menuOption);
 
-        menuBar.add(menuHelp);
+		JMenu menuHelp = new JMenu("Ajuda");
+		menuHelp.setMnemonic(KeyEvent.VK_J);
 
-        setJMenuBar(menuBar);
+		JMenuItem menuAbout = new JMenuItem("Sobre");
+		menuAbout.setMnemonic(KeyEvent.VK_S);
 
-        pack();
-    }
+		menuHelp.add(menuAbout);
 
-    private ErrorHandler getErrorHandler() {
-        if (errorHandler == null) {
-            errorHandler = new JOptionPaneErrorHandler();
-        }
+		menuBar.add(menuHelp);
 
-        return errorHandler;
-    }
+		setJMenuBar(menuBar);
 
-    private void storeProperties() {
-        try {
-            configuration.store(new FileOutputStream(System
-                    .getProperty("user.home")
-                    + "/" + confFile), null);
-        } catch (IOException e) {
-        }
-    }
+		/* save configuration before closing */
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent ev) {
+				storeProperties();
+			}
+		});
 
-    private void loadProperties() {
-        configuration = new Properties();
-        try {
-            configuration.load(new FileInputStream(System
-                    .getProperty("user.home")
-                    + "/" + confFile));
-        } catch (IOException e) {
-        }
-    }
+		pack();
+	}
+
+	private ErrorHandler getErrorHandler() {
+		if (errorHandler == null) {
+			errorHandler = new JOptionPaneErrorHandler();
+		}
+
+		return errorHandler;
+	}
+
+	private void storeProperties() {
+		try {
+			configuration.store(new FileOutputStream(System
+					.getProperty("user.home")
+					+ "/" + confFile), null);
+		} catch (IOException e) {
+		}
+	}
+
+	private void loadProperties() {
+		configuration = new Properties();
+		try {
+			configuration.load(new FileInputStream(System
+					.getProperty("user.home")
+					+ "/" + confFile));
+		} catch (IOException e) {
+		}
+	}
 }
