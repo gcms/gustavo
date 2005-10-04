@@ -39,8 +39,13 @@ public class MainFrame extends JFrame {
 
 		loadProperties();
 
-		final ModuleLoader moduleLoader = new ModuleLoader(
-				"C:\\Documents and Settings\\gustavo\\Desktop\\modules\\");
+		final ModuleLoader moduleLoader = new ModuleLoader();
+
+		moduleLoader.loadModule("http", "http.HttpConnectionConnectionFactory",
+				"http.HttpStateStateFactory", "http.HttpRequestFactory");
+
+		moduleLoader.loadModule("hessian", "hessian.HessianConnectionFactory",
+				"hessian.HessianStateFactory", "hessian.HessianRequestFactory");
 
 		String[] modules = moduleLoader.getAvailableModulesNames();
 
