@@ -1,7 +1,6 @@
 package ui;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -80,14 +79,18 @@ public class ModuleLoader {
 
 	private Map modules = new HashMap();
 
+	/* TODO: change exception handling */
 	public void loadModule(String name, String connectionFactoryString,
-			String stateFactoryString, String requestFactoryString) {
-		try {
-			Module module = new Module();
-			module.name = name;
+			String stateFactoryString, String requestFactoryString)
+			throws InvalidModuleException {
 
-			Class connectionFactoryClass = Class.forName(
-					connectionFactoryString, true, cl);
+		Module module = new Module();
+		module.name = name;
+
+		try {
+			Class connectionFactoryClass;
+			connectionFactoryClass = Class.forName(connectionFactoryString,
+					true, cl);
 			module.connectionFactoryClassConstructor = connectionFactoryClass
 					.getConstructor(new Class[] { Class.forName("java.net.URI",
 							true, cl) });
@@ -99,64 +102,81 @@ public class ModuleLoader {
 
 			modules.put(module.name, module);
 
+			System.out.println(module.name + " loaded");
+
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			throw new InvalidModuleException(e);
 		} catch (SecurityException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			throw new InvalidModuleException(e);
 		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			throw new InvalidModuleException(e);
+		}
+
+	}
+
+	public void loadPath(String urlString) throws InvalidModuleException {
+		try {
+			loadPath(new URL(urlString));
+		} catch (InvalidModuleException e) {
+			// e.printStackTrace();
+			throw new InvalidModuleException(e);
+		} catch (MalformedURLException e) {
+			// e.printStackTrace();
+			throw new InvalidModuleException(e);
 		}
 	}
 
-	public void loadPath(String modulePath) {
-		URL[] urls = new URL[cl.getURLs().length + 1];
+	public void loadPath(File file) throws InvalidModuleException {
 		try {
-			urls[0] = new URL(modulePath);
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-			return;
+			loadPath(file.toURL());
+		} catch (InvalidModuleException e) {
+			// e.printStackTrace();
+			throw new InvalidModuleException(e);
+		} catch (MalformedURLException e) {
+			// e.printStackTrace();
+			throw new InvalidModuleException(e);
 		}
-		System.arraycopy(urls, 1, cl.getURLs(), 0, cl.getURLs().length);
-		cl = new URLClassLoader(urls);
+	}
 
-		File modulePathname = new File(modulePath);
+	public void loadPath(URL url) throws InvalidModuleException {
+		cl = new URLClassLoader(new URL[] { url }, cl);
 
-		if (modulePathname.exists() && modulePathname.isDirectory()) {
-			File[] moduleFiles = modulePathname.listFiles(new FileFilter() {
-				public boolean accept(File arg0) {
-					return arg0.exists() && arg0.isDirectory();
-				}
-			});
+		File moduleDirectory = new File(url.getPath());
 
-			for (int i = 0; i < moduleFiles.length; i++) {
-				File m = moduleFiles[i];
+		if (!moduleDirectory.exists() || !moduleDirectory.isDirectory()) {
+			throw new InvalidModuleException("Invalid directory module");
+		}
 
-				File[] propertiesFile = m.listFiles(new FilenameFilter() {
-					public boolean accept(File arg0, String arg1) {
-						return arg0.exists() && arg1.equals("properties");
-					}
-				});
-
-				if (propertiesFile != null && propertiesFile.length > 0) {
-					Properties p = new Properties();
-
-					try {
-						p.load(new FileInputStream(propertiesFile[0]));
-						loadModule(m.getName(), p
-								.getProperty("connectionFactory"), p
-								.getProperty("stateFactory"), p
-								.getProperty("requestFactory"));
-
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (SecurityException e) {
-						e.printStackTrace();
-					}
-
-				}
+		File[] propertiesFile = moduleDirectory.listFiles(new FilenameFilter() {
+			public boolean accept(File arg0, String arg1) {
+				return arg0.exists() && arg1.equals("properties");
 			}
+		});
+
+		if (propertiesFile != null && propertiesFile.length > 0) {
+			Properties p = new Properties();
+
+			try {
+				p.load(new FileInputStream(propertiesFile[0]));
+
+				loadModule(p.getProperty("moduleName"), p
+						.getProperty("connectionFactory"), p
+						.getProperty("stateFactory"), p
+						.getProperty("requestFactory"));
+
+			} catch (FileNotFoundException e) {
+				// e.printStackTrace();
+				throw new InvalidModuleException(e);
+			} catch (IOException e) {
+				// e.printStackTrace();
+				throw new InvalidModuleException(e);
+			}
+		} else {
+			throw new InvalidModuleException(
+					"properties file not found for directory " + url.getPath());
 		}
 	}
 
