@@ -113,11 +113,19 @@ JNIEXPORT jint JNICALL Java_JFrameEx_showCursor
 
 /*
  * Class:     JFrameEx
- * Method:    setCursorPost
+ * Method:    setCursorPos
  * Signature: (II)Z
  */
-JNIEXPORT jboolean JNICALL Java_JFrameEx_setCursorPost
+JNIEXPORT jboolean JNICALL Java_JFrameEx_setCursorPos
   (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     JFrameEx
+ * Method:    getLastError
+ * Signature: ()I
+ */
+JNIEXPORT jlong JNICALL Java_JFrameEx_getLastError
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

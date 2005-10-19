@@ -226,4 +226,8 @@ public class MouseState {
     private Point relativeTo(Component c) {
         return SwingUtilities.convertPoint(mouseContext, getX(), getY(), c);
     }
+
+    public String toString() {
+        return "Pointer at: " + currentPoint;
+    }
 }
