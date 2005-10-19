@@ -93,6 +93,7 @@ public class JFrameEx extends JFrame {
     public JFrameEx(String title) {
         super(title);
         setGlassPane((glassPane = new PointerGlassPane()));
+        while (showCursor(false) > 0);
     }
 
     /**
@@ -150,6 +151,7 @@ public class JFrameEx extends JFrame {
         Point newP = getNewPoint(state.getPosition(), (int) iLastX,
                 (int) iLastY);
 
+
         if (!oldP.equals(newP)) {
             state.move(newP);
         }
@@ -174,4 +176,6 @@ public class JFrameEx extends JFrame {
     public native int showCursor(boolean show);
 
     public native boolean setCursorPos(int x, int y);
+
+    public native long getLastError();
 }

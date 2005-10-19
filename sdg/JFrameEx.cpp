@@ -285,6 +285,35 @@ JNIEXPORT jint JNICALL Java_JFrameEx_showCursor
  * Signature: (II)Z
  */
 JNIEXPORT jboolean JNICALL Java_JFrameEx_setCursorPos
-  (JNIEnv *env, jobject this_obj, jint x, jint y) {
-  	return (jboolean) SetCursorPos((int) x, (int) y);
+  (JNIEnv *env, jobject obj_this, jint x, jint y) {
+    HWND hwnd = (HWND) Java_JFrameEx_getHWND(env, obj_this);
+    
+    RECT rect;
+
+    if (!GetWindowRect(hwnd, &rect)) {
+  	    return (jboolean) false;
+    }
+
+    POINT point;
+
+    if (!GetCursorPos(&point)) {
+        return (jboolean) false;
+    }
+
+    if (point.x > rect.left && point.x < rect.right
+            && point.y > rect.top && point.y < rect.bottom) {
+        return (jboolean) SetCursorPos((int) (rect.left + x + 3),
+                (int) (rect.top + y + 22));
+    }
+
+    return true;
+}
+/*
+ * Class:     JFrameEx
+ * Method:    getLastError
+ * Signature: ()I
+ */
+JNIEXPORT jlong JNICALL Java_JFrameEx_getLastError
+  (JNIEnv *env, jobject obj_this) {
+    return (jlong) GetLastError();
 }
