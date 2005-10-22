@@ -22,7 +22,7 @@ static void InitRawInput() {
 
 	rid[0].usUsagePage = 0x01; 
 	rid[0].usUsage = 0x02; 
-	rid[0].dwFlags = 0; //RIDEV_NOLEGACY;   // adds HID mouse and also ignores legacy mouse messages
+	rid[0].dwFlags = 0;   // adds HID mouse and also ignores legacy mouse messages
 	rid[0].hwndTarget = NULL;
 
 	if (RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE) {
@@ -281,32 +281,13 @@ JNIEXPORT jint JNICALL Java_JFrameEx_showCursor
 
 /*
  * Class:     JFrameEx
- * Method:    setCursorPost
+ * Method:    setCursorPos
  * Signature: (II)Z
  */
 JNIEXPORT jboolean JNICALL Java_JFrameEx_setCursorPos
   (JNIEnv *env, jobject obj_this, jint x, jint y) {
-    HWND hwnd = (HWND) Java_JFrameEx_getHWND(env, obj_this);
-    
-    RECT rect;
-
-    if (!GetWindowRect(hwnd, &rect)) {
-  	    return (jboolean) false;
-    }
-
-    POINT point;
-
-    if (!GetCursorPos(&point)) {
-        return (jboolean) false;
-    }
-
-    if (point.x > rect.left && point.x < rect.right
-            && point.y > rect.top && point.y < rect.bottom) {
-        return (jboolean) SetCursorPos((int) (rect.left + x + 3),
-                (int) (rect.top + y + 22));
-    }
-
-    return true;
+	
+	return (jboolean) SetCursorPos((int) x, (int) y);
 }
 /*
  * Class:     JFrameEx
@@ -317,3 +298,44 @@ JNIEXPORT jlong JNICALL Java_JFrameEx_getLastError
   (JNIEnv *env, jobject obj_this) {
     return (jlong) GetLastError();
 }
+
+JNIEXPORT jobject JNICALL Java_JFrameEx_getWindowRectangle
+  (JNIEnv *env, jobject obj_this) {
+	HWND hwnd = (HWND) Java_JFrameEx_getHWND(env, obj_this);
+	 
+    RECT rect;
+    
+    if (!GetWindowRect(hwnd, &rect)) {
+    	return (jobject) NULL;
+    }
+    
+    jclass rectClass = env->FindClass("java/awt/Rectangle");
+    
+    jmethodID method = env->GetMethodID(rectClass, "<init>", "(IIII)V");
+    
+    jobject rectObject = env->NewObject(rectClass, method,
+    		rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+    		
+	return rectObject;
+}
+
+/*
+ * Class:     JFrameEx
+ * Method:    getCursorPos
+ * Signature: ()Ljava/awt/Point;
+ */
+JNIEXPORT jobject JNICALL Java_JFrameEx_getCursorPos
+  (JNIEnv *env, jobject obj_this) {
+  	POINT p;
+  	
+  	jboolean result = (BOOL) GetCursorPos(&p);
+  	
+  	if (result == false) {
+  		return (jobject) NULL;
+  	} else {
+  		jclass c = env->FindClass("java/awt/Point");
+  		jmethodID m = env->GetMethodID(c, "<init>", "(II)V");
+  		return env->NewObject(c, m, p.x, p.y);
+  	}
+}
+

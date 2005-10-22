@@ -122,9 +122,25 @@ JNIEXPORT jboolean JNICALL Java_JFrameEx_setCursorPos
 /*
  * Class:     JFrameEx
  * Method:    getLastError
- * Signature: ()I
+ * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_JFrameEx_getLastError
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     JFrameEx
+ * Method:    getWindowRectangle
+ * Signature: ()Ljava/awt/Rectangle;
+ */
+JNIEXPORT jobject JNICALL Java_JFrameEx_getWindowRectangle
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     JFrameEx
+ * Method:    getCursorPos
+ * Signature: ()Ljava/awt/Point;
+ */
+JNIEXPORT jobject JNICALL Java_JFrameEx_getCursorPos
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus
