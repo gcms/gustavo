@@ -69,6 +69,14 @@ public class MouseState {
         public void release() {
             pressed = false;
         }
+
+        public int getPressStartY() {
+            return getPressStartPoint().y;
+        }
+
+        public int getPressStartX() {
+            return getPressStartPoint().x;
+        }
     }
 
     private Button[] buttons;
@@ -122,8 +130,14 @@ public class MouseState {
      * 
      * @return coordinate of cursor position
      */
-    public Point getPosition() {
+    public Point getLocation() {
         return currentPoint;
+    }
+
+    public Point getLocationOnScreen() {
+        Point scP = mouseContext.getLocationOnScreen();
+        Point curP = getLocation();
+        return new Point(scP.x + curP.x, scP.y + curP.y);
     }
 
     private int getButton(int buttonNo) {
@@ -149,7 +163,8 @@ public class MouseState {
         if (buttons.length > buttonNo) {
             Button b = buttons[buttonNo];
 
-            Component comp = mouseContext.getComponentAt(getPosition());
+            Component comp = SwingUtilities.getDeepestComponentAt(mouseContext,
+                    getX(), getY());
             Point p = relativeTo(comp);
 
             comp.dispatchEvent(new MultipleMouseEvent(comp, mouseId,
@@ -157,7 +172,7 @@ public class MouseState {
                     getModifiers(), p.x, p.y, b.clickCount(comp), false,
                     getButton(buttonNo)));
 
-            b.press(getPosition());
+            b.press(getLocation());
         }
     }
 
@@ -166,9 +181,10 @@ public class MouseState {
             Button b = buttons[buttonNo];
 
             if (b.isPressed()) {
-                Component oldComp = mouseContext.getComponentAt(b
-                        .getPressStartPoint());
-                Component newComp = mouseContext.getComponentAt(getPosition());
+                Component oldComp = SwingUtilities.getDeepestComponentAt(
+                        mouseContext, b.getPressStartX(), b.getPressStartY());
+                Component newComp = SwingUtilities.getDeepestComponentAt(
+                        mouseContext, getX(), getY());
 
                 // System.out.println(oldComp);
                 // System.out.println(newComp);
@@ -192,10 +208,30 @@ public class MouseState {
         }
     }
 
-    public void move(Point p) {
+    public void move(int iLastX, int iLastY) {
+        Point newP = new Point(getX() + iLastX, getY() + iLastY);
 
-        Component oldComp = mouseContext.getComponentAt(getPosition());
-        Component newComp = mouseContext.getComponentAt(p);
+        newP.x = newP.x < 0 ? 0
+                : newP.x > mouseContext.getWidth() ? mouseContext.getWidth()
+                        : newP.x;
+        newP.y = newP.y < 0 ? 0
+                : newP.y > mouseContext.getHeight() ? mouseContext.getHeight()
+                        : newP.y;
+
+        move(newP);
+    }
+
+    public void move(Point p) throws IllegalArgumentException {
+
+        if (p.x > mouseContext.getWidth() || p.y > mouseContext.getHeight()) {
+            throw new IllegalArgumentException(
+                    "trying to move pointer outside bounds");
+        }
+
+        Component oldComp = SwingUtilities.getDeepestComponentAt(mouseContext,
+                getX(), getY());
+        Component newComp = SwingUtilities.getDeepestComponentAt(mouseContext,
+                p.x, p.y);
 
         long when = System.currentTimeMillis();
 
@@ -219,8 +255,14 @@ public class MouseState {
         this.currentPoint = p;
     }
 
-    private int getModifiers() {
-        return 0;
+    private int modifiers;
+
+    public void setModifiers(int modifiers) {
+        this.modifiers = modifiers;
+    }
+
+    public int getModifiers() {
+        return modifiers;
     }
 
     private Point relativeTo(Component c) {
