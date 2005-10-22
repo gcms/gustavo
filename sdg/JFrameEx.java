@@ -1,14 +1,14 @@
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class JFrameEx extends JFrame {
     /*
@@ -17,11 +17,6 @@ public class JFrameEx extends JFrame {
     static {
         System.loadLibrary("JFrameEx");
     }
-
-    /**
-     * Automatically generated serialVersionUID.
-     */
-    private static final long serialVersionUID = 3617858581639540788L;
 
     /**
      * Gets the window handle.
@@ -48,11 +43,6 @@ public class JFrameEx extends JFrame {
 
     private class PointerGlassPane extends Component {
 
-        /**
-         * Generated serialVersionUID.
-         */
-        private static final long serialVersionUID = 3258134673799526197L;
-
         public void paint(Graphics g) {
             getParent().paintComponents(g);
 
@@ -69,8 +59,6 @@ public class JFrameEx extends JFrame {
         }
 
     }
-
-    private PointerGlassPane glassPane;
 
     private Map mouseStates = new HashMap();
 
@@ -92,8 +80,7 @@ public class JFrameEx extends JFrame {
      */
     public JFrameEx(String title) {
         super(title);
-        setGlassPane((glassPane = new PointerGlassPane()));
-        while (showCursor(false) > 0);
+        setGlassPane(new PointerGlassPane());
     }
 
     /**
@@ -120,24 +107,48 @@ public class JFrameEx extends JFrame {
     }
 
     private Component mouseContext() {
-        return getContentPane();
+        return getRootPane();
     }
 
-    private Point getNewPoint(Point p, int lastX, int lastY) {
-        Point newP = new Point(p.x + lastX, p.y + lastY);
-        newP.x = newP.x < 0 ? 0
-                : newP.x > mouseContext().getWidth() ? mouseContext()
-                        .getWidth() : newP.x;
-        newP.y = newP.y < 0 ? 0
-                : newP.y > mouseContext().getHeight() ? mouseContext()
-                        .getHeight() : newP.y;
+    private Dimension getFrameSize() {
+        Rectangle rect = getWindowRectangle();
 
-        return newP;
+        return rect.getSize();
     }
 
-    /**
-     * Notifies the window of a mouseEvent.
-     */
+    private int systemMouseId;
+
+    public MouseState getSystemMouseState() {
+        return (MouseState) mouseStates.get(new Integer(systemMouseId));
+    }
+
+    public int getSystemMouseId() {
+        return systemMouseId;
+    }
+
+    public void setSystemMouseId(int systemMouseId) {
+        this.systemMouseId = systemMouseId;
+    }
+
+    private Point systemCursorPosition;
+
+    public Point getSystemCursorPosition() {
+        if (systemCursorPosition == null) {
+            systemCursorPosition = getCursorPos();
+        }
+
+        return systemCursorPosition;
+    }
+
+    public void setSystemCursorPosition(Point p) {
+        systemCursorPosition = p;
+    }
+
+    public void moveSystemCursorPosition(int iLastX, int iLastY) {
+        systemCursorPosition.x += iLastX;
+        systemCursorPosition.y += iLastY;
+    }
+
     public void mouseActionPerformed(int hDevice, int usFlags, long ulButtons,
             int usButtonFlags, int usButtonData, long ulRawButtons,
             long iLastX, long iLastY, long ulExtraInformation) {
@@ -147,14 +158,27 @@ public class JFrameEx extends JFrame {
 
         MouseState state = getMouseState(hDevice);
 
-        Point oldP = state.getPosition();
-        Point newP = getNewPoint(state.getPosition(), (int) iLastX,
-                (int) iLastY);
-
-
-        if (!oldP.equals(newP)) {
-            state.move(newP);
+        // setup a system mouse
+        if (getSystemMouseState() == null) {
+            setSystemMouseId(hDevice);
         }
+
+        // assert getSystemMouseState() != null;
+
+        if (hDevice == getSystemMouseId()) {
+            // assert state.equals(getSystemMouseState());
+            moveSystemCursorPosition((int) iLastX, (int) iLastY);
+            if (mouseContext().getBounds().contains(getSystemCursorPosition())) {
+                state.move((int) iLastX, (int) iLastY);
+                setSystemCursorPosition(state.getLocationOnScreen());
+            } else {
+                moveSystemCursorPosition((int) iLastX, (int) iLastY);
+            }
+        } else {
+            state.move((int) iLastX, (int) iLastY);
+        }
+
+        setCursorPos(getSystemCursorPosition());
 
         if (ulButtons == 0x1) {
             state.pressButton(MouseState.BUTTON1);
@@ -171,11 +195,28 @@ public class JFrameEx extends JFrame {
         }
 
         getGlassPane().paint(getGlassPane().getGraphics());
+
     }
 
     public native int showCursor(boolean show);
 
+    public void moveSystemCursor(Point p) {
+        Rectangle rect = getWindowRectangle();
+
+        Point newP = SwingUtilities.convertPoint(mouseContext(), p, this);
+
+        setCursorPos(newP.x + rect.x, newP.y + rect.y);
+    }
+
+    public boolean setCursorPos(Point p) {
+        return setCursorPos(p.x, p.y);
+    }
+
     public native boolean setCursorPos(int x, int y);
 
     public native long getLastError();
+
+    public native Rectangle getWindowRectangle();
+
+    public native Point getCursorPos();
 }
