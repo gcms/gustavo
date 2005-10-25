@@ -1,13 +1,20 @@
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class JFrameEx extends JFrame {
@@ -41,10 +48,92 @@ public class JFrameEx extends JFrame {
      */
     public native void resetHook(int hwnd);
 
-    private class PointerGlassPane extends Component {
+    private PointerGlassPane glassPane;
 
-        public void paint(Graphics g) {
-            getParent().paintComponents(g);
+    private class PointerGlassPane extends JPanel implements MouseListener,
+            MouseMotionListener, MouseWheelListener {
+        private Container contentPane;
+
+        public void setContentPane(Container contentPane) {
+            this.contentPane = contentPane;
+        }
+
+        public PointerGlassPane(Container contentPane) {
+            this.contentPane = contentPane;
+
+            addMouseListener(this);
+            addMouseMotionListener(this);
+            addMouseWheelListener(this);
+            setOpaque(false);
+        }
+
+        public void mouseMoved(MouseEvent e) {
+            redispatchMouseEvent(e, false);
+        }
+
+        public void mouseDragged(MouseEvent e) {
+            redispatchMouseEvent(e, false);
+        }
+
+        public void mouseClicked(MouseEvent e) {
+            redispatchMouseEvent(e, false);
+        }
+
+        public void mouseEntered(MouseEvent e) {
+            redispatchMouseEvent(e, false);
+        }
+
+        public void mouseExited(MouseEvent e) {
+            redispatchMouseEvent(e, false);
+        }
+
+        public void mousePressed(MouseEvent e) {
+            redispatchMouseEvent(e, false);
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            redispatchMouseEvent(e, true);
+        }
+
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            redispatchMouseEvent(e, true);
+        }
+
+        private void redispatchMouseEvent(MouseEvent e, boolean repaint) {
+            Point glassPanePoint = e.getPoint();
+
+            Container container = contentPane;
+            Point containerPoint = SwingUtilities.convertPoint(this,
+                    glassPanePoint, contentPane);
+
+            Component component = SwingUtilities.getDeepestComponentAt(
+                    container, containerPoint.x, containerPoint.y);
+
+            Point componentPoint = SwingUtilities.convertPoint(glassPane,
+                    glassPanePoint, component);
+
+            if (e instanceof MultipleMouseEvent) {
+                MultipleMouseEvent me = (MultipleMouseEvent) e;
+
+                component.dispatchEvent(new MultipleMouseEvent(component, me
+                        .getMouseId(), e.getID(), e.getWhen(),
+                        e.getModifiers(), componentPoint.x, componentPoint.y, e
+                                .getClickCount(), e.isPopupTrigger()));
+            } else if (!(e instanceof MouseEvent)) {
+                component
+                        .dispatchEvent(new MouseEvent(component, e.getID(), e
+                                .getWhen(), e.getModifiers(), componentPoint.x,
+                                componentPoint.y, e.getClickCount(), e
+                                        .isPopupTrigger()));
+
+            }
+
+        }
+
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            // getParent().paint(g); //
 
             for (Iterator it = mouseStates.keySet().iterator(); it.hasNext();) {
                 Integer mouseId = (Integer) it.next();
@@ -53,12 +142,16 @@ public class JFrameEx extends JFrame {
                 // System.out.println("PAINTING");
                 // System.out.println("x = " + x + ", y = " + y);
 
-                g.setColor(state.getCursorColor());
-                g.fillOval(state.getX() - 5, state.getY() - 5, 10, 10);
+                Color c = g.getColor();
+                state.getCursor().drawCursor(g, state.getX(), state.getY());
+                g.setColor(c);
             }
         }
 
     }
+
+    private static final Color[] colors = { Color.BLUE, Color.RED, Color.GREEN,
+            Color.MAGENTA };
 
     private Map mouseStates = new HashMap();
 
@@ -68,7 +161,9 @@ public class JFrameEx extends JFrame {
         MouseState state = (MouseState) mouseStates.get(key);
 
         if (state == null) {
-            state = new MouseState(0, 0, hDevice, mouseContext());
+            state = new MouseState(0, 0, hDevice, mouseContext(),
+                    new ColorCursor(
+                            colors[(int) (Math.random() * colors.length)]));
             mouseStates.put(key, state);
         }
 
@@ -78,9 +173,13 @@ public class JFrameEx extends JFrame {
     /**
      * @see javax.swing.JFrame
      */
+
     public JFrameEx(String title) {
         super(title);
-        setGlassPane(new PointerGlassPane());
+        setGlassPane(glassPane = new PointerGlassPane(getContentPane()));
+        glassPane.setVisible(true);
+        glassPane.setOpaque(false);
+
     }
 
     /**
@@ -88,6 +187,11 @@ public class JFrameEx extends JFrame {
      */
     public JFrameEx() {
         this("");
+    }
+
+    public void setContentPane(Container contentPane) {
+        super.setContentPane(contentPane);
+        glassPane.setContentPane(contentPane);
     }
 
     /**
@@ -110,12 +214,7 @@ public class JFrameEx extends JFrame {
         return getRootPane();
     }
 
-    private Dimension getFrameSize() {
-        Rectangle rect = getWindowRectangle();
-
-        return rect.getSize();
-    }
-
+    /* system mouse id */
     private int systemMouseId;
 
     public MouseState getSystemMouseState() {
@@ -130,9 +229,10 @@ public class JFrameEx extends JFrame {
         this.systemMouseId = systemMouseId;
     }
 
+    /* System mouse cursor */
     private Point systemCursorPosition;
 
-    public Point getSystemCursorPosition() {
+    private Point getSystemCursorPosition() {
         if (systemCursorPosition == null) {
             systemCursorPosition = getCursorPos();
         }
@@ -140,11 +240,11 @@ public class JFrameEx extends JFrame {
         return systemCursorPosition;
     }
 
-    public void setSystemCursorPosition(Point p) {
+    private void setSystemCursorPosition(Point p) {
         systemCursorPosition = p;
     }
 
-    public void moveSystemCursorPosition(int iLastX, int iLastY) {
+    private void moveSystemCursorPosition(int iLastX, int iLastY) {
         systemCursorPosition.x += iLastX;
         systemCursorPosition.y += iLastY;
     }
@@ -161,52 +261,73 @@ public class JFrameEx extends JFrame {
         // setup a system mouse
         if (getSystemMouseState() == null) {
             setSystemMouseId(hDevice);
+            setSystemCursorPosition(getCursorPos());
         }
 
         // assert getSystemMouseState() != null;
 
+        // RIDEV_NOLEGACY
         if (hDevice == getSystemMouseId()) {
             // assert state.equals(getSystemMouseState());
             moveSystemCursorPosition((int) iLastX, (int) iLastY);
             if (mouseContext().getBounds().contains(getSystemCursorPosition())) {
+                while (showCursor(false) >= 0)
+                    ;
                 state.move((int) iLastX, (int) iLastY);
                 setSystemCursorPosition(state.getLocationOnScreen());
             } else {
-                moveSystemCursorPosition((int) iLastX, (int) iLastY);
+                while (showCursor(true) < 0)
+                    ;
+                //setSystemCursorPosition(getCursorPos());
+                moveSystemCursorPosition((int) iLastX, (int) iLastY);// RIDEV_NOLEGACY
             }
         } else {
             state.move((int) iLastX, (int) iLastY);
         }
-
+        
         setCursorPos(getSystemCursorPosition());
+      
+        
+        // 0
+//        if (hDevice == getSystemMouseId()) {
+//            Point curPosition = getCursorPos();
+//            
+//            if (mouseContext().getBounds().contains(curPosition)) {
+//                while (showCursor(false) >= 0);
+//                Point p = state.getMouseContext().getLocationOnScreen();
+//                p.x = curPosition.x - p.x;
+//                p.y = curPosition.y - p.y;
+//                state.move(p);
+//            } else {
+//                while (showCursor(true) < 0);
+//            }
+//            setSystemCursorPosition(curPosition);
+//        } else {
+//            state.move((int) iLastX, (int) iLastY);
+//            setCursorPos(getSystemCursorPosition());
+//        }
 
-        if (ulButtons == 0x1) {
-            state.pressButton(MouseState.BUTTON1);
-        } else if (ulButtons == 0x2) {
-            state.releaseButton(MouseState.BUTTON1);
-        } else if (ulButtons == 0x4) {
-            state.pressButton(MouseState.BUTTON3);
-        } else if (ulButtons == 0x8) {
-            state.releaseButton(MouseState.BUTTON3);
-        } else if (ulButtons == 0x10) {
-            state.pressButton(MouseState.BUTTON2);
-        } else if (ulButtons == 0x20) {
-            state.releaseButton(MouseState.BUTTON2);
+
+        glassPane.repaint();
+
+        if (mouseContext().getBounds().contains(getSystemCursorPosition())) {
+            if (ulButtons == 0x1) {
+                state.pressButton(MouseState.BUTTON1);
+            } else if (ulButtons == 0x2) {
+                state.releaseButton(MouseState.BUTTON1);
+            } else if (ulButtons == 0x4) {
+                state.pressButton(MouseState.BUTTON3);
+            } else if (ulButtons == 0x8) {
+                state.releaseButton(MouseState.BUTTON3);
+            } else if (ulButtons == 0x10) {
+                state.pressButton(MouseState.BUTTON2);
+            } else if (ulButtons == 0x20) {
+                state.releaseButton(MouseState.BUTTON2);
+            }
         }
-
-        getGlassPane().paint(getGlassPane().getGraphics());
-
     }
 
     public native int showCursor(boolean show);
-
-    public void moveSystemCursor(Point p) {
-        Rectangle rect = getWindowRectangle();
-
-        Point newP = SwingUtilities.convertPoint(mouseContext(), p, this);
-
-        setCursorPos(newP.x + rect.x, newP.y + rect.y);
-    }
 
     public boolean setCursorPos(Point p) {
         return setCursorPos(p.x, p.y);

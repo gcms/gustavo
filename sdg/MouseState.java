@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -83,17 +82,15 @@ public class MouseState {
 
     private Component mouseContext;
 
-    private static final Color[] colors = { Color.BLUE, Color.RED, Color.GREEN,
-            Color.MAGENTA };
+    private Cursor cursor;
 
-    private Color cursorColor;
-
-    public MouseState(int x, int y, int mouseId, Component mouseContext) {
+    public MouseState(int x, int y, int mouseId, Component mouseContext,
+            Cursor cursor) {
         currentPoint = new Point(x, y);
         this.mouseId = mouseId;
         this.mouseContext = mouseContext;
 
-        this.cursorColor = colors[(int) (Math.random() * 4)];
+        this.cursor = cursor;
 
         buttons = new Button[3];
 
@@ -103,8 +100,16 @@ public class MouseState {
 
     }
 
-    public Color getCursorColor() {
-        return cursorColor;
+    public void setCursor(Cursor cursor) {
+        this.cursor = cursor;
+    }
+
+    public Cursor getCursor() {
+        return cursor;
+    }
+    
+    public Component getMouseContext() {
+        return mouseContext;
     }
 
     /**
@@ -186,8 +191,8 @@ public class MouseState {
                 Component newComp = SwingUtilities.getDeepestComponentAt(
                         mouseContext, getX(), getY());
 
-                // System.out.println(oldComp);
-                // System.out.println(newComp);
+//                 System.out.println(oldComp);
+//                 System.out.println(newComp);
 
                 Point p = relativeTo(newComp);
 
@@ -198,7 +203,7 @@ public class MouseState {
                             p.y, b.click(newComp), false, getButton(buttonNo)));
                 }
 
-                newComp.dispatchEvent(new MultipleMouseEvent(newComp, mouseId,
+                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
                         MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(),
                         getModifiers(), p.x, p.y, b.clickCount(newComp), false,
                         getButton(buttonNo)));
@@ -248,9 +253,23 @@ public class MouseState {
             // System.out.println("NEWCOMP = " + newComp);
         }
 
-        mouseContext.dispatchEvent(new MultipleMouseEvent(mouseContext,
-                mouseId, MouseEvent.MOUSE_MOVED, when, getModifiers(), p.x,
-                p.y, 0, false));
+        int buttonMask = 0;
+
+        for (int i = 0; i < buttons.length; i++) {
+            if (buttons[i].isPressed()) {
+                buttonMask |= getButton(i);
+            }
+        }
+
+        if (buttonMask != 0) {
+            oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                    MouseEvent.MOUSE_DRAGGED, when, getModifiers(), p.x, p.y,
+                    buttonMask, false));
+        } else {
+            oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                    MouseEvent.MOUSE_MOVED, when, getModifiers(), p.x, p.y, 0,
+                    false));
+        }
 
         this.currentPoint = p;
     }

@@ -1,9 +1,20 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class MultipleMouseDemo {
@@ -16,53 +27,96 @@ public class MultipleMouseDemo {
     }
 
     public static void createAndShowGUI() {
-        JFrame frame = new JFrameEx();
+        final JFrame frame = new JFrameEx();
 
-        JButton button = new JButton("HELLO");
+        ColoredCircle circle = new ColoredCircle(10000);
+        circle.addColor(Color.BLUE);
+        circle.addColor(Color.RED);
+        circle.addColor(Color.GREEN);
+        circle.addColor(Color.MAGENTA);
+
+        frame.add(circle, BorderLayout.CENTER);
+
+        JButton button = new JButton("Click Me");
         button.addMouseListener(new MouseAdapter() {
-            public String getMouseId(MouseEvent ev) {
-                if (ev instanceof MultipleMouseEvent) {
-                    MultipleMouseEvent e = (MultipleMouseEvent) ev;
-                    return String.valueOf(e.getMouseId());
+            public void mouseClicked(MouseEvent arg0) {
+                new Exception().printStackTrace();
+                if (arg0 instanceof MultipleMouseEvent) {
+                    MultipleMouseEvent me = (MultipleMouseEvent) arg0;
+                    System.out.println(me.getMouseId() + " clicked");
                 }
-                return "";
-            }
-
-            public void mouseClicked(MouseEvent ev) {
-                System.out.print(getMouseId(ev) + " ");
-                System.out.print("CLICKED");
-                System.out.println("\tx = " + ev.getX() + ", y = " + ev.getY());
-            }
-
-            public void mousePressed(MouseEvent ev) {
-                System.out.print(getMouseId(ev) + " ");
-                System.out.print("PRESSED");
-                System.out.println("\tx = " + ev.getX() + ", y = " + ev.getY());
-            }
-
-            public void mouseReleased(MouseEvent ev) {
-                System.out.print(getMouseId(ev) + " ");
-                System.out.print("RELEASED");
-                System.out.println("\tx = " + ev.getX() + ", y = " + ev.getY());
-            }
-
-            public void mouseEntered(MouseEvent ev) {
-                System.out.print(getMouseId(ev) + " ");
-                System.out.print("ENTERED");
-                System.out.println("\tx = " + ev.getX() + ", y = " + ev.getY());
-            }
-
-            public void mouseExited(MouseEvent ev) {
-                System.out.print(getMouseId(ev) + " ");
-                System.out.print("EXITED");
-                System.out.println("\tx = " + ev.getX() + ", y = " + ev.getY());
             }
         });
 
-        frame.getContentPane().add(button, BorderLayout.PAGE_END);
+        frame.add(button, BorderLayout.PAGE_END);
 
-        frame.setSize(400, 400);
+        frame.setSize(600, 600);
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // frame.setExtendedState(frame.getExtendedState() |
+        // JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
+
+    }
+}
+
+class ColoredCircle extends JPanel implements MouseListener {
+    private List colors;
+
+    private int colorNumber;
+
+    public void addColor(Color c) {
+        colors.add(c);
+    }
+
+    public Color getColor() {
+        return (Color) colors.get(colorNumber);
+    }
+
+    public void paint(Graphics g) {
+        g.setColor(getColor());
+        g.fillOval(200, 200, 200, 200);
+    }
+
+    public ColoredCircle(int interval) {
+        colors = new ArrayList();
+
+        this.addMouseListener(this);
+
+        Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            public void run() {
+                colorNumber = (int) (Math.random() * colors.size());
+                try {
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        public void run() {
+                            paint(getGraphics());
+                        }
+                    });
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, 0, interval);
+    }
+
+    public void mouseClicked(MouseEvent arg0) {
+        System.out.println(arg0);
+    }
+
+    public void mousePressed(MouseEvent arg0) {
+    }
+
+    public void mouseReleased(MouseEvent arg0) {
+    }
+
+    public void mouseEntered(MouseEvent arg0) {
+    }
+
+    public void mouseExited(MouseEvent arg0) {
     }
 }

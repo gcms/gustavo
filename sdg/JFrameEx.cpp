@@ -17,18 +17,15 @@
 
 #define MY_ASSERT(X,S) if (!X) { fprintf(stderr,"%s\n",S); return 0L;}
 
-static void InitRawInput() {
-	RAWINPUTDEVICE rid[50]; // allocate storage for 50 device (not going to need this many :) )
+static BOOL InitRawInput() {
+	RAWINPUTDEVICE rid; // allocate storage for 50 device (not going to need this many :) )
 
-	rid[0].usUsagePage = 0x01; 
-	rid[0].usUsage = 0x02; 
-	rid[0].dwFlags = 0;   // adds HID mouse and also ignores legacy mouse messages
-	rid[0].hwndTarget = NULL;
+	rid.usUsagePage = 0x01; 
+	rid.usUsage = 0x02; 
+	rid.dwFlags = RIDEV_NOLEGACY;   // adds HID mouse and also ignores legacy mouse messages
+	rid.hwndTarget = NULL;
 
-	if (RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE) {
-//		wsprintf(mousemessage,"RawInput init failed: %s\n", GetLastError());
-		//registration failed. 
-	}
+	return RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE));
 }
 
 typedef jint (JNICALL *pJNI_GetCreatedJavaVMs)(JavaVM **, jsize, jsize *);
@@ -200,43 +197,47 @@ FrameWindowProc (HWND hwnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 	UINT dwSize;
 	RAWINPUT *raw;
 
-    if (nMsg == WM_INPUT) {
-		GetRawInputData((HRAWINPUT) lParam, RID_INPUT, NULL, &dwSize, 
-				sizeof(RAWINPUTHEADER));
+    switch (nMsg) {
+    	case WM_INPUT: {
+			GetRawInputData((HRAWINPUT) lParam, RID_INPUT, NULL, &dwSize, 
+					sizeof(RAWINPUTHEADER));
 
-		lpb = (BYTE *) malloc(sizeof(LPBYTE) * dwSize);
-		if (lpb == NULL)  {
-			return 0;
-		} 
+			lpb = (BYTE *) malloc(sizeof(LPBYTE) * dwSize);
+			if (lpb == NULL)  {
+				return 0;
+			} 
 
-		if (GetRawInputData((HRAWINPUT) lParam, RID_INPUT, lpb, &dwSize, 
-				sizeof(RAWINPUTHEADER)) != dwSize )
-			DebugString (frame, "GetRawInputData doesn't return correct size !\n"); 
+			if (GetRawInputData((HRAWINPUT) lParam, RID_INPUT, lpb, &dwSize, 
+					sizeof(RAWINPUTHEADER)) != dwSize )
+				DebugString (frame, "GetRawInputData doesn't return correct size !\n"); 
 
-		raw = (RAWINPUT *) lpb;
+			raw = (RAWINPUT *) lpb;
 
-		if (raw->header.dwType == RIM_TYPEMOUSE) {
-			MouseActionPerformed(
-					frame,
-					raw->header.hDevice,
-					raw->data.mouse.usFlags, 
-					raw->data.mouse.ulButtons, 
-					raw->data.mouse.usButtonFlags, 
-					raw->data.mouse.usButtonData, 
-					raw->data.mouse.ulRawButtons, 
-					raw->data.mouse.lLastX,
-					raw->data.mouse.lLastY,
-					raw->data.mouse.ulExtraInformation);
-		} 
+			if (raw->header.dwType == RIM_TYPEMOUSE) {
+				MouseActionPerformed(
+						frame,
+						raw->header.hDevice,
+						raw->data.mouse.usFlags, 
+						raw->data.mouse.ulButtons, 
+						raw->data.mouse.usButtonFlags, 
+						raw->data.mouse.usButtonData, 
+						raw->data.mouse.ulRawButtons, 
+						raw->data.mouse.lLastX,
+						raw->data.mouse.lLastY,
+						raw->data.mouse.ulExtraInformation);
+			} 
 
-		/*
-		InvalidateRect(hwnd, 0, TRUE);
-		SendMessage(hwnd, WM_PAINT, 0, 0);
-		*/
+			/*
+			InvalidateRect(hwnd, 0, TRUE);
+			SendMessage(hwnd, WM_PAINT, 0, 0);
+			*/
 						
-		free(lpb); 
+			free(lpb); 
+			break;
+		}
+		case WM_LBUTTONDOWN:
 		return 0;
-	} 
+    }
 
     return CallWindowProc (oldProc, hwnd, nMsg, wParam, lParam);
 }
@@ -245,7 +246,10 @@ FrameWindowProc (HWND hwnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 JNIEXPORT void JNICALL Java_JFrameEx_setHook
   (JNIEnv *pEnv, jobject f, jint hwnd)
 {
-	InitRawInput();
+	if (InitRawInput() == FALSE) {
+		/* throw exception*/
+	}
+
 	// ensure that the java object can be called from any thread.
 	jobject frame = pEnv->NewGlobalRef(f);
 
