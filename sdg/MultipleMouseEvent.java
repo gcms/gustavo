@@ -38,4 +38,8 @@ public class MultipleMouseEvent extends MouseEvent {
         return mouseId;
     }
 
+    public String toString() {
+        return "mouseId=" + getMouseId() + " " + super.toString();
+    }
+
 }
