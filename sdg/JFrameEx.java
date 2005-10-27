@@ -150,9 +150,6 @@ public class JFrameEx extends JFrame {
 
     }
 
-    private static final Color[] colors = { Color.BLUE, Color.RED, Color.GREEN,
-            Color.MAGENTA };
-
     private Map mouseStates = new HashMap();
 
     private MouseState getMouseState(int hDevice) {
@@ -161,9 +158,7 @@ public class JFrameEx extends JFrame {
         MouseState state = (MouseState) mouseStates.get(key);
 
         if (state == null) {
-            state = new MouseState(0, 0, hDevice, mouseContext(),
-                    new ColorCursor(
-                            colors[(int) (Math.random() * colors.length)]));
+            state = new MouseState(0, 0, hDevice, mouseContext(), componentContext());
             mouseStates.put(key, state);
         }
 
@@ -212,6 +207,10 @@ public class JFrameEx extends JFrame {
 
     private Component mouseContext() {
         return getRootPane();
+    }
+    
+    private Component componentContext() {
+        return getContentPane();
     }
 
     /* system mouse id */
