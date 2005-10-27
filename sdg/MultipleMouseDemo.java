@@ -40,11 +40,16 @@ public class MultipleMouseDemo {
         JButton button = new JButton("Click Me");
         button.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                new Exception().printStackTrace();
+                System.out.println(new Exception().getStackTrace()[0]);
                 if (arg0 instanceof MultipleMouseEvent) {
                     MultipleMouseEvent me = (MultipleMouseEvent) arg0;
                     System.out.println(me.getMouseId() + " clicked");
                 }
+            }
+        });
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                System.out.println(new Exception().getStackTrace()[0]);
             }
         });
 
