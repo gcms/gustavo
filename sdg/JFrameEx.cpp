@@ -303,25 +303,25 @@ JNIEXPORT jlong JNICALL Java_JFrameEx_getLastError
     return (jlong) GetLastError();
 }
 
-JNIEXPORT jobject JNICALL Java_JFrameEx_getWindowRectangle
-  (JNIEnv *env, jobject obj_this) {
-	HWND hwnd = (HWND) Java_JFrameEx_getHWND(env, obj_this);
-	 
-    RECT rect;
-    
-    if (!GetWindowRect(hwnd, &rect)) {
-    	return (jobject) NULL;
-    }
-    
-    jclass rectClass = env->FindClass("java/awt/Rectangle");
-    
-    jmethodID method = env->GetMethodID(rectClass, "<init>", "(IIII)V");
-    
-    jobject rectObject = env->NewObject(rectClass, method,
-    		rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
-    		
-	return rectObject;
-}
+//JNIEXPORT jobject JNICALL Java_JFrameEx_getWindowRectangle
+//  (JNIEnv *env, jobject obj_this) {
+//	HWND hwnd = (HWND) Java_JFrameEx_getHWND(env, obj_this);
+//	 
+//    RECT rect;
+//    
+//    if (!GetWindowRect(hwnd, &rect)) {
+//    	return (jobject) NULL;
+//    }
+//    
+//    jclass rectClass = env->FindClass("java/awt/Rectangle");
+//    
+//    jmethodID method = env->GetMethodID(rectClass, "<init>", "(IIII)V");
+//    
+//    jobject rectObject = env->NewObject(rectClass, method,
+//    		rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+//    		
+//	return rectObject;
+//}
 
 /*
  * Class:     JFrameEx
@@ -343,3 +343,47 @@ JNIEXPORT jobject JNICALL Java_JFrameEx_getCursorPos
   	}
 }
 
+/*
+ * Class:     JFrameEx
+ * Method:    getMouseIds
+ * Signature: ()[I
+ */
+JNIEXPORT jintArray JNICALL Java_JFrameEx_getMouseIds
+		(JNIEnv *env, jobject obj_this) {
+	UINT nDevices;
+	
+	PRAWINPUTDEVICELIST pRawInputDeviceList;
+	
+	if (GetRawInputDeviceList(NULL, &nDevices, sizeof(RAWINPUTDEVICELIST)) != 0)
+		return NULL;
+		
+	if ((pRawInputDeviceList = (PRAWINPUTDEVICELIST) malloc(sizeof(RAWINPUTDEVICELIST) * nDevices)) == NULL)
+		return NULL;
+
+	if (GetRawInputDeviceList(pRawInputDeviceList, &nDevices,
+			sizeof(RAWINPUTDEVICELIST)) == (UINT) -1) {
+		free(pRawInputDeviceList);
+		return NULL;
+	}
+	
+	UINT nMouses = 0;
+	for (UINT i = 0; i < nDevices; i++)
+		if (pRawInputDeviceList[i].dwType == RIM_TYPEMOUSE)
+			nMouses++;
+
+			
+	jint *mouses = (jint *) malloc(sizeof(jint) * nMouses);
+
+	UINT curMouse = 0;
+	for (UINT i = 0; i < nDevices; i++) {
+		mouses[curMouse++] = (jint) pRawInputDeviceList[i].hDevice;
+	}
+	
+	jintArray jniMouses = env->NewIntArray(nMouses);
+	env->SetIntArrayRegion(jniMouses, 0, nMouses, mouses);
+	
+	free(mouses);
+	
+	free(pRawInputDeviceList);
+	return jniMouses;	
+}

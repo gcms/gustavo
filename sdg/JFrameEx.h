@@ -77,8 +77,6 @@ extern "C" {
 #define JFrameEx_serialVersionUID 2673458971256075116i64
 #undef JFrameEx_EXIT_ON_CLOSE
 #define JFrameEx_EXIT_ON_CLOSE 3L
-#undef JFrameEx_serialVersionUID
-#define JFrameEx_serialVersionUID 3617858581639540788i64
 /*
  * Class:     JFrameEx
  * Method:    getHWND
@@ -129,18 +127,18 @@ JNIEXPORT jlong JNICALL Java_JFrameEx_getLastError
 
 /*
  * Class:     JFrameEx
- * Method:    getWindowRectangle
- * Signature: ()Ljava/awt/Rectangle;
- */
-JNIEXPORT jobject JNICALL Java_JFrameEx_getWindowRectangle
-  (JNIEnv *, jobject);
-
-/*
- * Class:     JFrameEx
  * Method:    getCursorPos
  * Signature: ()Ljava/awt/Point;
  */
 JNIEXPORT jobject JNICALL Java_JFrameEx_getCursorPos
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     JFrameEx
+ * Method:    getMouseIds
+ * Signature: ()[I
+ */
+JNIEXPORT jintArray JNICALL Java_JFrameEx_getMouseIds
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus
