@@ -3,6 +3,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -48,7 +49,7 @@ public class JFrameEx extends JFrame {
     private native void resetHook(int hwnd);
 
     private PointerGlassPane glassPane;
-    
+
     private boolean initialized;
 
     private class PointerGlassPane extends JComponent implements MouseListener,
@@ -134,8 +135,6 @@ public class JFrameEx extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            // getParent().paint(g); //
-
             for (Iterator it = mouseStates.keySet().iterator(); it.hasNext();) {
                 Integer mouseId = (Integer) it.next();
                 MouseState state = (MouseState) mouseStates.get(mouseId);
@@ -143,9 +142,7 @@ public class JFrameEx extends JFrame {
                 // System.out.println("PAINTING");
                 // System.out.println("x = " + x + ", y = " + y);
 
-                Color c = g.getColor();
                 state.getCursor().drawCursor(g, state.getX(), state.getY());
-                g.setColor(c);
             }
         }
 
@@ -171,6 +168,7 @@ public class JFrameEx extends JFrame {
         if (!initialized) {
             initialized = initRawInput();
         }
+
         int[] ids = getMouseIds();
         if (ids == null) {
             return mouseStates.size();
@@ -233,7 +231,7 @@ public class JFrameEx extends JFrame {
     }
 
     private Component mouseContext() {
-        return getRootPane();
+        return getLayeredPane();
     }
 
     private Component componentContext() {
@@ -275,6 +273,21 @@ public class JFrameEx extends JFrame {
         systemCursorPosition.y += iLastY;
     }
 
+    public static Rectangle getBoundsOnScreen(Component comp) {
+        Component parent = comp.getParent();
+        if (parent == null) {
+            return comp.getBounds();
+        } else {
+            Rectangle pb = getBoundsOnScreen(parent);
+            Rectangle cb = comp.getBounds();
+
+            cb.x += pb.x;
+            cb.y += pb.y;
+
+            return cb;
+        }
+    }
+
     public void mouseActionPerformed(int hDevice, int usFlags, long ulButtons,
             int usButtonFlags, int usButtonData, long ulRawButtons,
             long iLastX, long iLastY, long ulExtraInformation) {
@@ -296,7 +309,8 @@ public class JFrameEx extends JFrame {
         if (hDevice == getSystemMouseId()) {
             // assert state.equals(getSystemMouseState());
             moveSystemCursorPosition((int) iLastX, (int) iLastY);
-            if (mouseContext().getBounds().contains(getSystemCursorPosition())) {
+            if (getBoundsOnScreen(mouseContext()).contains(
+                    getSystemCursorPosition())) {
                 while (showCursor(false) >= 0)
                     ;
                 state.move((int) iLastX, (int) iLastY);
@@ -350,7 +364,7 @@ public class JFrameEx extends JFrame {
             }
         }
     }
-    
+
     private native boolean initRawInput();
 
     private native int showCursor(boolean show);
