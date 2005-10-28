@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -34,9 +35,18 @@ public class MultipleMouseDemo {
 
     public static void createAndShowGUI() {
         final JFrameEx frame = new JFrameEx();
-        
+
         frame.setJMenuBar(new JMenuBar());
-        frame.getJMenuBar().add(new JMenu("File"));
+
+        JMenu menu = new JMenu("File");
+
+        frame.getJMenuBar().add(menu);
+
+        JMenuItem item1 = new JMenuItem("Save");
+        menu.add(item1);
+
+        JMenuItem item2 = new JMenuItem("Close");
+        menu.add(item2);
 
         MouseState[] states = frame.getMouseStates();
 
