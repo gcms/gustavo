@@ -3,7 +3,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -13,8 +12,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class JFrameEx extends JFrame {
@@ -30,7 +29,7 @@ public class JFrameEx extends JFrame {
      * 
      * @return window handle id.
      */
-    public native int getHWND();
+    private native int getHWND();
 
     /**
      * Native entry point for subclassing the JFrame window.
@@ -38,7 +37,7 @@ public class JFrameEx extends JFrame {
      * @param hwnd
      *            window handle id
      */
-    public native void setHook(int hwnd);
+    private native void setHook(int hwnd);
 
     /**
      * Native entry point for removing the hook.
@@ -46,11 +45,13 @@ public class JFrameEx extends JFrame {
      * @param hwnd
      *            window handle id
      */
-    public native void resetHook(int hwnd);
+    private native void resetHook(int hwnd);
 
     private PointerGlassPane glassPane;
+    
+    private boolean initialized;
 
-    private class PointerGlassPane extends JPanel implements MouseListener,
+    private class PointerGlassPane extends JComponent implements MouseListener,
             MouseMotionListener, MouseWheelListener {
         private Container contentPane;
 
@@ -152,17 +153,44 @@ public class JFrameEx extends JFrame {
 
     private Map mouseStates = new HashMap();
 
-    private MouseState getMouseState(int hDevice) {
+    public MouseState getMouseState(int hDevice) {
         Integer key = new Integer(hDevice);
 
         MouseState state = (MouseState) mouseStates.get(key);
 
         if (state == null) {
-            state = new MouseState(0, 0, hDevice, mouseContext(), componentContext());
+            state = new MouseState(0, 0, hDevice, mouseContext(),
+                    componentContext());
             mouseStates.put(key, state);
         }
 
         return state;
+    }
+
+    private int checkMouseIds() {
+        if (!initialized) {
+            initialized = initRawInput();
+        }
+        int[] ids = getMouseIds();
+        if (ids == null) {
+            return mouseStates.size();
+        }
+
+        for (int i = 0; i < ids.length; i++) {
+            getMouseState(ids[i]);
+        }
+
+        return ids.length;
+    }
+
+    public MouseState[] getMouseStates() {
+        checkMouseIds();
+        return (MouseState[]) mouseStates.values().toArray(
+                new MouseState[mouseStates.size()]);
+    }
+
+    public int getMouseCount() {
+        return checkMouseIds();
     }
 
     /**
@@ -174,7 +202,6 @@ public class JFrameEx extends JFrame {
         setGlassPane(glassPane = new PointerGlassPane(getContentPane()));
         glassPane.setVisible(true);
         glassPane.setOpaque(false);
-
     }
 
     /**
@@ -208,7 +235,7 @@ public class JFrameEx extends JFrame {
     private Component mouseContext() {
         return getRootPane();
     }
-    
+
     private Component componentContext() {
         return getContentPane();
     }
@@ -277,35 +304,33 @@ public class JFrameEx extends JFrame {
             } else {
                 while (showCursor(true) < 0)
                     ;
-                //setSystemCursorPosition(getCursorPos());
+                // setSystemCursorPosition(getCursorPos());
                 moveSystemCursorPosition((int) iLastX, (int) iLastY);// RIDEV_NOLEGACY
             }
         } else {
             state.move((int) iLastX, (int) iLastY);
         }
-        
-        setCursorPos(getSystemCursorPosition());
-      
-        
-        // 0
-//        if (hDevice == getSystemMouseId()) {
-//            Point curPosition = getCursorPos();
-//            
-//            if (mouseContext().getBounds().contains(curPosition)) {
-//                while (showCursor(false) >= 0);
-//                Point p = state.getMouseContext().getLocationOnScreen();
-//                p.x = curPosition.x - p.x;
-//                p.y = curPosition.y - p.y;
-//                state.move(p);
-//            } else {
-//                while (showCursor(true) < 0);
-//            }
-//            setSystemCursorPosition(curPosition);
-//        } else {
-//            state.move((int) iLastX, (int) iLastY);
-//            setCursorPos(getSystemCursorPosition());
-//        }
 
+        setCursorPos(getSystemCursorPosition());
+
+        // 0
+        // if (hDevice == getSystemMouseId()) {
+        // Point curPosition = getCursorPos();
+        //            
+        // if (mouseContext().getBounds().contains(curPosition)) {
+        // while (showCursor(false) >= 0);
+        // Point p = state.getMouseContext().getLocationOnScreen();
+        // p.x = curPosition.x - p.x;
+        // p.y = curPosition.y - p.y;
+        // state.move(p);
+        // } else {
+        // while (showCursor(true) < 0);
+        // }
+        // setSystemCursorPosition(curPosition);
+        // } else {
+        // state.move((int) iLastX, (int) iLastY);
+        // setCursorPos(getSystemCursorPosition());
+        // }
 
         glassPane.repaint();
 
@@ -325,18 +350,20 @@ public class JFrameEx extends JFrame {
             }
         }
     }
+    
+    private native boolean initRawInput();
 
-    public native int showCursor(boolean show);
+    private native int showCursor(boolean show);
 
-    public boolean setCursorPos(Point p) {
+    private boolean setCursorPos(Point p) {
         return setCursorPos(p.x, p.y);
     }
 
-    public native boolean setCursorPos(int x, int y);
+    private native boolean setCursorPos(int x, int y);
 
-    public native long getLastError();
+    private native long getLastError();
 
-    public native Rectangle getWindowRectangle();
+    private native Point getCursorPos();
 
-    public native Point getCursorPos();
+    private native int[] getMouseIds();
 }
