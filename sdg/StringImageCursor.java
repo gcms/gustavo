@@ -25,6 +25,6 @@ public class StringImageCursor extends ImageCursor {
 
     public void drawCursor(Graphics g, int x, int y) {
         super.drawCursor(g, x, y);
-        g.drawChars(name.toCharArray(), 0, name.length(), 16 + x, y);
+        g.drawChars(name.toCharArray(), 0, name.length(), x, y);
     }
 }

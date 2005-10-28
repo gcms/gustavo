@@ -53,6 +53,6 @@ public class ImageCursor implements Cursor {
     }
 
     public void drawCursor(Graphics g, int x, int y) {
-        g.drawImage(image, x + hotSpot.x, y + hotSpot.y, null);
+        g.drawImage(image, x - hotSpot.x, y - hotSpot.y, null);
     }
 }
