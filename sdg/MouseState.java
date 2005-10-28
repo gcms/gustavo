@@ -82,12 +82,12 @@ public class MouseState {
 
     private Component mouseContext;
 
-    private Component componentContext;
+    private Component[] componentContext;
 
     private Cursor cursor;
 
     public MouseState(int x, int y, int mouseId, Component mouseContext,
-            Component componentContext, Cursor cursor) {
+            Component[] componentContext, Cursor cursor) {
         currentPoint = new Point(x, y);
         this.mouseId = mouseId;
         this.mouseContext = mouseContext;
@@ -103,13 +103,13 @@ public class MouseState {
     }
 
     public MouseState(int x, int y, int mouseId, Component mouseContext,
-            Component componentContext) {
+            Component[] componentContext) {
         this(x, y, mouseId, mouseContext, componentContext, new ColorCursor(
                 java.awt.Color.BLACK));
     }
 
     public MouseState(int mouseId, Component mouseContext,
-            Component componentContext) {
+            Component[] componentContext) {
         this(mouseContext.getWidth() / 2, mouseId,
                 mouseContext.getHeight() / 2, mouseContext, componentContext);
     }
@@ -183,10 +183,15 @@ public class MouseState {
     }
 
     private Component getDeepestComponentAt(Point p) {
-        Point relativeP = SwingUtilities.convertPoint(mouseContext, p.x, p.y,
-                componentContext);
+        for (int i = 0; i < componentContext.length; i++) {
+            Point relativeP = SwingUtilities.convertPoint(mouseContext, p.x,
+                    p.y, componentContext[i]);
+            if (relativeP.x > 0 && relativeP.y > 0) {
+                return componentContext[i].getComponentAt(relativeP);
+            }
+        }
 
-        return componentContext.getComponentAt(relativeP);
+        return mouseContext;
     }
 
     public void pressButton(int buttonNo) {

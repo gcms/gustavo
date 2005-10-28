@@ -234,8 +234,12 @@ public class JFrameEx extends JFrame {
         return getLayeredPane();
     }
 
-    private Component componentContext() {
-        return getContentPane();
+    private Component[] componentContext() {
+        if (getJMenuBar() != null) {
+            return new Component[] { getContentPane(), getJMenuBar() };
+        } else {
+            return new Component[] { getContentPane() };
+        }
     }
 
     /* system mouse id */
