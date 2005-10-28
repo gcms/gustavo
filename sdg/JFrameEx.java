@@ -313,6 +313,7 @@ public class JFrameEx extends JFrame {
         if (hDevice == getSystemMouseId()) {
             // assert state.equals(getSystemMouseState());
             moveSystemCursorPosition((int) iLastX, (int) iLastY);
+
             if (getBoundsOnScreen(mouseContext()).contains(
                     getSystemCursorPosition())) {
                 while (showCursor(false) >= 0)
@@ -352,7 +353,8 @@ public class JFrameEx extends JFrame {
 
         glassPane.repaint();
 
-        if (mouseContext().getBounds().contains(getSystemCursorPosition())) {
+        if (getBoundsOnScreen(mouseContext()).contains(
+                getSystemCursorPosition())) {
             if (ulButtons == 0x1) {
                 state.pressButton(MouseState.BUTTON1);
             } else if (ulButtons == 0x2) {
