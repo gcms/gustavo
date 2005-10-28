@@ -29,7 +29,7 @@ public class MultipleMouseDemo {
     }
 
     private static final Cursor[] cursors = {
-            new StringImageCursor("tosco", "arrow.png", 16, 0),
+            new StringImageCursor("tosco", "arrow.png", 0, 0),
             new StringImageCursor("gustavo", "back_arrow.png", 16, 0) };
 
     public static void createAndShowGUI() {
