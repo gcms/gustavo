@@ -14,6 +14,8 @@ import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -26,18 +28,23 @@ public class MultipleMouseDemo {
         });
     }
 
-    private static final Color[] colors = { Color.BLUE, Color.RED, Color.GREEN,
-            Color.MAGENTA };
+    private static final Cursor[] cursors = {
+            new StringImageCursor("tosco", "arrow.png", 16, 0),
+            new StringImageCursor("gustavo", "back_arrow.png", 16, 0) };
 
     public static void createAndShowGUI() {
         final JFrameEx frame = new JFrameEx();
+        
+        frame.setJMenuBar(new JMenuBar());
+        frame.getJMenuBar().add(new JMenu("File"));
 
         MouseState[] states = frame.getMouseStates();
 
-        int min = Math.min(colors.length, states.length);
+        int min = Math.min(cursors.length, states.length);
 
         for (int i = 0; i < min; i++) {
-            states[i].setCursor(new ColorCursor(colors[i]));
+            states[i].setCursor(cursors[i]);
+            // states[i].setCursor(new ColorCursor(colors[i]));
         }
 
         ColoredCircle circle = new ColoredCircle(10000);
