@@ -79,7 +79,7 @@ public class MouseState {
     }
 
     private Button[] buttons;
-    
+
     private Component mouseContext;
 
     private Component componentContext;
@@ -112,6 +112,10 @@ public class MouseState {
             Component componentContext) {
         this(mouseContext.getWidth() / 2, mouseId,
                 mouseContext.getHeight() / 2, mouseContext, componentContext);
+    }
+
+    public int getMouseId() {
+        return mouseId;
     }
 
     public void setCursor(Cursor cursor) {
@@ -178,12 +182,18 @@ public class MouseState {
         return buttons.length > buttonNo && buttons[buttonNo].pressed;
     }
 
+    private Component getDeepestComponentAt(Point p) {
+        Point relativeP = SwingUtilities.convertPoint(mouseContext, p.x, p.y,
+                componentContext);
+
+        return componentContext.getComponentAt(relativeP);
+    }
+
     public void pressButton(int buttonNo) {
         if (buttons.length > buttonNo) {
             Button b = buttons[buttonNo];
 
-            Component comp = SwingUtilities.getDeepestComponentAt(mouseContext,
-                    getX(), getY());
+            Component comp = getDeepestComponentAt(getLocation());
             Point p = relativeTo(comp);
 
             comp.dispatchEvent(new MultipleMouseEvent(comp, mouseId,
@@ -200,10 +210,9 @@ public class MouseState {
             Button b = buttons[buttonNo];
 
             if (b.isPressed()) {
-                Component oldComp = SwingUtilities.getDeepestComponentAt(
-                        mouseContext, b.getPressStartX(), b.getPressStartY());
-                Component newComp = SwingUtilities.getDeepestComponentAt(
-                        mouseContext, getX(), getY());
+                Component oldComp = getDeepestComponentAt(b
+                        .getPressStartPoint());
+                Component newComp = getDeepestComponentAt(getLocation());
 
                 // System.out.println(oldComp);
                 // System.out.println(newComp);
@@ -247,10 +256,8 @@ public class MouseState {
                     "trying to move pointer outside bounds");
         }
 
-        Component oldComp = SwingUtilities.getDeepestComponentAt(mouseContext,
-                getX(), getY());
-        Component newComp = SwingUtilities.getDeepestComponentAt(mouseContext,
-                p.x, p.y);
+        Component oldComp = getDeepestComponentAt(getLocation());
+        Component newComp = getDeepestComponentAt(p);
 
         long when = System.currentTimeMillis();
 

@@ -26,8 +26,19 @@ public class MultipleMouseDemo {
         });
     }
 
+    private static final Color[] colors = { Color.BLUE, Color.RED, Color.GREEN,
+            Color.MAGENTA };
+
     public static void createAndShowGUI() {
-        final JFrame frame = new JFrameEx();
+        final JFrameEx frame = new JFrameEx();
+
+        MouseState[] states = frame.getMouseStates();
+
+        int min = Math.min(colors.length, states.length);
+
+        for (int i = 0; i < min; i++) {
+            states[i].setCursor(new ColorCursor(colors[i]));
+        }
 
         ColoredCircle circle = new ColoredCircle(10000);
         circle.addColor(Color.BLUE);
@@ -39,11 +50,17 @@ public class MultipleMouseDemo {
 
         JButton button = new JButton("Click Me");
         button.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent arg0) {
-                System.out.println(new Exception().getStackTrace()[0]);
-                if (arg0 instanceof MultipleMouseEvent) {
-                    MultipleMouseEvent me = (MultipleMouseEvent) arg0;
-                    System.out.println(me.getMouseId() + " clicked");
+            public void mouseClicked(MouseEvent e) {
+                if (e instanceof MultipleMouseEvent) {
+                    MultipleMouseEvent me = (MultipleMouseEvent) e;
+                    System.out.println(me.getMouseId() + " " + e.toString());
+                }
+            }
+
+            public void mousePressed(MouseEvent e) {
+                if (e instanceof MultipleMouseEvent) {
+                    MultipleMouseEvent me = (MultipleMouseEvent) e;
+                    System.out.println(me.getMouseId() + e.toString());
                 }
             }
         });

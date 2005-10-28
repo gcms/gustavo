@@ -103,6 +103,14 @@ JNIEXPORT void JNICALL Java_JFrameEx_resetHook
 
 /*
  * Class:     JFrameEx
+ * Method:    initRawInput
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_JFrameEx_initRawInput
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     JFrameEx
  * Method:    showCursor
  * Signature: (Z)I
  */

@@ -146,6 +146,17 @@ JNIEXPORT jint JNICALL Java_JFrameEx_getHWND
     return ((jint) hWnd);
 }
 
+/*
+ * Class:     JFrameEx
+ * Method:    initRawInput
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_JFrameEx_initRawInput
+  (JNIEnv * env, jobject obj_this) {
+  	return (jboolean) InitRawInput();
+}
+
+
 
 // Using STL for storing the callback information.
 #include <map>
@@ -246,10 +257,6 @@ FrameWindowProc (HWND hwnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 JNIEXPORT void JNICALL Java_JFrameEx_setHook
   (JNIEnv *pEnv, jobject f, jint hwnd)
 {
-	if (InitRawInput() == FALSE) {
-		/* throw exception*/
-	}
-
 	// ensure that the java object can be called from any thread.
 	jobject frame = pEnv->NewGlobalRef(f);
 
@@ -354,14 +361,19 @@ JNIEXPORT jintArray JNICALL Java_JFrameEx_getMouseIds
 	
 	PRAWINPUTDEVICELIST pRawInputDeviceList;
 	
-	if (GetRawInputDeviceList(NULL, &nDevices, sizeof(RAWINPUTDEVICELIST)) != 0)
+	if (GetRawInputDeviceList(NULL, &nDevices, sizeof(RAWINPUTDEVICELIST)) != 0) {
+		puts("error");
 		return NULL;
+	}
 		
-	if ((pRawInputDeviceList = (PRAWINPUTDEVICELIST) malloc(sizeof(RAWINPUTDEVICELIST) * nDevices)) == NULL)
+	if ((pRawInputDeviceList = (PRAWINPUTDEVICELIST) malloc(sizeof(RAWINPUTDEVICELIST) * nDevices)) == NULL) {
+		puts("error");
 		return NULL;
+	}
 
 	if (GetRawInputDeviceList(pRawInputDeviceList, &nDevices,
 			sizeof(RAWINPUTDEVICELIST)) == (UINT) -1) {
+		puts("error");
 		free(pRawInputDeviceList);
 		return NULL;
 	}
@@ -376,7 +388,9 @@ JNIEXPORT jintArray JNICALL Java_JFrameEx_getMouseIds
 
 	UINT curMouse = 0;
 	for (UINT i = 0; i < nDevices; i++) {
-		mouses[curMouse++] = (jint) pRawInputDeviceList[i].hDevice;
+		if (pRawInputDeviceList[i].dwType == RIM_TYPEMOUSE) {
+			mouses[curMouse++] = (jint) pRawInputDeviceList[i].hDevice;
+		}
 	}
 	
 	jintArray jniMouses = env->NewIntArray(nMouses);
