@@ -46,6 +46,24 @@ public class MultipleMouseDemo {
         menu.add(item1);
 
         JMenuItem item2 = new JMenuItem("Close");
+        item2.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("item2 " + e);
+            }
+            public void mousePressed(MouseEvent e) {
+                System.out.println("item2 " + e);
+            }
+            
+            public void mouseReleased(MouseEvent e) {
+                System.out.println("item2 " + e);
+            }
+
+        });
+        item2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("actionPerformed()");
+            }
+        });
         menu.add(item2);
 
         MouseState[] states = frame.getMouseStates();
@@ -63,7 +81,7 @@ public class MultipleMouseDemo {
         circle.addColor(Color.GREEN);
         circle.addColor(Color.MAGENTA);
 
-        frame.add(circle, BorderLayout.CENTER);
+        frame.getContentPane().add(circle, BorderLayout.CENTER);
 
         JButton button = new JButton("Click Me");
         button.addMouseListener(new MouseAdapter() {
@@ -87,7 +105,7 @@ public class MultipleMouseDemo {
             }
         });
 
-        frame.add(button, BorderLayout.PAGE_END);
+        frame.getContentPane().add(button, BorderLayout.PAGE_END);
 
         frame.setSize(600, 600);
 

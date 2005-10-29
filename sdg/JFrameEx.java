@@ -52,86 +52,7 @@ public class JFrameEx extends JFrame {
 
     private boolean initialized;
 
-    private class PointerGlassPane extends JComponent implements MouseListener,
-            MouseMotionListener, MouseWheelListener {
-        private Container contentPane;
-
-        public void setContentPane(Container contentPane) {
-            this.contentPane = contentPane;
-        }
-
-        public PointerGlassPane(Container contentPane) {
-            this.contentPane = contentPane;
-
-            addMouseListener(this);
-            addMouseMotionListener(this);
-            addMouseWheelListener(this);
-            setOpaque(false);
-        }
-
-        public void mouseMoved(MouseEvent e) {
-            redispatchMouseEvent(e, false);
-        }
-
-        public void mouseDragged(MouseEvent e) {
-            redispatchMouseEvent(e, false);
-        }
-
-        public void mouseClicked(MouseEvent e) {
-            redispatchMouseEvent(e, false);
-        }
-
-        public void mouseEntered(MouseEvent e) {
-            redispatchMouseEvent(e, false);
-        }
-
-        public void mouseExited(MouseEvent e) {
-            redispatchMouseEvent(e, false);
-        }
-
-        public void mousePressed(MouseEvent e) {
-            redispatchMouseEvent(e, false);
-        }
-
-        public void mouseReleased(MouseEvent e) {
-            redispatchMouseEvent(e, true);
-        }
-
-        public void mouseWheelMoved(MouseWheelEvent e) {
-            redispatchMouseEvent(e, true);
-        }
-
-        private void redispatchMouseEvent(MouseEvent e, boolean repaint) {
-            Point glassPanePoint = e.getPoint();
-
-            Container container = contentPane;
-            Point containerPoint = SwingUtilities.convertPoint(this,
-                    glassPanePoint, contentPane);
-
-            Component component = SwingUtilities.getDeepestComponentAt(
-                    container, containerPoint.x, containerPoint.y);
-
-            Point componentPoint = SwingUtilities.convertPoint(glassPane,
-                    glassPanePoint, component);
-
-            if (e instanceof MultipleMouseEvent) {
-                MultipleMouseEvent me = (MultipleMouseEvent) e;
-
-                component.dispatchEvent(new MultipleMouseEvent(component, me
-                        .getMouseId(), e.getID(), e.getWhen(),
-                        e.getModifiers(), componentPoint.x, componentPoint.y, e
-                                .getClickCount(), e.isPopupTrigger()));
-            } else if (!(e instanceof MouseEvent)) {
-                component
-                        .dispatchEvent(new MouseEvent(component, e.getID(), e
-                                .getWhen(), e.getModifiers(), componentPoint.x,
-                                componentPoint.y, e.getClickCount(), e
-                                        .isPopupTrigger()));
-
-            }
-
-        }
-
+    private class PointerGlassPane extends JComponent {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
@@ -197,7 +118,7 @@ public class JFrameEx extends JFrame {
 
     public JFrameEx(String title) {
         super(title);
-        setGlassPane(glassPane = new PointerGlassPane(getContentPane()));
+        setGlassPane(glassPane = new PointerGlassPane());
         glassPane.setVisible(true);
         glassPane.setOpaque(false);
     }
@@ -207,11 +128,6 @@ public class JFrameEx extends JFrame {
      */
     public JFrameEx() {
         this("");
-    }
-
-    public void setContentPane(Container contentPane) {
-        super.setContentPane(contentPane);
-        glassPane.setContentPane(contentPane);
     }
 
     /**
@@ -235,11 +151,12 @@ public class JFrameEx extends JFrame {
     }
 
     private Component[] componentContext() {
-        if (getJMenuBar() != null) {
-            return new Component[] { getContentPane(), getJMenuBar() };
-        } else {
-            return new Component[] { getContentPane() };
-        }
+        return new Component[] { getLayeredPane() };
+        // if (getJMenuBar() != null) {
+        // return new Component[] { getContentPane(), getJMenuBar() };
+        // } else {
+        // return new Component[] { getContentPane() };
+        // }
     }
 
     /* system mouse id */
