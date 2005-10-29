@@ -186,8 +186,9 @@ public class MouseState {
         for (int i = 0; i < componentContext.length; i++) {
             Point relativeP = SwingUtilities.convertPoint(mouseContext, p.x,
                     p.y, componentContext[i]);
-            if (relativeP.x > 0 && relativeP.y > 0) {
-                return componentContext[i].getComponentAt(relativeP);
+            if (relativeP != null) {
+                return SwingUtilities.getDeepestComponentAt(
+                        componentContext[i], relativeP.x, relativeP.y);
             }
         }
 
@@ -215,6 +216,7 @@ public class MouseState {
             Button b = buttons[buttonNo];
 
             if (b.isPressed()) {
+
                 Component oldComp = getDeepestComponentAt(b
                         .getPressStartPoint());
                 Component newComp = getDeepestComponentAt(getLocation());
