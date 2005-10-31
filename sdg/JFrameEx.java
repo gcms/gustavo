@@ -1,14 +1,7 @@
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -121,6 +114,8 @@ public class JFrameEx extends JFrame {
         setGlassPane(glassPane = new PointerGlassPane());
         glassPane.setVisible(true);
         glassPane.setOpaque(false);
+
+        initRawInput();
     }
 
     /**
@@ -209,12 +204,74 @@ public class JFrameEx extends JFrame {
         }
     }
 
-    public void mouseActionPerformed(int hDevice, int usFlags, long ulButtons,
-            int usButtonFlags, int usButtonData, long ulRawButtons,
-            long iLastX, long iLastY, long ulExtraInformation) {
+    public void mouseActionPerformed(final int hDevice, int usFlags,
+            final long ulButtons, int usButtonFlags, int usButtonData,
+            long ulRawButtons, final long iLastX, final long iLastY,
+            long ulExtraInformation) {
         // System.out.println("hDevice = " + hDevice);
         // System.out.println("x = " + iLastX + ", " + "y = " + iLastY);
         // System.out.println("ulButtons = 0x" + Long.toHexString(ulButtons));
+
+        final MouseState state = getMouseState(hDevice);
+
+        // setup a system mouse
+        if (getSystemMouseState() == null) {
+            setSystemMouseId(hDevice);
+            setSystemCursorPosition(getCursorPos());
+        }
+
+        // assert getSystemMouseState() != null;
+
+        // RIDEV_NOLEGACY
+        if (hDevice == getSystemMouseId()) {
+            // assert state.equals(getSystemMouseState());
+            moveSystemCursorPosition((int) iLastX, (int) iLastY);
+
+            if (getBoundsOnScreen(mouseContext()).contains(
+                    getSystemCursorPosition())) {
+                while (showCursor(false) >= 0)
+                    ;
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        state.move((int) iLastX, (int) iLastY);
+                    }
+                });
+                setSystemCursorPosition(state.getLocationOnScreen());
+
+            } else {
+                while (showCursor(true) < 0)
+                    ;
+                // setSystemCursorPosition(getCursorPos());
+                moveSystemCursorPosition((int) iLastX, (int) iLastY);// RIDEV_NOLEGACY
+            }
+        } else {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    state.move((int) iLastX, (int) iLastY);
+                }
+            });
+        }
+
+        setCursorPos(getSystemCursorPosition());
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                mouseActionPerformed(hDevice, ulButtons, (int) iLastX,
+                        (int) iLastY);
+            }
+        });
+
+        // SwingUtilities.invokeLater(new Runnable() {
+        // public void run() {
+        // mouseActionPerformed(hDevice, ulButtons, (int) iLastX,
+        // (int) iLastY);
+        // }
+        // });
+
+    }
+
+    public void mouseActionPerformed(int hDevice, long ulButtons, int iLastX,
+            int iLastY) {
 
         MouseState state = getMouseState(hDevice);
 
@@ -235,16 +292,16 @@ public class JFrameEx extends JFrame {
                     getSystemCursorPosition())) {
                 while (showCursor(false) >= 0)
                     ;
-                state.move((int) iLastX, (int) iLastY);
+                state.move(iLastX, iLastY);
                 setSystemCursorPosition(state.getLocationOnScreen());
             } else {
                 while (showCursor(true) < 0)
                     ;
                 // setSystemCursorPosition(getCursorPos());
-                moveSystemCursorPosition((int) iLastX, (int) iLastY);// RIDEV_NOLEGACY
+                moveSystemCursorPosition(iLastX, iLastY);// RIDEV_NOLEGACY
             }
         } else {
-            state.move((int) iLastX, (int) iLastY);
+            state.move(iLastX, iLastY);
         }
 
         setCursorPos(getSystemCursorPosition());
@@ -270,22 +327,20 @@ public class JFrameEx extends JFrame {
 
         glassPane.repaint();
 
-        if (getBoundsOnScreen(mouseContext()).contains(
-                getSystemCursorPosition())) {
-            if (ulButtons == 0x1) {
-                state.pressButton(MouseState.BUTTON1);
-            } else if (ulButtons == 0x2) {
-                state.releaseButton(MouseState.BUTTON1);
-            } else if (ulButtons == 0x4) {
-                state.pressButton(MouseState.BUTTON3);
-            } else if (ulButtons == 0x8) {
-                state.releaseButton(MouseState.BUTTON3);
-            } else if (ulButtons == 0x10) {
-                state.pressButton(MouseState.BUTTON2);
-            } else if (ulButtons == 0x20) {
-                state.releaseButton(MouseState.BUTTON2);
-            }
+        if (ulButtons == 0x1) {
+            state.pressButton(MouseState.BUTTON1);
+        } else if (ulButtons == 0x2) {
+            state.releaseButton(MouseState.BUTTON1);
+        } else if (ulButtons == 0x4) {
+            state.pressButton(MouseState.BUTTON3);
+        } else if (ulButtons == 0x8) {
+            state.releaseButton(MouseState.BUTTON3);
+        } else if (ulButtons == 0x10) {
+            state.pressButton(MouseState.BUTTON2);
+        } else if (ulButtons == 0x20) {
+            state.releaseButton(MouseState.BUTTON2);
         }
+
     }
 
     private native boolean initRawInput();
