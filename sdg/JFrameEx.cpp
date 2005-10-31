@@ -244,7 +244,7 @@ FrameWindowProc (HWND hwnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 			*/
 						
 			free(lpb); 
-			break;
+			return 0;
 		}
 		case WM_LBUTTONDOWN:
 		return 0;
