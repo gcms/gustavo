@@ -256,10 +256,31 @@ public class JFrameEx extends JFrame {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                mouseActionPerformed(hDevice, ulButtons, (int) iLastX,
-                        (int) iLastY);
+                glassPane.repaint();
+
+                if (ulButtons == 0x1) {
+                    state.pressButton(MouseState.BUTTON1);
+                } else if (ulButtons == 0x2) {
+                    state.releaseButton(MouseState.BUTTON1);
+                } else if (ulButtons == 0x4) {
+                    state.pressButton(MouseState.BUTTON3);
+                } else if (ulButtons == 0x8) {
+                    state.releaseButton(MouseState.BUTTON3);
+                } else if (ulButtons == 0x10) {
+                    state.pressButton(MouseState.BUTTON2);
+                } else if (ulButtons == 0x20) {
+                    state.releaseButton(MouseState.BUTTON2);
+                }
+
             }
         });
+
+        // SwingUtilities.invokeLater(new Runnable() {
+        // public void run() {
+        // mouseActionPerformed(hDevice, ulButtons, (int) iLastX,
+        // (int) iLastY);
+        // }
+        // });
 
         // SwingUtilities.invokeLater(new Runnable() {
         // public void run() {
