@@ -200,14 +200,17 @@ public class MouseState {
             Button b = buttons[buttonNo];
 
             Component comp = getDeepestComponentAt(getLocation());
-            Point p = relativeTo(comp);
 
-            comp.dispatchEvent(new MultipleMouseEvent(comp, mouseId,
-                    MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(),
-                    getModifiers(), p.x, p.y, b.clickCount(comp), false,
-                    getButton(buttonNo)));
+            if (comp != null) {
+                Point p = relativeTo(comp);
 
-            b.press(getLocation());
+                comp.dispatchEvent(new MultipleMouseEvent(comp, mouseId,
+                        MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(),
+                        getModifiers(), p.x, p.y, b.clickCount(comp), false,
+                        getButton(buttonNo)));
+
+                b.press(getLocation());
+            }
         }
     }
 
@@ -268,14 +271,18 @@ public class MouseState {
 
         long when = System.currentTimeMillis();
 
-        if (!oldComp.equals(newComp)) {
-            oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
-                    MouseEvent.MOUSE_EXITED, when, getModifiers(), p.x, p.y, 0,
-                    false));
+        if (oldComp != null && !oldComp.equals(newComp)) {
+            if (oldComp != null) {
+                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                        MouseEvent.MOUSE_EXITED, when, getModifiers(), p.x,
+                        p.y, 0, false));
+            }
 
-            newComp.dispatchEvent(new MultipleMouseEvent(newComp, mouseId,
-                    MouseEvent.MOUSE_ENTERED, when, getModifiers(), p.x, p.y,
-                    0, false));
+            if (newComp != null) {
+                newComp.dispatchEvent(new MultipleMouseEvent(newComp, mouseId,
+                        MouseEvent.MOUSE_ENTERED, when, getModifiers(), p.x,
+                        p.y, 0, false));
+            }
 
             // System.out.println("OLDCOMP = " + oldComp);
             // System.out.println("NEWCOMP = " + newComp);
@@ -289,14 +296,16 @@ public class MouseState {
             }
         }
 
-        if (buttonMask != 0) {
-            oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
-                    MouseEvent.MOUSE_DRAGGED, when, getModifiers(), p.x, p.y,
-                    buttonMask, false));
-        } else {
-            oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
-                    MouseEvent.MOUSE_MOVED, when, getModifiers(), p.x, p.y, 0,
-                    false));
+        if (oldComp != null) {
+            if (buttonMask != 0) {
+                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                        MouseEvent.MOUSE_DRAGGED, when, getModifiers(), p.x,
+                        p.y, buttonMask, false));
+            } else {
+                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                        MouseEvent.MOUSE_MOVED, when, getModifiers(), p.x, p.y,
+                        0, false));
+            }
         }
 
         this.currentPoint = p;
