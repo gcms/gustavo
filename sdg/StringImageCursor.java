@@ -1,5 +1,6 @@
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.ImageObserver;
 
 public class StringImageCursor extends ImageCursor {
 
@@ -23,8 +24,8 @@ public class StringImageCursor extends ImageCursor {
         this.name = name;
     }
 
-    public void drawCursor(Graphics g, int x, int y) {
-        super.drawCursor(g, x, y);
+    public void drawCursor(Graphics g, int x, int y, ImageObserver observer) {
+        super.drawCursor(g, x, y, observer);
         g.drawChars(name.toCharArray(), 0, name.length(), x, y);
     }
 }

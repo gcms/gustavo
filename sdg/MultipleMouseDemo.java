@@ -30,6 +30,7 @@ public class MultipleMouseDemo {
     }
 
     private static final Cursor[] cursors = {
+            new ImageCursor(ImageCursor.ARROW, Math.PI / 4),
             new StringImageCursor("tosco", "arrow.png", 0, 0),
             new StringImageCursor("gustavo", "back_arrow.png", 16, 0) };
 
@@ -50,10 +51,11 @@ public class MultipleMouseDemo {
             public void mouseClicked(MouseEvent e) {
                 System.out.println("item2 " + e);
             }
+
             public void mousePressed(MouseEvent e) {
                 System.out.println("item2 " + e);
             }
-            
+
             public void mouseReleased(MouseEvent e) {
                 System.out.println("item2 " + e);
             }
@@ -62,6 +64,7 @@ public class MultipleMouseDemo {
         item2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("actionPerformed()");
+                System.exit(0);
             }
         });
         menu.add(item2);
@@ -148,7 +151,7 @@ class ColoredCircle extends JPanel implements MouseListener {
                 try {
                     SwingUtilities.invokeAndWait(new Runnable() {
                         public void run() {
-                            paint(getGraphics());
+                            repaint();
                         }
                     });
                 } catch (InvocationTargetException e) {
