@@ -56,7 +56,8 @@ public class JFrameEx extends JFrame {
                 // System.out.println("PAINTING");
                 // System.out.println("x = " + x + ", y = " + y);
 
-                state.getCursor().drawCursor(g, state.getX(), state.getY());
+                state.getCursor().drawCursor(g, state.getX(), state.getY(),
+                        this);
             }
         }
 

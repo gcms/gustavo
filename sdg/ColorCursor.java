@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.ImageObserver;
 
 public class ColorCursor implements Cursor {
     private Color c;
@@ -8,7 +9,7 @@ public class ColorCursor implements Cursor {
         this.c = c;
     }
 
-    public void drawCursor(Graphics g, int x, int y) {
+    public void drawCursor(Graphics g, int x, int y, ImageObserver observer) {
         g.setColor(Color.WHITE);
         g.fillOval(x - 6, y - 6, 13, 13);
 
