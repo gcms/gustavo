@@ -116,7 +116,7 @@ public class JFrameEx extends JFrame {
         glassPane.setVisible(true);
         glassPane.setOpaque(false);
 
-        initRawInput();
+        initialized = initRawInput();
     }
 
     /**
@@ -235,10 +235,9 @@ public class JFrameEx extends JFrame {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         state.move((int) iLastX, (int) iLastY);
+                        setSystemCursorPosition(state.getLocationOnScreen());
                     }
                 });
-                setSystemCursorPosition(state.getLocationOnScreen());
-
             } else {
                 while (showCursor(true) < 0)
                     ;
