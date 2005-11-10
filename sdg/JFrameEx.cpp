@@ -22,7 +22,7 @@ static BOOL InitRawInput() {
 
 	rid.usUsagePage = 0x01; 
 	rid.usUsage = 0x02; 
-	rid.dwFlags = RIDEV_NOLEGACY;   // adds HID mouse and also ignores legacy mouse messages
+	rid.dwFlags = 0;   // adds HID mouse and also ignores legacy mouse messages
 	rid.hwndTarget = NULL;
 
 	return RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE));
@@ -207,9 +207,10 @@ FrameWindowProc (HWND hwnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 	LPBYTE lpb;// = new BYTE[dwSize];//LPBYTE lpb = new BYTE[dwSize];
 	UINT dwSize;
 	RAWINPUT *raw;
-
+	
     switch (nMsg) {
     	case WM_INPUT: {
+    		DebugString(frame, "WM_INPUT");
 			GetRawInputData((HRAWINPUT) lParam, RID_INPUT, NULL, &dwSize, 
 					sizeof(RAWINPUTHEADER));
 
@@ -246,8 +247,33 @@ FrameWindowProc (HWND hwnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 			free(lpb); 
 			return 0;
 		}
+//		case WM_CAPTURECHANGED:
 		case WM_LBUTTONDOWN:
-		return 0;
+		case WM_LBUTTONUP:
+		case WM_LBUTTONDBLCLK:
+		case WM_MBUTTONDBLCLK:
+		case WM_MBUTTONDOWN:
+		case WM_MBUTTONUP:
+		case WM_MOUSEACTIVATE:
+		case WM_MOUSEHOVER:
+		case WM_MOUSELEAVE:
+		case WM_MOUSEMOVE:
+		case WM_MOUSEWHEEL:
+		case WM_NCHITTEST:
+		case WM_NCLBUTTONDBLCLK:
+		case WM_NCRBUTTONDOWN:
+		case WM_NCRBUTTONUP:
+		case WM_NCXBUTTONDBLCLK:
+		case WM_NCXBUTTONDOWN:
+		case WM_NCXBUTTONUP:
+		case WM_RBUTTONDBLCLK:
+		case WM_RBUTTONDOWN:
+		case WM_RBUTTONUP:
+		case WM_XBUTTONDBLCLK:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:	
+			DebugString(frame, "MOUSE EVENT");
+			return 0;
     }
 
     return CallWindowProc (oldProc, hwnd, nMsg, wParam, lParam);
