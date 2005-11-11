@@ -379,4 +379,8 @@ public class JFrameEx extends JFrame {
     private native Point getCursorPos();
 
     private native int[] getMouseIds();
+    
+    public void debug(String s) {
+        System.out.println(s);
+    }
 }
