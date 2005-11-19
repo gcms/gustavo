@@ -5,8 +5,20 @@ public class RegularExit implements Exit {
         this.room = nextRoom;
     }
 
-    public Room getRoom() {
+    public Room getRoom(Room r) {
         return room;
+    }
+
+    public String leaveMessage() {
+        return "saiu da sala.";
+    }
+
+    public String joinMessage() {
+        return "entrou na sala.";
+    }
+
+    public String ownMessage() {
+        return null;
     }
 
 }

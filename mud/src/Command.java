@@ -1,4 +1,4 @@
-
 public interface Command {
-    public void execute(Player player, String command);
+    public boolean execute(MudServer server, Player player, Room room,
+            String command);
 }

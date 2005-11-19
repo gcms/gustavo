@@ -7,12 +7,14 @@ public class MudClient implements Runnable {
     private Socket socket;
 
     private MudServer server;
-    
+
     private Player player;
 
-    public MudClient(Socket socket, MudServer server) {
+    public MudClient(Socket socket, MudServer server) throws IOException {
         this.socket = socket;
         this.server = server;
+        player = new Player(socket.getOutputStream(), server.getStartRoom());
+        server.dispatchCommand(player, new LookCommand(), null);
     }
 
     public void run() {
@@ -23,7 +25,7 @@ public class MudClient implements Runnable {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                parseCommand(line);
+                server.dispatchCommand(this, line);
             }
 
         } catch (IOException e) {
@@ -32,10 +34,7 @@ public class MudClient implements Runnable {
         }
     }
 
-    public void parseCommand(String command) {
-        Command cmd = server.getCommand(command);
-
-        cmd.execute(player, command);
+    public Player getPlayer() {
+        return player;
     }
-
 }
