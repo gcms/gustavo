@@ -28,16 +28,22 @@ import java.util.Iterator;
 public class ColorGraph extends Graph {
 
     /**
+     * Usado para passar informações sobre a execução do algoritmo para objetos
+     * externos.
+     */
+    private ColorGraphLogger logger;
+
+    /**
      * Cria um novo grafo a partir de uma lista de nomes, e uma matriz de
      * adjacencia. Uma matriz de adjacencia contêm um número diferente de 0 na
      * intersecção entre coluna e linha, quando há uma aresta entre dois
      * vértices. Por exemplo, a matriz abaixo
      * 
      * <pre>
-     *                 A  B  C
-     *              A  0  1  0
-     *              B  0  0  1
-     *              C  0  0  0  
+     *       A  B  C
+     *    A  0  1  0
+     *    B  0  0  1
+     *    C  0  0  0  
      * </pre>
      * 
      * representa um grafo com as arestas { (A, B), (B, C) }.
@@ -157,6 +163,13 @@ public class ColorGraph extends Graph {
         return color(colors, 0);
     }
 
+
+    /**
+     * Tenta colorir o grafo com as cores especificadas a partir do vértice k.
+     * @param colors cores usadas para colorir
+     * @param k vértice a partir do qual o grafo deve ser colorido
+     * @return true se pode colorir corretamente, senão false
+     */
     private boolean color(Color[] colors, int k) {
         /*
          * se o indíce do vértice está fora dos limites da lista de vértices, ou
@@ -177,25 +190,20 @@ public class ColorGraph extends Graph {
          * contrário, a próxima cor é testada
          */
         for (int i = 0; i < colors.length; i++) {
-            synchronized (this) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    break;
-                }
-            }
-            System.out.print(getName(v) + " = " + colors[i]);
+            if (logger != null)
+                logger.prepare(this);
 
-            Vertex falhou;
-            if ((falhou = canColor(colors[i], v)) == null) {
-                System.out.println();
+            Vertex fail;
+            if ((fail = canColor(colors[i], v)) == null) {
+                if (logger != null)
+                    logger.okColor(v, colors[i]);
                 setColor(v, colors[i]);
                 if (color(colors, k + 1)) {
                     return true;
                 }
             } else {
-                System.out.println(" FALHA c/ " + getName(falhou));
+                if (logger != null)
+                    logger.failColor(v, colors[i], fail);
             }
         }
 
@@ -206,7 +214,10 @@ public class ColorGraph extends Graph {
          */
 
         setColor(v, null);
-        System.out.println(getName(v) + " BACKTRACKING");
+
+        if (logger != null)
+            logger.backtrack(v);
+
         return false;
     }
 
@@ -230,5 +241,21 @@ public class ColorGraph extends Graph {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Retorna o logger deste grafo.
+     * @return logger
+     */
+    public ColorGraphLogger getLogger() {
+        return logger;
+    }
+
+    /**
+     * Determina o logger deste grafo.
+     * @param logger novo logger
+     */
+    public void setLogger(ColorGraphLogger logger) {
+        this.logger = logger;
     }
 }
