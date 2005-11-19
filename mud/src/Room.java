@@ -1,7 +1,12 @@
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 public class Room {
     private Properties properties;
+
+    private Set<Player> players;
 
     private Exit north;
 
@@ -17,6 +22,7 @@ public class Room {
 
     public Room() {
         properties = new Properties();
+        players = new HashSet<Player>();
     }
 
     public void setProperty(String attr, String value) {
@@ -73,5 +79,65 @@ public class Room {
 
     public void setWest(Exit west) {
         this.west = west;
+    }
+
+    public String getDescription() {
+        return getProperty("description");
+    }
+
+    public void setDescription(String description) {
+        setProperty("description", description);
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player);
+    }
+
+    public void removePlayer(Player player) {
+        players.remove(player);
+    }
+
+    public void println(String str) throws IOException {
+        for (Player p : players) {
+            p.println(str);
+        }
+    }
+
+    public Set<Player> getPlayers() {
+        return players;
+    }
+
+    public String getPlayers(Player player) {
+        StringBuilder builder = new StringBuilder();
+        for (Player p : players) {
+            if (p == player || p.equals(player)) {
+                continue;
+            }
+            builder.append(p.toString());
+            builder.append(" esta aqui");
+            builder.append("\r\n");
+        }
+
+        return builder.toString();
+    }
+
+    public String getExits() {
+        StringBuilder builder = new StringBuilder("Exits: [");
+        if (!(getWest() instanceof NoExit)) {
+            builder.append("w ");
+        }
+        if (!(getEast() instanceof NoExit)) {
+            builder.append("e ");
+        }
+        if (!(getNorth() instanceof NoExit)) {
+            builder.append("n ");
+        }
+        if (!(getSouth() instanceof NoExit)) {
+            builder.append("s ");
+        }
+
+        builder.append("]");
+
+        return builder.toString();
     }
 }

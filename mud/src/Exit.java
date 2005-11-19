@@ -1,3 +1,6 @@
 public interface Exit {
-    public Room getRoom();
+    public String leaveMessage();
+    public String joinMessage();
+    public String ownMessage();
+    public Room getRoom(Room room);
 }
