@@ -1,9 +1,11 @@
 package br.ufg.inf.graph;
 
+import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 public class GUIMain {
@@ -20,6 +22,13 @@ public class GUIMain {
     private static ColorGraph g;
 
     private static void createAndShowGUI() {
+        JFrame frame = new JFrame();
+
+        final JTextArea area = new JTextArea();
+        area.setEditable(false);
+
+        frame.add(area, BorderLayout.CENTER);
+
         final ColorGraphLogger logger = new ColorGraphLogger() {
             public void prepare(ColorGraph graph) {
                 synchronized (graph) {
@@ -31,17 +40,32 @@ public class GUIMain {
                 }
             }
 
-            public void okColor(Vertex v, Color color) {
-                System.out.println(ColorGraph.getName(v) + " = " + color);
+            public void okColor(final Vertex v, final Color color) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        area.append(ColorGraph.getName(v) + " = " + color
+                                + "\n");
+                    }
+                });
             }
 
-            public void failColor(Vertex v, Color color, Vertex fail) {
-                System.out.println(ColorGraph.getName(v) + " = " + color
-                        + " FALHA c/ " + ColorGraph.getName(fail));
+            public void failColor(final Vertex v, final Color color,
+                    final Vertex fail) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        area.append(ColorGraph.getName(v) + " = " + color
+                                + " FALHA c/ " + ColorGraph.getName(fail)
+                                + "\n");
+                    }
+                });
             }
 
-            public void backtrack(Vertex v) {
-                System.out.println(ColorGraph.getName(v) + " BACKTRACKING");
+            public void backtrack(final Vertex v) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        area.append(ColorGraph.getName(v) + " BACKTRACKING\n");
+                    }
+                });
             }
         };
 
@@ -51,17 +75,16 @@ public class GUIMain {
                 { 0, 0, 0, 0, 0, 1 }, { 1, 1, 1, 0, 0, 1 },
                 { 0, 1, 1, 1, 1, 0 } };
 
-        JFrame frame = new JFrame();
-        frame.addKeyListener(new KeyAdapter() {
+        area.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent ev) {
                 if (t == null || !t.isAlive()) {
                     t = new Thread() {
                         public void run() {
+                            area.setText("");
                             g = new ColorGraph(names, ajacencias);
                             g.setLogger(logger);
                             g.color(new Color[] { Color.GREEN, Color.RED,
                                     Color.BLUE });
-                            System.out.println("TERMINOU\n");
                         }
                     };
                     t.start();
