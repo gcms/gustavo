@@ -13,6 +13,8 @@ public class Main {
         System.out.println("ESTADO INICIAL");
         System.out.println(g);
 
+        /* objeto logger, responsável por imprimir na saída padrão
+         * cada passo de execução do algoritmo */
         ColorGraphLogger logger = new ColorGraphLogger() {
             public void prepare(ColorGraph graph) {
             }
