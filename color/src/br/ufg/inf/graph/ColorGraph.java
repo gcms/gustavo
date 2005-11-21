@@ -191,7 +191,7 @@ public class ColorGraph extends Graph {
          */
         for (int i = 0; i < colors.length; i++) {
             if (logger != null)
-                logger.prepare(this);
+                logger.prepare(this, getVertices().get(k));
 
             Vertex fail;
             if ((fail = canColor(colors[i], v)) == null) {

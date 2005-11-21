@@ -30,7 +30,7 @@ public class GUIMain {
         frame.add(area, BorderLayout.CENTER);
 
         final ColorGraphLogger logger = new ColorGraphLogger() {
-            public void prepare(ColorGraph graph) {
+            public void prepare(ColorGraph graph, Vertex v) {
                 synchronized (graph) {
                     try {
                         graph.wait();
