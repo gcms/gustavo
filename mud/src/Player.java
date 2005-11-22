@@ -6,6 +6,8 @@ public class Player {
     private OutputStream out;
 
     private Room currentRoom;
+    
+    private String name;
 
     public Player(OutputStream out) {
         this(out, null);
@@ -37,4 +39,16 @@ public class Player {
         setRoom(newRoom);
     }
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String toString() {
+		String name = getName();
+		return name == null ? super.toString() : name;
+	}
 }

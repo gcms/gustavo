@@ -41,6 +41,8 @@ public class Main {
         server.setCommand("l", new LookCommand());
         
         server.setCommand("say", new SayCommand());
+        
+        server.setCommand("name", new NameCommand());
 
         server.start();
     }
