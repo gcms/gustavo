@@ -1,3 +1,6 @@
+package br.ufg.inf.mud.base;
+
+
 public class NoExit implements Exit {
 
     public Room getRoom(Room r) {

@@ -1,6 +1,9 @@
+package br.ufg.inf.mud.base;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
 
 public class Player {
     private OutputStream out;

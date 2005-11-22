@@ -1,7 +1,12 @@
+package br.ufg.inf.mud.base;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+
+import br.ufg.inf.mud.command.LookCommand;
+
 
 public class MudClient implements Runnable {
     private Socket socket;

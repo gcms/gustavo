@@ -1,3 +1,9 @@
+package br.ufg.inf.mud.base;
+import br.ufg.inf.mud.command.ExitCommand;
+import br.ufg.inf.mud.command.LookCommand;
+import br.ufg.inf.mud.command.NameCommand;
+import br.ufg.inf.mud.command.SayCommand;
+
 public class Main {
     public static Room getRoom() {
         Exit e = new NoExit();

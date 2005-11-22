@@ -1,7 +1,10 @@
+package br.ufg.inf.mud.base;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+
+
 
 public class Room {
     private Properties properties;
