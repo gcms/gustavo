@@ -1,3 +1,6 @@
+package br.ufg.inf.mud.base;
+
+
 public class RegularExit implements Exit {
     private Room room;
 

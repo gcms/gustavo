@@ -1,3 +1,5 @@
+package br.ufg.inf.mud.base;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -6,6 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import br.ufg.inf.mud.command.Command;
+import br.ufg.inf.mud.command.NoSuchCommand;
+
+
 
 public class MudServer {
     private int port;
