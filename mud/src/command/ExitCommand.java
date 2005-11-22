@@ -47,7 +47,7 @@ public class ExitCommand implements Command {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        newRoom.addPlayer(player);
+//        newRoom.addPlayer(player);
         player.setRoom(newRoom);
 
         try {
