@@ -5,27 +5,27 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Classe utilizada para representar um grafo simples não direcionado. Um grafo
- * é representado como um conjunto de vértices. As arestas existentes entre
- * estes são representadas pelos próprios vértices
+ * Classe utilizada para representar um grafo simples nï¿½o direcionado. Um grafo
+ * ï¿½ representado como um conjunto de vï¿½rtices. As arestas existentes entre
+ * estes sï¿½o representadas pelos prï¿½prios vï¿½rtices
  * 
  * @author Gustavo C. M. Sousa - <gustavomota@inf.ufg.br>
  */
 public class Graph {
-    /** Lista de vértices que compõe o grafo. */
+    /** Lista de vï¿½rtices que compï¿½e o grafo. */
     private List<Vertex> vertices;
 
     /**
-     * Cria um novo grafo sem vértices.
+     * Cria um novo grafo sem vï¿½rtices.
      */
     public Graph() {
         vertices = new ArrayList<Vertex>();
     }
 
     /**
-     * Cria um novo grafo formado pelos vértices especificados.
+     * Cria um novo grafo formado pelos vï¿½rtices especificados.
      * 
-     * @param vertices vértices usados para compor o grafo
+     * @param vertices vï¿½rtices usados para compor o grafo
      */
     public Graph(Collection<Vertex> vertices) {
         this();
@@ -35,42 +35,18 @@ public class Graph {
     }
 
     /**
-     * Retorna os vértices que compõe este grafo.
+     * Retorna os vï¿½rtices que compï¿½e este grafo.
      * 
-     * @return lista de vértices
+     * @return lista de vï¿½rtices
      */
     protected List<Vertex> getVertices() {
         return vertices;
     }
-
-    //
-    //
-    // public Graph(String[] names, byte[][] edges) {
-    // this();
-    // int size = Math.min(edges.length, edges[0].length);
-    // size = Math.min(names.length, size);
-    //
-    // Vertex[] vertices = new Vertex[size];
-    //
-    // for (int i = 0; i < size; i++) {
-    // vertices[i] = new Vertex();
-    // setName(vertices[i], names[i]);
-    // addVertex(vertices[i]);
-    // }
-    //
-    // for (int i = 0; i < size; i++) {
-    // for (int j = 0; j < size; j++) {
-    // if (edges[i][j] != 0) {
-    // vertices[i].addVertex(vertices[j]);
-    // }
-    // }
-    // }
-    // }
-
+ 
     /**
-     * Adiciona um vértice ao grafo.
+     * Adiciona um vï¿½rtice ao grafo.
      * 
-     * @param v vértice a ser adicionado
+     * @param v vï¿½rtice a ser adicionado
      */
     public void addVertex(Vertex v) {
         if (!vertices.contains(v)) {
@@ -82,7 +58,7 @@ public class Graph {
     }
 
     /**
-     * Retorna representação do grafo em cadeia de caracteres.
+     * Retorna representaï¿½ï¿½o do grafo em cadeia de caracteres.
      * 
      * @return string representando o grafo
      */
