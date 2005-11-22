@@ -13,7 +13,7 @@ public class SayCommand implements Command {
                 continue;
             }
             try {
-                p.println(p + " diz '" + command + "'");
+                p.println(player + " diz '" + command + "'");
             } catch (IOException e) {
                 e.printStackTrace();
             }
