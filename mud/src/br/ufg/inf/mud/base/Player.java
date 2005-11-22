@@ -18,7 +18,7 @@ public class Player {
 
     public Player(OutputStream out, Room room) {
         this.out = out;
-        currentRoom = room;
+        setRoom(room);
     }
 
     public Room getRoom() {
@@ -27,6 +27,7 @@ public class Player {
 
     public void setRoom(Room room) {
         currentRoom = room;
+        currentRoom.addPlayer(this);
     }
 
     public void println(String str) throws IOException {
