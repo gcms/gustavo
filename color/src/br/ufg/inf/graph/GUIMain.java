@@ -22,7 +22,7 @@ public class GUIMain {
     private static ColorGraph g;
 
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame();
+        JFrame frame = new JFrame("Pressione alguma tecla para avançar");
 
         final JTextArea area = new JTextArea();
         area.setEditable(false);
