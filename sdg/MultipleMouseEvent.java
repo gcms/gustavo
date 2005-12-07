@@ -9,33 +9,38 @@ public class MultipleMouseEvent extends MouseEvent {
     private static final long serialVersionUID = 3258417244043162936L;
 
     /**
-     * Number of the mouse.
+     * State of the mouse.
      */
-    private int mouseId;
+    private MouseState mouseState;
 
     /**
      * @see java.awt.event.MouseEvent
      */
-    public MultipleMouseEvent(Component source, int mouseId, int id, long when,
-            int modifiers, int x, int y, int clickCount, boolean popupTrigger,
-            int button) {
+    public MultipleMouseEvent(Component source, MouseState state, int id,
+            long when, int modifiers, int x, int y, int clickCount,
+            boolean popupTrigger, int button) {
 
         super(source, id, when, modifiers, x, y, clickCount, popupTrigger,
                 button);
-        this.mouseId = mouseId;
+        this.mouseState = state;
     }
 
     /**
      * @see java.awt.event.MouseEvent
      */
-    public MultipleMouseEvent(Component source, int mouseId, int id, long when,
-            int modifiers, int x, int y, int clickCount, boolean popupTrigger) {
+    public MultipleMouseEvent(Component source, MouseState state, int id,
+            long when, int modifiers, int x, int y, int clickCount,
+            boolean popupTrigger) {
         super(source, id, when, modifiers, x, y, clickCount, popupTrigger);
-        this.mouseId = mouseId;
+        this.mouseState = state;
     }
 
     public int getMouseId() {
-        return mouseId;
+        return getMouseState().getMouseId();
+    }
+
+    public MouseState getMouseState() {
+        return mouseState;
     }
 
     public String toString() {

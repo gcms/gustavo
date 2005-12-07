@@ -204,7 +204,7 @@ public class MouseState {
             if (comp != null) {
                 Point p = relativeTo(comp);
 
-                comp.dispatchEvent(new MultipleMouseEvent(comp, mouseId,
+                comp.dispatchEvent(new MultipleMouseEvent(comp, this,
                         MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(),
                         getModifiers(), p.x, p.y, b.clickCount(comp), false,
                         getButton(buttonNo)));
@@ -231,12 +231,12 @@ public class MouseState {
 
                 if (oldComp.equals(newComp)) {
                     newComp.dispatchEvent(new MultipleMouseEvent(newComp,
-                            mouseId, MouseEvent.MOUSE_CLICKED, System
+                            this, MouseEvent.MOUSE_CLICKED, System
                                     .currentTimeMillis(), getModifiers(), p.x,
                             p.y, b.click(newComp), false, getButton(buttonNo)));
                 }
 
-                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, this,
                         MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(),
                         getModifiers(), p.x, p.y, b.clickCount(newComp), false,
                         getButton(buttonNo)));
@@ -273,13 +273,13 @@ public class MouseState {
 
         if (oldComp != null && !oldComp.equals(newComp)) {
             if (oldComp != null) {
-                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, this,
                         MouseEvent.MOUSE_EXITED, when, getModifiers(), p.x,
                         p.y, 0, false));
             }
 
             if (newComp != null) {
-                newComp.dispatchEvent(new MultipleMouseEvent(newComp, mouseId,
+                newComp.dispatchEvent(new MultipleMouseEvent(newComp, this,
                         MouseEvent.MOUSE_ENTERED, when, getModifiers(), p.x,
                         p.y, 0, false));
             }
@@ -298,11 +298,11 @@ public class MouseState {
 
         if (oldComp != null) {
             if (buttonMask != 0) {
-                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, this,
                         MouseEvent.MOUSE_DRAGGED, when, getModifiers(), p.x,
                         p.y, buttonMask, false));
             } else {
-                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, mouseId,
+                oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, this,
                         MouseEvent.MOUSE_MOVED, when, getModifiers(), p.x, p.y,
                         0, false));
             }
