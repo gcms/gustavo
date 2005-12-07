@@ -79,27 +79,19 @@ extern "C" {
 #define JFrameEx_EXIT_ON_CLOSE 3L
 /*
  * Class:     JFrameEx
- * Method:    getHWND
- * Signature: ()I
+ * Method:    setHook
+ * Signature: ()V
  */
-JNIEXPORT jint JNICALL Java_JFrameEx_getHWND
+JNIEXPORT void JNICALL Java_JFrameEx_setHook
   (JNIEnv *, jobject);
 
 /*
  * Class:     JFrameEx
- * Method:    setHook
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_JFrameEx_setHook
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     JFrameEx
  * Method:    resetHook
- * Signature: (I)V
+ * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_JFrameEx_resetHook
-  (JNIEnv *, jobject, jint);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     JFrameEx
