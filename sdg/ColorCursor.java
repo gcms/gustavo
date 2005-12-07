@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.ImageObserver;
 
 public class ColorCursor implements Cursor {
@@ -19,5 +20,9 @@ public class ColorCursor implements Cursor {
         g.setColor(Color.WHITE);
         g.drawLine(x, y - 3, x, y + 3);
         g.drawLine(x - 3, y, x + 3, y);
+    }
+
+    public Color getColor() {
+        return c;
     }
 }
