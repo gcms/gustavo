@@ -19,27 +19,14 @@ public class JFrameEx extends JFrame {
     }
 
     /**
-     * Gets the window handle.
-     * 
-     * @return window handle id.
-     */
-    private native int getHWND();
-
-    /**
      * Native entry point for subclassing the JFrame window.
-     * 
-     * @param hwnd
-     *            window handle id
      */
-    private native void setHook(int hwnd);
+    private native void setHook();
 
     /**
      * Native entry point for removing the hook.
-     * 
-     * @param hwnd
-     *            window handle id
      */
-    private native void resetHook(int hwnd);
+    private native void resetHook();
 
     private PointerGlassPane glassPane;
 
@@ -131,14 +118,14 @@ public class JFrameEx extends JFrame {
      */
     public void addNotify() {
         super.addNotify();
-        setHook(getHWND());
+        setHook();
     }
 
     /**
      * Remove the subclass-ing when the window is about to be destroyed.
      */
     public void removeNotify() {
-        resetHook(getHWND());
+        resetHook();
         super.removeNotify();
     }
 
