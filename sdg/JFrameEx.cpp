@@ -98,13 +98,8 @@ static void MouseActionPerformed(jobject frame, HANDLE hDevice, USHORT usFlags,
 	vmBuf->DetachCurrentThread();
 }
 
-/*
- * Class:     JFrameEx
- * Method:    getHWND
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_JFrameEx_getHWND
-  (JNIEnv *env, jobject obj_this) {
+
+HWND getHWND(JNIEnv *env, jobject obj_this) {
     jboolean result;
     jint lock;
     JAWT awt;
@@ -143,7 +138,7 @@ JNIEXPORT jint JNICALL Java_JFrameEx_getHWND
 	awt.FreeDrawingSurface(ds);
 
 
-    return ((jint) hWnd);
+    return hWnd;
 }
 
 /*
@@ -281,12 +276,14 @@ FrameWindowProc (HWND hwnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 
 // JNI native entry point for subclassing the window
 JNIEXPORT void JNICALL Java_JFrameEx_setHook
-  (JNIEnv *pEnv, jobject f, jint hwnd)
+  (JNIEnv *pEnv, jobject f)
 {
 	// ensure that the java object can be called from any thread.
 	jobject frame = pEnv->NewGlobalRef(f);
+	
+	HWND hwnd = getHWND(pEnv, f);
 
-	WNDPROC oldProc = (WNDPROC)::SetWindowLong((HWND)hwnd, GWL_WNDPROC, (LONG)FrameWindowProc);
+	WNDPROC oldProc = (WNDPROC)::SetWindowLong((HWND) hwnd, GWL_WNDPROC, (LONG)FrameWindowProc);
 
 	// store the java object
 	setFrame((HWND)hwnd, frame);
@@ -296,8 +293,10 @@ JNIEXPORT void JNICALL Java_JFrameEx_setHook
 
 // JNI native entry point remving subclassing from the window
 JNIEXPORT void JNICALL Java_JFrameEx_resetHook
-  (JNIEnv *pEnv, jobject f, jint hwnd)
+  (JNIEnv *pEnv, jobject f)
 {
+	HWND hwnd = getHWND(pEnv, f);
+	
 	WNDPROC oldProc = getProc((HWND)hwnd);
 	jobject frame = getFrame((HWND)hwnd);
 	::SetWindowLong((HWND)hwnd, GWL_WNDPROC, (LONG)oldProc);
