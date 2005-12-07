@@ -230,8 +230,8 @@ public class MouseState {
                 Point p = relativeTo(newComp);
 
                 if (oldComp.equals(newComp)) {
-                    newComp.dispatchEvent(new MultipleMouseEvent(newComp,
-                            this, MouseEvent.MOUSE_CLICKED, System
+                    newComp.dispatchEvent(new MultipleMouseEvent(newComp, this,
+                            MouseEvent.MOUSE_CLICKED, System
                                     .currentTimeMillis(), getModifiers(), p.x,
                             p.y, b.click(newComp), false, getButton(buttonNo)));
                 }
@@ -273,15 +273,17 @@ public class MouseState {
 
         if (oldComp != null && !oldComp.equals(newComp)) {
             if (oldComp != null) {
+                Point newP = relativeTo(oldComp);
                 oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, this,
-                        MouseEvent.MOUSE_EXITED, when, getModifiers(), p.x,
-                        p.y, 0, false));
+                        MouseEvent.MOUSE_EXITED, when, getModifiers(), newP.x,
+                        newP.y, 0, false));
             }
 
             if (newComp != null) {
+                Point newP = relativeTo(newComp);
                 newComp.dispatchEvent(new MultipleMouseEvent(newComp, this,
-                        MouseEvent.MOUSE_ENTERED, when, getModifiers(), p.x,
-                        p.y, 0, false));
+                        MouseEvent.MOUSE_ENTERED, when, getModifiers(), newP.x,
+                        newP.y, 0, false));
             }
 
             // System.out.println("OLDCOMP = " + oldComp);
@@ -297,14 +299,15 @@ public class MouseState {
         }
 
         if (oldComp != null) {
+            Point newP = relativeTo(oldComp);
             if (buttonMask != 0) {
                 oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, this,
-                        MouseEvent.MOUSE_DRAGGED, when, getModifiers(), p.x,
-                        p.y, buttonMask, false));
+                        MouseEvent.MOUSE_DRAGGED, when, getModifiers(), newP.x,
+                        newP.y, buttonMask, false));
             } else {
                 oldComp.dispatchEvent(new MultipleMouseEvent(oldComp, this,
-                        MouseEvent.MOUSE_MOVED, when, getModifiers(), p.x, p.y,
-                        0, false));
+                        MouseEvent.MOUSE_MOVED, when, getModifiers(), newP.x,
+                        newP.y, 0, false));
             }
         }
 
