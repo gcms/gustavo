@@ -1,0 +1,8 @@
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: Midlet Suite Vendor
+MIDlet-Jar-URL: midtest.jar
+MicroEdition-Configuration: CLDC-1.0
+
+MIDlet-1: Dica do dia,/smile.png,TipOfTheDay
+MicroEdition-Profile: MIDP-1.0
+MIDlet-Name: midtest Midlet Suite
