@@ -221,7 +221,7 @@ void le_rede(void){
 		if( fnorm == 0.e0 )
 			fnorm = 9999.e0;// atribui um valor altissimo ao fluxo maximo se for lido zero
 		fmi[i] = -fnorm/100.e0;
-		fma[i] = fnorm/100.e0;
+		fma_[i] = fnorm/100.e0;
 		ylin[i] = ysh/200.e0;      // modelo PI da linha
 		if(ta == 1.e0 || ta == 0.e0 ){
 			ta = 0.e0;

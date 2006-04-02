@@ -183,7 +183,7 @@ void sobrecarga(void){
 			pkm = fpmk[j];
 		// 90% dos limites de fluxos
 		vainf = fmi[j]*9.e-1;
-		vasup = fma[j]*9.e-1;
+		vasup = fma_[j]*9.e-1;
 		if(pkm > vasup){
 			dife = pkm/vasup;
 			sobre = sobre + dife * dife;

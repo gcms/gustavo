@@ -72,7 +72,7 @@
 
      int      iger[nbmax],nprof[nbmax];
 
-     double   qmax[nbmax],qmin[nbmax],qca[nbmax],pkl[nlmax],fmi[nlmax],fma[nlmax],xkl[nlmax];
+     double   qmax[nbmax],qmin[nbmax],qca[nbmax],pkl[nlmax],fmi[nlmax],fma_[nlmax],xkl[nlmax];
 
 
 

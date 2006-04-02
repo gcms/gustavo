@@ -67,7 +67,7 @@ Constantes e parametros para redes como a de 1663 barras - Sul e sudeste brasile
 
    extern     int      iger[nbmax],nprof[nbmax];
 
-   extern     double   qmax[nbmax],qmin[nbmax],qca[nbmax],pkl[nlmax],fmi[nlmax],fma[nlmax],t[nbmax];
+   extern     double   qmax[nbmax],qmin[nbmax],qca[nbmax],pkl[nlmax],fmi[nlmax],fma_[nlmax],t[nbmax];
 
 
 
