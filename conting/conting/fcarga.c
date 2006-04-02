@@ -71,7 +71,7 @@ void fcarga(double ce[],double cle[]){
 		info = pvm_pkdouble(gkl,nl,1);
 		info = pvm_pkdouble(bkl,nl,1);
 		info = pvm_pkdouble(fmi,nl,1); 
-		info = pvm_pkdouble(fma,nl,1);
+		info = pvm_pkdouble(fma_,nl,1);
 		info = pvm_pkdouble(ylin,nl,1);
 		info = pvm_pkdouble(tap,nl,1);
 		info = pvm_pkdouble(b1kl,nl,1);
@@ -128,7 +128,7 @@ void fcarga(double ce[],double cle[]){
 		info = pvm_upkdouble(gkl,nl,1);
 		info = pvm_upkdouble(bkl,nl,1);
 		info = pvm_upkdouble(fmi,nl,1); 
-		info = pvm_upkdouble(fma,nl,1);
+		info = pvm_upkdouble(fma_,nl,1);
 		info = pvm_upkdouble(ylin,nl,1);
 		info = pvm_upkdouble(tap,nl,1);
 		info = pvm_upkdouble(b1kl,nl,1);
