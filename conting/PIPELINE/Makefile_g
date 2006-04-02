@@ -1,0 +1,55 @@
+#    O nome deste arquivo e' Makefile_g
+#    Os arquivos que este Makefile estao compilando e "linkando" sao:
+#    O executavel gerado chama-se gerente
+#	 Para rodar digite: make -f Makefile_g
+# --------------------------------------------------------------------
+
+#ABAIXO OS COMPILADORES QUE IRA USAR
+F77    = f77
+NCC    = gcc
+
+
+# ABAIXO TEMOS O NOME DO EXECUTAVEL
+FPO = gerente
+
+# ABAIXO TEMOS O FOLDER DE DESTINO DE EXECUTAVEL
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+# ABAIXO TEMOS AS OPCOES DE COMPILACOES
+FPI = fpi
+#FFLAGS = -c -C 
+#CCFLAGS = -c 
+FFLAGS = -c -C -w -dalign -O2
+CCFLAGS = -c -O2
+
+ARCHLIB = -lnsl -lsocket  
+LIBS	=	-lpvm3 $(ARCHLIB)
+GLIBS	=	-lgpvm3
+
+SPECIAL_LIB = -L/usr/ucblib -lucb
+
+#SPECIAL_INC = -R/usr/ucbinclude
+
+FLIBS	=   -lfpvm3 
+
+LFLAGS	=	-L$(PVM_ROOT)/lib/$(PVM_ARCH)
+
+# Arquivos include (se existir)
+
+
+EXTRASM = gerente.o input.o fcarga.o broadcast.o comunica.o \
+          entrada.o esparsa.o estado.o potencia.o formb.o \
+          zollen.o svector.o falha.o dynamic.o timer.o
+ 
+#PEGAHOSTNAME.o Myhostname.o
+
+.SUFFIXES: .f .o
+
+.f.o:; $(F77) $(FFLAGS)  $(SPECIAL_INC) $<
+
+.c.o:; $(NCC) $(CCFLAGS) $(SPECIAL_INC) $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO) : $(EXTRASM) Makefile_g
+	$(F77) -o $(SDIR)/$(FPO) $(EXTRASM) $(LFLAGS) $(FLIBS) $(GLIBS) $(LIBS) $(SPECIAL_LIB)

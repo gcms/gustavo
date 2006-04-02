@@ -1,0 +1,19 @@
+Observacoes sobre os arquivos deste diretorio:
+/home/baleeiro/pvm3/bin/LINUX/conting
+
+Estes arquivos foram obtidos da area de Fabricio Alves Melo
+em 05-09-2005. E o resultado do trabalho de depuracao do
+programa de Analise de Contingencias em Processamento Distribuido
+no ambiente PVM.
+
+Observacao importante: este programa paralelo foi testado
+com quatro maquinas para a analise da rede eletrica de
+810 barras, 1340 ramos, 1000 contingencias na lista, 
+sendo 50 contingencias na lista critica.
+
+Goiania, 05-09-2005
+
+Em 08-02-2006 executei o programa com as maquinas
+do arquivo hostfile. Banco de dados: BR810 (dadc.txt)
+
+Goiania, 08-02-2006

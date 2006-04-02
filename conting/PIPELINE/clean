@@ -1,0 +1,4 @@
+#!/bin/sh
+rm gerente.o input.o fcarga.o broadcast.o comunica.o entrada.o esparsa.o potencia.o estado.o formb.o zollen.o saida.o ident.o inversa.o svector.o produto.o fluxos.o state.o outage.o select.o bennett.o pcx.o pcy.o manager.o dcincr.o modif.o mestre.o escravo.o master.o slave.o pai.o filho.o father.o son.o anaDC.o anaAC.o falha.o dynamic.o clock.o
+
+
