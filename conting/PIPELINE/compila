@@ -1,0 +1,16 @@
+#!/bin/csh -f
+
+clean
+make -f Makefile_g
+clean
+cp gerente ..
+make -f Makefile_x
+clean
+cp pcx ..
+make -f Makefile_y
+clean
+cp pcy ..
+make -f Makefile_m
+clean
+cp manager ..
+

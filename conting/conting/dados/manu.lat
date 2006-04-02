@@ -1,0 +1,2568 @@
+\documentstyle[11pt,bezier]{relat}
+\input{/home/local/lib/tex/preamb.tex}
+\textheight=21cm
+\textwidth=16cm
+\voffset-1cm
+\hoffset-2cm
+
+\setlength{\parskip}{3mm}
+
+
+\begin{document}
+
+\begin{center}
+\begin{titlepage}
+
+\vspace*{1.5cm} 
+\parbox{3cm}{{\bf{\huge DSEE}}}  \parbox{9cm}{{\large{\bf Universidade 
+Estadual de Campinas}} \\
+{\large Faculdade de Engenharia El'etrica e de \\
+ Computa,c~ao}\\
+Departamento de Sistemas de Energia El'etrica} 
+\parbox{5cm}{\Unicamp}
+
+\vspace{2.0cm}
+
+{\Large
+Manual de Utiliza,c~ao dos Programas de \\
+An'alise de Conting^encias e de FPORS \\
+}
+
+\vspace{2cm}
+
+{\large Autores: Ant^onio C'esar Baleeiro Alves \\
+                 Eduardo Nobuhiro Asada }
+
+{\large Orientador: Professor Dr. Alcir Jos'e Monticelli}
+
+
+\begin{center}
+{\large Campinas, SP-Brasil, Julho de 1997}
+\end{center}
+
+\end{titlepage}
+\end{center}
+
+
+\clearpage
+\tableofcontents
+
+\newpage
+\noindent
+{\Large \bf Apresenta,c~ao}
+
+\noindent
+Este manual fornece informa,c~oes 'uteis para a
+utiliza,c~ao dos programas de an'alise de conting^encias e de fluxo de
+pot^encia 'otimo com restri,c~oes de seguran,ca (FPORS) desenvolvidos
+no LSEE/DSEE/FEEC/UNICAMP no per'iodo compreendido entre 1993 e 1997,
+pelos pesquisadores Ant^onio C'esar Baleeiro Alves e Eduardo Nobuhiro
+Asada.  Ao confeccionar este manual o objetivo 'e permitir ao usu'ario
+desses programas sua aplica,c~ao de forma clara, eficaz e precisa.  Neste
+trabalho s~ao descritas as caracter'isticas mais importantes dos
+programas e os dados necess'arios em cada caso, bem como a forma de
+entrada de dados. O manual est'a organizado como segue. O Cap'itulo 1
+aborda os programas seq\"{u}enciais e distribu'idos de an'alise de
+conting^encias (por m'etodos diretos) e de c'alculo do FPORS. O
+Cap'itulo 2 descreve o programa de an'alise de conting^encias por
+m'etodos diretos e iterativos (PCG com diferentes
+pr'e-condicionadores). No in'icio de cada cap'itulo 'e feita a
+apresenta,c~ao do programa (ou programas).
+
+Mais informa,c~oes sobre as implementa,c~oes podem ser obtidas
+no trabalho: 
+\noindent
+\begin{description}
+\item[] ALVES, Antonio C'esar Baleeiro {\bf Processamento distribu'ido
+aplicado `a an'alise de 
+\linebreak \hspace*{-2mm}seguran,ca est'atica de
+sistemas de energia el'etrica.} Campinas, Brasil: Faculdade \linebreak
+\hspace*{-2mm}de Engenharia El'etrica e de Computa,c~ao da
+Universidade Estadual de Campinas \linebreak \hspace*{-2mm}(UNICAMP),
+1997.  217p. (Tese, Doutorado).
+\end{description}
+
+
+ 
+
+\newpage
+
+\chapter{MANUAL DOS PROGRAMAS DE AN'ALISE DE CONTING^ENCIAS E DE FPORS}
+
+
+\hspace*{.6cm}As implementa,c~oes computacionais descritas neste cap'itulo 
+referem-se `a an'alise de conting^encias e ao al'ivio das viola,c~oes de 
+limites de fluxos em ramos (sobrecargas em $[MW]$) atrav'es do 
+remanejamento dos controles ativos; s~ao elas:
+
+\begin{description}
+\item[(i)] fluxo de pot^encia 'otimo com restri,c~oes de seguran,ca
+\underline{sem} capacidade de remanejamento p'os-conting^encia; este 
+programa 'e denominado de FPORS-I;
+\begin{figure}[htbp]
+\begin{center}
+\input{bloc1.tex}
+\end{center}
+\vspace*{-3mm}
+\caption{Fluxograma simplificado do processo iterativo do FPORS-I.}
+\label{bloc1}
+\end{figure}
+
+\item[(ii)] fluxo de pot^encia 'otimo com restri,c~oes de seguran,ca
+\underline{com} capacidade de remanejamento p'os-conting^encia, que
+emprega a t'ecnica sugerida por Stott {\em et al.} para construir o
+corte (i.e., a restri,c~ao de seguran,ca) pela m'axima viola,c~ao
+originada da sa'ida de um ou mais ramos do sistema de transmiss~ao;
+esta t'ecnica foi estendida para ${\bf \Delta}\;\neq\;{\bf 0}$;
+este programa 'e denominado de FPORS-II;
+
+\begin{figure}[htbp]
+\begin{center}
+\input{bloc2.tex}
+\end{center}
+\vspace*{-3mm}
+\caption{Fluxograma simplificado do processo iterativo do FPORS-II.}
+\label{bloc2}
+\end{figure}
+
+\item[(iii)] fluxo de pot^encia 'otimo com restri,c~oes de seguran,ca
+\underline{com} capacidade de remanejamento p'os-conting^encia, que
+utiliza decomposi,c~ao de Benders para separar o problema de \linebreak
+FPORS em dois: um nas vari'aveis do caso-base, e o outro nas vari'aveis
+p'os-conting^encia. Nesta abordagem, ao contr'ario das duas anteriores,
+os cortes s~ao gerados por multiplicadores simplex da solu,c~ao dos
+subproblemas de conting^encia que resultem infact'iveis. Esta
+implementa,c~ao 'e denominada de FPORS-III;
+
+\begin{figure}[htbp]
+\begin{center}
+\input{bloc3.tex}
+\end{center}
+\vspace*{-3mm}
+\caption{Fluxograma simplificado do processo iterativo do FPORS-III.}
+\label{bloc3}
+\end{figure}
+
+Nos fluxogramas ilustrados nas Figuras \ref{bloc1}, \ref{bloc2} e
+\ref{bloc3} (que s~ao simplifica,c~oes das Figuras \ref{cap03},
+\ref{cap06} e \ref{cap04}), os contadores $k_{\mbox{r}}$, $i_{\theta}$ e
+$i_{\mbox{op}}$ s~ao:
+
+
+\begin{itemize}
+\item $k_{\mbox{r}}$ 'e o contador de restri,c~oes de seguran,ca geradas;
+\item $i_{\theta}$ 'e o contador de itera,c~oes do caso-base (PL do
+caso-base ou de investimento);
+\item  $i_{\mbox{op}}$ 'e o contador de itera,c~oes de opera,c~ao (PL de
+opera,c~ao).
+\end{itemize}
+
+\item[(iv)] an'alise de conting^encias em duas camadas de
+processamento:  \underline{na primeira}, ap'os o c'alculo do caso-base,
+'e feito o {\em screening} das conting^encias determinando-se os
+estados p'os-dist'urbio aproximados para verifica,c~ao e constru,c~ao
+de um {\em ranking} de sobrecargas em ramos ('indice $PI_{MW}$);
+\underline{na segunda}, a partir da lista ordenada das conting^encias,
+'e efetuado o c'alculo do PL para a rede alterada de acordo com a
+mudan,ca topol'ogica correspondente `a conting^encia simulada, com
+fun,c~ao objetivo desvio quadr'atico; neste processamento busca-se
+determinar o remanejamento dos controles ativos que 'e necess'ario para
+corrigir a sobrecarga da conting^encia individualmente ('indice
+$PI_{MDQ}$). Com este programa deseja-se demonstrar a coer^encia entre
+a classifica,c~ao das conting^encias obtida com o 'indice $PI_{MW}$ 
+e a classifica,c~ao obtida a partir do 'indice $PI_{MDQ}$. Este programa 
+'e batizado com o nome {\sf ranking}.
+\end{description}
+
+Todas as implementa,c~oes foram elaboradas inicialmente para execu,c~ao
+em m'aquinas monoprocessadoras, ou seja, como programas seq\"{u}enciais;
+posteriormente foram paralelizadas com base no sistema {\em PVM3}
+para executar numa rede heterog^enea de computadores.
+
+
+\section{Detalhes das Implementa,c~oes de FPORS}
+
+\hspace*{.6cm}A Figura \ref{base} ilustra a etapas preliminares dos programas de
+fluxo de pot^encia 'otimo com restri,c~oes de seguran,ca. Nesta figura
+est~ao mostradas a leitura de dados, o c'alculo do ponto inicial (i.e.,
+o fluxo de pot^encia inicial), a escolha da fun,c~ao objetivo, e o
+processo de classifica,c~ao das conting^encias.  As Figuras
+\ref{cap03}, \ref{cap06} e \ref{cap04} ilustram os diagramas de blocos
+do processo iterativo dos programas FPORS-I, FPORS-II e FPORS-III.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\input{base.tex}
+\caption{Etapas preliminares de qualquer programa de FPORS: (1) ponto inicial;
+(2) caso-base; e (3) obten,c~ao do {\em ranking} das conting^encias.} 
+\label{base}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\input{cap03.tex}
+\caption{Diagrama de blocos do fluxo de pot^encia 'otimo 
+com restri,c~oes de seguran,ca \underline{sem} capacidade de 
+remanejamento p'os-conting^encia (FPORS-I).} 
+\label{cap03}
+\end{center}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\input{cap06.tex}
+\caption{Diagrama de blocos do fluxo de pot^encia 'otimo com restri,c~oes de
+seguran,ca \underline{com} capacidade de remanejamento p'os-conting^en\-cia 
+(FPORS-II).} 
+\label{cap06}
+\end{center}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\input{cap04.tex}
+\caption{Diagrama de blocos do fluxo de pot^encia 'otimo com restri,c~oes de
+seguran,ca \underline{com} capacidade de remanejamento p'os-conting^encia 
+\mbox{(FPORS-III).}} 
+\label{cap04}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\input{rank.tex}
+\caption{Diagrama de blocos do programa {\sf ranking}.} 
+\label{rank}
+\end{center}
+\end{figure}
+
+
+\newpage
+\subsection{Algoritmo de Programa,c~ao Linear Utilizado}
+
+\hspace*{0.6cm}A Figura \ref{dsr} mostra os principais passos do
+algoritmo de PL empregado nas implementa,c~oes. Na figura omite-se a
+obten,c~ao da \underline{base inicial}, que 'e uma tarefa relativamente
+simples e depende do tipo de fun,c~ao objetivo a minimizar (vide
+arquivos {\sf relaxa.f} e {\sf frouxo.f}).
+ \begin{figure}[htbp]
+\begin{center}
+\input{dsr.tex}
+\caption{Diagrama de blocos do algoritmo de solu,c~ao especializado
+de Stott.} 
+\label{dsr}
+\end{center}
+\end{figure}
+
+\newpage
+
+Para entender melhor os diagramas de blocos dos programas FPORS, ilustrados
+nas Figuras \ref{cap03} e \ref{cap06} \ref{cap04}, chama-se a aten,c~ao
+para os seguintes fatos:
+
+\begin{itemize}
+\item o algoritmo de solu,c~ao de PL ilustrado na Figura \ref{dsr} pode
+ser visto como um bloco de duas entradas e uma s'o sa'ida, como mostra
+a Figura \ref{blackbox}. A entrada 2 'e utilizada somente quando se
+deseja introduzir uma restri,c~ao de conting^encia no PL; a entrada 1
+em caso contr'ario, isto 'e, quando se otimiza a rede intacta;
+
+\begin{figure}[htbp]
+\begin{center}
+\input{blackbox.tex}
+\caption{Algoritmo de solu,c~ao especializado
+de Stott visto como uma ``caixa-preta'': duas entradas e uma sa'ida.} 
+\label{blackbox}
+\end{center}
+\end{figure}
+
+\item a Figura \ref{base} mostra atrav'es de um diagrama de blocos as
+etapas preliminares dos programas de FPORS descritos neste manual. Os blocos
+indicados como ``Caso-base'' referem-se, na verdade, `a solu,c~ao de um
+FPO com a rede sem altera,c~oes (o que corresponde a utilizar o bloco
+de otimiza,c~ao - Figuras \ref{dsr} e \ref{blackbox} - pela entrada 1).
+Dois tipos de fun,c~oes objetivos s~ao dispon'iveis: (1) custo de
+opera,c~ao; e (2) desvio quadr'atico de um ponto especificado. Esta
+figura foi apresentada `a parte, simplesmente, para evitar sua
+repeti,c~ao nos diagramas ilustrados nas Figuras \ref{cap03},
+\ref{cap06} e \ref{cap04}.  
+\end{itemize}
+
+
+\section{Localiza,c~ao dos Programas Seq\"{u}enciais e Distribu'idos}
+
+\hspace*{.6cm}Os diret'orios dos programas est~ao localizados na 'area da esta,c~ao 
+conforme mostram as Figuras \ref{root1} e \ref{root2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\input{root1.tex}
+\caption{Localiza,c~ao dos diret'orios dos programas seq\"{u}enciais.} 
+\label{root1}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\input{root2.tex}
+\caption{Localiza,c~ao dos diret'orios dos programas distribu'idos.} 
+\label{root2}
+\end{center}
+\end{figure}
+
+Algumas explica,c~oes adicionais s~ao necess'arias:
+\begin{itemize}
+\item O programa de an'alise de conting^encias cujo diret'orio 'e {\sf PCGDIR}
+est'a descrito em cap'itulo exclusivo (Cap'itulo 2);
+\item No caso de usar o sistema {\em PVM3} no ambiente {\em Solaris} da rede 
+{\em FDDI}, o diret'orio ser'a o {\sf pvm3/bin/SUN4SOL2};
+\item Os programas cujos diret'orios s~ao {\sf HOSTEDFCO} e {\sf PIPEFCO} operam
+com fluxo de dados (portanto, cabe ao usu'ario prover \underline{dez}\footnote{O usu'ario
+pode modificar este n'umero no arquivo {\sf ranking.f} ou {\sf gerente.f}, vari'avel 
+{\tt kselmax}, respectivamente em {\sf HOSTEDFCO} e {\sf PIPEFCO} e, em seguida, 
+compilar.} bases-de-dados
+para executar esses programas).
+\end{itemize}
+
+Os pr'e-requisitos necess'arios para \underline{executar} os programas s~ao os 
+seguintes: 
+\begin{enumerate}
+\item Ter instalado um compilador {\sf f77} (FORTRAN 77);
+\item Compilar o programa de interesse e criar o arquivo execut'avel;
+\item Ter no diret'orio corrente os arquivos de dados {\sf optapl.dat} e {\sf dad1.dat}
+no caso dos programas seq\"{u}enciais;
+\item A observa,c~ao anterior vale tamb'em para os programas distribu'idos, por'em
+os dados devem estar posicionados no diret'orio {\sf pvm3/bin/SUN4};
+\item Ter instalado uma vers~ao do {\em PVM3} e um conjunto de esta,c~oes 
+interligadas em rede, no caso dos programas distribu'idos;
+\item Para o caso espec'ifico do {\sf PIPEFCO}, dispor no m'inimo de um conjunto de 
+3 (tr^es) esta,c~oes interligadas e funcionando com o {\em PVM3};
+\item Para o caso espec'ifico de execu,c~ao de qualquer programa
+distribu'ido, para executar 'e necess'ario inicializar os {\em daemon}
+do {\em PVM3} na configura,c~ao de m'aquinas escolhida.
+\end{enumerate}
+
+
+\section{Como Compilar os Programas\hspace*{0.5mm}?}
+
+\hspace*{.6cm}Em cada um dos diret'orios relativos aos programas deste manual existe
+um arquivo denominado {\sf Makefile}, sendo a 'unica exce,c~ao o
+diret'orio {\sf PIPEFCO}, que possui 4 (quatro) arquivos do tipo {\sf Makefile}. 
+S~ao eles:
+\vspace*{-4mm}
+\begin{description}
+\item[1.] {\sf Makefile$\underline{\hspace*{2mm}}$g}\hspace*{5mm}Para 
+compilar o programa do est'agio A;
+\item[2.] {\sf Makefile$\underline{\hspace*{2mm}}$x}\hspace*{5mm}Para 
+compilar o programa do est'agio B;
+\item[3.] {\sf Makefile$\underline{\hspace*{2mm}}$y}\hspace*{5mm}Para 
+compilar o programa do est'agio C;
+\item[4.] {\sf Makefile$\underline{\hspace*{2mm}}$m}\hspace*{5mm}Para 
+compilar o programa do est'agio D;
+\end{description}
+
+No caso do programa {\sf PIPEFCO}, para compilar (e ligar os arquivos)
+basta digitar o nome {\sf compila} que corresponde ao seguinte {\em
+script} (Figura \ref{cod1}):
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+#!/bin/sh
+
+echo ' Preparando executavel gerente em ~/pvm3/bin/SUN4 ...'
+clean
+make -f Makefile_g
+
+echo ' Preparando executavel pcx em ~/pvm3/bin/SUN4 ...'
+clean
+make -f Makefile_x
+
+echo ' Preparando executavel pcy em ~/pvm3/bin/SUN4 ...'
+clean
+make -f Makefile_y
+
+echo ' Preparando executavel manager em ~/pvm3/bin/SUN4 ...'
+clean
+make -f Makefile_m
+\end{verbatim}
+}
+\caption{Conte'udo do {\em script} {\sf compila} para compilar 
+{\sf PIPEFCO}.}
+\label{cod1}
+\end{center}
+\end{figure}
+
+Para compilar (e ligar os arquivos) referentes aos demais programas, basta 
+digitar {\sf make} e esperar. Os Ap^endices A e B cont^em os arquivos
+{\sf Makefile} referentes aos programas.
+
+As Tabelas \ref{tab1} e \ref{tab2} mostram os nomes dos arquivos
+execut'aveis criados; a posi,c~ao do execut'avel 'e tamb'em fornecida.
+
+
+\noindent
+\begin{table}[htbp]
+\caption{Nomes dos arquivos execut'aveis criados e a posi,c~ao ao final da compila,c~ao; programas seq\"{u}enciais.}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|} \hline \hline
+\multicolumn{3}{c|}{Programas seq\"{u}enciais} \\ \cline{1-3}
+Diret'orio      & Nome do execut'avel & Posi,c~ao do execut'avel \\ \hline  
+{\sf FPORS-I}   &   {\sf fcors}       &   {\sf FPORS-I}      \\ \hline
+{\sf FPORS-II}  &   {\sf esca}        &   {\sf FPORS-II}     \\ \hline
+{\sf FPORS-III} &   {\sf benders}     &   {\sf FPORS-III}    \\ \hline
+{\sf RANKING}   &   {\sf ranking}     &   {\sf RANKING}      \\ \hline
+{\sf PCGDIR}    &   {\sf contingencia}&   {\sf PCGDIR}      \\ \hline
+\end{tabular}
+\end{center}
+\label{tab1}
+\noindent
+\caption{Nomes dos arquivos execut'aveis criados e a posi,c~ao ao final da compila,c~ao; programas distribu'idos.}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|} \hline \hline
+\multicolumn{3}{c|}{Programas distribu'idos} \\ \cline{1-3}
+Diret'orio      & Nome do execut'avel & Posi,c~ao do execut'avel \\ \hline  
+{\sf FPORS-I}   &   {\sf fcors}       &   {\sf pvm3/bin/SUN4}    \\ \hline
+{\sf FPORS-II}  &   {\sf esca}        &   {\sf pvm3/bin/SUN4}    \\ \hline
+{\sf FPORS-III} &   {\sf benders}     &   {\sf pvm3/bin/SUN4}    \\ \hline
+{\sf RANKING}   &   {\sf ranking}     &   {\sf pvm3/bin/SUN4}    \\ \hline
+{\sf HOSTEDFCO} &   {\sf ranking}     &   {\sf pvm3/bin/SUN4}    \\ \hline
+{\sf PIPEFCO}   &{\sf gerente}$^{\ast}$,{\sf pcx},{\sf pcy},{\sf manager}&   {\sf pvm3/bin/SUN4}    \\ \hline
+\end{tabular}
+\end{center}
+$^{\ast}$ Executar apenas o {\sf gerente}.
+\label{tab2}
+\end{table}
+
+
+\section{Descri,c~ao dos Arquivos Fontes Comuns `as Implementa,c~oes}
+
+\hspace*{.6cm}Existem arquivos fontes ({\sf .f} ou {\sf .for}) que s~ao 
+usados em todos os programas de an'alise de conting^encias e de FPORS; 
+esses arquivos comuns `as implementa,c~oes s~ao descritos nesta se,c~ao.
+
+\subsection{Arquivos Associados `a Leitura de Dados ou ao C'alculo do 
+Ponto Inicial}
+
+\begin{enumerate}
+\item {\sf input.f}\footnote{O arquivo de mesmo nome do diret'orio 
+{\sf pvm3/bin/SUN4/PIPEFCO} 'e ligeiramente diferente deste.} 
+Abre os arquivos {\sf optapl.dat} e {\sf dad1.dat} e faz chamadas de rotinas 
+de leitura de dados; 
+\item {\sf ledado.f} Cont'em rotinas de leitura de dados da rede, dos geradores
+e dados da lista de conting^encias (vide se,c~ao 1.8.2);
+\item {\sf fcinit.f} Faz chamadas de rotinas de c'alculo do fluxo de pot^encia 
+{\em DC};
+\item {\sf fcarga.f} Faz chamadas de rotinas de c'alculo do fluxo de pot^encia 
+{\em AC};
+\item {\sf esparsa.f} Chama rotinas ligadas `a estrutura esparsa de 
+$[B']$ (inclui a ordena,c~ao {\em minimum degree});
+\item {\sf sparse.f} Chama rotinas ligadas `as estruturas esparsas de $[B']$ 
+e $[B'']$ (inclui a ordena,c~ao {\em minimum degree});
+\item {\sf estado.f} Preenchimento da estrutura de armazenamento
+compacto de Zollenkopf, e tamb'em a fatora,c~ao de $[B']$ (inclui
+a solu,c~ao do sistema $[B']{\bf \theta}\;=\;{\bf P}$, e a cria,c~ao 
+do vetor {\tt pg0(.)}); 
+\item {\sf state.f} Preenchimento da estrutura de armazenamento
+compacto de Zollenkopf, e tamb'em as fatora,c~oes de $[B']$ e $[B'']$ (inclui
+o processo iterativo do fluxo de pot^encia desacoplado r'apido, e 
+a cria,c~ao do vetor {\tt pg0(.)})
+\item {\sf power.f} Cont'em duas rotinas: (1) a primeira calcula os
+vetores de inje,c~ao de pot^encia nas barras (dando origem a {\tt p(.)} e
+{\tt q(.)}); (2) a segunda calcula os fluxos ativos nos ramos da rede (criando
+assim o vetor {\tt fkl0(.)} para o modelo {\em AC}) e \underline{prepara} os
+vetores de limites de fluxos ativos, {\tt fmi0(.)} e {\tt fma0(.)});
+\item {\sf caflu.f} Prepara os vetores de limites de fluxos ativos, {\tt fmi0(.)} e 
+{\tt fma0(.)}, e cria o vetor {\tt fkl0(.)} para o modelo {\em DC} (inicializa 
+{\tt kbranch(.)}, que 'e o vetor de ramos da rede intacta);
+\item {\sf inclu.f} Cont'em rotinas de preenchimento da estrutura esparsa de 
+Zollenkopf para as matrizes $[B']$ e $[B'']$;
+\item {\sf zollen.f} Cont'em rotinas de Zollenkopf: {\sf orden()}, {\sf redu()} e
+{\sf solu()};
+\item {\sf svector.f} Cont'em diversas rotinas relativas aos m'etodos de vetores 
+esparsos.
+\end{enumerate}
+
+\subsection{Arquivos Associados `a An'alise de Conting^encias}
+
+\begin{enumerate}
+\item {\sf contdc.f} Cont'em rotinas de an'alise de conting^encias
+simples e m'ultiplas pelo m'etodo {\em DC} incremental. Est'a tamb'em
+inclu'ida neste arquivo a rotina de c'alculo do 'indice de severidade
+$PI_{MW}$.  Nesta rotina, a an'alise de conting^encias 'e feita de
+forma seletiva, conforme ilustra a Figura \ref{fig5}:
+\begin{figure}[htbp]
+\begin{center}
+\input{fig5.tex}
+\caption{Seletividade nos c'alculos das conting^encias simples e m'ultiplas.} 
+\label{fig5}
+\end{center}
+\end{figure}
+
+\item {\sf refmid.f} Cont'em rotinas de an'alise de conting^encias simples e
+m'ultiplas por atualiza,c~ao de fatores triangulares e {\em mid}-compensa,c~ao
+(vide a explica,c~ao do arquivo {\sf contdc.f});
+\item {\sf produto.f} Cont'em rotinas de c'alculo de opera,c~oes com matrizes
+e vetores (vide o algoritmo {\em mid}-compensa,c~ao);
+\item {\sf bennett.f} Cont'em a implementa,c~ao da atualiza,c~ao de fatores
+triangulares;
+\item {\sf rowcut.f} Faz chamadas relativas `a considera,c~ao do 
+'indice de severidade. S~ao duas as op,c~oes dispon'iveis: (a) corte da lista 
+por um 'indice m'inimo ($PI^{\nu}_{MW}\;\geq\;\varepsilon$); (b) corte da 
+lista por um tamanho m'inimo;
+\item {\sf select.f} Cont'em rotinas de classifica,c~ao da lista de 
+conting^encias. A ordena,c~ao 'e efetuada atrav'es do algoritmo Heapsort 
+Knuth;
+\item {\sf restab.f} Tem a fun,c~ao de guardar temporariamente (e devolver quando solicitada) informa,c~oes do caso-base;
+\item {\sf inversa.f} Cont'em um algoritmo de invers~ao de matrizes de pequena
+ordem. Esta rotina 'e adequada `a matrizes sim'etricas e do tipo ``rede''. Auxilia
+na implementa,c~ao de algoritmos de an'alise de conting^encias m'ultiplas.
+\end{enumerate}
+
+
+\subsection{Arquivos Associados ao Processo de Otimiza,c~ao}
+
+\begin{enumerate}
+\item {\sf despacho.f} Calcula o despacho econ^omico ``puro'' 
+(considera apenas restri,c~oes de gera,c~ao e de ramo do caso-base com 
+objetivo econ^omico);
+\item {\sf fcomdq.f} Calcula o FPO com objetivo m'inimo desvio quadr'atico
+do ponto inicial (considera apenas restri,c~oes de gera,c~ao e de ramo do 
+caso-base; an'aloga `a rotina {\sf despacho.f});
+\item {\sf inicio.f} Calcula o vetor ${\bf \beta}$ (fator de perdas na transmiss~ao)
+e estabelece a forma incremental dos limites de fluxos em ramos, {\tt fmi(.)} e {\tt fma(.)};
+\item {\sf relaxa.f} Faz o despacho inicial de gera,c~ao para objetivo econ^omico;
+\item {\sf frouxo.f} Faz o despacho inicial de gera,c~ao para objetivo m'inimo 
+desvio quadr'atico;
+\item {\sf curvae.f} Segmenta a curva quadr'atica (cuja equa,c~ao est'a 
+mostrada a seguir) para objetivo econ^omico ({\tt nseg} segmentos);
+
+\[
+\mbox{Fun,c~ao objetivo}\;f({\bf P}^0)\;=\;\sum_{j} {a_1}_j\;+\;{a_2}_jP_j\;+\;{a_3}_jP^2_j,\hspace*{8mm}\mbox{para}\;j\;
+\mbox{tipo}\;R
+\]
+\noindent
+Os coeficientes ${a_1}_j,\;{a_2}$ e ${a_3}$ s~ao dados lidos em arquivo 
+(vide {\sf ledado.f}).
+
+\item {\sf curvam.f} Segmenta a curva quadr'atica (cuja equa,c~ao est'a mostrada 
+a seguir) para objetivo MDQ ({\tt nseg} segmentos);
+
+\[
+\mbox{Fun,c~ao objetivo}\;f({\bf P}^0)\;=\;\sum_{j} \alpha_j \Delta P^2_j, 
+\hspace*{8mm}\mbox{para todo}\;j
+\]
+\noindent
+O coeficiente $\alpha_j$ 'e definido para os geradores reais do seguinte modo:
+\[
+\alpha_j\;\stackrel{\Delta}{=}\;\frac{1}{(P^{\mbox{m'ax}}_j)^2}
+\]
+\noindent
+Sendo $P^{\mbox{m'ax}}_j$ o limite superior do gerador $j$.
+
+\item {\sf pldual.f} Cont'em a implementa,c~ao do algoritmo dual-simplex 
+revisado de Stott (vide Figura \ref{dsr});
+\item {\sf fuobec.f} Cont'em rotinas de c'alculo da fun,c~ao objetivo econ^omico:
+(1) c'alculo exato (pela f'ormula); (2) c'alculo pela segmenta,c~ao (por 
+aproxima,c~ao, atrav'es do custo incremental de cada segmento); 
+\item {\sf fuobmd.f} Cont'em rotinas de c'alculo da fun,c~ao objetivo MDQ:
+(1) c'alculo exato (pela f'ormula); (2) c'alculo pela segmenta,c~ao (por 
+aproxima,c~ao, atrav'es do custo incremental de cada segmento);
+\item {\sf fdcinc.f} C'alculo do estado ${\bf \Delta \theta}$ a cada itera,c~ao dsr 
+(Figura \ref{dsr});
+\item {\sf eqbase.f} Cont'em rotinas de inicializa,c~ao da base do processo PL e de
+solu,c~ao da equa,c~ao b'asica:
+\[
+{\bf \Delta P}^f\;=\;[B^f]^{-1}\{{\bf L}^b\;-\;[B^l]{\bf \Delta P}^l \}
+\label{baseredu2}
+\]
+\item {\sf resolv.f} Cont'em rotinas de solu,c~ao de sistemas lineares associado
+ao processo PL;
+\item {\sf sobcar.f} Cont'em rotinas de obten,c~ao do conjunto monitorado e 
+de verifica,c~ao da maior sobrecarga;
+\item {\sf restcb.f} Constr'oi os vetores de restri,c~oes de ramo (${\bf A}^t_{km}$)
+e de gerador (${\bf A}^t_{j}$);
+\item {\sf pliter.f} Cont'em diversas rotinas do ``N'ucleo do processo PL'': 
+(1) c'alculo do vetor sensibilidade; (2) determina,c~ao do conjunto 
+eleg'ivel; (3) c'alculo do  vetor ${\bf \lambda}$, de custos marginais; 
+(4) obten,c~ao do vetor de raz~oes; e (5) escolha da raz~ao m'inima;
+\item {\sf geramv.f} Cont'em rotinas relativas `a mudan,ca de base;
+\item {\sf albase.f} Cont'em rotinas relativas `a mudan,ca de base e ao procedimento
+de sele,c~ao do segmento da curva do gerador;
+\item {\sf modif2.f} Procede a verifica,c~ao dos limites dos geradores livres na
+curva multi-segmentada;
+\item {\sf modif3.f} Procede a determina,c~ao do gerador a ser liberado. Esta 
+rotina pesquisa o quanto se pode deslocar na curva multi-segmentada sem perder 
+otimalidade;
+\item {\sf mudinc.f} Transforma gera,c~oes incrementais ({\tt dp(.)}) para a forma
+n~ao-incremental e calcula o estado angular n~ao-incremental. 
+\end{enumerate}
+
+
+\subsection{Arquivos de Sa'ida de Resultados}
+
+\begin{enumerate}
+\item {\sf piout.f} Comp~oe-se de rotinas de relat'orios do ponto inicial 
+do sistema el'etrico (estado e fluxos; {\sf relat1.sai} e {\sf relat2.sai});
+\item {\sf cbout.f} Cont'em a rotina para criar o relat'orio de sa'ida do
+ponto de opera,c~ao dos geradores ({\sf relat3.sai});
+\item {\sf conout.f}\footnote{H'a uma pequena diferen,ca entre as vers~oes 
+seq\"{u}encial e distribu'ida desta rotina.} Cont'em as rotinas para 
+criar os relat'orios de sa'ida da classifica,c~ao das conting^encias
+({\sf relat6.sai} e {\sf relat9.sai}; {\sf subroutine relat9} n~ao est'a
+dispon'ivel nos diret'orios {\sf FPORS-I}, {\sf FPORS-II} e 
+{\sf FPORS-III}).
+\end{enumerate}
+
+
+Al'em dos arquivos relacionados anteriormente, h'a tamb'em os arquivos
+{\sf clock.f} e {\sf timer.o} associados `a medi,c~ao de tempos de
+processamento.
+
+
+\section{Descri,c~ao dos Arquivos Fontes Espec'ificos de Cada 
+Implementa,c~ao Seq\"{u}encial ou Distribu'ida}
+
+\hspace*{0.6cm}Existem arquivos fontes ({\sf .f} ou {\sf .for}) que
+s~ao exclusivos de um dado programa de an'alise de conting^encias ou de
+FPORS; esses arquivos s~ao descritos nesta se,c~ao.
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf RANKING} ou {\sf pvm3/bin/SUN4/RANKING}}
+
+\begin{enumerate}
+\item {\sf ranking.f} Programa principal;
+\item {\sf fcocon.f} Calcula FPO MDQ com a rede el'etrica alterada para
+a conting^encia sob an'alise (faz principalmente chamadas de rotinas) $-$ tamb'em
+referido neste trabalho como c'alculo da estrat'egia corretiva de conting^encias;
+\item {\sf status.f} Restaura vari'aveis na forma incremental para
+a n~ao-incremental (este arquivo 'e muito parecido com {\sf mudinc.f});
+\item {\sf faxina.f} Limpa posi,c~oes de mem'oria de vari'aveis do processo PL;
+\item {\sf mdqout.f} Cont'em rotinas de relat'orios de sa'ida; 
+\item {\sf opout.f} Cria relat'orios de sa'ida sobre o ponto de opera,c~ao
+do sistema ({\sf relat4.sai} e {\sf relat5.sai}).
+\end{enumerate}
+
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf FPORS-I} ou {\sf pvm3/bin/SUN4/FPORS-I}}
+
+\begin{enumerate}
+\item {\sf fcors.f} Programa principal;
+\item {\sf flowdc.f} Cont'em rotinas de an'alise de conting^encias 
+simples e m'ultiplas (modelo incremental do sistema el'etrico). As
+rotinas que comp~oem este arquivo s~ao utilizadas no processo de otimiza,c~ao 
+para verifica,c~ao de viola,c~oes em ramos devido a uma dada conting^encia;
+\item {\sf fcocut.f} Cont'em a implementa,c~ao do processo iterativo do
+FPORS para as conting^encias cr'iticas (vide Figura \ref{cap03});
+\item {\sf setcri.f} Cont'em rotinas de identifica,c~ao e de forma,c~ao 
+do conjunto cr'itico;
+\item {\sf rescon.f} Comp~oe-se de rotinas de constru,c~ao de restri,c~oes
+de seguran,ca do tipo sensibilidade entre fluxo e gera,c~ao;
+\item {\sf opout.f} Cria relat'orios de sa'ida sobre o ponto de opera,c~ao
+do sistema ({\sf relat4.sai} e {\sf relat5.sai}).
+\end{enumerate}
+
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf FPORS-II} ou {\sf pvm3/bin/SUN4/FPORS-II}}
+
+\begin{enumerate}
+\item {\sf esca.f} Programa principal;
+\item {\sf flowdc.f} Cont'em rotinas de an'alise de conting^encias 
+simples e m'ultiplas (modelo incremental do sistema el'etrico). As
+rotinas que comp~oem este arquivo s~ao utilizadas no processo de otimiza,c~ao 
+para verifica,c~ao de viola,c~oes em ramos devido a uma dada conting^encia;
+\item {\sf processo.f} Cont'em a implementa,c~ao do processo iterativo do
+FPORS para as conting^encias cr'iticas (vide Figura \ref{cap06});
+\item {\sf setcri.f} Cont'em rotinas de identifica,c~ao e de forma,c~ao 
+do conjunto cr'itico;
+\item {\sf rescon.f} Comp~oe-se de rotinas de constru,c~ao de restri,c~oes
+de seguran,ca do tipo sensibilidade entre fluxo e gera,c~ao;
+\item {\sf salva.f} Guarda temporariamente vari'aveis do processo PL (i.e., 
+{\sf info .eq. 'guarda'}) e recupera quando solicitado  (i.e., 
+{\sf info .eq. 'recupera'});
+\item {\sf splim.f} Cont'em duas rotinas associadas ao subproblema de
+opera,c~ao: (1) defini,c~ao de limites dos geradores; (2) obten,c~ao do fluxo 
+contingente ap'os o remanejamento (retorna a vari'avel {\tt ifact});
+\item {\sf libloq.f} Cont'em duas rotinas associadas ao subproblema de
+opera,c~ao;
+\item {\sf subpro.f} Cont'em a implementa,c~ao do algoritmo 
+dual-simplex revisado de Stott para o subproblema de opera,c~ao 
+(vide Figura \ref{dsr});
+\item {\sf iterpl.f} Cont'em rotinas ligadas ao teste de 
+``elegibilidade'' referente ao PL do subproblema de opera,c~ao;
+\item {\sf modsp3.f} Procede a determina,c~ao do gerador a ser liberado. Esta 
+rotina pesquisa o quanto se pode deslocar na curva multi-segmentada sem perder 
+otimalidade (espec'ifica do subproblema de opera,c~ao);
+\item {\sf spbase.f} Comp~oe-se de diversas rotinas do processo
+PL do subproblema de opera,c~ao: (1) atualiza vetores de limites de ramos e
+de geracoes num limite (2) seleciona a gera,c~ao livre mais violada; 
+(3) relaxa a restri,c~ao de conting^encia (se o problema resultou 
+infact'ivel); etc.
+\end{enumerate}
+
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf FPORS-III} ou {\sf pvm3/bin/SUN4/FPORS-III}}
+
+\begin{enumerate}
+\item {\sf benders.f} Programa principal;
+\item {\sf flowdc.f}  Cont'em rotinas de an'alise de conting^encias 
+simples e m'ultiplas (modelo incremental do sistema el'etrico). Estas
+rotinas s~ao utilizadas no processo de otimiza,c~ao para 
+verifica,c~ao de viola,c~oes em ramos devido a uma dada 
+conting^encia;
+\item {\sf fcocon.f}\footnote{O conte'udo desta rotina difere em 
+rela,c~ao `aquela de mesmo nome apresentada anteriormente.} 
+Calcula FPO para minimizar ``infactibilidade'' com a rede el'etrica 
+alterada para a conting^encia sob an'alise (nesta rotina 'e decidida
+a produ,c~ao ou n~ao de um novo corte de Benders);
+\item {\sf salva.f} Guarda temporariamente vari'aveis do processo PL 
+(i.e., {\sf info .eq. 'guarda'}) e recupera quando solicitado 
+(i.e., {\sf info .eq. 'recupera'});
+\item {\sf gcorte.f} Rotinas associadas `a produ,c~ao do corte de 
+Benders (baseado em multiplicadores simplex);
+\item {\sf curvaf.f} Faz a segmenta,c~ao da curva linear de cada 
+gerador fict'icio;
+\item {\sf fuobjo.f} Calcula o valor da fun,c~ao objetivo do 
+corte de carga exato (``infactibilidade'');
+\item {\sf processo.f} Cont'em a implementa,c~ao do processo iterativo do
+FPORS para as conting^encias cr'iticas (vide Figura \ref{cap04});
+\item {\sf faxina.f}\footnote{Apesar do nome ser coincidente, esta rotina 
+difere em conte'udo daquela da se,c~ao 1.5.1.} Limpa posi,c~oes de mem'oria 
+de vari'aveis do processo PL;
+\item {\sf setcri.f} Cont'em rotinas de identifica,c~ao e de 
+forma,c~ao do conjunto cr'itico.
+\end{enumerate}
+
+
+\section{Descri,c~ao dos Arquivos Fontes Espec'ificos de Cada 
+Implementa,c~ao Distribu'ida}
+
+\hspace*{0.6cm}Al'em dos arquivos relacionados na se,c~ao anterior,
+existem arquivos fontes ({\sf .f} ou {\sf .for}) que s~ao exclusivos de
+um dado programa distribu'ido de an'alise de conting^encias ou de FPORS
+e que cont^em instru,c~oes do {\em PVM3}; esses arquivos s~ao descritos
+nesta se,c~ao.
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf pvm3/bin/SUN4/RANKING}}
+
+\begin{enumerate}
+\item {\sf difusao.f} Rotina que tem a fun,c~ao de difundir os dados do
+sistema el'etrico entre os processos distribu'idos (isto 'e feito com
+base na primitiva {\sf PVMFBCAST()}, que transmite os dados 
+para todos os membros do grupo);
+\item {\sf mestre.f} e {\sf escravo.f} Cont'em as implementa,c~oes do
+{\em screening} de conting^encias em paralelo ($PI_{MW}$), nos modos 
+s'incrono e ass'incrono (i.e., ass'incrono por unidade);
+\item {\sf pai.f} e {\sf filho.f} Cont'em as implementa,c~oes do
+{\em screening} de conting^encias em paralelo ($PI_{MW}$), no modo ass'incrono 
+por ``envelope'';
+\item {\sf master.f} e {\sf slave.f} Cont'em as implementa,c~oes da
+estrat'egia corretiva de sobrecargas em paralelo ($PI_{MDQ}$), nos modos 
+s'incrono e ass'incrono (i.e., ass'incrono por unidade);
+\item {\sf father.f} e {\sf son.f} Cont'em as implementa,c~oes da
+estrat'egia corretiva de sobrecargas em paralelo ($PI_{MDQ}$), no 
+modo ass'incrono por ``envelope''.
+\end{enumerate}
+
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf pvm3/bin/SUN4/FPORS-I}}
+
+\begin{enumerate}
+\item {\sf difusao.f}, {\sf mestre.f}, {\sf escravo.f}, {\sf pai.f} e {\sf filho.f} 
+Estas rotinas possuem as mesmas fun,c~oes descritas para as rotinas de mesmo nome 
+na se,c~ao anterior (se,c~ao 1.6.1); 
+\item {\sf consumer.f} Cont'em a implementa,c~ao distribu'ida do processo iterativo
+do FPORS para o tratamento das conting^encias cr'iticas (modo ass'incrono e 
+modelo Produtor-Consumidor) $-$ especialmente o ``consumo'' de restri,c~oes 
+produzidas nos processos remotos e gera,c~ao de novo ponto de opera,c~ao;
+\item {\sf maker.f} Cont'em a implementa,c~ao distribu'ida do processo iterativo
+do FPORS para o tratamento das conting^encias cr'iticas (modo ass'incrono e 
+modelo Produtor-Consumidor) $-$ especialmente a ``produ,c~ao'' de restri,c~oes 
+a partir de novo ponto de opera,c~ao recebido do {\em host-login}.
+\end{enumerate}
+
+
+\subsection{Arquivos Espec'ificos do Diret'orio  {\sf pvm3/bin/SUN4/FPORS-II}}
+
+\begin{enumerate}
+\item {\sf difusao.f}, {\sf mestre.f}, {\sf escravo.f}, {\sf pai.f} e {\sf filho.f} 
+Estas rotinas possuem as mesmas fun,c~oes descritas na se,c~ao 1.6.1;
+\item {\sf consumer.f} e {\sf maker.f} Estas rotinas possuem essencialmente as mesmas
+fun,c~oes descritas para as rotinas de mesmo nome da se,c~ao 1.6.2 (chama-se
+a aten,c~ao do leitor para as diferen,cas existentes entre estas rotinas em num
+ou noutro programa distribu'ido; tais diferen,cas s~ao decorrentes das peculiaridades
+dos problemas tratados). 
+\end{enumerate}
+
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf pvm3/bin/SUN4/FPORS-III}}
+
+\begin{enumerate}
+\item {\sf difusao.f}, {\sf mestre.f}, {\sf escravo.f}, {\sf pai.f} e {\sf filho.f} 
+Estas rotinas possuem as mesmas fun,c~oes descritas na se,c~ao 1.6.1;
+\item {\sf consumer.f} e {\sf maker.f} Estas rotinas possuem essencialmente as mesmas
+fun,c~oes descritas para as rotinas de mesmo nome da se,c~ao 1.6.2 ('e importante
+ressaltar que elas n~ao s~ao iguais). 
+\end{enumerate}
+
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf pvm3/bin/SUN4/PIPEFCO}}
+
+\begin{enumerate}
+\item {\sf gerente.f}, {\sf pcx.f}, {\sf pcy.f} e {\sf manager.f} Estes arquivos
+cont'em as implementa,c~oes das tarefas principais dos est'agios A, B, C e D,
+conforme ilustra a Figura \ref{figpipe}. Cada est'agio possui um programa principal;
+\item {\sf input.f} Cont'em chamadas de rotinas de leitura de dados de acordo
+com o modelo {\em Pipeline};
+\item {\sf difusao.f}, {\sf mestre.f}, {\sf escravo.f}, {\sf pai.f},
+{\sf filho.f}, {\sf master.f}, {\sf slave.f}, {\sf father.f} e {\sf son.f}
+Estas rotinas possuem as mesmas fun,c~oes descritas na se,c~ao 1.6.1; 
+\item {\sf comunica.f} Tem a fun,c~ao de transmitir dados e resultados do est'agio A para o est'agio B ({\sf gerente}$\rightarrow${\sf pcx}); as comunica,c~oes entre os demais est'agios s~ao feitas nos pr'oprios arquivos
+{\sf gerente.f}, {\sf pcx.f}, {\sf pcy.f} e {\sf manager.f};
+\item {\sf dynamic.f} e {\sf falha.f} Cont^em implementa,c~oes relativas `a 
+toler^ancia a falha.
+
+\hspace*{0.6cm}A propriedade de toler^ancia pode ser 
+des-habilitada comentando-se o trecho indicado do arquivo {\sf gerente.f}. 
+A Figura \ref{figpipe} fornece uma vis~ao geral de como os arquivos 
+principais do {\em  Pipeline} est~ao relacionados.
+\end{enumerate}
+\begin{figure}[htbp]
+\begin{center}
+\input{figpipe.tex}
+\caption{Decomposi,c~ao em fun,c~oes do problema de an'alise de seguran,ca
+est'atica conforme o modelo {\em Pipeline}.} 
+\label{figpipe}
+\end{center}
+\end{figure}
+
+\subsection{Arquivos Espec'ificos do Diret'orio {\sf pvm3/bin/SUN4/HOSTEDFCO}}
+
+\hspace*{0.6cm}Essencialmente, as rotinas que comp~oem este programa
+s~ao as mesmas relacionadas na se,c~ao 1.6.1 (diret'orio {\sf
+pvm3/bin/SUN4/RANKING}), com algumas poucas diferen,cas nos arquivos
+\linebreak {\sf input.f} (vide {\sf input.f} do diret'orio {\sf
+pvm3/bin/SUN4/PIPEFCO}) e no arquivo do programa principal {\sf
+ranking.f}.
+
+
+
+\subsection{Arquivos Tipo {\sf include} para Declara,c~ao de Vari'aveis}
+
+\begin{enumerate}
+\item {\sf globo.inc} Cont'em declara,c~oes em {\em common} de vari'aveis indexadas
+associadas ao c'alculo do estado do sistema e `a an'alise de conting^encias (neste
+arquivo est~ao tamb'em definidos os \underline{dimensionamentos} do vetores e 
+matrizes utilizados nos programas);
+\item {\sf stott.inc} Cont'em declara,c~oes em {\em common} de vari'aveis indexadas
+associadas ao processo de otimiza,c~ao e ao c'alculo do FPORS em geral;
+\item {\sf globac.inc} Cont'em declara,c~oes em {\em common} de vari'aveis indexadas
+espec'ificas do c'alculo do ponto inicial atrav'es do fluxo de pot^encia {\em AC} (vide
+observa,c~ao no arquivo {\sf difusao.f}); 
+\item {\sf chave.inc} Cont'em declara,c~oes em {\em common} de vari'aveis n~ao-indexadas;
+\item {\sf parad.inc} Cont'em declara,c~oes em {\em common} de vari'aveis 
+espec'ificas para uso no processamento distribu'ido.
+\end{enumerate}
+
+
+\section{Utiliza,c~ao do Sistema {\em PVM3}}
+
+
+\hspace*{0.6cm}Para utiliza,c~ao do sistema {\em PVM3}, nesta fase, sup~oe-se 
+que os seguintes pr'e-requisitos j'a estejam completamente satisfeitos. 
+
+\begin{description}
+\item[1.] \underline{Obten,c~ao do {\em PVM3}}.
+
+\item[2.] \underline{``Desempacotamento'' e constru,c~ao do {\em PVM3}}.
+
+\item[3.] \underline{Instala,c~ao do {\em PVM3}}.  
+ \end{description}
+
+
+\subsection{Partindo o {\em PVM3} e Configurando uma M'aquina Virtual}
+
+\hspace*{0.6cm}Esta se,c~ao cont'em informa,c~oes necess'arias ao usu'ario 
+para a defini,c~ao de uma configura,c~ao de m'aquina virtual.  Em primeiro
+lugar, s~ao dadas instru,c~oes para partir o {\em PVM3} e uma
+descri,c~ao dos comandos interativos no monitor (console {\em PVM3}).
+
+\noindent
+\underline{Partindo o {\em PVM3}}
+
+Partir o {\em PVM3} significa executar {\sf pvm} ou {\sf pvmd3}.  Sem
+argumentos estes comandos iniciam a execu,c~ao do {\sf pvmd3} no {\em
+host} local. Para tal, o usu'ario deve posicionar-se dentro do
+diret'orio {\tt $\sim$/pvm3/bin/SUN4} e, em seguida,  digitar o comando
+{\sf pvm}:
+
+\noindent
+{\sf $\sim$/pvm3/bin/SUN4[1]pvm }
+
+\noindent
+O console {\em PVM3} mostrar'a o {\em prompt}:
+
+\noindent
+\begin{verbatim}
+pvm>
+\end{verbatim}
+\noindent
+que aceitar'a os seguintes comandos padronizados de 
+entrada (aqui relacionados apenas os principais):
+
+\begin{description}
+
+\item[] {\sf help} ou {\sf ?} - Usado para conseguir informa,c~oes sobre 
+qualquer um dos comandos interativos. {\sf help} seguido por um nome de 
+comando listar'a op,c~oes e r'otulos dispon'iveis para este comando;
+
+\item[] {\sf version} - Mostra a vers~ao da {\sf libpvm} que est'a sendo usada;
+
+\item[] {\sf conf} - Lista a configura,c~ao da m'aquina virtual, incluindo os 
+nomes dos {\em hosts}, o {\sf ID} da tarefa {\sf pvmd}, a arquitetura (por 
+exemplo, {\sf SUN4}), etc.;
+
+\item[] {\sf add} - Seguido por um ou mais nomes de {\em hosts}, adicionar'a 
+estes {\em hosts} `a m'aquina virtual;
+
+\item[] {\sf delete} - Seguido por um ou mais nomes de {\em hosts},  
+excluir'a estes {\em hosts} da m'aquina virtual. Os processos {\em PVM3} 
+que ainda estiverem  ``rodando'' nestes {\em hosts} ser~ao perdidos;
+
+\item[] {\sf mstat} - Mostra o estado dos {\em hosts} especificados;
+
+\item[] {\sf ps -a} - Lista todos os processos correntemente ``rodando'' na 
+m'aquina virtual, bem como suas localiza,c~oes, seus {\sf tids} e os 
+{\sf IDs} das tarefas pai;
+
+\item[] {\sf pstat} - Mostra o estado de um 'unico processo 
+{\em PVM3};
+
+\item[] {\sf spawn} - Inicia (``desova'') uma aplica,c~ao {\em PVM3};
+
+\item[] {\sf kill} - Pode ser usado para terminar qualquer processo 
+{\em PVM3};
+
+\item[] {\sf reset} - ``Mata'' todos os processos {\em PVM3}, exceto o
+console,  e ``limpa'' todas as tabelas {\em PVM3} internas, bem com as filas de 
+mensagens. Os processos {\em daemons} s~ao deixados no modo ``adormecido''; 
+
+\item[] {\sf quit} - Sai do console\footnote{Esta opera,c~ao pode ser feita 
+com ${}^{\wedge}${\sf D}.} deixando {\em daemons} e {\em jobs PVM3} ``rodando'';
+
+\item[] {\sf halt} - ``Mata'' todos os processos {\em PVM3}, incluindo console, 
+e ent~ao abandona\footnote{\em Shuts down PVM.} o ambiente  {\em PVM3}. Neste 
+caso, todos os processos {\em daemons} tamb'em sair~ao.
+\end{description}
+
+Se o usu'ario  assim preferir, podem ser criados {\em aliases} para 
+os comandos do console {\em PVM3} por interm'edio do arquivo 
+{\sf /home/.pvmrc}.
+
+Para processar alguma aplica,c~ao {\em PVM3} fora do console, o 
+usu'ario dever'a utilizar o comando {\sf quit} que o far'a
+retornar ao {\em X-WINDOW}, por'em, com o {\sf pvm} ``rodando''.
+
+Ao finalizar uma se,c~ao de trabalho com o {\em PVM3}, deve-se 
+atentar para n~ao deixar involutariamente processos ``rodando'' na 
+m'aquina virtual, inclu'idos a'i tamb'em os {\em daemons}. Para evitar 
+que isto venha a ocorrer, o usu'ario dever'a proceder do seguinte modo:
+
+No {\em prompt}\hspace*{2mm}\verb+pvm>+ \hspace*{2mm} digitar o comando:
+
+\begin{verbatim}
+pvm>halt
+\end{verbatim}
+
+Ressalta-se que ``matar'' processos\footnote{Al'em de ser uma tarefa
+muito exaustiva.} simplesmente usando recursos do {\em UNIX}, isto 'e,
+de fora do console do {\em PVM3}, n~ao garantir'a que \underline{todos}
+os processos sejam efetivamente eliminados da m'aquina virtual.
+
+Aconselha-se ainda usar o {\em script} {\sf clearpvm} para limpar os
+arquivos {\sf /tmp/pvml.uid} e  \linebreak {\sf /tmp/pvmd.uid} criados
+ap'os a utiliza,c~ao do sistema {\em PVM3} (em que {\sf uid} 'e um
+n'umero exclusivo do usu'ario).
+
+\newpage
+
+\noindent
+\underline{Configurando uma M'aquina Paralela Virtual}
+
+Para criar uma m'aquina virtual s~ao necess'arios dois passos
+extremamente simples, que s~ao descritos a seguir. Antes de ter partido
+com o {\em PVM3}, de dentro do diret'orio de trabalho {\sf
+$\sim$/pvm3/bin/SUN4}, procede-se assim:
+\begin{description}
+
+\item[1.] Criar um arquivo texto com o nome {\sf hostfile}, cujo conte'udo 
+'e a rela,c~ao de nomes dos {\em hosts} com os quais se deseja compor a 
+m'aquina virtual. A Figura \ref{hostfile} ilustra a composi,c~ao b'asica deste 
+arquivo.  
+
+\begin{figure}[htbp]
+\bc
+\footnotesize{
+\begin{verbatim}
+# configuration of the my virtual machine
+
+# 1) Maquinas da Rede Ethernet - SUNOS 
+
+baiacu
+maguro
+tilapia
+pacu
+bagre
+piau
+tambacu
+pirarucu
+salmon
+
+# A jau, a tucunare e a tainha estao configuradas com o sistema Solaris
+# badejo e piranha nao configuraveis
+# Data: Julho de 1997
+\end{verbatim}
+}
+\caption{Modelo de um arquivo {\sf hostfile} de 
+configura,c~ao.}
+\label{hostfile}
+\ec
+\end{figure}
+
+Na forma,c~ao deste arquivo, linhas em branco s~ao ignoradas e aquelas 
+que se iniciam por um \verb+#+ s~ao linhas de coment'ario. O primeiro 
+{\em host} da lista deste arquivo deve ser o computador sobre o qual 
+inicialmente foi partido o {\em PVM} ({\em host-login}).
+
+\item[2.] Partir o {\em PVM3} do seguinte modo:
+
+\noindent
+{\sf $\sim$/pvm3/bin/SUN4[1]pvm hostfile}
+
+\bigskip
+Se preferir, o usu'ario poder'a partir o {\em PVM3} em {\em background}. 
+Para tal basta digitar:
+
+\bigskip
+\noindent
+{\sf $\sim$/pvm3/bin/SUN4[1]pvm hostfile \&}
+\end{description}
+
+Ap'os a execu,c~ao destes passos, estar'a composta a m'aquina paralela 
+virtual, pronta para processar aplica,c~oes {\em PVM3}. Utilizando-se o 
+console, atrav'es do comando {\sf conf}, pode-se verificar se todos os 
+{\em hosts} do arquivo {\sf hostfile} foram incorporados com sucesso
+`a m'aquina virtual.
+
+
+'E poss'ivel tamb'em deixar aplica,c~oes {\em PVM3} ``rodando'' em 
+{\em background} nos hor'arios de baixa carga computacional atrav'es de
+um {\em script} apropriado (vide Ap^endice C).
+
+
+Ap'os as implementa,c~oes distribu'idas serem executadas na rede {\em
+LAN-Ethernet}, elas tamb'em podem ser \underline{compiladas} e
+\underline{executadas} na rede {\em LAN-FDDI} do LSEE e no CENAPAD-SP.
+O transporte desses programas para esses novos ambientes n~ao exige
+mudan,cas no c'odigo; mudan,cas s~ao necess'arias apenas em rela,c~ao
+`a compila,c~ao do programa {\em PVM3} e `a  ``customiza,c~ao'' do
+ambiente.
+
+\noindent
+\underline{\bf O que fazer para que um programa {\em PVM}, 
+confeccionado na  \hspace*{1mm}rede  \hspace*{1mm}{\em Ethernet} 
+\hspace*{1mm}execute} \linebreak \underline{\bf nas esta,c~oes do ambiente 
+{\em FDDI}\hspace*{0.5mm}?}
+
+\begin{itemize}
+\item Atualizar o arquivo {\sf .cshrc}, e incluir o arquivo
+{\sf .rhosts};
+\item No c'odigo fonte, trocar os {\sf includes} relativos
+ao {\em PVM3}:
+
+\vspace*{3mm}
+
+\fbox{\rule[0cm]{0cm}{0.25cm}\hspace{0.2cm}
+de: \hspace*{3mm} include '/home/local/pvm3/include/fpvm3.h'.\hspace{2.8cm}}
+
+\fbox{\rule[0cm]{0cm}{0.25cm}\hspace{0.2cm}
+para: \hspace*{3mm} include '/opt/pvm3/include/fpvm3.h'.\hspace{2.8cm}}
+
+\vspace*{5mm}
+
+\item Adaptar o arquivo {\sf timer.c} `as condi,c~oes da nova rede
+(sistema operacional {\em UNIX-Solaris});
+\item Compilar o programa com o {\sf Makefile} adequado ao novo
+ambiente. Por exemplo:
+
+\noindent
+{\sf cenapad[]make -f Makefile\underline{\hspace*{2mm}}solaris}
+
+Neste ponto pode-se optar pela compila,c~ao otimizada,
+incluindo-se {\sf -02} no arquivo {\sf Makefile\underline{\hspace*{2mm}}solaris}.
+
+\item Os passos seguintes s~ao an'alogos aos tomados na rede
+{\em Ethernet} para executar programas {\em PVM3}.
+\end{itemize}
+
+
+\noindent
+\underline{\bf O que fazer para que um programa {\em PVM3}, 
+confeccionado na rede \hspace*{1mm}{\em Ethernet} 
+\hspace*{1mm}execute} \linebreak 
+\underline{\bf no ambiente CENAPAD-SP\hspace*{0.5mm}?}
+
+\begin{itemize}
+
+\item No c'odigo fonte, trocar os {\sf includes} relativos
+ao {\em PVM3}:
+
+\vspace*{3mm}
+
+\fbox{\rule[0cm]{0cm}{0.25cm}\hspace{0.2cm}
+de: \hspace*{3mm} include '/home/local/pvm3/include/fpvm3.h'.\hspace{2.8cm}}
+
+\fbox{\rule[0cm]{0cm}{0.25cm}\hspace{0.2cm}
+para: \hspace*{3mm} include 'fpvm3.h'.\hspace{2.8cm}}
+
+\vspace*{5mm}
+
+\item Compilar o arquivo {\sf timer.c}, do seguinte modo:
+
+\noindent
+{\sf cenapad[]gcc -c timer.c}
+
+O arquivo {\sf systype.h} dever'a ficar no mesmo diret'orio
+onde se faz a compila,c~ao de {\sf timer.c}.
+
+
+\item Compilar o programa com o {\sf Makefile} adequado ao 
+compilador FORTRAN 90 ({\sf xlf}). Por exemplo:
+
+\noindent
+{\sf cenapad[]make -f Makefile\underline{\hspace*{2mm}}ibm}
+
+Neste ponto pode-se optar pela compila,c~ao otimizada, incluindo-se
+{\sf -02} no arquivo {\sf Makefile\underline{\hspace*{2mm}}ibm}.
+
+\item Os passos seguintes s~ao an'alogos aos tomados na rede
+{\em Ethernet} para executar programas {\em PVM3}.
+
+\end{itemize}
+
+
+\noindent
+\section{Informa,c~oes sobre os Dados de Entrada}
+
+
+\hspace*{0.6cm}Os dados de entrada dos programas seq\"{u}enciais ou 
+distribu'idos s~ao de dois tipos:
+\begin{description}
+\item[1.] Dados de op,c~oes; o arquivo 'e designado por {\sf optapl.dat};
+\item[2.] Dados da rede el'etrica, dos geradores e dados
+referentes `a lista de conting^encias; o arquivo 'e denominado por 
+{\sf dad1.dat}.
+\end{description}
+
+\noindent
+\subsection{Arquivo {\sf optapl.dat}}
+
+\hspace*{0.6cm}A Figura \ref{dados} ilustra um arquivo t'ipico de 
+dados de op,c~oes.
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+B                 vr      ( versao de matriz B'/B'': (1) B = BX; (2) X = XB. )
+1.0               fres    ( fator para resistencias )
+1.0               frea    ( fator para reatancias )
+1.00              fpca    ( fator para carga ativa )
+1.00              fpger   ( fator para geracao ativa)
+1.1111            ffnor   ( fator para limites de fluxos ativos )
+1.0               fcont   ( fator para contingencias; 1.0 ==> retira todo o ramo )
+1                 kord    ( tipo de ordenacao para esparsidade [0 = MD; 1 = MD-ML] )
+2                 ncorte  ( quantidade de corte para contingencias )
+0.1               corte   ( indice severidade de corte para contingencias )
+1                 jbet    ( fator beta [ 0 = calculado; 1 = unitario ] )
+E                 obj     ( objetivo FPO-CB [E = economico; D = mdq] )
+10.0              alfa    ( fator de custo de racionamento de pot. ATIVA )
+2                 nseg    ( numero de segmentos da curva de custos [ max 20 ] )
+0                 kformat ( tipo de formato [0 = PECO; 1 = CDF ] )
+DC                flow    ( fluxo de carga inicial AC ou DC - PONTO INICIAL )
+0.0001            tol     ( tolerancia convergencia fluxo inicial AC )
+0.000001          toler1  ( tolerancia convergencia FPORS [ Sobrecarga ] )
+0.000001          toler2  ( tolerancia convergencia FPORS [ Infactibilidade ] )
+0.99              fcj     ( fator de obtencao conjunto monitorado-->PL Sub.Operacao )
+1.0               fat     ( fator multiplicativo sobre vetor DELTA() )
+0                 modelo  ( MODO DE PROCESSAMENTO: SINCRONO-->[0] ASSINCRONO-->[1/2] )
+\end{verbatim}
+}
+\caption{Dados complementares (fatores, par^ametros e op,c~oes em geral).}
+\label{dados}
+\end{center}
+\end{figure}
+
+A figura ilustrada acima requer alguns coment'arios para auxiliar o leitor
+quanto ao esclarecimento dos dados complementares:
+\begin{itemize}
+\item {\tt vr} - Vers~ao do m'etodo desacoplado r'apido (BX ou XB);
+\item {\tt fres} - Fator multiplicativo sobre o par^ametro resist^encia s'erie de
+cada ramo $i-j$ do sistema el'etrico;
+\item {\tt frea} - Fator multiplicativo sobre o par^ametro reat^ancia s'erie de
+cada ramo $i-j$ do sistema el'etrico;
+\item {\tt fpca} - Fator multiplicativo sobre a carga $[MW]$ especificada no 
+banco de dados (para cada barra);
+\item {\tt fpger} - Fator multiplicativo sobre a gera,c~ao ativa $[MW]$ especificada 
+no banco de dados (para cada barra);
+\item {\tt ffnor} - Fator multiplicativo sobre o limite de fluxo $[MVA]$ especificado
+ou n~ao no banco de dados (para cada ramo $i-j$). Quando os limites de fluxos s~ao nulos
+no banco de dados duas op,c~oes est~ao dispon'iveis para considerar esta grandeza: (1)
+tomar limites abertos; (2) definir os valores em fun,c~ao da reat^ancia do ramo (em ambos
+os casos vide arquivo {\sf ledado.f});
+\item {\tt fcont} - Fator multiplicativo sobre os par^ametros do ramo $i-j$ sujeito
+`a conting^encia ('e importante para simular a sa'ida parcial de um dado ramo);
+\item {\tt kord} - Seleciona o tipo de ordena,c~ao para o m'etodos diretos de an'alise
+de conting^encias e c'alculo de fluxo de pot^encia (vide arquivo {\sf zollen.f}) $-$
+a op,c~ao {\em MD-ML} 'e adequada aos m'etodos de vetores esparsos;
+\item {\tt ncorte} - Permite selecionar um dado subconjunto de conting^encias da
+lista para posterior an'alise (vide {\sf rowcut.f});
+\item {\tt corte} - Permite selecionar, atrav'es do 'indice de severidade, um 
+dado subconjunto de conting^encias da lista para posterior an'alise (vide 
+{\sf rowcut.f});
+\item {\tt jbet} - Escolhe se o vetor ${\bf \beta}$ 'e calculado ou admitido unit'ario; 
+\item {\tt obj} - Permite escolher o tipo de fun,c~ao objetivo em que ser'a ``rodado''
+o FPORS;
+\item {\tt alfa} - Fator multiplicativo do custo do gerador fict'icio 
+(vide {\sf ledado.f});
+\item {\tt nseg} - Quantidade de segmentos em que se decomp~oe a curva quadr'atica 
+do gerador
+\item {\tt kformat} - Tipo de formato para os dados do arquivo {\sf dad1.dat};
+\item {\tt flow} - Op,c~ao de c'alculo do ponto inicial (fluxo de pot^encia 
+{\em AC} ou {\em DC});
+\item {\tt tol} - Toler^ancia de converg^encia para o fluxo de pot^encia 
+{\em AC};
+\item {\tt toler1} - Toler^ancia sobre os limites de fluxos para a 
+forma,c~ao do conjunto cr'itico;
+\item {\tt toler2} - Toler^ancia sobre a fun,c~ao objetivo
+``infactibilidade'' (s'o geradores fict'icios) para aceita,c~ao de um
+subproblema de opera,c~ao como fact'ivel (referente a uma dada conting^encia
+cr'itica e a uma solu,c~ao do caso-base);
+\item {\tt fcj} - Fator multiplicativo sobre os limites incrementais de fluxos
+para a forma,c~ao do conjunto monitorado (em princ'ipio o valor especificado
+para {\tt fcj} 'e {\tt 0.9});
+\item {\tt fat} - Fator multiplicativo sobre as componentes do vetor {\tt delt(.)}
+da capacidade corretiva p'os-conting^encia ({\tt fat} de valor {\tt 1.0} significa o 
+vetor {\tt delt(.)} especificado no banco de dados);
+\item {\tt modelo} - Permite selecionar o modo de comunica,c~ao das tarefas de
+conting^encias entre o processo local e os processos remotos (exclusivo do
+processamento distribu'ido).
+\end{itemize}
+
+'E interessante ressaltar que alguns dos par^ametros de escolha
+mostrados no arquivo {\sf optapl.dat} n~ao s~ao utilizados em todos os
+programas descritos neste manual. Contudo, isto foi feito desta forma
+para possibilitar que o arquivo {\sf optapl.dat} tivesse o mesmo
+formato padr~ao, independente do diret'orio onde ele se localiza.
+Para citar um exemplo, tem-se o par^ametro {\tt toler2}, que
+'e espec'ifico dos programas dos diret'orios {\sf FPORS-III} e  
+{\sf pvm3/bin/SUN4/FPORS-III} e n~ao 'e utilizado nas demais 
+implementa,c~oes.
+
+
+
+\noindent
+\subsection{Arquivo {\sf dad1.dat}}
+
+\hspace{0.6cm}A Figura \ref{dados1} ilustra um arquivo t'ipico de dados
+do sistema el'etrico. Nesta figura est'a mostrada uma vers~ao
+modificada do sistema $IEEE$-14.
+
+
+Os conjuntos de dados est~ao separados pelo {\em flag} {\tt 9999}: (1) no primeiro,
+est~ao os dados de barras; (2) no segundo, os dados de rede (par^ametros das linhas e
+dos transformadores, e os limites de fluxos nos ramos); (3) o terceiro conjunto
+cont'em a lista de conting^encias; e (4) o quarto e 'ultimo conjunto cont'em os 
+dados dos geradores.
+
+Os arquivos de dados est~ao dispon'iveis no diret'orio {\sf $\sim$/DATA}, que
+deve acompanhar os diret'orios dos programas.
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+   1 1 2              1060  0.265.9  0.0-30. 200.0       0.0  0.0  0.0
+   2 1 1              1045  0.  0.0  0.0-20. 100.0      11.7 12.7  0.0
+   3 1 1              1010  0.  0.0  0.0-15.  80.0      64.2 14.0  0.0
+   4   0              1000  0.  0.0  0.0                47.8 -3.9  0.0
+   5   0              1000  0.  0.0  0.0                 7.6  1.6  0.0
+   6 1 1              1070  0.  0.0  0.0-15.  60.0      21.2  7.5  0.0
+   7   0              1000  0.  0.0  0.0                 0.0  0.0  0.0
+   8 1 1              1090  0.  0.0  0.0-10.  50.0      30.0  5.0  0.0
+   9   0              1000  0.  0.0  0.0                29.5 16.6 19.0
+  10   0              1000  0.  0.0  0.0                 0.9  5.8  0.0
+  11   0              1000  0.  0.0  0.0                 3.5  1.8  0.0
+  12   0              1000  0.  0.0  0.0                 6.1  1.6  0.0
+  13   0              1000  0.  0.0  0.0                13.5  5.8  0.0
+  14   0              1000  0.  0.0  0.0                14.9  5.0  0.0
+9999
+   1       2       1.94  5.92 5.2801.000                      55.755.7
+   1       5       5.40 22.30 4.9201.000                      67.167.1
+   2       3       4.70 19.80 4.3801.000                      45. 45.
+   2       4       5.81 17.63 3.7401.000                      45. 45.
+   2       5       5.70 17.39 3.4001.000                      45. 45.
+   3       4       6.70 17.10 3.4601.000                      34.134.1
+   4       5       1.34  4.21 1.2801.000                      89.889.8          
+   4       7       0.00 20.91 0.0001.023                      45. 45.
+   4       9       0.00 55.62 0.0001.032                      22.722.7
+   5       6       0.00 25.20 0.0001.073                      55.755.7
+   6      11       9.50 19.89 0.0001.000                      27.827.8
+   6      12      12.29 25.58 0.0001.000                      22.722.7
+   6      13       6.61 13.03 0.0001.000                      34.134.1
+   7       8       0.00 17.61 0.0001.000                      67.167.1
+   7       9       0.00 11.00 0.0001.000                      55.755.7
+   9      10       3.18  8.45 0.0001.000                      22.722.7
+   9      14      12.71 27.04 0.0001.000                      34.134.1
+  10      11       8.20 19.21 0.0001.000                      22.722.7
+  12      13      22.09 19.99 0.0001.000                      22.722.7
+  13      14      17.09 34.80 0.0001.000                      22.722.7
+9999 
+   1     1
+   1     4
+9999
+   1    1 R     0.00   100.00   0.003150   2.000000   0.000000    11.11
+   1    2 F -9999.00     0.00   0.000000  -4.000000   0.000000     0.00
+   2    3 R     0.00    50.00   0.017500   1.750000   0.000000     5.55
+   2    4 F -9999.00     0.00   0.000000  -4.000000   0.000000     0.00
+   3    5 R     0.00    80.00   0.062500   1.000000   0.000000     8.88
+   3    6 F -9999.00     0.00   0.000000  -4.000000   0.000000     0.00
+   6    9 R     0.00    45.00   0.008340   3.250000   0.000000     5.00
+   6   10 F -9999.00     0.00   0.000000  -4.000000   0.000000     0.00
+   8   12 R     0.00    45.00   0.025000   3.000000   0.000000     5.00
+   8   13 F -9999.00     0.00   0.000000  -4.000000   0.000000     0.00
+9999
+\end{verbatim}
+}
+\caption{Arquivo de dados do sistema el'etrico: neste arquivo est~ao os
+dados para fluxo de pot^encia (neste exemplo, no formato {\em PECO}), an'alise
+de conting^encias e dados necess'arios ao processo de otimiza,c~ao.}
+\label{dados1}
+\end{center}
+\end{figure}
+
+
+A Figura \ref{lista} ilustra como deve ficar a coloca,c~ao dos dados da
+lista de conting^encias no arquivo {\sf dad1.dat} (formato {\tt
+i4,2x}). O significado 'e o seguinte: {\tt 9999} 'e um {\em flag}, que
+indica o fim de uma se,c~ao de dados. A primeira coluna traz a ordem da
+conting^encia (por exemplo, {\tt 2} significa conting^encia dupla). As
+demais colunas cont^em os n'umeros dos ramos, correspondentemente `a
+ordem em que s~ao lidos como dados de linha. Isto quer dizer que o ramo
+3 'e o $3^{\b{o}}$ lido no arquivo {\tt dad1.dat}.
+
+\newpage
+
+\begin{figure}[htbp]
+\footnotesize{
+\bc
+\begin{verbatim}
+xxxxbbxxxxbbxxxxbbxxxxbbxxxxbbxxxxbbxxxxbbxxxxbbxxxxbbxxxxbbxxxxbb
+9999
+   2     1     9
+   1     3
+\end{verbatim}
+\caption{Forma,c~ao t'ipica da lista de ramos 
+cujas conting^encias ser~ao analisadas.}
+\label{lista}
+\ec
+}
+\end{figure}
+
+Quanto aos dados dos geradores tem-se o seguinte.  Pode-se dividir os
+geradores em dois conjuntos: reais e fict'icios, respectivamente,
+simbolizados por $R$ e $F$.  Em todas as implementa,c~oes de FPO s~ao
+utilizados geradores fict'icios em todas as barras da
+rede, seja barra t'ipica de gera,c~ao ou espec'ifica de carga.  A
+Figura \ref{dummy} ilustra os tipos de barras cobertos com geradores
+fict'icios.
+\begin{figure}[htbp]
+\begin{center}
+\input{dummy.tex}
+\caption{Geradores fict'icios em todas as barras.}
+\label{dummy}
+\end{center}
+\end{figure}
+
+Os limites dos geradores ilustrados na Figura \ref{dummy} s~ao definidos 
+do seguinte modo:
+
+\[ \mbox{Limites} \left\{ \begin{array}{ll}
+      -9999\;\leq\;P_{g}^F\;\leq\;0\hspace*{4mm}[MW], & \mbox{para carga de}\;0\;\mbox{a} \;P_{g}^{\mbox{m'ax}} \\
+                                         &         \\                       
+        0\;\leq\;P_{g}^F\;\leq\;+9999\hspace*{4mm}[MW], & \mbox{para carga}\hspace*{5mm} \;>\;P_{g}^{\mbox{m'ax}} \\ 
+                                         &         \\                       
+
+        0\;\leq\;P_{g}^F\;\leq\;+9999\hspace*{4mm}[MW], & \mbox{para barras de carga} 
+             \end{array}
+                           \right.   \]
+
+A Figura \ref{gera} mostra como fica a disposi,c~ao dos dados dos 
+geradores no banco de dados.
+
+\begin{figure}[htbp]
+\footnotesize{
+\bc
+\begin{verbatim}
+nex() j type(j) plo(j) pup(j)   az(j)      bz(j)      cz(j)    delt(j)
+xxxxbxxxxbxbxxxxx.xxbxxxxx.xxbxxx.xxxxxxbxxx.xxxxxxbxxx.xxxxxxbxxxxx.xx
+9999
+   1    1 R     0.00   100.00   0.003150   2.000000   0.000000    11.11 
+\end{verbatim}
+\caption{Posi,c~ao dos dados dos geradores para o processo PL em 
+{\sf dad1.dat}; {\tt j} 'e o 'indice do gerador.}
+\label{gera}
+\ec
+}
+\end{figure}
+
+\newpage
+
+\chapter{MANUAL DE UTILIZA,C~AO DOS MIT PARA {\em SCREENING} 
+DE CONTING^ENCIAS}
+
+
+\hspace*{0.6cm}Esta parte do manual descreve o uso do programa
+desenvolvido para a an'alise de conting^encias de sistemas de energia
+el'etrica. O objetivo 'e realizar a avalia,c~ao cr'itica do desempenho
+de duas classes de $[A]{\bf x}\;=\;{\bf b}$ {\em solvers} para o {\em
+screening} de conting^encias. Uma classe de m'etodos de resolu,c~ao de
+sistemas alg'ebricos lineares que ser'a utilizada como base de
+compara,c~ao corresponde aos m'etodos diretos, utilizados comumente na
+ind'ustria de energia el'etrica.  Os m'etodos iterativos s~ao baseados
+no algoritmo do gradiente conjugado pr'e-condicionado (PCG) com
+importantes melhorias introduzidas no decorrer da pesquisa.
+
+ 
+Este trabalho descreve as etapas de um estudo
+te'orico-aplicado que culminaram na implementa,c~ao computacional de
+algoritmos iterativos e de m'etodos diretos de solu,c~oes de sistemas
+de equa,c~oes alg'ebricas lineares, aplicados ao problema de {\em
+screening} de conting^encias.  Foi proposto pelo Dr. Alcir Jos'e
+Monticelli como parte de uma subseq\"{u}ente abordagem mais ampla e
+realista do problema de an'alise de seguran,ca {\em on-line}.  Para
+efeito de compara,c~oes, foram tamb'em implementados programas com
+m'etodos diretos tradicionalmente empregados nesses estudos, que
+utilizam t'ecnicas de esparsidade de vetores orientadas aos m'etodos de
+compensa,c~ao, al'em de refatora,c~ao parcial. {\em Screening}
+$1P\theta$ e $1P\theta-QV$ foram implementados nas metodologias
+\linebreak iterativas e diretas. A finalidade essencial do trabalho 
+est'a centrada principalmente em obter m'axima efici^encia dos m'etodos 
+iterativos PCG na solu,c~ao de sistemas de equa,c~oes lineares com 
+matrizes tipo rede em m'aquinas monoprocessadoras (para tal foram 
+utilizadas esta,c~oes {\em SUN SPARC-station 2} e {\em IBM-RISC/6000}).
+ 
+
+\section{Gradiente Conjugado Pr'e-condicionado}
+
+\hspace*{0.6cm}O algoritmo implementado para solu,c~ao de sistemas lineares 
+esparsos prov'em do artigo: Gupta A., Kumar V. Sameh A., ``{\em Performance and 
+Scability of Preconditioned Conjugate Gradient Methods on Paralell Computers}''.
+{\em IEEE Transactions on Paralell and Distributed Systems}, v.6, No.5, May 1995.
+
+
+{\small
+\begin{enumerate}
+\item Begin
+\item \hspace{1mm}${\bf x}:={\bf 0};\;{\bf r}:={\bf b};\;k:=1$
+\item \hspace{1mm}While $(max |r_{i}|\; > \;\epsilon)$ and $(k<k_{max})$ do
+\item \hspace{5mm} Begin
+\item \hspace{10mm} Solve $[M]{\bf z}\;=\;{\bf r}$
+\item \hspace{10mm} $\gamma_{k-1}:={\bf r}^T{\bf z}$
+\item \hspace{10mm} If $(k=1)$ then ${\bf p}:={\bf z}$
+\item \hspace{22mm} else
+\item \hspace{31mm} $\beta_{k}:= \gamma_{k-1}/\gamma_{k-2}$
+\item \hspace{31mm} ${\bf p}:={\bf z}+\beta_{k}{\bf p}$
+\item \hspace{10mm} end {\em if}
+\item \hspace{10mm} ${\bf w} := [A]{\bf p},\;\alpha_{k}:=\gamma_{k-1}/ {\bf p}^T{\bf w}$
+\item \hspace{10mm} ${\bf x} :={\bf x}\;+\;\alpha_{k}{\bf p}$
+\item \hspace{10mm} ${\bf r}:= {\bf r}\;-\;\alpha_{k}{\bf w},\;k:=k+1$
+\item \hspace{5mm} End \hspace{2mm} {\em while}
+\item End
+\end{enumerate}
+}
+
+\section{Pr'e-condicionadores}
+
+\hspace*{0.6cm}O programa permite a escolha de tr^es tipos de
+pr'e-condicionadores para a execu,c~ao dos c'alculos de {\em screening}. 
+S~ao eles:
+
+
+\begin{itemize}
+\item $[K_{0}]$ $-$ obtido pela fatora,c~ao incompleta LDU pela 
+elimina,c~ao de Gauss;
+\item Cholesky incompleto, {\em IC} $-$ obtido pela fatora,c~ao 
+incompleta de Cholesky;
+\item Cholesky completo, {\em CC} $-$ obtido atrav'es dos fatores 
+LDU do caso-base.
+\end{itemize}
+
+\section{Ordena,c~ao}
+
+\hspace*{0.6cm}S~ao tr^es op,c~oes:
+\begin{itemize}
+\item Sem ordena,c~ao da matriz original;
+\item Tinney-2 $-$ ordena,c~ao atrav'es do algoritmo de Tinney 
+({\em minimum degree});
+\item {\em MST} $-$ ordena,c~ao {\em minimum spanning tree}.
+\end{itemize}
+
+A Figura \ref{flux1} mostra a organiza,c~ao do programa.
+Demonstrando as duas op,c~oes para  resolver o problema do 
+{\em screening}. Neste caso, tanto as conting^encias simples 
+como as m'ultiplas s~ao tratadas.
+\begin{figure}[htbp]
+\input{flux1.tex}
+\caption{Diagrama de blocos do programa {\sf contingencia} (de 
+{\em screening} de conting^encias).}
+\label{flux1}
+\end{figure}
+
+\section{Arquivos Componentes}
+
+\begin{itemize}
+\item {\sf contingencia.f} Programa principal;
+\item {\sf Makefile} {\em Makefile} para gerar o execut'avel {\sf contingencia};
+\item {\sf acestree.f} Rotina para acessar e eliminar v'ertices de uma 'arvore;
+\item {\sf bennett.f} Rotina para atualizar os fatores LDU de uma matriz dada;
+\item {\sf cholinc.f} Rotina para obten,c~ao dos fatores Cholesky incompletos 
+modificados L e D de uma matriz quadrada, sim'etrica e definida positiva;   
+\item {\sf entrada.f} Cont'em rotinas de leitura de dados; 
+\item {\sf esparsa.f} Cria,c~ao da estrutura esparsa de armazenamento;
+\item {\sf estado.f} Gerencia a chamada das rotinas do Zollenkopf para fluxo 
+de pot^encia {\em AC} do caso-base;  
+\item {\sf fatoriza.f} Obtem o pr'e-condicionador $[K_{0}]$; 
+\item {\sf fcarga.f} Faz leitura de dados e executa fluxo
+de pot^encia {\em AC}; 
+\item {\sf fluxos.f} C'alculo dos fluxos nos ramos; 
+\item {\sf formb.f} Rotinas para a forma,c~ao da matriz $[B']$ e $[B'']$;
+\item {\sf ident.f} Rotina para identificar o ramo e definir os par^ametros de 
+altera,c~ao (vers~ao para conting^encia simples e m'ultipla; 
+post/{\em mid}-compensa,c~ao/{\em DC} incremental);
+\item {\sf inclusao.f} Armazenamento esparso auxiliar; 
+\item {\sf injecao.f} C'alculo das inje,c~oes nas barras para o m'etodo 
+{\em PCG} (simula a opera,c~ao de multiplica,c~ao de matriz por vetor);
+\item {\sf input.f} Cont'em chamadas de rotinas de leitura de dados;
+\item {\sf inversa.f} Calcula a inversa de uma matriz do tipo ``rede'' e sim'etrica;
+\item {\sf mdiretodc.f} Rotinas para a simula,c~ao de conting^encias m'ultiplas {\em DC} 
+incremental (m'etodo direto);
+\item {\sf modif.f} Cont'em rotinas de altera,c~ao da matriz [Y] e relativas ao 
+armazenamento do estado b'asico; 
+\item {\sf mpqdir.f} Rotinas para a simula,c~ao de conting^encias m'ultiplas 
+$1P\theta - QV$ - m'etodo direto;
+\item {\sf opcoes.dat} Arquivo de op,c~oes;
+\item {\sf dad.dat} Arquivo de dados da rede; 
+\item {\sf ordenacao.f} Faz ordena,c~ao {\em MST} pelo algoritmo de Kruskal; 
+\item {\sf potencia.f} Rotina para c'alculo das inje,c~oes ativa e reativa nas barras;
+\item {\sf pqdir.f} Rotina para simular conting^encia simples (m'etodo {\em 1P-1Q} DIRETO);
+\item {\sf pqpcgm.f} Rotina para simular conting^encia simples ({\em 1P-1Q} PCGM); 
+\item {\sf produto.f} Rotinas para multiplicar matriz por vetor ou matriz por matriz; 
+\item {\sf ptetadir.f} Rotina para simular conting^encia simples (m'etodo {\em DC} 
+$1P-\theta$ DIRETO);
+\item {\sf ptetapcgm.f} Rotina para simular conting^encia simples 
+(m'etodo $1P-\theta$ PCGM); 
+\item {\sf saida.f} Rotinas para emitir relat'orios do estado do sistema e 
+das conting^encias; 
+\item {\sf scrdireto.f} Cont'em as chamadas das rotinas dos m'etodos 
+diretos de solu,c~oes de sistemas lineares para o {\em screening}; 
+\item {\sf scriterativo.f} Cont'em as chamadas das rotinas dos m'etodos 
+iterativos de solu,c~oes de sistemas lineares para o {\em screening};
+\item {\sf select.f} Cont'em rotinas associadas `a classifica,c~ao dos casos de 
+conting^encias;
+\item {\sf solution.f} Faz as opera,c~oes de retro-substitui,c~ao
+associadas aos pr'e-condicionadores, \linebreak {\em forward}, {\em normalization}
+e {\em backward}; 
+\item {\sf svector.f} Cont'em rotinas associadas `a 
+explora,c~ao da esparsidade de vetores;
+\item {\sf varcont.inc}, {\sf varglob.inc}, {\sf varsel.inc}, {\sf globvar.inc} 
+Arquivos tipo {\sf include} com vari'aveis em \linebreak {\em common};
+\item {\sf zollen.f} Cont'em rotinas de Zollenkopf;
+\item {\sf timer.o} Arquivo objeto para a medi,c~ao de tempos;
+\item {\sf clock.f} Impress~ao dos tempos medidos.
+\end{itemize}
+
+
+\section{Entrada de Dados e Sa'ida de Resultados}
+
+\hspace{0.6cm}A entrada de dados 'e realizada atrav'es dos arquivos {\sf dad.dat} 
+e {\sf opcoes.dat}.
+\begin{description}
+\item[1.] O arquivo {\sf dad.dat} cont'em as caracter'isticas da rede
+de energia el'etrica. Os dados podem tanto estar no formato {\em PECO}
+ou no formato {\em CDF}. Em ambos os formatos, 'e acrescido um cart~ao
+de dados referente aos ramos contingenciados onde tem-se
+respectivamente o n'umero de ramos contingenciados e o ramo atingido no
+formato {\tt i4,2x} do FORTRAN com espa,co de dois digitos entre os
+n'umeros. Est'a dimensionado no m'aximo at'e a sa'ida simult^anea de 6
+ramos. N~ao se esquecer de terminar o cart~ao de dados com {\tt 9999}.
+
+
+Um exemplo est'a ilustrado a seguir: dois casos de conting^encias
+m'ultiplas. O primeiro 'e de 5 ramos (ramos {\tt 1, 21, 11, 25, 36}). O
+segundo 'e de 2 ramos (ramos {\tt 10} e {\tt 21}).
+\begin{verbatim}
+   5     1    21    11    25    36
+   2    10    21
+9999
+\end{verbatim}
+\item[2.] O arquivo {\sf opcoes.dat} 'e auto-explicativo, nele devem
+ser colocados os dados referentes a toler^ancia para a converg^encia do
+fluxo de pot^encia do caso-base, o formato dos dados da rede ({\em
+PECO} ou {\em CDF}), o pr'e-condicionador, a classe a que pertence o
+m'etodo de {\em screening}, o tipo da viola,c~ao no {\em screening},
+etc.
+\end{description}
+O programa pode produzir 4 (quatro) arquivos de sa'ida: 
+\begin{itemize}
+\item Relat'orio do estado do sistema ({\sf relat1.sai});
+\item Relat'orio dos fluxos de pot^encias do sistema ({\sf relat2.sai});
+\item Relat'orio de classifica,c~ao das conting^encias $-$ {\em ranking} 
+({\sf relat3.sai});
+\item Relat'orio de ilhamentos do sistema el'etrico ({\sf relat4.sai}).
+\end{itemize}
+
+\vspace*{-3mm}
+\section{Op,c~oes}
+\vspace*{-3mm}
+
+\hspace*{0.6cm}O arquivo de op,c~oes 'e o {\sf opcoes.dat} ilustrado na Figura 
+\ref{opcoes}; s~ao apresentados nesta figura alguns valores t'ipicos.
+\begin{figure}[htbp]
+\bc
+\footnotesize{
+\begin{verbatim}
+60                 lim     ( no. maximo permitido de iteracoes FCAC )
+0.0005             tol     ( tolerancia FCAC )
+1.0                fres    ( fator para resistencias )
+1.                 frea    ( fator para reatancias )
+1.                 fpca    ( fator para carga ativa )
+1.                 fpger   ( fator para geracao ativa )
+1.01               ffnor   ( fator para limites de fluxos ativos )
+1.0                fcont   ( fator para contingencias )
+20                 ncorte  ( quantidade de corte para contingencias )
+0.0                corte   ( indice de severidade de corte )
+0                  kformat ( tipo de formato: 0 = PECO; 1 = CDF )
+0.000005           erro    ( tolerancia para screening iterativo )
+3                  kordem  ( ordenacao p/ precondicionadores: 1 = NAT.; 2 = T. II C/ FI; 3 = MST ) 
+C                  precond ( pre-condicionador: Z = ZOLLENKOPF; D = DIAGONAL; K = Ko; C = CHOLESKY )
+I                  classe  ( classe de Metodo SCREENING: D = DIRETO; I = ITERATIVO )
+A                  viola   ( tipo de violacao - SCREENING: A = ATIVO; R = REATIVO )
+\end{verbatim}
+}
+\ec
+\vspace*{-5mm}
+\caption{Dados de op,c~oes em geral da implementa,c~ao do diret'orio {\sf PCGDIR}.}
+\label{opcoes}
+\end{figure}
+
+\newpage
+
+Pode-se observar pelo exemplo que, neste caso, o arquivo do sistema a ser
+lido est'a no formato {\em PECO}; o m'odulo do erro m'aximo para o m'etodo
+iterativo 'e de {\tt 0.000005}; utiliza-se a ordena,c~ao {\em MST}; o
+pr'e-condicionador utilizado 'e o Cholesky incompleto ({\em IC}); a classe do 
+{\em screening} refere-se ao m'etodo iterativo; e o tipo de viola,c~ao 'e
+de limite ativo (i.e., {\em screening} $1P\theta$).
+
+
+
+\section{Cria,c~ao do Arquivo Execut'avel}
+
+\hspace*{0.6cm}Para criar o programa execut'avel basta digitar o seguinte comando 
+no {\em prompt}:
+
+\noindent
+{\sf []make}
+
+
+O execut'avel {\sf contingencia} ser'a criado.
+
+\section{Execu,c~ao do Programa}
+
+\hspace*{0.6cm}Basta ajustar as op,c~oes desejadas no arquivo {\sf opcoes.dat} 
+e digitar no {\em prompt}: 
+
+\noindent
+{\sf []contingencia}
+
+
+\section{O {\sf Makefile}}
+
+\hspace*{0.6cm}O {\sf Makefile} 'e um arquivo utilizado pelo programa 
+{\sf make} do UNIX. Nele est~ao as op,c~oes de compila,c~ao, os arquivos 
+necess'arios, as bibliotecas, etc.
+
+
+
+% A P E N D I C E S
+
+\appendix
+
+\chapter{{\sf Makefile} dos Programas Seq\"{u}enciais}
+
+\hspace*{.6cm}Os arquivos {\sf Makefile} dos programas seq\"{u}enciais
+descritos neste manual est~ao mostrados nas Figuras \ref{make1},
+\ref{make2}, \ref{make3} e \ref{make4}.
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile PARA PROGRAMA RANKING   S E Q U E N C I A L
+#
+#               P R O G R A M A   RANKING
+#
+#  OBJETIVO: RANKING DE SOBRECARGAS
+#            RANKING DE CORRECAO DE SOBRECARGAS
+#
+DEPEND = globo.inc stott.inc chave.inc globac.inc
+
+OBJ = ranking.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o piout.o \
+      despacho.o inicio.o relaxa.o pldual.o curvae.o \
+      fuobec.o eqbase.o resolv.o fdcinc.o sobcar.o \
+      restcb.o pliter.o geramv.o albase.o modif2.o \
+      modif3.o cbout.o contdc.o restab.o refmid.o \
+      inversa.o produto.o bennett.o select.o rowcut.o \
+      conout.o mudinc.o opout.o faxina.o fcomdq.o \
+      frouxo.o curvam.o fuobmd.o mdqout.o fcocon.o \
+      status.o fcarga.o sparse.o state.o power.o \
+      clock.o timer.o
+      
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: ranking
+
+ranking: $(OBJ); f77 *.o -o ranking
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa {\sf ranking}; diret'orio 
+{\sf RANKING}.}
+\label{make1}
+\end{center}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para Programa Sequencial - Estacao - Rede Ethernet
+#
+#        P R O G R A M A  FCO-RS STOTT ( DELTA = 0 )   
+#
+DEPEND = globo.inc stott.inc chave.inc globac.inc
+
+OBJ = fcors.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o piout.o \
+      despacho.o fcomdq.o inicio.o relaxa.o pldual.o \
+      curvae.o fuobec.o eqbase.o resolv.o fdcinc.o \
+      sobcar.o restcb.o pliter.o geramv.o albase.o \
+      modif2.o modif3.o cbout.o contdc.o restab.o \
+      refmid.o inversa.o produto.o bennett.o select.o \
+      rowcut.o conout.o mudinc.o opout.o frouxo.o \
+      curvam.o fuobmd.o flowdc.o rescon.o setcri.o \
+      fcocut.o fcarga.o sparse.o state.o power.o \
+      clock.o timer.o
+      
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: fcors
+
+fcors: $(OBJ); f77 *.o -o fcors
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa {\sf fcors}; diret'orio 
+{\sf FPORS-I}.}
+\label{make2}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile PARA PROGRAMA FPORS-ESCA   S E Q U E N C I A L
+#
+#       P R O G R A M A  FPORS-ESCA ( DELTA DADO ) 
+#
+# USA  R E L A X A C A O  DE RESTRICOES (BENDERS "RAPIDO")  
+#
+#
+DEPEND = globo.inc stott.inc chave.inc globac.inc
+
+OBJ = esca.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o \
+      piout.o despacho.o fcomdq.o inicio.o relaxa.o \
+      pldual.o curvae.o fuobec.o eqbase.o resolv.o \
+      fdcinc.o sobcar.o restcb.o pliter.o geramv.o \
+      albase.o modif2.o modif3.o cbout.o contdc.o \
+      restab.o refmid.o inversa.o produto.o bennett.o \
+      select.o rowcut.o conout.o frouxo.o salva.o \
+      curvam.o fuobmd.o mudinc.o processo.o setcri.o \
+      flowdc.o splim.o subpro.o iterpl.o modsp3.o \
+      spbase.o libloq.o rescon.o fcarga.o sparse.o \
+      state.o power.o clock.o timer.o
+      
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: esca
+
+esca: $(OBJ); f77 *.o -o esca
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa {\sf esca}; diret'orio 
+{\sf FPORS-II}.}
+\label{make3}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile PARA PROGRAMA BENDERS   S E Q U E N C I A L
+#
+#     P R O G R A M A  FCO-RS BENDERS ( DELTA DADO )   
+#
+# USA MULTIPLICADORES SIMPLEX PARA CONSTRUIR RESTRICOES
+
+DEPEND = globo.inc stott.inc chave.inc globac.inc
+
+OBJ = benders.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o \
+      piout.o despacho.o fcomdq.o inicio.o relaxa.o \
+      pldual.o curvae.o fuobec.o eqbase.o resolv.o \
+      fdcinc.o sobcar.o restcb.o pliter.o geramv.o \
+      albase.o modif2.o modif3.o cbout.o contdc.o \
+      restab.o refmid.o inversa.o produto.o bennett.o \
+      select.o rowcut.o conout.o curvaf.o frouxo.o \
+      salva.o curvam.o fuobmd.o mudinc.o faxina.o \
+      fcocon.o fuobjo.o gcorte.o fcarga.o sparse.o \
+      state.o power.o processo.o flowdc.o setcri.o \
+      clock.o timer.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: benders
+
+benders: $(OBJ); f77 *.o -o benders
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa {\sf benders}; diret'orio 
+{\sf FPORS-III}.}
+\label{make4}
+\end{center}
+\end{figure}
+
+
+
+
+
+\chapter{{\sf Makefile} dos Programas Distribu'idos}
+
+\hspace*{.6cm}Os arquivos {\sf Makefile} dos programas distribu'idos 
+descritos neste manual est~ao mostrados nas Figuras \ref{make5}, 
+\ref{make6}, \ref{make7} e \ref{make8}. 
+
+A Figura \ref{make8a} traz o conte'udo do arquivo {\sf Makefile} 
+adequado ao sistema {\em Solaris}; equivale ao arquivo ilustrado
+na Figura \ref{make8} do sistema operacional {\em UNIX-SUNOS}.
+
+Os arquivos {\sf Makefile} dos programas distribu'idos que operam com
+fluxo de dados, ou seja, correspondentes aos diret'orios {\sf
+pvm3/bin/SUN4/HOSTEDFCO} e  {\sf pvm3/bin/SUN4/PIPEFCO}, est~ao
+mostrados nas Figuras \ref{make9}, \ref{makeg}, \ref{makex},
+\ref{makey} e \ref{makem}.
+
+  
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#            P R O G R A M A   RANKING
+#
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = ranking
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+OBJ = ranking.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o piout.o \
+      despacho.o inicio.o relaxa.o pldual.o curvae.o \
+      fuobec.o eqbase.o resolv.o fdcinc.o sobcar.o \
+      restcb.o pliter.o geramv.o albase.o modif2.o \
+      modif3.o cbout.o contdc.o restab.o refmid.o \
+      inversa.o produto.o bennett.o select.o rowcut.o \
+      conout.o mudinc.o opout.o faxina.o fcomdq.o \
+      frouxo.o curvam.o fuobmd.o mdqout.o fcocon.o \
+      status.o fcarga.o sparse.o state.o power.o \
+      difusao.o mestre.o escravo.o pai.o filho.o \
+      master.o slave.o father.o son.o \
+      clock.o timer.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf ranking}; diret'orio 
+{\sf pvm3/bin/SUN4/RANKING}.}
+\label{make5}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#    P R O G R A M A   FCO-RS STOTT ( DELTA = 0 )
+#
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = fcors
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+OBJ = fcors.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o piout.o \
+      despacho.o fcomdq.o inicio.o relaxa.o pldual.o \
+      curvae.o fuobec.o eqbase.o resolv.o fdcinc.o \
+      sobcar.o restcb.o pliter.o geramv.o albase.o \
+      modif2.o modif3.o cbout.o contdc.o restab.o \
+      refmid.o inversa.o produto.o bennett.o select.o \
+      rowcut.o conout.o mudinc.o opout.o frouxo.o \
+      curvam.o fuobmd.o flowdc.o rescon.o setcri.o \
+      fcocut.o fcarga.o sparse.o state.o power.o \
+      difusao.o mestre.o escravo.o pai.o filho.o \
+      consumer.o maker.o clock.o timer.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf fcors}; diret'orio 
+{\sf pvm3/bin/SUN4/FPORS-I}.}
+\label{make6}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#    P R O G R A M A   FCO-RS ESCA ( DELTA DADO )
+#
+# USA  R E L A X A C A O  DE RESTRICOES (BENDERS "RAPIDO")
+#
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = esca
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc chave.inc
+
+OBJ = esca.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o \
+      piout.o despacho.o fcomdq.o inicio.o relaxa.o \
+      pldual.o curvae.o fuobec.o eqbase.o resolv.o \
+      fdcinc.o sobcar.o restcb.o pliter.o geramv.o \
+      albase.o modif2.o modif3.o cbout.o contdc.o \
+      restab.o refmid.o inversa.o produto.o bennett.o \
+      select.o rowcut.o conout.o frouxo.o salva.o \
+      curvam.o fuobmd.o mudinc.o processo.o setcri.o \
+      flowdc.o splim.o subpro.o iterpl.o modsp3.o spbase.o \
+      libloq.o rescon.o fcarga.o sparse.o state.o power.o \
+      difusao.o mestre.o escravo.o pai.o filho.o \
+      consumer.o maker.o clock.o timer.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf esca}; diret'orio 
+{\sf pvm3/bin/SUN4/FPORS-II}.}
+\label{make7}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#    P R O G R A M A   FCO-RS BENDERS INTEGRAL ( DELTA DADO )
+#
+#    CALCULA RESTRICOES A PARTIR DOS MULTIPLICADORES SIMPLEX
+# 
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = benders
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+OBJ = benders.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o \
+      piout.o despacho.o fcomdq.o inicio.o relaxa.o \
+      pldual.o curvae.o fuobec.o eqbase.o resolv.o \
+      fdcinc.o sobcar.o restcb.o pliter.o geramv.o \
+      albase.o modif2.o modif3.o cbout.o contdc.o \
+      restab.o refmid.o inversa.o produto.o bennett.o \
+      select.o rowcut.o conout.o curvaf.o frouxo.o \
+      salva.o curvam.o fuobmd.o mudinc.o faxina.o \
+      fcocon.o fuobjo.o gcorte.o fcarga.o sparse.o \
+      state.o power.o processo.o flowdc.o setcri.o \
+      difusao.o mestre.o escravo.o pai.o filho.o \
+      consumer.o maker.o clock.o timer.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf benders}; diret'orio 
+{\sf pvm3/bin/SUN4/FPORS-III}.}
+\label{make8}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#    P R O G R A M A   FCO-RS BENDERS INTEGRAL ( DELTA DADO )
+#
+#    CALCULA RESTRICOES A PARTIR DOS MULTIPLICADORES SIMPLEX
+#
+F77    = f77
+NCC    = gcc
+
+FPO = benders
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+FPI = fpi 
+CCFLAGS = -c 
+FFLAGS = -c -C -w -dalign -O2
+
+ARCHLIB = -lnsl -lsocket  
+LIBS	=	-lpvm3 $(ARCHLIB)
+GLIBS	=	-lgpvm3
+
+SPECIAL_LIB = -L/usr/ucblib -lucb
+#SPECIAL_INC = -R/usr/ucbinclude
+
+FLIBS	=   -lfpvm3 
+LFLAGS	=	-L$(PVM_ROOT)/lib/$(PVM_ARCH)
+
+# DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+EXTRASM = benders.o input.o ledado.o fcinit.o esparsa.o inclu.o \
+          zollen.o estado.o svector.o caflu.o piout.o despacho.o \
+          fcomdq.o inicio.o relaxa.o pldual.o curvae.o fuobec.o \
+          eqbase.o resolv.o fdcinc.o sobcar.o restcb.o pliter.o \
+          geramv.o albase.o modif2.o modif3.o cbout.o contdc.o \
+          restab.o refmid.o inversa.o produto.o bennett.o select.o \
+          rowcut.o conout.o curvaf.o frouxo.o salva.o curvam.o \
+          fuobmd.o mudinc.o faxina.o fcocon.o fuobjo.o gcorte.o \
+          fcarga.o sparse.o state.o power.o processo.o flowdc.o \
+          setcri.o difusao.o mestre.o escravo.o pai.o filho.o \
+          consumer.o maker.o clock.o timer.o 
+
+.SUFFIXES: .f .o
+
+.f.o:; $(F77) $(FFLAGS)  $(SPECIAL_INC) $<
+.c.o:; $(NCC) $(CCFLAGS) $(SPECIAL_INC) $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO) : $(EXTRASM) Makefile
+	$(F77) -o $(SDIR)/$(FPO) $(EXTRASM) $(LFLAGS) $(FLIBS) $(GLIBS) $(LIBS) $(SPECIAL_LIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf benders} para as m'aquinas
+que ``rodam'' o sistema {\em Solaris}; diret'orio {\sf pvm3/bin/SUN4SOL2/FPORS-III}.}
+\label{make8a}
+\end{center}
+\end{figure}
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#       P R O G R A M A   RANKING - FLUXO DE DADOS
+#
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = ranking
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+OBJ = ranking.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o piout.o \
+      despacho.o inicio.o relaxa.o pldual.o curvae.o \
+      fuobec.o eqbase.o resolv.o fdcinc.o sobcar.o \
+      restcb.o pliter.o geramv.o albase.o modif2.o \
+      modif3.o cbout.o contdc.o restab.o refmid.o \
+      inversa.o produto.o bennett.o select.o rowcut.o \
+      conout.o mudinc.o opout.o faxina.o fcomdq.o \
+      frouxo.o curvam.o fuobmd.o mdqout.o fcocon.o \
+      status.o fcarga.o sparse.o state.o power.o \
+      difusao.o mestre.o escravo.o pai.o filho.o \
+      master.o slave.o father.o son.o \
+      clock.o timer.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf ranking}; diret'orio 
+{\sf pvm3/bin/SUN4/HOSTEDFCO}.}
+\label{make9}
+\end{center}
+\end{figure}
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#    P R O G R A M A   RANKING PIPELINE - FLUXO DE DADOS
+#
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = gerente
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+OBJ = gerente.o input.o ledado.o fcinit.o esparsa.o \
+      inclu.o zollen.o estado.o svector.o caflu.o piout.o \
+      despacho.o inicio.o relaxa.o pldual.o curvae.o \
+      fuobec.o eqbase.o resolv.o fdcinc.o sobcar.o \
+      restcb.o pliter.o geramv.o albase.o modif2.o modif3.o \
+      cbout.o mudinc.o opout.o fcomdq.o frouxo.o curvam.o \
+      fuobmd.o fcarga.o sparse.o state.o power.o difusao.o \
+      comunica.o falha.o dynamic.o clock.o timer.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf gerente}; diret'orio 
+{\sf pvm3/bin/SUN4/PIPEFCO}.}
+\label{makeg}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#    P R O G R A M A   RANKING PIPELINE - FLUXO DE DADOS
+#
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = pcx
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+OBJ = pcx.o contdc.o restab.o zollen.o svector.o refmid.o \
+      bennett.o produto.o inversa.o  select.o rowcut.o \
+      conout.o mestre.o escravo.o pai.o filho.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf pcx}; diret'orio 
+{\sf pvm3/bin/SUN4/PIPEFCO}.}
+\label{makex}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#    P R O G R A M A   RANKING PIPELINE - FLUXO DE DADOS
+#
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = pcy
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+OBJ = pcy.o fcocon.o contdc.o refmid.o zollen.o svector.o \
+      inicio.o pldual.o eqbase.o resolv.o fdcinc.o sobcar.o \
+      restcb.o pliter.o geramv.o albase.o modif2.o modif3.o \
+      mdqout.o restab.o inversa.o produto.o bennett.o select.o \
+      rowcut.o faxina.o fcomdq.o frouxo.o curvam.o fuobmd.o \
+      status.o master.o slave.o father.o son.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf pcy}; diret'orio 
+{\sf pvm3/bin/SUN4/PIPEFCO}.}
+\label{makey}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# Makefile para o PVM 3.3.5 / Para Grupos Dinamicos
+#
+#    P R O G R A M A   RANKING PIPELINE - FLUXO DE DADOS
+#
+PVMLIB = /home/local/pvm3/lib/SUN4/libfpvm3.a \
+         /home/local/pvm3/lib/SUN4/libgpvm3.a \
+         /home/local/pvm3/lib/SUN4/libpvm3.a
+
+FPO = manager
+
+SDIR = $(HOME)/pvm3/bin/$(PVM_ARCH)
+
+#DEPEND = globo.inc stott.inc parad.inc globac.inc chave.inc
+
+OBJ = manager.o conout.o
+
+.SUFFIXES: .c .f .s .o
+
+.c.o:; f77 -dalign -O2 -c -C $<
+.f.o:; f77 -dalign -O2 -c -C $<
+.s.o:; f77 -dalign -O2 -c -C $<
+
+all: $(SDIR)/$(FPO)
+
+$(SDIR)/$(FPO): $(OBJ); f77 *.o -o $(SDIR)/$(FPO) $(PVMLIB)
+\end{verbatim}
+}
+\caption{{\sf Makefile} do programa distribu'ido {\sf manager}; diret'orio 
+{\sf pvm3/bin/SUN4/PIPEFCO}.}
+\label{makem}
+\end{center}
+\end{figure}
+
+
+\chapter{{\em Scripts} para Auxiliar a Execu,c~ao de Programas Distribu'idos}
+
+\hspace*{.6cm}Alguns {\em script} foram constru'idos durante os trabalhos com o
+{\em PVM3} que objetivam facilitar a utiliza,c~ao do ambiente de processamento
+distribu'ido, e est~ao ilustrados nas Figuras \ref{sc1}, \ref{sc2}, \ref{sc3} 
+e \ref{sc4}.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+echo "rsh baiacu"
+rsh baiacu ps -auxg | grep pvm3| egrep -v "zapit|grep"
+echo "rsh tambacu" 
+rsh tambacu ps -auxg | grep pvm3|  egrep -v "zapit|grep" 
+echo "rsh pacu"
+rsh pacu ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+echo "rsh salmon"
+rsh salmon ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+echo "rsh tucunare"
+rsh tucunare ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+echo "rsh tilapia"
+rsh tilapia ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+echo "rsh jau"
+rsh jau ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+echo "rsh bagre"
+rsh bagre ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+echo "rsh piau"
+rsh piau ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+echo "rsh maguro"
+rsh maguro ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+echo "rsh tainha"
+rsh tainha ps -auxg | grep pvm3|  egrep -v "zapit|grep"
+\end{verbatim}
+}
+\caption{{\em Script} {\sf mostra}; 'util para o usu'ario detectar em qual
+m'aquina existe {\em daemon} do {\em PVM3} ``rodando''.}
+\label{sc1}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+#!/bin/csh -f
+
+cd $HOME/pvm3/bin/$PVM_ARCH
+
+textedit /tmp/pvml.uid
+\end{verbatim}
+}
+\caption{{\em Script} {\sf ver}; 'util para o usu'ario ver o
+conte'udo do arquivo {\sf pvml.uid} da {\sf /tmp} da m'aquina
+(aonde os processos remotos escrevem com o {\sf WRITE()}).}
+\label{sc2}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+#!/bin/csh -f
+
+cd $HOME/pvm3/bin/$PVM_ARCH
+
+set contador1 = 10
+
+cp opcoes300A_CDF optapl.dat  # copy file option on optapl.dat
+
+while ( ${contador1} >  0 )   # building 10 files of data from IEEE300A.dat_FCO
+
+   cp IEEE300A.dat_FCO dad${contador1}.dat
+   @ contador1 = $contador1 - 1
+
+end
+
+unset contador1
+\end{verbatim}
+}
+\caption{{\em Script} {\sf cria}; 'util para o usu'ario multiplicar um banco de
+dados (os nomes dos arquivos repetidos resultantes s~ao {\sf dad1.dat}, 
+{\sf dad2.dat},$\cdots$,{\sf dad10.dat}).}
+\label{sc3}
+\end{center}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\footnotesize{
+\begin{verbatim}
+# NAME: 'clktst3pvm'
+#
+# LOCATION: $HOME/pvm3/bin/SUN4
+#
+# CREATION: Tue Aug 30 16:21:15 EST 1994
+#
+# LAST ALTERATION : Mon Dec 12 20:44:03 BDB 1994
+#
+# AUTHOR:       Marcelo Stehling de Castro
+#               Universidade estadual de Campinas - UNICAMP
+#               P.O Box 6101
+#               Campinas-SP     CEP : 13081-970 - BRASIL
+#                               e-mail : mcastro@dsee.fee.unicamp.br
+#                               fax: 00-55-192-391395
+#
+# COMMENT: this scrpit run a pvm program in the 
+#		   5 times in the folder 'pvm3/bin/SUN4'
+#
+# mata2: script para procurar o pvm3 em todas as maquinas e mata-lo
+#
+# fim_quit: file contendo a seguinte linha: quit
+#
+# fim_halt: file contendo a seguinte linha: halt
+#
+#!/bin/csh -f
+
+cd $HOME/pvm3/bin/$PVM_ARCH
+#/bin/rm -f tempos
+set contador1 = 11
+pvm < pvm_halt
+while ( ${contador1} >  0 )      # monta o run de 11 hostfiles diferentes
+   pvm host.${contador1}
+   set contador2 = 0
+   while ( ${contador2} <  5 )   # monta o run de 5 casos iguais
+	@ contador2 = $contador2 + 1
+	benders
+   end
+   @ contador1 = $contador1 - 1
+   pvm < pvm_reset
+   pvm < pvm_halt
+end
+
+unset contador2
+\end{verbatim}
+}
+\caption{{\em Script} {\sf run11\underline{\hspace*{2mm}}benders}; 'util para 
+o usu'ario deixar ``rodando'' em {\em background} aplica,c~oes {\em PVM3}.}
+\label{sc4}
+\end{center}
+\end{figure}
+
+%%%Na Figura \ref{sc4}, os arquivos {\sf
+%%%pvm\underline{\hspace*{2mm}}reset}, {\sf
+%%%pvm\underline{\hspace*{2mm}}halt} e {\sf
+%%%pvm\underline{\hspace*{2mm}}quit} cont^em, respectivamente, os
+%%%seguintes comandos do console {\em PVM3} {\sf reset}, {\sf halt} e {\sf
+%%%quit}.
+
+
+
+
+
+
+\end{document}
+
+
+
+
+

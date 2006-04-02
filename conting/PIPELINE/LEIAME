@@ -1,0 +1,106 @@
+INFORMACOES SOBRE OS ARQUIVOS DESTE DIRETORIO ( ~/pvm3/bin/SUN4/WORK):
+======================================================================
+                   REDE LE-19/21 (Ethernet)
+
+1. Estes arquivos vieram do diretorio ~/pvm3/bin/SUN4/PIPELINE
+
+
+2. Contem o MODELO PIPELINE, com a criacao do processo MANAGER
+   e a leitura em serie dos dados.
+
+
+3. Contem a implementacao do PIPELINE que ja funciona muito bem
+   para 3, 4, 5, 6, 7, 8, 9, 10 e 11 maquinas.
+
+
+4. Nao foi testado para um numero maior de maquinas.
+
+
+5. Foi testado c/ sucesso para o sistema de 810 barras/1340 ramos.
+
+
+6. A transferencia foi feita dia 24/07/95 - 15:20.
+
+
+Posteriormente ...
+
+
+7. Contem as ultimas atualizacoes feitas na tarde de 2a. feira.
+
+
+8. Revisoes foram feitas no seguinte arquivo deste programa:
+   
+   a) estado.f
+   b) state.f
+    
+   Motivo: Necessidade de adequar o processo iterativo de FCAC ao
+           algoritmo da pag. 95 do livro do Prof. Alcir.
+
+9. Substituicao do arquivo 'saida.f':
+
+   Motivo: Melhoria na saida da subrotina relat1.
+
+10. Revisoes foram feitas nos seguintes arquivos deste programa:
+
+   a) globvar.inc
+   b) entrada.f
+   c) formb.f
+   d) modif.f
+   e) dcincr.f
+   f) outage.f
+
+   Motivo: Mudancas na montagem das matrizes B' e B''. 
+
+
+
+
+11. Implementacao da configuracao dinamica.
+
+
+12. PIPELINE: Inicialmente eh feito um broadcast() para todos os processos
+              dos dados inicias & dos dados da rede (fixos). Isto eh feito
+              apos uma 1a. leitura de dados com input() e kselect = 1.
+              Os dados do tipo parametro da rede e referentes a topologia
+              sao transmitidos apenas uma vez (no inicio).
+
+
+              Esta mudanca visa melhorar o desempenho com relacao a saturacao.
+              Falta testar ...
+
+
+
+13. Contabilidade do trabalho de cada processo PVM de computacao intensiva.
+    Ver Arquivos de Saida de Resultados ...
+
+
+14. Correcao na rotina mestre() (arquivo mestre.f) feita em 20/02/96.
+
+15. Correcao no arquivo pcy.f feita em 20/02/96. Na parte final ... (??)
+
+
+15. Compilacao otimizada com -dalign -O2 (SIM) ....!!!!!!!!!!
+
+
+16. Implementados os modos ASSINCRONO (original) e SINCRONO. Opcao valida
+    para screening (PCX) e simulacao AC (PCY).
+
+    Esta mudanca visa melhorar o desempenho com relacao a saturacao.
+    Falta testar ...
+
+
+17. Opcao de CONFIGURACAO DINAMICA COMENTADA. Ver gerente.f. (NAO)
+
+
+18. Implementado o modelo Assincrono com transmissao de envelope de casos
+    para cada processador (modelo = 2). Ver arquivos pai.f/filho.f & 
+    father.f/son.f.
+
+
+19. Transferido da rede Ethernet (LE-19/21) para a rede FDDI (LE-23) em 08/03/96.
+    Adaptacoes para rodar na rede FDDI feitas em 09/03/96.
+
+
+   Ultima atualizacao: 09/03/96.
+
+
+
