@@ -40,25 +40,25 @@ Obs: Arquivos que trazem instrucoes de prog. paralela
 /*-----------------------------------------------
   Bibliotecas e  arquivos que devem ser incluidos
 ------------------------------------------------*/
-#include<math.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include"global.h"
-#include"vari.h"          //arquivo contem as declaracoes de variaveis globais
-//#include"variaveispvm.h"  // variaveis do pvm
-#include"prototipos.h"    //arquivo de definicao dos prototipos das funcoes usadas
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "global.h"
+#include "vari.h"          //arquivo contem as declaracoes de variaveis globais
+//#include "variaveispvm.h"  // variaveis do pvm
+#include "prototipos.h"    //arquivo de definicao dos prototipos das funcoes usadas
 #include <pvm3.h>
 /*------------------------------------------------
   Declaracoes de variaveis  passadas via parametro
   ----------------------------------------------*/
 
-double ce[max],cle[max];
+double ce[max], cle[max];
 int myinst, NPROC;
 int tids[5];
 /*----------------------Inicio da funcao principal----------------------------- */
-main(void){
-	int i,l,k,impr,info;
+int main() {
+	int i, l, k, impr, info;
 	/*---------------------------------------------------------------
 	Entra com os Parametros do Programa para Analise de Contingencia	
 	----------------------------------------------------------------*/
@@ -103,13 +103,13 @@ main(void){
 	-------------------------------------------------------------
 	Calcula o Fluxo de Potencia do Caso Base
 	Usa: 	1) Armazenamento Compacto por Zollenkopf
-		2) Metodo de Newton Desacoplado Rapido (Versao BX)
+		    2) Metodo de Newton Desacoplado Rapido (Versao BX)
 	OBS: TODOS EXECUTAM PAI E FILHOS
 ------------------------------------------------------*/
-	fcarga(ce,cle);
-	if(myinst == 0){
-		printf("\n No. de Barras nb->%d \n",nb);
-		printf("\n No. de Ramos  nl->%d \n",nl);
+	fcarga(ce, cle);
+	if (myinst == 0) {
+		printf("\n No. de Barras nb->%d \n", nb);
+		printf("\n No. de Ramos  nl->%d \n", nl);
 		printf("\n --> FIM DO PROCESSAMENTO DO  CASO BASE! \n");
 	}
 	/*--------------------------------------
@@ -142,29 +142,27 @@ main(void){
 	/*------------------------------------------------------------------------
 	** INICIO DO PROCESSAMENTO DE ANALISE DE CONTINGENCIAS POR "SCREENING" ***
 	--------------------------------------------------------------------------*/
-	if(myinst == 0){   // PROCESSO PAI
+	if (myinst == 0) {   // PROCESSO PAI
 		/*---------------EXECUTA MESTRE---------------*/	
-		MestreScreening(ce,cle,impr);
-	}
-	else{  // PROCESSO FILHO
+		MestreScreening(ce, cle, impr);
+	} else {  // PROCESSO FILHO
 		/*EXECUTA FILHO */
-		EscravoScreening(ce,cle,impr);
+		EscravoScreening(ce, cle, impr);
 	}
-	if(myinst == 0){   // PROCESSO PAI
+	if (myinst == 0) {   // PROCESSO PAI
 		/*---------------EXECUTA MESTRE---------------*/	
 	//	MestreScreening(ce,cle,impr,myinst,NPROC,tids);
 		//printf("Antes do Mestre avaliação");
-		MestreA(ce,cle,impr);
+		MestreA(ce, cle, impr);
 		/*----------Mostra a saida dos resultados-----------*/
 		output();       // chama rotinas que criam relatorios de saida
 		//salida(impr);   // relatorios de estado/fluxos pos-contingencia (opcional)
 	//	printf("\n --> FIM DO PROCESSAMENTO DA ANALISE DE CONTINGENCIA !!! \n");
-	}
-	else{  // PROCESSO FILHO
+	} else {  // PROCESSO FILHO
 		/*EXECUTA FILHO */
 		//printf("antes do processo de screening");
 	//	EscravoScreening(ce,cle,impr,myinst,NPROC,tids);
-		EscravoA(ce,cle,impr);
+        EscravoA(ce, cle, impr);
 	}
 	info = pvm_exit();
 	return;
