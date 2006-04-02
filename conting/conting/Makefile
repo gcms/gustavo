@@ -4,9 +4,9 @@ FPI = fpi
 FFLAGS = -O -c
 
 #Modificações dia 13/06-------------------------------------------
-SDIR = 		  $(HOME)/pvm3/bin/LINUX
-INCLUDE = 	-I/home/pvm3/include
-LIBS    = 	-L/home/pvm3/lib/LINUX -lpvm3 -lfpvm3
+SDIR = 		  ..
+INCLUDE = 	-I/usr/local/include
+LIBS    = 	/usr/local/lib/libpvm3.a
 #-----------------------------------------------------------------
 
 
@@ -33,7 +33,7 @@ OBJ =     contingencia.o entrada.o prepara-dados.o zollen.o \
 
 .c.o:; $(NCC) $(FFLAGS) $< ${INCLUDE}
 #.c.o:; $(NCC) $(FLAGS) ${INCLUDE}
-all:	$(SDIR)/$(FPO)
+all:	${SDIR}/$(FPO)
 
 $(SDIR)/$(FPO): $(OBJ) $(EXTRASM) Makefile
 	$(NCC)  $(OBJ)  ${INCLUDE} ${LIBS} -o $(SDIR)/$(FPO) -lm
