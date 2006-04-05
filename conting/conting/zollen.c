@@ -18,129 +18,113 @@
 #include "global.h"
 /*-----------------------------------Inicio da funcao orden------------------------------*/
 
-void orden(void){
-  int j,k,min,m,kp,lk,li,la,l,ip,ln,i; 
-  j=0;
-  /* ordenar por colunas ate a de indice (nb-2), enquanto nao encheu o vetor*/
-  while(j <= nb-2)
-  {
-    k=nseq[j];
-    min=noze[k];
-    m=j;
-    /*  determinar coluna com menos nao nulos  */
-    for (i=j+1; i<nb; i++)
-    {
-      k=nseq[i];
-      if(noze[k] < min)
-      {
-        min=noze[k];
-        m=i;
-      }   /* fim do if(noze[k] < min)  */
-    }   /*  fim do for i=j+1 ate nb-1  */
-    /*  organizar o vetor de sequencias, se preciso  */
-    if (m != j)
-    {
-      kp=nseq[m];
-      nseq[m]=nseq[j];
-      nseq[j]=kp;
-    }
-    else
-      kp=nseq[m];
+void orden(void) {
+	int j, k, min, m, kp, lk, li, la, l, ip, ln, i; 
+	j = 0;
+	/* ordenar por colunas ate a de indice (nb-2), enquanto nao encheu o vetor*/
+	while (j <= nb - 2) {
+		k = nseq[j];
+		min = noze[k];
+		m = j;
+
+		/*  determinar coluna com menos nao nulos  */
+		for (i = j + 1; i < nb; i++) {
+			k = nseq[i];
+			if (noze[k] < min) {
+				min = noze[k];
+				m = i;
+			}   /* fim do if(noze[k] < min)  */
+		}   /*  fim do for i=j+1 ate nb-1  */
+
+		/*  organizar o vetor de sequencias, se preciso  */
+		if (m != j) {
+			kp = nseq[m];
+			nseq[m] = nseq[j];
+			nseq[j] = kp;
+		} else
+			kp = nseq[m];
 
     /* lk-> indice, no vetor de enderecos "lcolptr", do 1. elem. nao nulo da
             coluna kp  */
-    lk=lcol[kp];     
+		lk = lcol[kp];     
 
     /*  simular a eliminacao enqto. lk>0 e nao encher "lcolptr" */
-    while (lk >= 0)
-    {
-      k=itag[lk];
-      if(k != kp)
-      {
-        la=-1;
-        li=lcol[kp];
-        l=lcol[k];
-        i=itag[l];
-        while (li >= 0)
-        {
-          ip=itag[li];
-          if(ip == i)
-          {
-            if(i == kp)
-            {
-              ln=lnxt[l];
-              if (la < 0)
-                lcol[k]=ln;
-              else
-                lnxt[la]=ln;
-              lnxt[l]=lf;
-              lf=l;
-              noze[k]=noze[k]-1;
-              l=ln;
-            }  /* fim do if (i=kp)  */
+		while (lk >= 0) {
+			k = itag[lk];
+			if (k != kp) {
+				la = -1;
+				li = lcol[kp];
+				l = lcol[k];
+				i = itag[l];
+				while (li >= 0) {
+					ip = itag[li];
+					if (ip == i) {
+						if (i == kp) {
+							ln = lnxt[l];
+							if (la < 0)
+								lcol[k] = ln;
+							else
+								lnxt[la] = ln;
+							lnxt[l] = lf;
+							lf = l;
+							noze[k] = noze[k] - 1;
+							l = ln;
+						}  /* fim do if (i=kp)  */
             /*  ip=i e i<>kp => buscar proximo elemento da coluna k */
-            else
-            {
-              la=l;
-              l=lnxt[l];
-            }   /*  fim do else  */
-
-            /*  atualizar li  */
-            li=lnxt[li];
-            if (l >= 0)
-              i=itag[l];
-            else
-              i=nb;
-          }  /* fim do if(ip=i)  */
-          else
-            if (i < ip)
-            {
+						else {
+							la = l;
+							l = lnxt[l];
+						}   /*  fim do else  */
+					/*  atualizar li  */
+					li = lnxt[li];
+					if (l >= 0)
+						i = itag[l];
+					else
+						i = nb;
+				}  /* fim do if(ip=i)  */
+				else if (i < ip) {
               /*  se i<ip => buscar proximo da coluna k  */
-              la=l;
-              l=lnxt[l];
-              if (l >= 0)
-                i=itag[l];
-              else
-                i=nb;
-            }  /*  fim de i < ip  */
-            else
+					la = l;
+					l = lnxt[l];
+              		if (l >= 0)
+                		i = itag[l];
+					else
+						i = nb;
+				}  /*  fim de i < ip  */
+				else
               /*  se i>ip => aparece um fill-in
                   verificar se existe lugar p/ inserir   */
-              if (lf >= 0)
-              {
-                ln=lf;
-                if (la >= 0)
-                  lnxt[la]=ln;   /* insere apos um existente */
-                else
-                  lcol[k]=ln;   /*  insere no inicio da lista */
-                lf=lnxt[ln];
-                lnxt[ln]=l;
-                itag[ln]=ip;
-                noze[k]=noze[k]+1;
-                la=ln;
-                li=lnxt[li];
-              }  /* fim do if(lf>0)  */
-              else
-              {
+					if (lf >= 0) {
+                		ln = lf;
+                		if (la >= 0)
+                  			lnxt[la] = ln;   /* insere apos um existente */
+						else
+							lcol[k] = ln;   /*  insere no inicio da lista */
+						lf = lnxt[ln];
+						lnxt[ln] = l;
+						itag[ln] = ip;
+						noze[k] = noze[k] + 1;
+						la = ln;
+						li = lnxt[li];
+					}  /* fim do if(lf>0)  */
+					else {
                 /*  aqui o vetor nao tem mais espaco  */
-                printf("\n      >>>Area reservada insuficiente!!!  /n");
-                exit(1);
-              }  /* fim do else vetor cheio  */
+						printf("\n      >>>Area reservada insuficiente!!!  /n");
+						exit(1);
+					}  /* fim do else vetor cheio  */
 
-        }  /*  fim do while li >0   */
-      }  /*  fim do if (k = kp)   */
+				}  /*  fim do while li >0   */
+			}  /*  fim do if (k = kp)   */
 
       /*  aqui ou acabou a coluna pivot ou k=kp   */
-      if (li < 0 || k == kp)
-        lk=lnxt[lk];
-    }  /*  fim do while lk>0  */
-    j++;
+			if (li < 0 || k == kp)
+				lk = lnxt[lk];
+		}  /*  fim do while lk>0  */
+		j++;
   
-  }  /*  fim do while (j<nb-1)*/
+	}  /*  fim do while (j<nb-1)*/
 
- 
-
-  return;
+	return;
 }
 /*-------------------------------------- Fim da funcao orden-----------------------------------*/
 
@@ -154,7 +138,7 @@ void orden(void){
 
 void redu(double ce[])
 {
-  int j,kp,lk,lp,li,l,ip,k,i;
+  int j, kp, lk, lp, li, l, ip, k, i;
   double d,cf;
   char atualiza;
 
