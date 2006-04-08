@@ -1,15 +1,39 @@
 #include "contingdrawingline.h"
 
+
+#define CONTING_DRAWING_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
+		CONTING_TYPE_DRAWING_LINE, ContingDrawingLinePrivate))
+
+typedef struct ContingDrawingLinePrivate_ ContingDrawingLinePrivate;
+struct ContingDrawingLinePrivate_ {
+	GSList *points;
+
+	gboolean placed;
+};
+
 static GdkPoint line_points[2] = {
     { -10, 0 }, { 10, 0 }
 };
 
 static void conting_drawing_line_draw(ContingDrawing *self,
         GdkDrawable *drawable, GdkGC *gc, const GdkPoint *pos) {
-	g_print("conting_drawing_line_draw()\n");
-    gdk_draw_line(drawable, gc,
-            pos->x + line_points[0].x, pos->y + line_points[0].y,
-            pos->x + line_points[1].x, pos->y + line_points[1].y);
+	ContingDrawingLinePrivate *priv;
+	GSList *n;
+	GdkPoint *last_point = NULL;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING_LINE(self));
+
+	priv = CONTING_DRAWING_LINE_GET_PRIVATE(self);
+
+	for (n = priv->points; n != NULL; n = g_slist_next(n)) {
+		GdkPoint *cur_point = n->data;
+		if (last_point) {
+			gdk_draw_line(drawable, gc,
+					last_point->x, last_point->y,
+					cur_point->x, cur_point->y);
+		}
+		last_point = cur_point;
+	}
 }
 
 
@@ -21,8 +45,27 @@ static void conting_drawing_line_get_points(ContingDrawing *drawing,
 
 static void conting_drawing_line_get_rectangle(ContingDrawing *self,
         GdkRectangle *rect) {
-    rect->width = line_points[1].x - line_points[0].x + 1;
-    rect->height = line_points[1].y - line_points[0].y + 1;
+	ContingDrawingLinePrivate *priv;
+	GSList *n;
+	gint minx = 0, miny = 0, maxx = 0, maxy = 0;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING_LINE(self));
+	
+	priv = CONTING_DRAWING_LINE_GET_PRIVATE(self);
+	
+	for (n = priv->points; n != NULL; n = g_slist_next(n)) {
+		GdkPoint *p = n->data;
+
+		minx = minx < p->x ? minx : p->x;
+		miny = miny < p->y ? miny : p->y;
+		maxx = maxx > p->x ? maxx : p->x;
+		maxy = maxy > p->y ? maxy : p->y;
+	}
+
+	rect->x = minx;
+	rect->y = miny;
+	rect->width = maxx - minx;
+	rect->height = maxy - miny;
 }
 
 
