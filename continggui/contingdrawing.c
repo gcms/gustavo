@@ -44,10 +44,11 @@ void conting_drawing_get_rectangle(ContingDrawing *self, GdkRectangle *rect) {
     CONTING_DRAWING_GET_CLASS(self)->get_rectangle(self, rect);
 }
 
-gboolean conting_drawing_violates(ContingDrawing *self, gint x, gint y) {
+gboolean conting_drawing_violates(ContingDrawing *self, ContingDrawing *other,
+		gint x, gint y) {
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
-	return CONTING_DRAWING_GET_CLASS(self)->violates(self, x, y);
+	return CONTING_DRAWING_GET_CLASS(self)->violates(self, other, x, y);
 }
 
 gboolean conting_drawing_can_link(ContingDrawing *self,
