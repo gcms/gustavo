@@ -90,13 +90,16 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 		for (n = drawings; n != NULL; n = g_slist_next(n)) {
 			DrawingToDraw *dd = n->data;
 
+			g_print("VIOLATES: %p? ", dd->drawing);
 			if (conting_drawing_violates(dd->drawing,
 						event->x - dd->position.x,
 						event->y - dd->position.y)) {
+				g_print(" YES\n");
 				violated_drawing = dd->drawing;
 				violated_position = dd->position;
 				break;
 			}
+			g_print(" NO\n");
 		}
 
 		if (violated_drawing != NULL) {
@@ -209,7 +212,7 @@ int main(int argc, char *argv[]) {
 	gtk_widget_show(bus_button);
 	
 	line_button = gtk_button_new_with_label("LINE");
-	g_signal_connect(G_OBJECT(bus_button), "clicked",
+	g_signal_connect(G_OBJECT(line_button), "clicked",
 			G_CALLBACK(line_button_clicked), NULL);
 	gtk_box_pack_start_defaults(GTK_BOX(hbox), line_button);
 	gtk_widget_show(line_button);

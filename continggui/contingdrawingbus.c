@@ -82,15 +82,15 @@ static void conting_drawing_bus_get_rectangle(ContingDrawing *self,
 
 	switch (priv->orientation) {
 		case GTK_ORIENTATION_HORIZONTAL:
-			rect->x = priv->size / 2;
-			rect->y = DEFAULT_WIDTH / 2;
+			rect->x = - priv->size / 2;
+			rect->y = - DEFAULT_WIDTH / 2;
 			rect->width = priv->size;
 			rect->height = DEFAULT_WIDTH;
 			break;
 		case GTK_ORIENTATION_VERTICAL:
 		default:
-			rect->x = DEFAULT_WIDTH / 2;
-			rect->y = priv->size / 2;
+			rect->x = - DEFAULT_WIDTH / 2;
+			rect->y = - priv->size / 2;
 			rect->width = DEFAULT_WIDTH;
 			rect->height = priv->size;
 			break;
@@ -104,6 +104,9 @@ static gboolean conting_drawing_bus_violates(ContingDrawing *self,
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self), FALSE);
 
 	conting_drawing_bus_get_rectangle(self, &rect);
+
+	g_print("(%d %d) (%d, %d) (%d %d) ", x, y,
+			rect.x, rect.y, rect.width, rect.height);
 
 	return x > rect.x && y > rect.y
 		&& x - rect.x < rect.width && y - rect.y < rect.height;
