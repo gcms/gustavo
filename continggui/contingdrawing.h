@@ -30,7 +30,8 @@ struct ContingDrawingClass_ {
 			GdkGC *gc, const GdkPoint *position);
     void (*draw_selected) (ContingDrawing *self, GdkDrawable *drawable,
 			GdkGC *gc, const GdkPoint *position);
-	gboolean (*violates)(ContingDrawing *self, gint x, gint y);
+	gboolean (*violates)(ContingDrawing *self, ContingDrawing *other,
+			gint x, gint y);
 
 	gboolean (*can_link)(ContingDrawing *self, ContingDrawing *link_drawing,
 			gint x, gint y);
@@ -65,7 +66,8 @@ void conting_drawing_draw(ContingDrawing *self,
         GdkDrawable *drawable, GdkGC *gc, const GdkPoint *coord);
 void conting_drawing_draw_selected(ContingDrawing *self,
 		GdkDrawable *drawable, GdkGC *gc, const GdkPoint *coord);
-gboolean conting_drawing_violates(ContingDrawing *self, gint x, gint y);
+gboolean conting_drawing_violates(ContingDrawing *self,
+		ContingDrawing *other, gint x, gint y);
 gboolean conting_drawing_can_link(ContingDrawing *self,
 		ContingDrawing *link_drawing, gint x, gint y);
 gboolean conting_drawing_place(ContingDrawing *self);

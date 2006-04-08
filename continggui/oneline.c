@@ -49,7 +49,7 @@ static gboolean darea_expose_event(GtkWidget *widget, GdkEventExpose *event,
 
 	if (selected_drawing != NULL) {
 		conting_drawing_draw_selected(selected_drawing,
-				widget->window, widget->style->black_gc,
+				widget->window, widget->style->fg_gc[GTK_STATE_NORMAL],
 				&selected_position);
 	}
 
@@ -73,11 +73,14 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 	GdkPoint violated_position = { -1, -1 };
 
 
+	selected_drawing = NULL;
+	gtk_widget_queue_draw(widget);
+
 	if (current_drawing == NULL) {
 		for (n = drawings; n != NULL; n = g_slist_next(n)) {
 			DrawingToDraw *dd = n->data;
 
-			if (conting_drawing_violates(dd->drawing,
+			if (conting_drawing_violates(dd->drawing, current_drawing,
 						event->x - dd->position.x,
 						event->y - dd->position.y)) {
 				select(dd, widget);
@@ -91,7 +94,7 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 			DrawingToDraw *dd = n->data;
 
 			g_print("VIOLATES: %p? ", dd->drawing);
-			if (conting_drawing_violates(dd->drawing,
+			if (conting_drawing_violates(dd->drawing, current_drawing,
 						event->x - dd->position.x,
 						event->y - dd->position.y)) {
 				g_print(" YES\n");

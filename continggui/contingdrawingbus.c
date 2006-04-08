@@ -3,7 +3,7 @@
 static gpointer parent_class = NULL;
 
 #define DEFAULT_SIZE 60
-#define DEFAULT_WIDTH 20
+#define DEFAULT_WIDTH 10
 
 #define CONTING_DRAWING_BUS_GET_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE((o), \
             CONTING_TYPE_DRAWING_BUS, ContingDrawingBusPrivate))
@@ -51,22 +51,44 @@ static void conting_drawing_bus_draw(ContingDrawing *self, GdkDrawable *draw,
 static void conting_drawing_bus_draw_selected(ContingDrawing *self,
 		GdkDrawable *draw, GdkGC *gc, const GdkPoint *p) {
 	ContingDrawingBusPrivate *priv;
+	GdkRectangle rect;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self));
 
 	priv = CONTING_DRAWING_BUS_GET_PRIVATE(self);
+
+	conting_drawing_get_rectangle(self, &rect);
+
+	rect.x += p->x;
+	rect.y += p->y;
+
+	gdk_draw_rectangle(draw, gc, TRUE,
+			rect.x - 3, rect.y + rect.height / 2 - 3,
+			6, 6);
+	gdk_draw_rectangle(draw, gc, TRUE,
+			rect.x + rect.width / 2 - 3, rect.y - 3,
+			6, 6);
+	gdk_draw_rectangle(draw, gc, TRUE,
+			rect.x + rect.width - 3, rect.y + rect.height / 2 - 3,
+			6, 6);
+	gdk_draw_rectangle(draw, gc, TRUE,
+			rect.x + rect.width / 2 - 3, rect.y + rect.height - 3,
+			6, 6);
 	
+	return;
 	switch (priv->orientation) {
 		case GTK_ORIENTATION_HORIZONTAL:
 			gdk_draw_rectangle(draw, gc, FALSE,
-					p->x - (priv->size + 5) / 2, p->y - (DEFAULT_WIDTH + 5) / 2,
-					priv->size + 5, DEFAULT_WIDTH + 5);
+					p->x - (priv->size + 10) / 2,
+					p->y - (DEFAULT_WIDTH + 10) / 2,
+					priv->size + 10, DEFAULT_WIDTH + 10);
 			break;
 		case GTK_ORIENTATION_VERTICAL:
 		default:
 			gdk_draw_rectangle(draw, gc, TRUE,
-					p->x - (DEFAULT_WIDTH + 5) / 2, p->y - (priv->size + 5) / 2,
-					DEFAULT_WIDTH + 5, priv->size + 5);
+					p->x - (DEFAULT_WIDTH + 10) / 2,
+					p->y - (priv->size + 10) / 2,
+					DEFAULT_WIDTH + 10, priv->size + 10);
 			break;
 	}
 }
@@ -98,18 +120,31 @@ static void conting_drawing_bus_get_rectangle(ContingDrawing *self,
 }
 
 static gboolean conting_drawing_bus_violates(ContingDrawing *self,
+		ContingDrawing *other,
 		gint x, gint y) {
-	GdkRectangle rect;
+	GdkRectangle rect, other_rect, dest_rect;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self), FALSE);
+	
+	conting_drawing_get_rectangle(self, &rect);
 
-	conting_drawing_bus_get_rectangle(self, &rect);
+	if (other == NULL) {
+		return x > rect.x && y > rect.y
+			&& x - rect.x < rect.width && y - rect.y < rect.height;
+	}
 
+	conting_drawing_get_rectangle(other, &other_rect);
+	other_rect.x += x;
+	other_rect.y += y;
+
+	return gdk_rectangle_intersect(&rect, &other_rect, &dest_rect);
+/*
 	g_print("(%d %d) (%d, %d) (%d %d) ", x, y,
 			rect.x, rect.y, rect.width, rect.height);
 
 	return x > rect.x && y > rect.y
 		&& x - rect.x < rect.width && y - rect.y < rect.height;
+		*/
 }
 
 static gboolean conting_drawing_bus_can_link(ContingDrawing *self,
@@ -117,7 +152,7 @@ static gboolean conting_drawing_bus_can_link(ContingDrawing *self,
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self), FALSE);
 
-	return conting_drawing_bus_violates(self, x, y)
+	return conting_drawing_bus_violates(self, link_drawing, x, y)
 		&& CONTING_IS_DRAWING_LINE(link_drawing);
 }
 
