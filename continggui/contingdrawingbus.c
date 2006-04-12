@@ -1,4 +1,5 @@
 #include "contingdrawingbus.h"
+#include <assert.h>
 
 static gpointer parent_class = NULL;
 
@@ -24,14 +25,19 @@ struct BranchPosition_ {
 	GtkSideType side;
 };
 
+static void conting_drawing_bus_get_rectangle(ContingDrawing *self,
+		GdkRectangle *rect);
 static void conting_drawing_bus_draw(ContingDrawing *self, GdkDrawable *draw,
-        GdkGC *gc, const GdkPoint *p) {
+        GdkGC *gc, const GdkPoint *p, const GdkPoint *current) {
 	g_print("conting_drawing_bus_draw()\n");
 	ContingDrawingBusPrivate *priv;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self));
 
 	priv = CONTING_DRAWING_BUS_GET_PRIVATE(self);
+
+	if (!priv->placed)
+		p = current;
 
 	switch (priv->orientation) {
 		case GTK_ORIENTATION_HORIZONTAL:
@@ -57,7 +63,7 @@ static void conting_drawing_bus_draw_selected(ContingDrawing *self,
 
 	priv = CONTING_DRAWING_BUS_GET_PRIVATE(self);
 
-	conting_drawing_get_rectangle(self, &rect);
+	conting_drawing_bus_get_rectangle(self, &rect);
 
 	rect.x += p->x;
 	rect.y += p->y;
@@ -118,7 +124,7 @@ static void conting_drawing_bus_get_rectangle(ContingDrawing *self,
 			break;
 	}
 }
-
+/*
 static gboolean conting_drawing_bus_violates(ContingDrawing *self,
 		ContingDrawing *other,
 		gint x, gint y) {
@@ -126,25 +132,18 @@ static gboolean conting_drawing_bus_violates(ContingDrawing *self,
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self), FALSE);
 	
-	conting_drawing_get_rectangle(self, &rect);
+	conting_drawing_bus_get_rectangle(self, &rect);
 
 	if (other == NULL) {
 		return x > rect.x && y > rect.y
 			&& x - rect.x < rect.width && y - rect.y < rect.height;
 	}
 
-	conting_drawing_get_rectangle(other, &other_rect);
+	conting_drawing_bus_get_rectangle(other, &other_rect);
 	other_rect.x += x;
 	other_rect.y += y;
 
 	return gdk_rectangle_intersect(&rect, &other_rect, &dest_rect);
-/*
-	g_print("(%d %d) (%d, %d) (%d %d) ", x, y,
-			rect.x, rect.y, rect.width, rect.height);
-
-	return x > rect.x && y > rect.y
-		&& x - rect.x < rect.width && y - rect.y < rect.height;
-		*/
 }
 
 static gboolean conting_drawing_bus_can_link(ContingDrawing *self,
@@ -155,19 +154,51 @@ static gboolean conting_drawing_bus_can_link(ContingDrawing *self,
 	return conting_drawing_bus_violates(self, link_drawing, x, y)
 		&& CONTING_IS_DRAWING_LINE(link_drawing);
 }
+*/
+static void conting_drawing_bus_start_place(ContingDrawing *self) {
+	ContingDrawingBusPrivate *priv;
 
-static gboolean conting_drawing_bus_place(ContingDrawing *self) {
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self));
+
+	priv = CONTING_DRAWING_BUS_GET_PRIVATE(self);
+
+	assert(priv->placed == FALSE);
+}
+
+static void conting_drawing_bus_place(ContingDrawing *self,
+		gint x, gint y, ContingDrawing *other) {
+	ContingDrawingBusPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self));
+
+	priv = CONTING_DRAWING_BUS_GET_PRIVATE(self);
+
+	priv->placed = TRUE;
+}
+
+static gboolean conting_drawing_bus_is_placed(ContingDrawing *self) {
 	ContingDrawingBusPrivate *priv;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self), FALSE);
 
 	priv = CONTING_DRAWING_BUS_GET_PRIVATE(self);
 
-	g_return_val_if_fail(!priv->placed, FALSE);
+	return priv->placed;
+}
 
-	priv->placed = TRUE;
+static gboolean conting_drawing_bus_answer(ContingDrawing *self,
+		gint x, gint y) {
+	ContingDrawingBusPrivate *priv;
+	GdkRectangle rect;
 
-	return TRUE;
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self), FALSE);
+
+	priv = CONTING_DRAWING_BUS_GET_PRIVATE(self);
+
+	conting_drawing_bus_get_rectangle(self, &rect);
+
+	return rect.x <= x && rect.y <= y
+		&& x - rect.x < rect.width && y - rect.y < rect.height;
 }
 
 gboolean conting_drawing_bus_link_line_coord(ContingDrawingBus *self,
@@ -213,6 +244,7 @@ gboolean conting_drawing_bus_link_line(ContingDrawingBus *self,
 	return TRUE;
 }
 
+/*
 static gboolean conting_drawing_bus_place_linked(ContingDrawing *self,
 		gint selfx, gint selfy,
 		ContingDrawing *other, gint otherx, gint othery) {
@@ -231,7 +263,7 @@ static gboolean conting_drawing_bus_place_linked(ContingDrawing *self,
 	return conting_drawing_bus_link_line_coord(CONTING_DRAWING_BUS(self),
 		CONTING_DRAWING_LINE(other), selfx, selfy);
 }
-
+*/
 static gboolean branch_position_foreach(gpointer key, gpointer value,
 		gpointer user_data) {
 	return TRUE;
@@ -243,6 +275,9 @@ static void conting_drawing_bus_dispose(GObject *self) {
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING_BUS(self));
 
 	priv = CONTING_DRAWING_BUS_GET_PRIVATE(self);
+
+	if (priv->disposed)
+		return;
 
 	g_hash_table_foreach_remove(priv->branch_position,
 			branch_position_foreach, NULL);
@@ -275,13 +310,17 @@ static void conting_drawing_bus_class_init(gpointer g_class,
     parent_class = g_type_class_peek_parent(g_class);
     
     drawing_class = CONTING_DRAWING_CLASS(g_class);
-	drawing_class->get_rectangle = conting_drawing_bus_get_rectangle;
+//	drawing_class->get_rectangle = conting_drawing_bus_get_rectangle;
     drawing_class->draw = conting_drawing_bus_draw;
     drawing_class->draw_selected = conting_drawing_bus_draw_selected;
-    drawing_class->violates = conting_drawing_bus_violates;
-	drawing_class->can_link = conting_drawing_bus_can_link;
+//    drawing_class->violates = conting_drawing_bus_violates;
+//	drawing_class->can_link = conting_drawing_bus_can_link;
 	drawing_class->place = conting_drawing_bus_place;
-	drawing_class->place_linked = conting_drawing_bus_place_linked;
+//	drawing_class->place_linked = conting_drawing_bus_place_linked;
+
+	drawing_class->start_place = conting_drawing_bus_start_place;
+	drawing_class->is_placed = conting_drawing_bus_is_placed;
+	drawing_class->answer = conting_drawing_bus_answer;
 
 	object_class = G_OBJECT_CLASS(g_class);
 	object_class->dispose = conting_drawing_bus_dispose;
