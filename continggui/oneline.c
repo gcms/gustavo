@@ -2,6 +2,7 @@
 #include "contingdrawing.h"
 #include "contingcomponent.h"
 #include "contingconnection.h"
+#include "contingbus.h"
 
 static GSList *drawings = NULL;
 
@@ -226,7 +227,7 @@ static void bus_button_clicked(GtkButton *button, gpointer user_data) {
 	if (current_drawing != NULL && !current_drawing_start) {
 		return;
 	}
-	current_drawing = conting_component_new();
+	current_drawing = conting_bus_new();
 	current_drawing_start = TRUE;
 }
 
