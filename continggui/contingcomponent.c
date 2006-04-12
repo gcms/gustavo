@@ -1,4 +1,5 @@
 #include "contingcomponent.h"
+#include "contingconnection.h"
 #include <assert.h>
 
 
@@ -99,5 +100,5 @@ gboolean conting_component_connect(ContingComponent *self,
 	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 	g_return_val_if_fail(conn != NULL && CONTING_IS_CONNECTION(conn), FALSE);
 
-	return CONTING_COMPONENT_CLASS(self)->connect(self, conn, x, y);
+	return CONTING_COMPONENT_GET_CLASS(self)->connect(self, conn, x, y);
 }
