@@ -11,6 +11,8 @@ static gpointer parent_class = NULL;
 
 typedef struct ContingComponentPrivate_ ContingComponentPrivate;
 struct ContingComponentPrivate_ {
+	GdkColor color;
+
     GtkOrientation orientation;
     gint size;
 	GHashTable *branch_position;
@@ -25,8 +27,12 @@ struct BranchPosition_ {
 	GtkSideType side;
 };
 
-static void conting_component_get_rectangle(ContingDrawing *self,
-		GdkRectangle *rect);
+void conting_component_get_rectangle(ContingComponent *self,
+		GdkRectangle *rect) {
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	CONTING_COMPONENT_GET_CLASS(self)->get_rectangle(self, rect);
+}
 static void conting_component_draw(ContingDrawing *self, GdkDrawable *draw,
         GdkGC *gc, const GdkPoint *p, const GdkPoint *current) {
 	g_print("conting_component_draw()\n");
@@ -39,6 +45,7 @@ static void conting_component_draw(ContingDrawing *self, GdkDrawable *draw,
 	if (!priv->placed)
 		p = current;
 
+	gdk_gc_set_rgb_fg_color(gc, &priv->color);
 	switch (priv->orientation) {
 		case GTK_ORIENTATION_HORIZONTAL:
 			gdk_draw_rectangle(draw, gc, TRUE,
@@ -63,22 +70,22 @@ static void conting_component_draw_selected(ContingDrawing *self,
 
 	priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-	conting_component_get_rectangle(self, &rect);
+	conting_component_get_rectangle(CONTING_COMPONENT(self), &rect);
 
 	rect.x += p->x;
 	rect.y += p->y;
 
 	gdk_draw_rectangle(draw, gc, TRUE,
-			rect.x - 3, rect.y + rect.height / 2 - 3,
+			rect.x - 7, rect.y + rect.height / 2 - 3,
 			6, 6);
 	gdk_draw_rectangle(draw, gc, TRUE,
-			rect.x + rect.width / 2 - 3, rect.y - 3,
+			rect.x + rect.width / 2 - 3, rect.y - 7,
 			6, 6);
 	gdk_draw_rectangle(draw, gc, TRUE,
-			rect.x + rect.width - 3, rect.y + rect.height / 2 - 3,
+			rect.x + rect.width + 1, rect.y + rect.height / 2 - 3,
 			6, 6);
 	gdk_draw_rectangle(draw, gc, TRUE,
-			rect.x + rect.width / 2 - 3, rect.y + rect.height - 3,
+			rect.x + rect.width / 2 - 3, rect.y + rect.height + 1,
 			6, 6);
 	
 	return;
@@ -99,7 +106,7 @@ static void conting_component_draw_selected(ContingDrawing *self,
 	}
 }
 
-static void conting_component_get_rectangle(ContingDrawing *self,
+static void conting_component_get_rectangle_impl(ContingComponent *self,
 		GdkRectangle *rect) {
 	ContingComponentPrivate *priv;
 
@@ -195,12 +202,13 @@ static gboolean conting_component_answer(ContingDrawing *self,
 
 	priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-	conting_component_get_rectangle(self, &rect);
+	conting_component_get_rectangle(CONTING_COMPONENT(self), &rect);
 
 	return rect.x <= x && rect.y <= y
 		&& x - rect.x < rect.width && y - rect.y < rect.height;
 }
 
+/*
 gboolean conting_component_link_line_coord(ContingComponent *self,
 		ContingConnection *line, gint x, gint y) {
 	ContingComponentPrivate *priv;
@@ -225,7 +233,6 @@ gboolean conting_component_link_line_coord(ContingComponent *self,
 
 	return conting_component_link_line(self, line, position, side);
 }
-
 gboolean conting_component_link_line(ContingComponent *self,
 		ContingConnection *line, gint position, GtkSideType side) {
 	ContingComponentPrivate *priv;
@@ -243,8 +250,6 @@ gboolean conting_component_link_line(ContingComponent *self,
 
 	return TRUE;
 }
-
-/*
 static gboolean conting_component_place_linked(ContingDrawing *self,
 		gint selfx, gint selfy,
 		ContingDrawing *other, gint otherx, gint othery) {
@@ -301,13 +306,18 @@ static void conting_component_finalize(GObject *self) {
 
 static void conting_component_class_init(gpointer g_class,
         gpointer class_data) {
-	g_print("component_class_init()\n");
     ContingDrawingClass *drawing_class;
+	ContingComponentClass *component_class;
 	GObjectClass *object_class;
 
 	g_type_class_add_private(g_class, sizeof(ContingComponentPrivate));
 
     parent_class = g_type_class_peek_parent(g_class);
+
+	component_class = CONTING_COMPONENT_CLASS(g_class);
+	component_class->get_rectangle = conting_component_get_rectangle_impl;
+	component_class->move = NULL;
+	component_class->connect = NULL;
     
     drawing_class = CONTING_DRAWING_CLASS(g_class);
 //	drawing_class->get_rectangle = conting_component_get_rectangle;
@@ -332,6 +342,8 @@ static void conting_component_instance_init(GTypeInstance *self,
 	ContingComponentPrivate *priv;
 
 	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	gdk_color_parse("black", &priv->color);
 
 	priv->orientation = GTK_ORIENTATION_VERTICAL;
 	priv->size = DEFAULT_SIZE;
@@ -372,4 +384,19 @@ GType conting_component_get_type(void) {
 
 ContingDrawing *conting_component_new(void) {
 	return CONTING_DRAWING(g_object_new(CONTING_TYPE_COMPONENT, NULL));
+}
+
+void conting_component_move(ContingComponent *self, gint x, gint y) {
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	CONTING_COMPONENT_GET_CLASS(self)->move(self, x, y);
+}
+
+gboolean conting_component_connect(ContingComponent *self,
+		ContingConnection *conn,
+		gint x, gint y) {
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+	g_return_val_if_fail(conn != NULL && CONTING_IS_CONNECTION(conn), FALSE);
+
+	return CONTING_COMPONENT_CLASS(self)->connect(self, conn, x, y);
 }

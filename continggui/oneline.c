@@ -9,8 +9,6 @@ static ContingDrawing *current_drawing = NULL;
 static GdkPoint current_drawing_position = { -1, -1 };
 static gboolean current_drawing_start = TRUE;
 
-static ContingDrawing *selected_drawing = NULL;
-static GdkPoint selected_position = { -1, -1 };
 
 typedef struct DrawingToDraw_ DrawingToDraw;
 struct DrawingToDraw_ {
@@ -18,12 +16,7 @@ struct DrawingToDraw_ {
 	GdkPoint position;
 };
 
-static void select(DrawingToDraw *dd, GtkWidget *widget) {
-	selected_drawing = dd->drawing;
-	selected_position = dd->position;
-
-	gtk_widget_queue_draw(widget);
-}
+static DrawingToDraw *selected_dd = NULL;
 
 static void darea_realize(GtkWidget *widget, gpointer user_data) {
 	gtk_widget_add_events(widget, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
@@ -34,23 +27,29 @@ static gboolean darea_expose_event(GtkWidget *widget, GdkEventExpose *event,
 		gpointer user_data) {
 	gint w, h;
 	GSList *n;
+	static GdkGC *gc = NULL;
+
 
 	gdk_drawable_get_size(widget->window, &w, &h);
 	gdk_draw_rectangle(widget->window, widget->style->white_gc, TRUE,
 			0, 0, w, h);
 
+	if (gc == NULL) {
+		gc = gdk_gc_new(widget->window);
+	}
+
 	for (n = drawings; n != NULL; n = g_slist_next(n)) {
 		DrawingToDraw *dd = n->data;
 
 		conting_drawing_draw(dd->drawing,
-				widget->window, widget->style->black_gc,
+				widget->window, gc,
 				&dd->position, NULL);
 	}
 
-	if (selected_drawing != NULL) {
-		conting_drawing_draw_selected(selected_drawing,
-				widget->window, widget->style->black_gc,
-				&selected_position);
+	if (selected_dd != NULL) {
+		conting_drawing_draw_selected(selected_dd->drawing,
+				widget->window, gc,
+				&selected_dd->position);
 	}
 
 	if (current_drawing != NULL) {
@@ -58,8 +57,13 @@ static gboolean darea_expose_event(GtkWidget *widget, GdkEventExpose *event,
 
 		gtk_widget_get_pointer(widget, &pos.x, &pos.y);
 		
+		if (!current_drawing_start) {
+			pos.x -= current_drawing_position.x;
+			pos.y -= current_drawing_position.y;
+		}
+
 		conting_drawing_draw(current_drawing,
-				widget->window, widget->style->black_gc,
+				widget->window, gc,
 				&current_drawing_position, &pos);
 	}
 
@@ -67,7 +71,7 @@ static gboolean darea_expose_event(GtkWidget *widget, GdkEventExpose *event,
 	return TRUE;
 }
 
-static ContingDrawing *violates(gint x, gint y) {
+static DrawingToDraw *violates(gint x, gint y) {
 	GSList *n;
 
 	for (n = drawings; n != NULL; n = g_slist_next(n)) {
@@ -75,7 +79,7 @@ static ContingDrawing *violates(gint x, gint y) {
 
 		if (conting_drawing_answer(dd->drawing,
 					x - dd->position.x, y - dd->position.y)) {
-			return dd->drawing;
+			return dd;
 		}
 	}
 
@@ -85,6 +89,7 @@ static ContingDrawing *violates(gint x, gint y) {
 static gboolean darea_button_press_event(GtkWidget *widget,
 		GdkEventButton *event, gpointer user_data) {
 	if (current_drawing != NULL) {
+		DrawingToDraw *dd;
 		if (current_drawing_start) {
 			conting_drawing_start_place(current_drawing);
 			current_drawing_start = FALSE;
@@ -92,12 +97,14 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 			current_drawing_position.y = event->y;
 		}
 
-		g_print("VIOLATES ? %s\n",
-				violates(event->x, event->y) ? "YES" : " NO");
+		dd = violates(event->x, event->y);
+
+		g_print("VIOLATES ? %s\n", dd ? "YES" : " NO");
+
 		conting_drawing_place(current_drawing,
 				event->x - current_drawing_position.x,
 				event->y - current_drawing_position.y,
-				violates(event->x, event->y));
+				(dd == NULL ? NULL : dd->drawing));
 
 		g_print("IS PLACED ? %s\n",
 				conting_drawing_is_placed(current_drawing) ? "YES" : " NO");
@@ -113,7 +120,11 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 			current_drawing_start = TRUE;
 		}
 
+	} else { /* current_drawing == NULL */
+		selected_dd = violates(event->x, event->y);
 	}
+
+	gtk_widget_queue_draw(widget);
 
 	g_print("RETURNED");
 	return TRUE;
@@ -193,11 +204,22 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 
 static gboolean darea_motion_notify_event(GtkWidget *widget,
 		GdkEventMotion *event, gpointer user_data) {
-	if (current_drawing != NULL) {
+	g_print("darea_motion_notify_event()\n");
+	if ((event->state & GDK_BUTTON1_MASK) && selected_dd) {
+		if (CONTING_IS_COMPONENT(selected_dd->drawing)) {
+			conting_component_move(CONTING_COMPONENT(selected_dd->drawing),
+					event->x - selected_dd->position.x,
+					event->y - selected_dd->position.y);
+		}
+		selected_dd->position.x = event->x;
+		selected_dd->position.y = event->y;
+		gtk_widget_queue_draw(widget);
+	} else if (current_drawing != NULL) {
 		gtk_widget_queue_draw(widget);
 	}
 	return TRUE;
 }
+
 
 static void bus_button_clicked(GtkButton *button, gpointer user_data) {
 	g_print("bus_button_clicked()\n");
@@ -243,7 +265,7 @@ int main(int argc, char *argv[]) {
 			G_CALLBACK(darea_realize), NULL);
 	g_signal_connect(G_OBJECT(darea), "expose_event",
 			G_CALLBACK(darea_expose_event), NULL);
-	g_signal_connect(G_OBJECT(darea), "button_press_event",
+	g_signal_connect(G_OBJECT(darea), "button-press-event",
 			G_CALLBACK(darea_button_press_event), NULL);
 	g_signal_connect(G_OBJECT(darea), "motion_notify_event",
 			G_CALLBACK(darea_motion_notify_event), NULL);

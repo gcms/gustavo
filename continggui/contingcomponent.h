@@ -26,14 +26,20 @@ struct ContingComponent_ {
 typedef struct ContingComponentClass_ ContingComponentClass;
 struct ContingComponentClass_ {
     ContingDrawingClass parent;
+
+	void (*get_rectangle)(ContingComponent *self, GdkRectangle *rect);
+	void (*move)(ContingComponent *self, gint x, gint y);
+	gboolean (*connect)(ContingComponent *self, ContingConnection *conn,
+			gint x, gint y);
 };
 
 GType conting_component_get_type(void);
 
 ContingDrawing *conting_component_new(void);
-gboolean conting_component_link_line(ContingComponent *self,
-		ContingConnection *line, gint position, GtkSideType side);
-gboolean conting_component_link_line_coord(ContingComponent *self,
+void conting_component_get_rectangle(ContingComponent *self, GdkRectangle *r);
+void conting_component_move(ContingComponent *self, gint x, gint y);
+
+gboolean conting_component_connect(ContingComponent *self,
 		ContingConnection *line, gint x, gint y);
 
 #endif /* CONTING_COMPONENT_H */
