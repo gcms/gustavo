@@ -71,10 +71,10 @@ gboolean conting_drawing_place_linked(ContingDrawing *self,
 }
 */
 void conting_drawing_place(ContingDrawing *self, gint x, gint y,
-		ContingDrawing *other) {
+		ContingDrawing *other, gint ox, gint oy) {
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	CONTING_DRAWING_GET_CLASS(self)->place(self, x, y, other);
+	CONTING_DRAWING_GET_CLASS(self)->place(self, x, y, other, ox, oy);
 }
 
 void conting_drawing_start_place(ContingDrawing *self) {

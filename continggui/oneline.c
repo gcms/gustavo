@@ -105,7 +105,9 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 		conting_drawing_place(current_drawing,
 				event->x - current_drawing_position.x,
 				event->y - current_drawing_position.y,
-				(dd == NULL ? NULL : dd->drawing));
+				(dd == NULL ? NULL : dd->drawing),
+				(dd == NULL ? -1 : event->x - dd->position.x),
+				(dd == NULL ? -1 : event->y - dd->position.y));
 
 		g_print("IS PLACED ? %s\n",
 				conting_drawing_is_placed(current_drawing) ? "YES" : " NO");
@@ -205,7 +207,6 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 
 static gboolean darea_motion_notify_event(GtkWidget *widget,
 		GdkEventMotion *event, gpointer user_data) {
-	g_print("darea_motion_notify_event()\n");
 	if ((event->state & GDK_BUTTON1_MASK) && selected_dd) {
 		if (CONTING_IS_COMPONENT(selected_dd->drawing)) {
 			conting_component_move(CONTING_COMPONENT(selected_dd->drawing),

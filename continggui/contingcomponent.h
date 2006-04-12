@@ -23,6 +23,7 @@ struct ContingComponent_ {
     ContingDrawing parent;
 };
 
+
 typedef struct ContingComponentClass_ ContingComponentClass;
 struct ContingComponentClass_ {
     ContingDrawingClass parent;

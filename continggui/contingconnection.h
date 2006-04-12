@@ -23,9 +23,14 @@ struct ContingConnection_ {
 typedef struct ContingConnectionClass_ ContingConnectionClass;
 struct ContingConnectionClass_ {
     ContingDrawingClass parent;
+
+	void (*move)(ContingConnection *self, ContingDrawing *comp,
+			gint x, gint y);
 };
 
 GType conting_connection_get_type(void);
 ContingDrawing *conting_connection_new(void);
+void conting_connection_move(ContingConnection *self, ContingDrawing *comp,
+		gint x, gint y);
 
 #endif /* CONTING_CONNECTION_H */
