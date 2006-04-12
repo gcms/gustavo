@@ -1,0 +1,18 @@
+Objetos, possuem estados:
+
+Estado 1 - Iniciado
+Atributos como dimensoes, rotacao, ... jah estao definidos (podem se alterar)
+
+Estado 2 - Iniciou posicionamento
+Ponto inicial do objeto definido, acoes recebem coordenadas relativas a
+coordenada utilizada neste posicionamento inicial
+
+Estado 3 - Em posicionamento
+Neste estado o objeto recebe acoes cujas coordenadas sao relativas ao seu
+posicionamento inicial
+
+Estado 4 - Posicionado
+O objeto termina o posicionamento, e agora encontra-se em um determinado local
+
+
+O objeto pode
