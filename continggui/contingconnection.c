@@ -8,6 +8,8 @@ static gpointer parent_class = NULL;
 
 typedef struct ContingConnectionPrivate_ ContingConnectionPrivate;
 struct ContingConnectionPrivate_ {
+	GdkColor color;
+
 	GSList *points;
 	ContingDrawing *start;
 	ContingDrawing *end;
@@ -28,6 +30,7 @@ static void conting_connection_draw(ContingDrawing *self,
 
 	priv = CONTING_CONNECTION_GET_PRIVATE(self);
 
+	gdk_gc_set_rgb_fg_color(gc, &priv->color);
 	for (n = priv->points; n != NULL; n = g_slist_next(n)) {
 		GdkPoint *cur_point = n->data;
 		if (last_point) {
@@ -41,7 +44,7 @@ static void conting_connection_draw(ContingDrawing *self,
 	if (!priv->placed && last_point && mouse_pos) {
 		gdk_draw_line(drawable, gc,
 				pos->x + last_point->x, pos->y + last_point->y,
-				mouse_pos->x, mouse_pos->y);
+				pos->x + mouse_pos->x, pos->y + mouse_pos->y);
 	}
 }
 
@@ -204,6 +207,8 @@ static void conting_connection_instance_init(GTypeInstance *obj,
 	g_return_if_fail(obj != NULL && CONTING_IS_CONNECTION(obj));
 
 	priv = CONTING_CONNECTION_GET_PRIVATE(obj);
+
+	gdk_color_parse("red", &priv->color);
 
 	priv->start = NULL;
 	priv->end = NULL;
