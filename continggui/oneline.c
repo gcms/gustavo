@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
 #include "contingdrawing.h"
-#include "contingdrawingbus.h"
-#include "contingdrawingline.h"
+#include "contingcomponent.h"
+#include "contingconnection.h"
 
 static GSList *drawings = NULL;
 
@@ -204,7 +204,7 @@ static void bus_button_clicked(GtkButton *button, gpointer user_data) {
 	if (current_drawing != NULL && !current_drawing_start) {
 		return;
 	}
-	current_drawing = conting_drawing_bus_new();
+	current_drawing = conting_component_new();
 	current_drawing_start = TRUE;
 }
 
@@ -213,7 +213,7 @@ static void line_button_clicked(GtkButton *button, gpointer user_data) {
 	if (current_drawing != NULL && !current_drawing_start) {
 		return;
 	}
-	current_drawing = conting_drawing_line_new();
+	current_drawing = conting_connection_new();
 	current_drawing_start = TRUE;
 }
 

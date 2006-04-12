@@ -3,9 +3,9 @@ CFLAGS=-Wall -g `pkg-config gtk+-2.0 --cflags`
 LIBS=`pkg-config gtk+-2.0 --libs`
 
 all: build
-	$(CC) $(LIBS) oneline.o contingdrawing.o contingdrawingbus.o contingdrawingline.o -o main
+	$(CC) $(LIBS) oneline.o contingdrawing.o contingcomponent.o contingconnection.o -o main
 
-build: oneline.o contingdrawing.o contingdrawingbus.o contingdrawingline.o
+build: oneline.o contingdrawing.o contingcomponent.o contingconnection.o
 
 
 oneline.o: oneline.c
@@ -14,15 +14,15 @@ oneline.o: oneline.c
 contingdrawing.o: contingdrawing.c
 	$(CC) $(CFLAGS) -c contingdrawing.c -o contingdrawing.o
 
-contingdrawingbus.o: contingdrawingbus.c
-	$(CC) $(CFLAGS) -c contingdrawingbus.c -o contingdrawingbus.o
+contingcomponent.o: contingcomponent.c
+	$(CC) $(CFLAGS) -c contingcomponent.c -o contingcomponent.o
 
-contingdrawingline.o: contingdrawingline.c
-	$(CC) $(CFLAGS) -c contingdrawingline.c -o contingdrawingline.o
+contingconnection.o: contingconnection.c
+	$(CC) $(CFLAGS) -c contingconnection.c -o contingconnection.o
 
 clean:
 	rm -f oneline.o
 	rm -f contingdrawing.o
-	rm -f contingdrawingbus.o
-	rm -f contingdrawingline.o
+	rm -f contingcomponent.o
+	rm -f contingconnection.o
 	rm -f main
