@@ -293,17 +293,17 @@ static void conting_bus_class_init(gpointer g_class,
 	g_type_class_add_private(g_class, sizeof(ContingBusPrivate));
 
     parent_class = g_type_class_peek_parent(g_class);
-
-	component_class = CONTING_COMPONENT_CLASS(g_class);
-	component_class->get_rectangle = conting_bus_get_rectangle;
-	component_class->move = conting_bus_move;
-	component_class->connect = conting_bus_connect;
     
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_bus_draw;
 	drawing_class->start_place = conting_bus_start_place;
 	drawing_class->place = conting_bus_place;
 	drawing_class->is_placed = conting_bus_is_placed;
+
+	component_class = CONTING_COMPONENT_CLASS(g_class);
+	component_class->get_rectangle = conting_bus_get_rectangle;
+	component_class->move = conting_bus_move;
+	component_class->connect = conting_bus_connect;
 
 	object_class = G_OBJECT_CLASS(g_class);
 	object_class->dispose = conting_bus_dispose;
