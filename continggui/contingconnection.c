@@ -98,16 +98,23 @@ static void conting_connection_place(ContingDrawing *self,
 
 	if (priv->points == NULL) {
 		if (other != NULL && CONTING_IS_COMPONENT(other)) {
+			GdkPoint shift;
 			GdkPoint *new_point = g_new(GdkPoint, 1);
+
 			new_point->x = x;
 			new_point->y = y;
 
 			priv->points = g_slist_append(priv->points, new_point);
 
-			g_object_ref(other);
-			conting_component_connect(CONTING_COMPONENT(other),
-					CONTING_CONNECTION(self), ox, oy);
-			priv->start = CONTING_COMPONENT(other);
+			
+			if (conting_component_connect(CONTING_COMPONENT(other),
+					CONTING_CONNECTION(self), ox, oy, &shift)) {
+				g_object_ref(other);
+				priv->start = CONTING_COMPONENT(other);
+
+				new_point->x += shift.x;
+				new_point->y += shift.y;
+			}
 		}
 	} else {
 		GdkPoint *new_point = g_new(GdkPoint, 1);
@@ -117,11 +124,17 @@ static void conting_connection_place(ContingDrawing *self,
 		priv->points = g_slist_append(priv->points, new_point);
 
 		if (other != NULL && CONTING_IS_COMPONENT(other)) {
-			g_object_ref(other);
-			conting_component_connect(CONTING_COMPONENT(other),
-					CONTING_CONNECTION(self), ox, oy);
-			priv->end = CONTING_COMPONENT(other);
-			priv->placed = TRUE;
+			GdkPoint shift;
+
+			if (conting_component_connect(CONTING_COMPONENT(other),
+					CONTING_CONNECTION(self), ox, oy, &shift)) {
+				g_object_ref(other);
+				priv->end = CONTING_COMPONENT(other);
+				priv->placed = TRUE;
+
+				new_point->x += shift.x;
+				new_point->y += shift.y;
+			}
 		}
 	}
 

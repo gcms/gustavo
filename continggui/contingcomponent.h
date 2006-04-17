@@ -31,7 +31,7 @@ struct ContingComponentClass_ {
 	void (*get_rectangle)(ContingComponent *self, GdkRectangle *rect);
 	void (*move)(ContingComponent *self, gint x, gint y);
 	gboolean (*connect)(ContingComponent *self, ContingConnection *conn,
-			gint x, gint y);
+			gint x, gint y, GdkPoint *shift);
 };
 
 GType conting_component_get_type(void);
@@ -41,6 +41,6 @@ void conting_component_get_rectangle(ContingComponent *self, GdkRectangle *r);
 void conting_component_move(ContingComponent *self, gint x, gint y);
 
 gboolean conting_component_connect(ContingComponent *self,
-		ContingConnection *line, gint x, gint y);
+		ContingConnection *line, gint x, gint y, GdkPoint *shift);
 
 #endif /* CONTING_COMPONENT_H */

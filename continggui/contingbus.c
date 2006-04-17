@@ -160,7 +160,7 @@ static void conting_bus_move(ContingComponent *self, gint x, gint y) {
 }
 
 static gboolean conting_bus_connect(ContingComponent *self,
-		ContingConnection *conn, gint x, gint y) {
+		ContingConnection *conn, gint x, gint y, GdkPoint *shift) {
 	ContingBusPrivate *priv;
 	GdkPoint *new_point;
 
@@ -170,8 +170,13 @@ static gboolean conting_bus_connect(ContingComponent *self,
 	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	new_point = g_new(GdkPoint, 1);
-	new_point->x = x;
+	new_point->x = DEFAULT_RECT.x + (x < 0 ? 0 : DEFAULT_RECT.width);
 	new_point->y = y;
+
+	if (shift != NULL) {
+		shift->x = new_point->x - x;
+		shift->y = new_point->y - y;
+	}
 
 	g_object_ref(conn);
 
