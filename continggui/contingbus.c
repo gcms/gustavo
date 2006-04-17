@@ -8,6 +8,10 @@ static const GdkRectangle DEFAULT_RECT = { -5, -30, 10, 60 };
 #define CONTING_BUS_GET_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE((o), \
             CONTING_TYPE_BUS, ContingBusPrivate))
 
+typedef enum {
+	CONTING_VERTICAL, CONTING_HORIZONTAL
+} ContingOrientation;
+
 typedef struct ContingBusPrivate_ ContingBusPrivate;
 struct ContingBusPrivate_ {
 	GdkColor color;
@@ -15,6 +19,8 @@ struct ContingBusPrivate_ {
 	GdkRectangle rect;
 
 	GHashTable *branch_position;
+
+	ContingOrientation orientation;
 
 	gboolean placed;
 	gboolean disposed;
@@ -159,6 +165,44 @@ static void conting_bus_move(ContingComponent *self, gint x, gint y) {
 			branch_position_move_foreach, data);
 }
 
+static void branch_position_rotate_foreach(gpointer key, gpointer value,
+		gpointer user_data) {
+	ContingDrawing *bus = user_data;
+	ContingConnection *conn = key;
+	GdkPoint *point = value;
+	GdkPoint new_point;
+
+	new_point.x = point->y;
+	new_point.y = point->x;
+
+	conting_connection_move(conn, bus, new_point.x - point->x,
+			new_point.y - point->y);
+
+	*point = new_point;
+}
+
+static void conting_bus_rotate(ContingComponent *self, gdouble theta) {
+	ContingBusPrivate *priv;
+	GdkRectangle new_rect;
+
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+
+	priv = CONTING_BUS_GET_PRIVATE(self);
+
+	priv->orientation = (priv->orientation + 1) & 1;
+
+	new_rect.x = priv->rect.y;
+	new_rect.y = priv->rect.x;
+	new_rect.width = priv->rect.height;
+	new_rect.height = priv->rect.width;
+
+	priv->rect = new_rect;
+
+	g_hash_table_foreach(priv->branch_position, branch_position_rotate_foreach,
+			self);
+}
+			
+
 static gboolean conting_bus_connect(ContingComponent *self,
 		ContingConnection *conn, gint x, gint y, GdkPoint *shift) {
 	ContingBusPrivate *priv;
@@ -170,8 +214,13 @@ static gboolean conting_bus_connect(ContingComponent *self,
 	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	new_point = g_new(GdkPoint, 1);
-	new_point->x = DEFAULT_RECT.x + (x < 0 ? 0 : DEFAULT_RECT.width);
-	new_point->y = y;
+	if (priv->orientation == CONTING_VERTICAL) {
+		new_point->x = DEFAULT_RECT.x + (x < 0 ? 0 : DEFAULT_RECT.width);
+		new_point->y = y;
+	} else {
+		new_point->x = x;
+		new_point->y = DEFAULT_RECT.y + (y < 0 ? 0 : DEFAULT_RECT.height);
+	}
 
 	if (shift != NULL) {
 		shift->x = new_point->x - x;
@@ -303,6 +352,7 @@ static void conting_bus_class_init(gpointer g_class,
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->get_rectangle = conting_bus_get_rectangle;
 	component_class->move = conting_bus_move;
+	component_class->rotate = conting_bus_rotate;
 	component_class->connect = conting_bus_connect;
 
 	object_class = G_OBJECT_CLASS(g_class);
@@ -325,6 +375,8 @@ static void conting_bus_instance_init(GTypeInstance *self,
 	priv->branch_position = g_hash_table_new_full(
 			g_direct_hash, g_direct_equal,
 			g_object_unref, g_free);
+
+	priv->orientation = CONTING_VERTICAL;
 
 	priv->placed = FALSE;
 

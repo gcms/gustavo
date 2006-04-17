@@ -22,7 +22,8 @@ static DrawingToDraw *selected_dd = NULL;
 
 static void darea_realize(GtkWidget *widget, gpointer user_data) {
 	gtk_widget_add_events(widget, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
-			| GDK_POINTER_MOTION_MASK);
+			| GDK_POINTER_MOTION_MASK | GDK_KEY_PRESS_MASK
+			| GDK_KEY_RELEASE_MASK);
 }
 
 static gboolean darea_expose_event(GtkWidget *widget, GdkEventExpose *event,
@@ -131,6 +132,24 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 	gtk_widget_queue_draw(widget);
 
 	g_print("RETURNED");
+	return TRUE;
+}
+#include <gdk/gdkkeysyms.h>
+#include <math.h>
+static gboolean darea_key_press_event(GtkWidget *widget, GdkEventKey *event,
+		gpointer user_data) {
+	if (event->type == GDK_KEY_PRESS) {
+		if ((event->keyval == GDK_R || event->keyval == GDK_r)
+			&& selected_dd != NULL
+			&& CONTING_IS_COMPONENT(selected_dd->drawing)) {
+	g_print("darea_key_press_event()\n");
+			conting_component_rotate(CONTING_COMPONENT(selected_dd->drawing),
+					M_PI / 2);
+
+			gtk_widget_queue_draw(GTK_WIDGET(user_data));
+		}
+
+	}
 	return TRUE;
 }
 
@@ -296,6 +315,8 @@ int main(int argc, char *argv[]) {
 			G_CALLBACK(darea_expose_event), NULL);
 	g_signal_connect(G_OBJECT(darea), "button-press-event",
 			G_CALLBACK(darea_button_press_event), NULL);
+	g_signal_connect(G_OBJECT(window), "key-press-event",
+			G_CALLBACK(darea_key_press_event), darea);
 	g_signal_connect(G_OBJECT(darea), "motion_notify_event",
 			G_CALLBACK(darea_motion_notify_event), NULL);
 

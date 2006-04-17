@@ -50,6 +50,7 @@ static void conting_component_class_init(gpointer g_class,
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->get_rectangle = NULL;
 	component_class->move = NULL;
+	component_class->rotate = NULL;
 	component_class->connect = NULL;
     
     drawing_class = CONTING_DRAWING_CLASS(g_class);
@@ -98,6 +99,12 @@ void conting_component_move(ContingComponent *self, gint x, gint y) {
 	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
 	CONTING_COMPONENT_GET_CLASS(self)->move(self, x, y);
+}
+
+void conting_component_rotate(ContingComponent *self, gdouble theta) {
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	CONTING_COMPONENT_GET_CLASS(self)->rotate(self, theta);
 }
 
 gboolean conting_component_connect(ContingComponent *self,
