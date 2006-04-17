@@ -225,15 +225,26 @@ static gboolean darea_motion_notify_event(GtkWidget *widget,
 
 static void bus_button_clicked(GtkButton *button, gpointer user_data) {
 	g_print("bus_button_clicked()\n");
+	if (selected_dd != NULL) {
+		selected_dd = NULL;
+		gtk_widget_queue_draw(GTK_WIDGET(user_data));
+	}
+
 	if (current_drawing != NULL && !current_drawing_start) {
 		return;
 	}
+
 	current_drawing = conting_bus_new();
 	current_drawing_start = TRUE;
 }
 
 static void line_button_clicked(GtkButton *button, gpointer user_data) {
 	g_print("line_button_clicked()\n");
+	if (selected_dd != NULL) {
+		selected_dd = NULL;
+		gtk_widget_queue_draw(GTK_WIDGET(user_data));
+	}
+
 	if (current_drawing != NULL && !current_drawing_start) {
 		return;
 	}
@@ -281,13 +292,13 @@ int main(int argc, char *argv[]) {
 
 	line_button = gtk_button_new_with_label("LINE");
 	g_signal_connect(G_OBJECT(line_button), "clicked",
-			G_CALLBACK(line_button_clicked), NULL);
+			G_CALLBACK(line_button_clicked), darea);
 	gtk_box_pack_start_defaults(GTK_BOX(hbox), line_button);
 	gtk_widget_show(line_button);
 
 	bus_button = gtk_button_new_with_label("BUS");
 	g_signal_connect(G_OBJECT(bus_button), "clicked",
-			G_CALLBACK(bus_button_clicked), NULL);
+			G_CALLBACK(bus_button_clicked), darea);
 	gtk_box_pack_start_defaults(GTK_BOX(hbox), bus_button);
 	gtk_widget_show(bus_button);
 	

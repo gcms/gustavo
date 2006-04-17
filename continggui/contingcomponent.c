@@ -2,6 +2,8 @@
 #include "contingconnection.h"
 #include <assert.h>
 
+static GdkColor color;
+
 
 static void conting_component_draw_selected(ContingDrawing *self,
 		GdkDrawable *draw, GdkGC *gc, const GdkPoint *p) {
@@ -11,6 +13,8 @@ static void conting_component_draw_selected(ContingDrawing *self,
 
 	rect.x += p->x;
 	rect.y += p->y;
+	
+	gdk_gc_set_rgb_fg_color(gc, &color);
 
 	gdk_draw_rectangle(draw, gc, TRUE,
 			rect.x - 7, rect.y + rect.height / 2 - 3,
@@ -51,6 +55,8 @@ static void conting_component_class_init(gpointer g_class,
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw_selected = conting_component_draw_selected;
 	drawing_class->answer = conting_component_answer;
+
+	gdk_color_parse("black", &color);
 }
 
 GType conting_component_get_type(void) {
@@ -96,9 +102,9 @@ void conting_component_move(ContingComponent *self, gint x, gint y) {
 
 gboolean conting_component_connect(ContingComponent *self,
 		ContingConnection *conn,
-		gint x, gint y) {
+		gint x, gint y, GdkPoint *shift) {
 	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 	g_return_val_if_fail(conn != NULL && CONTING_IS_CONNECTION(conn), FALSE);
 
-	return CONTING_COMPONENT_GET_CLASS(self)->connect(self, conn, x, y);
+	return CONTING_COMPONENT_GET_CLASS(self)->connect(self, conn, x, y, shift);
 }
