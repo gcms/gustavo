@@ -3,6 +3,7 @@
 #include "contingcomponent.h"
 #include "contingconnection.h"
 #include "contingbus.h"
+#include "contingtrans2.h"
 
 static GSList *drawings = NULL;
 
@@ -252,8 +253,23 @@ static void line_button_clicked(GtkButton *button, gpointer user_data) {
 	current_drawing_start = TRUE;
 }
 
+static void trans2_button_clicked(GtkButton *button, gpointer user_data) {
+	g_print("trans2_button_clicked()\n");
+	if (selected_dd != NULL) {
+		selected_dd = NULL;
+		gtk_widget_queue_draw(GTK_WIDGET(user_data));
+	}
+
+	if (current_drawing != NULL && !current_drawing_start) {
+		return;
+	}
+	current_drawing = conting_trans2_new();
+	current_drawing_start = TRUE;
+}
+
 int main(int argc, char *argv[]) {
-    GtkWidget *window, *darea, *swindow, *bus_button, *line_button;
+    GtkWidget *window, *darea, *swindow;
+	GtkWidget *bus_button, *line_button, *trans2_button;
 	GtkWidget *vbox, *hbox;
 
     gtk_init(&argc, &argv);
@@ -301,6 +317,13 @@ int main(int argc, char *argv[]) {
 			G_CALLBACK(bus_button_clicked), darea);
 	gtk_box_pack_start_defaults(GTK_BOX(hbox), bus_button);
 	gtk_widget_show(bus_button);
+	
+	trans2_button = gtk_button_new_with_label("TRANS2");
+	g_signal_connect(G_OBJECT(trans2_button), "clicked",
+			G_CALLBACK(trans2_button_clicked), darea);
+	gtk_box_pack_start_defaults(GTK_BOX(hbox), trans2_button);
+	gtk_widget_show(trans2_button);
+	
 	
 	gtk_widget_show(window);
 
