@@ -1,5 +1,6 @@
 #include "contingbus.h"
 #include <assert.h>
+#include <gtk/gtkenums.h>
 
 static gpointer parent_class = NULL;
 
@@ -7,10 +8,6 @@ static const GdkRectangle DEFAULT_RECT = { -5, -30, 10, 60 };
 
 #define CONTING_BUS_GET_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE((o), \
             CONTING_TYPE_BUS, ContingBusPrivate))
-
-typedef enum {
-	CONTING_VERTICAL, CONTING_HORIZONTAL
-} ContingOrientation;
 
 typedef struct ContingBusPrivate_ ContingBusPrivate;
 struct ContingBusPrivate_ {
@@ -20,7 +17,7 @@ struct ContingBusPrivate_ {
 
 	GHashTable *branch_position;
 
-	ContingOrientation orientation;
+	GtkOrientation orientation;
 
 	gboolean placed;
 	gboolean disposed;
@@ -214,7 +211,7 @@ static gboolean conting_bus_connect(ContingComponent *self,
 	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	new_point = g_new(GdkPoint, 1);
-	if (priv->orientation == CONTING_VERTICAL) {
+	if (priv->orientation == GTK_ORIENTATION_VERTICAL) {
 		new_point->x = DEFAULT_RECT.x + (x < 0 ? 0 : DEFAULT_RECT.width);
 		new_point->y = y;
 	} else {
@@ -376,7 +373,7 @@ static void conting_bus_instance_init(GTypeInstance *self,
 			g_direct_hash, g_direct_equal,
 			g_object_unref, g_free);
 
-	priv->orientation = CONTING_VERTICAL;
+	priv->orientation = GTK_ORIENTATION_VERTICAL;
 
 	priv->placed = FALSE;
 
