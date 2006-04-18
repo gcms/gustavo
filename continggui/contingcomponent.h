@@ -5,6 +5,8 @@
 #include "contingconnection.h"
 #include <gtk/gtkenums.h>
 
+G_BEGIN_DECLS
+
 #define CONTING_TYPE_COMPONENT        (conting_component_get_type())
 #define CONTING_COMPONENT(o)          (G_TYPE_CHECK_INSTANCE_CAST((o), \
             CONTING_TYPE_COMPONENT, ContingComponent))
@@ -44,5 +46,7 @@ void conting_component_rotate(ContingComponent *self, gdouble theta);
 
 gboolean conting_component_connect(ContingComponent *self,
 		ContingConnection *line, gint x, gint y, GdkPoint *shift);
+
+G_END_DECLS
 
 #endif /* CONTING_COMPONENT_H */

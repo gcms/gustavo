@@ -5,6 +5,8 @@
 #include "contingcomponent.h"
 #include <gtk/gtkenums.h>
 
+G_BEGIN_DECLS
+
 #define CONTING_TYPE_BUS        (conting_bus_get_type())
 #define CONTING_BUS(o)          (G_TYPE_CHECK_INSTANCE_CAST((o), \
             CONTING_TYPE_BUS, ContingBus))
@@ -31,5 +33,7 @@ struct ContingBusClass_ {
 GType conting_bus_get_type(void);
 
 ContingDrawing *conting_bus_new(void);
+
+G_END_DECLS
 
 #endif /* CONTING_BUS_H */
