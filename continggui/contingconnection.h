@@ -3,6 +3,8 @@
 
 #include "contingdrawing.h"
 
+G_BEGIN_DECLS
+
 #define CONTING_TYPE_CONNECTION        (conting_connection_get_type())
 #define CONTING_CONNECTION(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
             CONTING_TYPE_CONNECTION, ContingConnection))
@@ -32,5 +34,7 @@ GType conting_connection_get_type(void);
 ContingDrawing *conting_connection_new(void);
 void conting_connection_move(ContingConnection *self, ContingDrawing *comp,
 		gint x, gint y);
+
+G_END_DECLS
 
 #endif /* CONTING_CONNECTION_H */

@@ -4,6 +4,8 @@
 #include <glib-object.h>
 #include <gdk/gdk.h>
 
+G_BEGIN_DECLS
+
 #define CONTING_TYPE_DRAWING        (conting_drawing_get_type())
 #define CONTING_DRAWING(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
             CONTING_TYPE_DRAWING, ContingDrawing))
@@ -101,5 +103,6 @@ gboolean conting_drawing_is_placed(ContingDrawing *self);
 
 gboolean conting_drawing_answer(ContingDrawing *self, gint x, gint y);
 
+G_END_DECLS
 
 #endif /* CONTING_DRAWING_H */
