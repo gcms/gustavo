@@ -1,7 +1,10 @@
 #ifndef CONTING_ONE_LINE_H
 #define CONTING_ONE_LINE_H
 
-#include <glib-object.h>
+#include <gtk/gtkenums.h>
+#include "contingdrawing.h"
+
+G_BEGIN_DECLS
 
 #define CONTING_TYPE_ONE_LINE			(conting_one_line_get_type())
 #define CONTING_ONE_LINE(o)				(G_TYPE_CHECK_INSTANCE_CAST((o), \
@@ -23,7 +26,15 @@ struct ContingOneLine_ {
 typedef struct ContingOneLineClass_ ContingOneLineClass;
 struct ContingOneLineClass_ {
 	GObjectClass parent;
+
+	void (*get_drawing_position)(ContingOneLine *self,
+			ContingDrawing *drawing, GdkPoint *position);
+
+	void (*get_relative_position)(ContingOneLine *self,
+			ContingDrawing *draw1, ContingDrawing *draw2,
+			GdkPoint *result);
 };
 
+G_END_DECLS
 
 #endif /* CONTING_ONE_LINE_H */
