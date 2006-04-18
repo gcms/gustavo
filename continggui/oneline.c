@@ -93,6 +93,14 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 		GdkEventButton *event, gpointer user_data) {
 	if (current_drawing != NULL) {
 		DrawingToDraw *dd;
+
+		if (event->button != 1) {
+			g_object_unref(current_drawing);
+			current_drawing = NULL;
+			gtk_widget_queue_draw(widget);
+			return TRUE;
+		}
+
 		if (current_drawing_start) {
 			conting_drawing_start_place(current_drawing);
 			current_drawing_start = FALSE;
@@ -139,12 +147,23 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 static gboolean darea_key_press_event(GtkWidget *widget, GdkEventKey *event,
 		gpointer user_data) {
 	if (event->type == GDK_KEY_PRESS) {
-		if ((event->keyval == GDK_R || event->keyval == GDK_r)
-			&& selected_dd != NULL
-			&& CONTING_IS_COMPONENT(selected_dd->drawing)) {
-	g_print("darea_key_press_event()\n");
-			conting_component_rotate(CONTING_COMPONENT(selected_dd->drawing),
-					M_PI / 2);
+		if ((event->keyval == GDK_R || event->keyval == GDK_r)) {
+			if (selected_dd != NULL
+					&& CONTING_IS_COMPONENT(selected_dd->drawing)) {
+				g_print("darea_key_press_event()\n");
+				conting_component_rotate(
+						CONTING_COMPONENT(selected_dd->drawing), M_PI / 2);
+			}
+
+			gtk_widget_queue_draw(GTK_WIDGET(user_data));
+		}
+
+		if (event->keyval == GDK_Delete && selected_dd != NULL) {
+			drawings = g_slist_remove(drawings, selected_dd);
+
+			g_object_unref(selected_dd->drawing);
+			g_free(selected_dd);
+			selected_dd = NULL;
 
 			gtk_widget_queue_draw(GTK_WIDGET(user_data));
 		}
@@ -232,10 +251,10 @@ static gboolean darea_motion_notify_event(GtkWidget *widget,
 			conting_component_move(CONTING_COMPONENT(selected_dd->drawing),
 					event->x - selected_dd->position.x,
 					event->y - selected_dd->position.y);
+			selected_dd->position.x = event->x;
+			selected_dd->position.y = event->y;
+			gtk_widget_queue_draw(widget);
 		}
-		selected_dd->position.x = event->x;
-		selected_dd->position.y = event->y;
-		gtk_widget_queue_draw(widget);
 	} else if (current_drawing != NULL) {
 		gtk_widget_queue_draw(widget);
 	}

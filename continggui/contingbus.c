@@ -199,6 +199,21 @@ static void conting_bus_rotate(ContingComponent *self, gdouble theta) {
 			self);
 }
 			
+static void conting_bus_disconnect(gpointer self, GObject *conn) {
+	g_print("conting_bus_disconnect()\n");
+	ContingBusPrivate *priv;
+	GdkPoint *p;
+
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+
+	priv = CONTING_BUS_GET_PRIVATE(self);
+
+	p = g_hash_table_lookup(priv->branch_position, conn);
+	if (p != NULL) {
+		g_hash_table_steal(priv->branch_position, conn);
+		g_free(p);
+	}
+}
 
 static gboolean conting_bus_connect(ContingComponent *self,
 		ContingConnection *conn, gint x, gint y, GdkPoint *shift) {
@@ -224,7 +239,7 @@ static gboolean conting_bus_connect(ContingComponent *self,
 		shift->y = new_point->y - y;
 	}
 
-	g_object_ref(conn);
+	g_object_weak_ref(G_OBJECT(conn), conting_bus_disconnect, self);
 
 	g_hash_table_insert(priv->branch_position,
 			conn, new_point);
@@ -357,6 +372,10 @@ static void conting_bus_class_init(gpointer g_class,
 	object_class->finalize = conting_bus_finalize;
 }
 
+static void conting_bus_weak_unref(gpointer data) {
+	g_object_weak_unref(data, conting_bus_disconnect, NULL);
+}
+
 static void conting_bus_instance_init(GTypeInstance *self,
 		gpointer g_class) {
 	ContingBusPrivate *priv;
@@ -371,7 +390,7 @@ static void conting_bus_instance_init(GTypeInstance *self,
 
 	priv->branch_position = g_hash_table_new_full(
 			g_direct_hash, g_direct_equal,
-			g_object_unref, g_free);
+			conting_bus_weak_unref, g_free);
 
 	priv->orientation = GTK_ORIENTATION_VERTICAL;
 
