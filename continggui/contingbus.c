@@ -122,7 +122,7 @@ static void branch_position_move_foreach(gpointer key, gpointer value,
 		gpointer user_data) {
 	ContingConnection *conn;
 	gpointer *data;
-	ContingDrawing *bus;
+	ContingComponent *bus;
 	GdkPoint *movement;
 
 	g_return_if_fail(key != NULL && CONTING_IS_CONNECTION(key));
@@ -164,7 +164,7 @@ static void conting_bus_move(ContingComponent *self, gint x, gint y) {
 
 static void branch_position_rotate_foreach(gpointer key, gpointer value,
 		gpointer user_data) {
-	ContingDrawing *bus = user_data;
+	ContingComponent *bus = user_data;
 	ContingConnection *conn = key;
 	GdkPoint *point = value;
 	GdkPoint new_point;

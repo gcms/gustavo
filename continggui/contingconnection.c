@@ -1,5 +1,4 @@
 #include "contingconnection.h"
-#include "contingcomponent.h"
 #include <assert.h>
 
 static gpointer parent_class = NULL;
@@ -157,7 +156,7 @@ static gboolean conting_connection_answer(ContingDrawing *self,
 }
 
 static void conting_connection_move_impl(ContingConnection *self,
-		ContingDrawing *comp, gint x, gint y) {
+		ContingComponent *comp, gint x, gint y) {
 	ContingConnectionPrivate *priv;
 
 	g_return_if_fail(self != NULL && CONTING_IS_CONNECTION(self));
@@ -293,7 +292,7 @@ ContingDrawing *conting_connection_new(void) {
     return CONTING_DRAWING(g_object_new(CONTING_TYPE_CONNECTION, NULL));
 }
 
-void conting_connection_move(ContingConnection *self, ContingDrawing *comp,
+void conting_connection_move(ContingConnection *self, ContingComponent *comp,
 		gint x, gint y) {
 	g_return_if_fail(self != NULL && CONTING_IS_CONNECTION(self));
 	g_return_if_fail(comp != NULL && CONTING_IS_COMPONENT(comp));

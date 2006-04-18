@@ -18,21 +18,26 @@ G_BEGIN_DECLS
             CONTING_TYPE_CONNECTION, ContingConnectionClass))
 
 typedef struct ContingConnection_ ContingConnection;
+typedef struct ContingConnectionClass_ ContingConnectionClass;
+
+#ifndef CONTING_COMPONENT_H
+#include "contingcomponent.h"
+#endif
+
 struct ContingConnection_ {
     ContingDrawing parent;
 };
 
-typedef struct ContingConnectionClass_ ContingConnectionClass;
 struct ContingConnectionClass_ {
     ContingDrawingClass parent;
 
-	void (*move)(ContingConnection *self, ContingDrawing *comp,
+	void (*move)(ContingConnection *self, ContingComponent *comp,
 			gint x, gint y);
 };
 
 GType conting_connection_get_type(void);
 ContingDrawing *conting_connection_new(void);
-void conting_connection_move(ContingConnection *self, ContingDrawing *comp,
+void conting_connection_move(ContingConnection *self, ContingComponent *comp,
 		gint x, gint y);
 
 G_END_DECLS
