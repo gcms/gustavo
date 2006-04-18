@@ -71,11 +71,11 @@ static void conting_trans2_move(ContingComponent *self, gint x, gint y) {
 	priv = CONTING_TRANS2_GET_PRIVATE(self);;
 
 	if (priv->input != NULL) {
-		conting_connection_move(priv->input, CONTING_DRAWING(self), x, y);
+		conting_connection_move(priv->input, self, x, y);
 	}
 
 	if (priv->output != NULL) {
-		conting_connection_move(priv->output, CONTING_DRAWING(self), x, y);
+		conting_connection_move(priv->output, self, x, y);
 	}
 }
 

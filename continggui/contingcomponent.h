@@ -2,10 +2,10 @@
 #define CONTING_COMPONENT_H
 
 #include "contingdrawing.h"
-#include "contingconnection.h"
 #include <gtk/gtkenums.h>
 
 G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_COMPONENT        (conting_component_get_type())
 #define CONTING_COMPONENT(o)          (G_TYPE_CHECK_INSTANCE_CAST((o), \
@@ -21,12 +21,17 @@ G_BEGIN_DECLS
 
 
 typedef struct ContingComponent_ ContingComponent;
+typedef struct ContingComponentClass_ ContingComponentClass;
+
+#ifndef CONTING_CONNECTION_H
+#include "contingconnection.h"
+#endif
+
 struct ContingComponent_ {
     ContingDrawing parent;
 };
 
 
-typedef struct ContingComponentClass_ ContingComponentClass;
 struct ContingComponentClass_ {
     ContingDrawingClass parent;
 

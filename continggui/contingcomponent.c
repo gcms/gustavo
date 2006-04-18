@@ -1,5 +1,4 @@
 #include "contingcomponent.h"
-#include "contingconnection.h"
 #include <assert.h>
 
 static GdkColor color;
