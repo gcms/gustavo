@@ -3,7 +3,6 @@
 
 static GdkColor color;
 
-
 static void conting_component_draw_selected(ContingDrawing *self,
 		GdkDrawable *draw, GdkGC *gc, const GdkPoint *p) {
 	GdkRectangle rect;

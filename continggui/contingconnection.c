@@ -1,7 +1,11 @@
 #include "contingconnection.h"
 #include <assert.h>
+#include <stdlib.h>
+#include <math.h>
 
 static gpointer parent_class = NULL;
+
+static GdkColor black_color;
 
 #define CONTING_CONNECTION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
 		CONTING_TYPE_CONNECTION, ContingConnectionPrivate))
@@ -18,6 +22,29 @@ struct ContingConnectionPrivate_ {
 
 	gboolean disposed;
 };
+
+static void conting_connection_draw_selected(ContingDrawing *self,
+		GdkDrawable *drawable, GdkGC *gc,
+		const GdkPoint *pos) {
+	ContingConnectionPrivate *priv;
+	GSList *n;
+
+	g_return_if_fail(self != NULL && CONTING_IS_CONNECTION(self));
+
+	priv = CONTING_CONNECTION_GET_PRIVATE(self);
+
+	assert(priv->placed == TRUE);
+
+	gdk_gc_set_rgb_fg_color(gc, &black_color);
+
+	for (n = g_slist_next(priv->points); g_slist_next(n) != NULL;
+			n = g_slist_next(n)) {
+		GdkPoint *cur_point = n->data;
+		gdk_draw_rectangle(drawable, gc, TRUE,
+				pos->x + cur_point->x - 3, pos->y + cur_point->y - 3,
+				6, 6);
+	}
+}
 
 static void conting_connection_draw(ContingDrawing *self,
 		GdkDrawable *drawable, GdkGC *gc,
@@ -152,6 +179,41 @@ static gboolean conting_connection_is_placed(ContingDrawing *self) {
 
 static gboolean conting_connection_answer(ContingDrawing *self,
 		gint x, gint y) {
+	ContingConnectionPrivate *priv;
+	GSList *n;
+	GdkPoint *prev_point;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_CONNECTION(self), FALSE);
+	
+	priv = CONTING_CONNECTION_GET_PRIVATE(self);
+	
+	assert(priv->placed == TRUE);
+
+	prev_point = NULL;
+	for (n = priv->points; n != NULL; n = g_slist_next(n)) {
+		GdkPoint *cur_point = n->data;
+		if (prev_point != NULL) {
+			gint dx, dy;
+			gdouble m, d;
+			gint ix, iy;
+
+			dx = cur_point->x - prev_point->x;
+			dy = cur_point->y - prev_point->y;
+
+			ix = x - prev_point->x;
+			iy = prev_point->y - y;
+
+			m = (gdouble) dy / (gdouble) dx;
+
+			d = fabs(m * ix + iy) / sqrt(m * m + 1);
+
+			if (d < 5 && abs(ix) < abs(dx) && abs(iy) < abs(dy)) {
+				return TRUE;
+			}
+		}
+		prev_point = cur_point;
+	}
+
 	return FALSE;
 }
 
@@ -165,12 +227,12 @@ static void conting_connection_move_impl(ContingConnection *self,
 
 	assert(priv->placed == TRUE);
 
-	if (CONTING_COMPONENT(comp) == priv->start) {
+	if (comp == priv->start) {
 		g_print("FIRST\n");
 		GdkPoint *first = priv->points->data;
 		first->x += x;
 		first->y += y;
-	} else if (CONTING_COMPONENT(comp) == priv->end) {
+	} else if (comp == priv->end) {
 		g_print("LAST\n");
 		GdkPoint *last = g_slist_last(priv->points)->data;
 		last->x += x;
@@ -188,10 +250,12 @@ static void conting_connection_dispose(GObject *self) {
 	if (priv->disposed)
 		return;
 	
-	if (priv->start)
+	if (priv->start) {
 		g_object_unref(priv->start);
-	if (priv->end)
+	}
+	if (priv->end) {
 		g_object_unref(priv->end);
+	}
 
 	priv->disposed = TRUE;
 
@@ -230,7 +294,7 @@ static void conting_connection_class_init(gpointer g_class,
 	
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_connection_draw;
-//	drawing_class->draw_selected = conting_connection_draw;
+	drawing_class->draw_selected = conting_connection_draw_selected;
 	drawing_class->start_place = conting_connection_start_place;
 	drawing_class->place = conting_connection_place;
 	drawing_class->is_placed = conting_connection_is_placed;
@@ -240,7 +304,7 @@ static void conting_connection_class_init(gpointer g_class,
 	object_class->finalize = conting_connection_finalize;
 	object_class->dispose = conting_connection_dispose;
 
-//    drawing_class->get_rectangle = conting_connection_get_rectangle;
+	gdk_color_parse("black", &black_color);
 }
 
 static void conting_connection_instance_init(GTypeInstance *obj,
