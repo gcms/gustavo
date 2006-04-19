@@ -1,5 +1,6 @@
 #include "contingcomponent.h"
 #include <assert.h>
+#include <stdlib.h>
 
 static GdkColor color;
 
@@ -34,10 +35,42 @@ static gboolean conting_component_answer(ContingDrawing *self,
 		gint x, gint y) {
 	GdkRectangle rect;
 
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+
 	conting_component_get_rectangle(CONTING_COMPONENT(self), &rect);
 
 	return rect.x <= x && rect.y <= y
 		&& x - rect.x < rect.width && y - rect.y < rect.height;
+}
+
+static gboolean conting_component_answer_resize_impl(ContingComponent *self,
+		gint x, gint y, ContingResizeOrientation *orientation) {
+	ContingResizeOrientation resize;
+	GdkRectangle rect;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+	g_return_val_if_fail(orientation != NULL, FALSE);
+
+	conting_component_get_rectangle(self, &rect);
+	conting_component_resizeable(self, &resize);
+
+	if ((resize & CONTING_RESIZE_HORIZONTAL)
+			&& ((abs(x - (rect.x - 3)) < 5 && abs(y) < 5)
+				|| (abs(x - (rect.x + rect.width + 3)) < 5 && abs(y) < 5))) {
+		*orientation = CONTING_RESIZE_HORIZONTAL;
+
+		return TRUE;
+	}
+
+	if ((resize & CONTING_RESIZE_VERTICAL)
+			&& ((abs(y - (rect.y - 3)) < 5 && abs(x) < 5)
+				|| (abs(y - (rect.y + rect.height + 3)) < 5 && abs(x) < 5))) {
+		*orientation = CONTING_RESIZE_VERTICAL;
+
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void conting_drawing_move_impl(ContingDrawing *self, gint x, gint y) {
@@ -56,6 +89,9 @@ static void conting_component_class_init(gpointer g_class,
 	component_class->move = NULL;
 	component_class->rotate = NULL;
 	component_class->connect = NULL;
+	component_class->answer_resize = conting_component_answer_resize_impl;
+	component_class->resizeable = NULL;
+	component_class->resize = NULL;
     
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw_selected = conting_component_draw_selected;
@@ -97,6 +133,7 @@ ContingDrawing *conting_component_new(void) {
 void conting_component_get_rectangle(ContingComponent *self,
 		GdkRectangle *rect) {
 	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+	g_return_if_fail(rect != NULL);
 
 	CONTING_COMPONENT_GET_CLASS(self)->get_rectangle(self, rect);
 }
@@ -113,6 +150,14 @@ void conting_component_rotate(ContingComponent *self, gdouble theta) {
 	CONTING_COMPONENT_GET_CLASS(self)->rotate(self, theta);
 }
 
+void conting_component_resizeable(ContingComponent *self,
+		ContingResizeOrientation *orientation) {
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+	g_return_if_fail(orientation != NULL);
+
+	CONTING_COMPONENT_GET_CLASS(self)->resizeable(self, orientation);
+}
+
 gboolean conting_component_connect(ContingComponent *self,
 		ContingConnection *conn,
 		gint x, gint y, GdkPoint *shift) {
@@ -120,4 +165,19 @@ gboolean conting_component_connect(ContingComponent *self,
 	g_return_val_if_fail(conn != NULL && CONTING_IS_CONNECTION(conn), FALSE);
 
 	return CONTING_COMPONENT_GET_CLASS(self)->connect(self, conn, x, y, shift);
+}
+gboolean conting_component_answer_resize(ContingComponent *self,
+		gint x, gint y, ContingResizeOrientation *orientation) {
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+	g_return_val_if_fail(orientation != NULL, FALSE);
+
+	return CONTING_COMPONENT_GET_CLASS(self)->answer_resize(self, x, y,
+			orientation);
+}
+void conting_component_resize(ContingComponent *self, gint x, gint y,
+		ContingResizeOrientation orientation) {
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+	g_return_if_fail(orientation != NULL);
+
+	CONTING_COMPONENT_GET_CLASS(self)->resize(self, x, y, orientation);
 }

@@ -20,6 +20,7 @@ struct DrawingToDraw_ {
 
 static DrawingToDraw *selected_dd = NULL;
 static gboolean is_moving = FALSE;
+static ContingResizeOrientation is_resizing = 0;
 
 static void darea_realize(GtkWidget *widget, gpointer user_data) {
 	gtk_widget_add_events(widget, GDK_EXPOSURE_MASK
@@ -109,6 +110,7 @@ static DrawingToDraw *answer(gint x, gint y) {
 static gboolean darea_button_release_event(GtkWidget *widget,
 		GdkEventButton *event, gpointer user_data) {
 	is_moving = FALSE;
+	is_resizing = 0;
 	return TRUE;
 }
 
@@ -158,6 +160,19 @@ static gboolean darea_button_press_event(GtkWidget *widget,
 		}
 
 	} else { /* current_drawing == NULL */
+		if (selected_dd != NULL
+				&& CONTING_IS_COMPONENT(selected_dd->drawing)) {
+			ContingResizeOrientation orient;
+			if (conting_component_answer_resize(
+						CONTING_COMPONENT(selected_dd->drawing),
+						event->x - selected_dd->position.x,
+						event->y - selected_dd->position.y,
+						&orient)) {
+				is_resizing = orient;
+
+				return TRUE;
+			}
+		}
 		selected_dd = answer_move(event->x, event->y);
 
 		if (selected_dd == NULL) {
@@ -277,18 +292,53 @@ static gboolean darea_key_press_event(GtkWidget *widget, GdkEventKey *event,
 
 static gboolean darea_motion_notify_event(GtkWidget *widget,
 		GdkEventMotion *event, gpointer user_data) {
-	if ((event->state & GDK_BUTTON1_MASK) && selected_dd && is_moving) {
-		conting_drawing_move(selected_dd->drawing,
-				event->x - selected_dd->position.x,
-				event->y - selected_dd->position.y);
-		if (CONTING_IS_COMPONENT(selected_dd->drawing)) {
-			selected_dd->position.x = event->x;
-			selected_dd->position.y = event->y;
+	gdk_window_set_cursor(widget->window, NULL);
+	if ((event->state & GDK_BUTTON1_MASK) && selected_dd) {
+		if (is_moving) {
+			conting_drawing_move(selected_dd->drawing,
+					event->x - selected_dd->position.x,
+					event->y - selected_dd->position.y);
+			if (CONTING_IS_COMPONENT(selected_dd->drawing)) {
+				selected_dd->position.x = event->x;
+				selected_dd->position.y = event->y;
+			}
+		} else if (is_resizing != 0) {
+			conting_component_resize(
+					CONTING_COMPONENT(selected_dd->drawing),
+					event->x - selected_dd->position.x,
+					event->y - selected_dd->position.y,
+					is_resizing);
 		}
+
 		gtk_widget_queue_draw(widget);
 	} else if (current_drawing != NULL) {
 		gtk_widget_queue_draw(widget);
+	} else if (selected_dd != NULL
+			&& CONTING_IS_COMPONENT(selected_dd->drawing)) {
+		static GdkCursor *h_cursor = NULL;
+		static GdkCursor *v_cursor = NULL;
+		ContingResizeOrientation orientation;
+		
+		if (h_cursor == NULL) {
+			h_cursor = gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
+			v_cursor = gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
+		}
+		
+		if (conting_component_answer_resize(
+					CONTING_COMPONENT(selected_dd->drawing),
+					event->x - selected_dd->position.x,
+					event->y - selected_dd->position.y,
+					&orientation)) {
+			switch (orientation) {
+				case CONTING_RESIZE_HORIZONTAL:
+					gdk_window_set_cursor(widget->window, h_cursor);
+					break;
+				case CONTING_RESIZE_VERTICAL:
+					gdk_window_set_cursor(widget->window, v_cursor);
+			}
+		}
 	}
+
 	return TRUE;
 }
 
