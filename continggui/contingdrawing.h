@@ -43,6 +43,7 @@ struct ContingDrawingClass_ {
 	gboolean (*is_placed)(ContingDrawing *self);
 
 	gboolean (*answer)(ContingDrawing *self, gint x, gint y);
+	gboolean (*answer_move)(ContingDrawing *self, gint x, gint y);
 
 	/*
 	gboolean (*violates)(ContingDrawing *self, ContingDrawing *other,
@@ -102,6 +103,7 @@ void conting_drawing_place(ContingDrawing *self, gint x, gint y,
 gboolean conting_drawing_is_placed(ContingDrawing *self);
 
 gboolean conting_drawing_answer(ContingDrawing *self, gint x, gint y);
+gboolean conting_drawing_answer_move(ContingDrawing *self, gint x, gint y);
 
 G_END_DECLS
 
