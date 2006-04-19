@@ -54,6 +54,7 @@ static void conting_component_class_init(gpointer g_class,
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw_selected = conting_component_draw_selected;
 	drawing_class->answer = conting_component_answer;
+	drawing_class->answer_move = conting_component_answer;
 
 	gdk_color_parse("black", &color);
 }

@@ -118,28 +118,6 @@ static gboolean conting_trans2_connect(ContingComponent *self,
 
 	return FALSE;
 }
-static gboolean conting_trans2_disconnect(ContingComponent *self,
-		ContingConnection *conn) {
-	ContingTrans2Private *priv;
-
-	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
-
-	priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-	if (conn == priv->input) {
-		g_object_unref(conn);
-		priv->input = NULL;
-		
-		return TRUE;
-	} else if (conn == priv->output) {
-		g_object_unref(conn);
-		priv->output = NULL;
-
-		return TRUE;
-	}
-
-	return FALSE;
-}
 
 static void conting_trans2_draw(ContingDrawing *self, GdkDrawable *draw,
 		GdkGC *gc, const GdkPoint *base_point, const GdkPoint *cur_point) {
@@ -225,7 +203,6 @@ static void conting_trans2_class_init(gpointer g_class, gpointer class_data) {
 	component_class->get_rectangle = conting_trans2_get_rectangle;
 	component_class->move = conting_trans2_move;
 	component_class->connect = conting_trans2_connect;
-	component_class->disconnect = conting_trans2_disconnect;
 
 	object_class = G_OBJECT_CLASS(g_class);
 }

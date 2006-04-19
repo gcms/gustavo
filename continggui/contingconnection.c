@@ -18,6 +18,8 @@ struct ContingConnectionPrivate_ {
 	ContingComponent *start;
 	ContingComponent *end;
 
+	GdkPoint *moving_point;
+
 	gboolean placed;
 
 	gboolean disposed;
@@ -216,6 +218,29 @@ static gboolean conting_connection_answer(ContingDrawing *self,
 
 	return FALSE;
 }
+static gboolean conting_connection_answer_move(ContingDrawing *self,
+		gint x, gint y) {
+	ContingConnectionPrivate *priv;
+	GSList *n;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_CONNECTION(self), FALSE);
+	
+	priv = CONTING_CONNECTION_GET_PRIVATE(self);
+	
+	assert(priv->placed == TRUE);
+
+	for (n = priv->points; n != NULL; n = g_slist_next(n)) {
+		GdkPoint *cur_point = n->data;
+		if (abs(cur_point->x - x) < 5
+				&& abs(cur_point->y - y) < 5) {
+			priv->moving_point = cur_point;
+
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
 
 static void conting_connection_move_impl(ContingConnection *self,
 		ContingComponent *comp, gint x, gint y) {
@@ -299,6 +324,7 @@ static void conting_connection_class_init(gpointer g_class,
 	drawing_class->place = conting_connection_place;
 	drawing_class->is_placed = conting_connection_is_placed;
 	drawing_class->answer = conting_connection_answer;
+	drawing_class->answer_move = conting_connection_answer_move;
 
 	object_class = G_OBJECT_CLASS(g_class);
 	object_class->finalize = conting_connection_finalize;
@@ -321,6 +347,9 @@ static void conting_connection_instance_init(GTypeInstance *obj,
 	priv->end = NULL;
 
 	priv->points = NULL;
+
+	priv->moving_point = NULL;
+
 	priv->placed = FALSE;
 
 	priv->disposed = FALSE;
