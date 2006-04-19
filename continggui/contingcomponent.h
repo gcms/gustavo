@@ -19,6 +19,11 @@ G_BEGIN_DECLS
 #define CONTING_COMPONENT_GET_CLASS(o)    (G_TYPE_INSTANCE_GET_CLASS((o), \
             CONTING_TYPE_COMPONENT, ContingComponentClass))
 
+typedef enum {
+	CONTING_RESIZE_HORIZONTAL = 1 << 1,
+	CONTING_RESIZE_VERTICAL = 1 << 2
+} ContingResizeOrientation;
+
 
 typedef struct ContingComponent_ ContingComponent;
 typedef struct ContingComponentClass_ ContingComponentClass;
@@ -40,6 +45,12 @@ struct ContingComponentClass_ {
 	void (*rotate)(ContingComponent *self, gdouble theta);
 	gboolean (*connect)(ContingComponent *self, ContingConnection *conn,
 			gint x, gint y, GdkPoint *shift);
+	gboolean (*answer_resize)(ContingComponent *self, gint x, gint y,
+			ContingResizeOrientation *orientation);
+	void (*resizeable)(ContingComponent *self,
+			ContingResizeOrientation *orientation);
+	void (*resize)(ContingComponent *self,
+		gint x, gint y, ContingResizeOrientation orient);
 };
 
 GType conting_component_get_type(void);
@@ -51,6 +62,13 @@ void conting_component_rotate(ContingComponent *self, gdouble theta);
 
 gboolean conting_component_connect(ContingComponent *self,
 		ContingConnection *line, gint x, gint y, GdkPoint *shift);
+
+void conting_component_resizeable(ContingComponent *self,
+		ContingResizeOrientation *orientation);
+gboolean conting_component_answer_resize(ContingComponent *self,
+		gint x, gint y, ContingResizeOrientation *orientation);
+void conting_component_resize(ContingComponent *self,
+		gint x, gint y, ContingResizeOrientation orient);
 
 G_END_DECLS
 

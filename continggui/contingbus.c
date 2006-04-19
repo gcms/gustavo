@@ -17,7 +17,7 @@ struct ContingBusPrivate_ {
 
 	GHashTable *branch_position;
 
-	GtkOrientation orientation;
+	ContingResizeOrientation orientation;
 
 	gboolean placed;
 	gboolean disposed;
@@ -170,7 +170,7 @@ static void branch_position_rotate_foreach(gpointer key, gpointer value,
 	GdkPoint new_point;
 
 	new_point.x = point->y;
-	new_point.y = point->x;
+	new_point.y = - point->x;
 
 	conting_connection_move(conn, bus, new_point.x - point->x,
 			new_point.y - point->y);
@@ -186,7 +186,8 @@ static void conting_bus_rotate(ContingComponent *self, gdouble theta) {
 
 	priv = CONTING_BUS_GET_PRIVATE(self);
 
-	priv->orientation = (priv->orientation + 1) & 1;
+	priv->orientation = priv->orientation == CONTING_RESIZE_HORIZONTAL ?
+		CONTING_RESIZE_VERTICAL : CONTING_RESIZE_HORIZONTAL;
 
 	new_rect.x = priv->rect.y;
 	new_rect.y = priv->rect.x;
@@ -226,7 +227,7 @@ static gboolean conting_bus_connect(ContingComponent *self,
 	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	new_point = g_new(GdkPoint, 1);
-	if (priv->orientation == GTK_ORIENTATION_VERTICAL) {
+	if (priv->orientation == CONTING_RESIZE_VERTICAL) {
 		new_point->x = DEFAULT_RECT.x + (x < 0 ? 0 : DEFAULT_RECT.width);
 		new_point->y = y;
 	} else {
@@ -247,6 +248,34 @@ static gboolean conting_bus_connect(ContingComponent *self,
 	return TRUE;
 }
 
+static void conting_bus_resizeable(ContingComponent *self,
+		ContingResizeOrientation *orientation) {
+	ContingBusPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+	g_return_if_fail(orientation != NULL);
+
+	priv = CONTING_BUS_GET_PRIVATE(self);
+
+	*orientation = priv->orientation;
+}
+void conting_bus_resize(ContingComponent *self,
+		gint x, gint y, ContingResizeOrientation orientation) {
+	ContingBusPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+
+	priv = CONTING_BUS_GET_PRIVATE(self);
+
+	if (priv->orientation & CONTING_RESIZE_HORIZONTAL) {
+		priv->rect.width += x - (priv->rect.x + priv->rect.width);
+	}
+
+	if (priv->orientation & CONTING_RESIZE_VERTICAL) {
+		priv->rect.height += y - (priv->rect.y + priv->rect.height);
+	}
+}
+
 /*
 gboolean conting_bus_link_line_coord(ContingBus *self,
 		ContingConnection *line, gint x, gint y) {
@@ -259,11 +288,11 @@ gboolean conting_bus_link_line_coord(ContingBus *self,
 	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	switch (priv->orientation) {
-		case GTK_ORIENTATION_HORIZONTAL:
+		case CONTING_RESIZE_HORIZONTAL:
 			side = y < DEFAULT_WIDTH / 2 ? GTK_SIDE_TOP : GTK_SIDE_BOTTOM;
 			position = x;
 			break;
-		case GTK_ORIENTATION_VERTICAL:
+		case CONTING_RESIZE_VERTICAL:
 		default:
 			side = x < DEFAULT_WIDTH / 2 ? GTK_SIDE_LEFT : GTK_SIDE_RIGHT;
 			position = y;
@@ -366,6 +395,8 @@ static void conting_bus_class_init(gpointer g_class,
 	component_class->move = conting_bus_move;
 	component_class->rotate = conting_bus_rotate;
 	component_class->connect = conting_bus_connect;
+	component_class->resizeable = conting_bus_resizeable;
+	component_class->resize = conting_bus_resize;
 
 	object_class = G_OBJECT_CLASS(g_class);
 	object_class->dispose = conting_bus_dispose;
@@ -392,7 +423,7 @@ static void conting_bus_instance_init(GTypeInstance *self,
 			g_direct_hash, g_direct_equal,
 			conting_bus_weak_unref, g_free);
 
-	priv->orientation = GTK_ORIENTATION_VERTICAL;
+	priv->orientation = CONTING_RESIZE_VERTICAL;
 
 	priv->placed = FALSE;
 

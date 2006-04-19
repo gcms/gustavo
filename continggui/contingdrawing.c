@@ -100,7 +100,6 @@ gboolean conting_drawing_answer_move(ContingDrawing *self, gint x, gint y) {
 
 	return CONTING_DRAWING_GET_CLASS(self)->answer_move(self, x, y);
 }
-
 void conting_drawing_move(ContingDrawing *self, gint x, gint y) {
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
