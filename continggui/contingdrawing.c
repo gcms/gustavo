@@ -101,6 +101,12 @@ gboolean conting_drawing_answer_move(ContingDrawing *self, gint x, gint y) {
 	return CONTING_DRAWING_GET_CLASS(self)->answer_move(self, x, y);
 }
 
+void conting_drawing_move(ContingDrawing *self, gint x, gint y) {
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->move(self, x, y);
+}
+
 static void conting_drawing_class_init(gpointer g_class,
         gpointer class_data) {
     ContingDrawingClass *klass = CONTING_DRAWING_CLASS(g_class);
@@ -112,6 +118,7 @@ static void conting_drawing_class_init(gpointer g_class,
 	klass->is_placed = NULL;
 	klass->answer = NULL;
 	klass->answer_move = NULL;
+	klass->move = NULL;
 	
 	/*
     klass->get_rectangle = NULL;

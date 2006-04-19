@@ -278,14 +278,14 @@ static gboolean darea_key_press_event(GtkWidget *widget, GdkEventKey *event,
 static gboolean darea_motion_notify_event(GtkWidget *widget,
 		GdkEventMotion *event, gpointer user_data) {
 	if ((event->state & GDK_BUTTON1_MASK) && selected_dd && is_moving) {
+		conting_drawing_move(selected_dd->drawing,
+				event->x - selected_dd->position.x,
+				event->y - selected_dd->position.y);
 		if (CONTING_IS_COMPONENT(selected_dd->drawing)) {
-			conting_component_move(CONTING_COMPONENT(selected_dd->drawing),
-					event->x - selected_dd->position.x,
-					event->y - selected_dd->position.y);
 			selected_dd->position.x = event->x;
 			selected_dd->position.y = event->y;
-			gtk_widget_queue_draw(widget);
 		}
+		gtk_widget_queue_draw(widget);
 	} else if (current_drawing != NULL) {
 		gtk_widget_queue_draw(widget);
 	}

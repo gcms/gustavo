@@ -265,6 +265,21 @@ static void conting_connection_move_impl(ContingConnection *self,
 	}
 }
 
+static void conting_drawing_move_impl(ContingDrawing *self, gint x, gint y) {
+	ContingConnectionPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_CONNECTION(self));
+
+	priv = CONTING_CONNECTION_GET_PRIVATE(self);
+
+	assert(priv->placed == TRUE);
+
+	assert(priv->moving_point != NULL);
+
+	priv->moving_point->x += x - priv->moving_point->x;
+	priv->moving_point->y += y - priv->moving_point->y;
+}
+
 static void conting_connection_dispose(GObject *self) {
 	ContingConnectionPrivate *priv;
 
@@ -325,6 +340,7 @@ static void conting_connection_class_init(gpointer g_class,
 	drawing_class->is_placed = conting_connection_is_placed;
 	drawing_class->answer = conting_connection_answer;
 	drawing_class->answer_move = conting_connection_answer_move;
+	drawing_class->move = conting_drawing_move_impl;
 
 	object_class = G_OBJECT_CLASS(g_class);
 	object_class->finalize = conting_connection_finalize;
