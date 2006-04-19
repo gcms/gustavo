@@ -40,6 +40,12 @@ static gboolean conting_component_answer(ContingDrawing *self,
 		&& x - rect.x < rect.width && y - rect.y < rect.height;
 }
 
+static void conting_drawing_move_impl(ContingDrawing *self, gint x, gint y) {
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	conting_component_move(CONTING_COMPONENT(self), x, y);
+}
+
 static void conting_component_class_init(gpointer g_class,
         gpointer class_data) {
     ContingDrawingClass *drawing_class;
@@ -55,6 +61,7 @@ static void conting_component_class_init(gpointer g_class,
     drawing_class->draw_selected = conting_component_draw_selected;
 	drawing_class->answer = conting_component_answer;
 	drawing_class->answer_move = conting_component_answer;
+	drawing_class->move = conting_drawing_move_impl;
 
 	gdk_color_parse("black", &color);
 }
