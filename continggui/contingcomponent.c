@@ -177,7 +177,6 @@ gboolean conting_component_answer_resize(ContingComponent *self,
 void conting_component_resize(ContingComponent *self, gint x, gint y,
 		ContingResizeOrientation orientation) {
 	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
-	g_return_if_fail(orientation != NULL);
 
 	CONTING_COMPONENT_GET_CLASS(self)->resize(self, x, y, orientation);
 }
