@@ -83,6 +83,21 @@ conting_drawing_get_bounds(ContingDrawing *self,
 
 	CONTING_DRAWING_GET_CLASS(self)->get_bounds(self, rect);
 }
+void
+conting_drawing_place(ContingDrawing *self)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->place(self);
+}
+
+gboolean
+conting_drawing_is_placed(ContingDrawing *self)
+{
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+
+	return CONTING_DRAWING_GET_CLASS(self)->is_placed(self);
+}
 
 static void
 conting_drawing_get_property(GObject *self,
@@ -164,6 +179,8 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = NULL;
     drawing_class->get_bounds = NULL;
+	drawing_class->place = NULL;
+	drawing_class->is_placed = NULL;
 
 	g_type_class_add_private(g_class, sizeof(ContingDrawingPrivate));
 }
