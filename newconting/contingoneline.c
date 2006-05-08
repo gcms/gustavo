@@ -102,11 +102,39 @@ widget_button_press_event(GtkWidget *widget,
 						   gpointer user_data)
 {
 	ContingOneLinePrivate *priv;
+	gdouble world_x, world_y;
 
 	g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
 			FALSE);
 
+	conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
+			event->x, event->y,
+			&world_x, &world_y);
+
 	priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
+
+	switch (priv->state) {
+		case CONTING_ONE_LINE_NONE:
+			break;
+		case CONTING_ONE_LINE_CREATED:
+			assert(priv->placing_drawing != NULL
+					&& CONTING_IS_DRAWING(priv->placing_drawing));
+			{
+				gdouble translate[6];
+				art_affine_translate(translate, world_x, world_y);
+				conting_drawing_affine_absolute(priv->placing_drawing,
+						translate);
+
+				conting_drawing_place(priv->placing_drawing);
+
+				if (conting_drawing_is_placed(priv->placing_drawing)) {
+					priv->drawings = g_slist_append(priv->drawings,
+							priv->placing_drawing);
+					priv->state = CONTING_ONE_LINE_NONE;
+					priv->placing_drawing = NULL;
+				}
+			}
+	}
 
 	return TRUE;
 }
@@ -143,7 +171,7 @@ widget_expose_event(GtkWidget *widget,
 
 	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 		conting_drawing_draw(CONTING_DRAWING(n->data),
-				priv->widget->window, NULL);
+				priv->widget->window, &widget->allocation);
 	}
 
 	switch (priv->state) {
@@ -151,7 +179,7 @@ widget_expose_event(GtkWidget *widget,
 			break;
 		case CONTING_ONE_LINE_CREATED:
 			conting_drawing_draw(CONTING_DRAWING(priv->placing_drawing),
-					priv->widget->window, NULL);
+					priv->widget->window, &widget->allocation);
 			break;
 	}
 
@@ -261,6 +289,7 @@ conting_one_line_get_type(void)
     return type;
 }
 
+#include "contingcomponent.h"
 #include "contingline.h"
 static void
 left_button_clicked(GtkButton *button,
@@ -269,7 +298,7 @@ left_button_clicked(GtkButton *button,
 	ContingOneLine *oneline = CONTING_ONE_LINE(user_data);
 	GObject *object;
 
-	object = g_object_new(CONTING_TYPE_LINE,
+	object = g_object_new(CONTING_TYPE_COMPONENT,
 			"one-line", oneline,
 			NULL);
 	conting_one_line_create(oneline, CONTING_DRAWING(object));
@@ -279,6 +308,13 @@ static void
 right_button_clicked(GtkButton *button,
 		            gpointer user_data)
 {
+	ContingOneLine *oneline = CONTING_ONE_LINE(user_data);
+	GObject *object;
+
+	object = g_object_new(CONTING_TYPE_LINE,
+			"one-line", oneline,
+			NULL);
+	conting_one_line_create(oneline, CONTING_DRAWING(object));
 }
 static void darea_realize(GtkWidget *widget, gpointer user_data) {
 	gtk_widget_add_events(widget, GDK_EXPOSURE_MASK

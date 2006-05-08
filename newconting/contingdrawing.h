@@ -28,8 +28,11 @@ typedef struct ContingDrawingClass_ ContingDrawingClass;
 struct ContingDrawingClass_ {
     GObjectClass parent;
 
-    void (*draw) (ContingDrawing *self, GdkDrawable *drawable,
+    void (*draw)(ContingDrawing *self, GdkDrawable *drawable,
 			const GdkRectangle *drawing_rect);
+
+	void (*place)(ContingDrawing *self);
+	gboolean (*is_placed)(ContingDrawing *self);
 
 	void (*get_bounds)(ContingDrawing *self, ArtDRect *rect);
 };
@@ -48,6 +51,9 @@ void conting_drawing_affine_absolute(ContingDrawing *self,
 void conting_drawing_get_affine(ContingDrawing *self, gdouble affine[6]);
 
 void conting_drawing_get_bounds(ContingDrawing *self, ArtDRect *rect);
+
+void conting_drawing_place(ContingDrawing *self);
+gboolean conting_drawing_is_placed(ContingDrawing *self);
 
 G_END_DECLS
 
