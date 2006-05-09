@@ -1,5 +1,8 @@
 #include "contingline.h"
 #include <string.h>
+#include <assert.h>
+#include <math.h>
+#include <stdlib.h>
 
 #define CONTING_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_LINE, ContingLinePrivate))
@@ -184,6 +187,61 @@ conting_line_is_placed(ContingDrawing *self)
 	return priv->placed;
 }
 
+static gboolean
+conting_line_answer(ContingDrawing *self,
+					  gdouble world_x, gdouble world_y)
+{
+	ContingLinePrivate *priv;
+	GSList *n;
+
+	gdouble invert[6];
+
+	ArtPoint pw, *p0, *p1;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
+
+    priv = CONTING_LINE_GET_PRIVATE(self);
+
+	assert(priv->placed);
+	assert(priv->points);
+
+	art_affine_invert(invert, priv->affine);
+	pw.x = world_x;
+	pw.y = world_y;
+	art_affine_point(&pw, &pw, invert);
+
+	g_print("%lf %lf) -> (%lf, %lf)\n",
+			world_x, world_y,
+			pw.x, pw.y);
+
+	p0 = priv->points->data;
+	for (n = g_slist_next(priv->points); n != NULL; n = g_slist_next(n)) {
+		gdouble dx, dy;
+		gdouble m, d;
+		gdouble ix, iy;
+		
+		p1 = n->data;
+
+		dx = p1->x - p0->x;
+		dy = p1->y - p0->y;
+
+		ix = pw.x - p0->x;
+		iy = p0->y - pw.y;
+
+		m = dy / dx;
+
+		d = fabs(m * ix + iy) / sqrt(m * m + 1);
+
+		if (d < 2 && fabs(ix) < fabs(dx) && fabs(iy) < fabs(dy)) {
+			return TRUE;
+		}
+
+		p0 = p1;
+	}
+
+	return FALSE;
+}
+
 static void conting_line_class_init(gpointer g_class, gpointer class_data) {
     ContingDrawingClass *drawing_class;
 
@@ -192,6 +250,7 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->get_bounds = conting_line_get_bounds;
 	drawing_class->place = conting_line_place;
 	drawing_class->is_placed = conting_line_is_placed;
+	drawing_class->answer = conting_line_answer;
 
 	g_type_class_add_private(g_class, sizeof(ContingLinePrivate));
 }

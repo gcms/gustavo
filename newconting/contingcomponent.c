@@ -48,7 +48,7 @@ conting_component_draw(ContingDrawing *self,
 			pw1.x, pw1.y, &pw1.x, &pw1.y);
 
 
-	g_print("drawing: (%lf, %lf); (%lf, %lf)\n", pw0.x, pw0.y, pw1.x, pw1.y);
+//	g_print("drawing: (%lf, %lf); (%lf, %lf)\n", pw0.x, pw0.y, pw1.x, pw1.y);
     gdk_draw_rectangle(drawable, gc, TRUE,
             drawing_rect->x + (gint) pw0.x, drawing_rect->y + (gint) pw0.y,
             (gint) (pw1.x - pw0.x),
@@ -103,6 +103,31 @@ conting_component_is_placed(ContingDrawing *self)
 	return priv->placed;
 }
 
+static gboolean
+conting_component_answer(ContingDrawing *self,
+		                 gdouble world_x, gdouble world_y)
+{
+	ContingComponentPrivate *priv;
+	gdouble affine[6];
+	ArtPoint pw0, pw1;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	conting_drawing_get_affine(self, affine);
+
+	art_affine_point(&pw0, &priv->p0, affine);
+	art_affine_point(&pw1, &priv->p1, affine);
+
+//	g_print("checking:(%lf, %lf), (%lf, %lf); (%lf, %lf), (%lf, %lf);"
+//			"(%lf, %lf)\n", priv->p0.x, priv->p0.y, priv->p1.x, priv->p1.y,
+//			pw0.x, pw0.y, pw1.x, pw1.y, world_x, world_y);
+
+	return world_x >= pw0.x && world_x <= pw1.x
+		&& world_y >= pw0.y && world_y <= pw1.y;
+}
+
 static void
 conting_component_instance_init(GTypeInstance *self,
 		                   gpointer g_class)
@@ -132,6 +157,7 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
 	drawing_class->get_bounds = conting_component_get_bounds;
 	drawing_class->place = conting_component_place;
 	drawing_class->is_placed = conting_component_is_placed;
+	drawing_class->answer = conting_component_answer;
 
 	g_type_class_add_private(g_class, sizeof(ContingComponentPrivate));
 }
