@@ -78,7 +78,17 @@ widget_motion_notify_event(GtkWidget *widget,
 
 	switch (priv->state) {
 		case CONTING_ONE_LINE_NONE:
+			{
+				GSList *n;
+				for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+					if (conting_drawing_answer(CONTING_DRAWING(n->data),
+								world_x, world_y)) {
+						g_print("%p (%s) answered\n",
+								n->data, g_type_name(G_OBJECT_TYPE(n->data)));
+					}
+				}
 			break;
+			}
 		case CONTING_ONE_LINE_CREATED:
 			assert(priv->placing_drawing != NULL
 					&& CONTING_IS_DRAWING(priv->placing_drawing));

@@ -34,6 +34,9 @@ struct ContingDrawingClass_ {
 	void (*place)(ContingDrawing *self);
 	gboolean (*is_placed)(ContingDrawing *self);
 
+	gboolean (*answer)(ContingDrawing *self,
+			gdouble world_x, gdouble world_y);
+
 	void (*get_bounds)(ContingDrawing *self, ArtDRect *rect);
 };
 
@@ -54,6 +57,8 @@ void conting_drawing_get_bounds(ContingDrawing *self, ArtDRect *rect);
 
 void conting_drawing_place(ContingDrawing *self);
 gboolean conting_drawing_is_placed(ContingDrawing *self);
+gboolean conting_drawing_answer(ContingDrawing *self,
+		gdouble world_x, gdouble world_y);
 
 G_END_DECLS
 
