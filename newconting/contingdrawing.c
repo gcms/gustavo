@@ -1,6 +1,8 @@
 #include "contingdrawing.h"
 #include <string.h>
 
+static gint move_signal_id = 0;
+
 enum {
 	CONTING_DRAWING_PROP_0,
     CONTING_DRAWING_PROP_ONE_LINE
@@ -13,6 +15,8 @@ typedef struct ContingDrawingPrivate_ ContingDrawingPrivate;
 struct ContingDrawingPrivate_ {
     ContingOneLine *oneline;
 	gdouble affine[6];
+
+	gboolean selected;
 };
 
 void
@@ -106,6 +110,69 @@ conting_drawing_answer(ContingDrawing *self,
 
 	return CONTING_DRAWING_GET_CLASS(self)->answer(self, world_x, world_y);
 }
+gboolean
+conting_drawing_event(ContingDrawing *self,
+		              GdkEvent *event)
+{
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+
+	if (CONTING_DRAWING_GET_CLASS(self)->event)
+		return CONTING_DRAWING_GET_CLASS(self)->event(self, event);
+
+	return FALSE;
+}
+
+void
+conting_drawing_grab(ContingDrawing *self)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	conting_one_line_grab(conting_drawing_get_one_line(self), self);
+}
+
+void
+conting_drawing_ungrab(ContingDrawing *self)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	conting_one_line_ungrab(conting_drawing_get_one_line(self), self);
+}
+
+void
+conting_drawing_update(ContingDrawing *self)
+{
+	ArtDRect bounds;
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	conting_drawing_get_bounds(self, &bounds);
+	conting_one_line_update(conting_drawing_get_one_line(self), &bounds);
+}
+void
+conting_drawing_set_selected(ContingDrawing *self,
+		                     gboolean selected)
+{
+	ContingDrawingPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+	if (priv->selected != selected) {
+		priv->selected = selected;
+		conting_drawing_update(self);
+	}
+}
+gboolean
+conting_drawing_is_selected(ContingDrawing *self)
+{
+	ContingDrawingPrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+
+	priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+	return priv->selected;
+}
 
 static void
 conting_drawing_get_property(GObject *self,
@@ -162,6 +229,8 @@ conting_drawing_instance_init(GTypeInstance *self,
     priv = CONTING_DRAWING_GET_PRIVATE(self);
 
 	art_affine_translate(priv->affine, 0.0, 0.0);
+
+	priv->selected = FALSE;
 }
 
 static void
@@ -170,6 +239,7 @@ conting_drawing_class_init(gpointer g_class,
 {
     GObjectClass *gobject_class;
     ContingDrawingClass *drawing_class;
+	static GType param_type;
 
     gobject_class = G_OBJECT_CLASS(g_class);
     gobject_class->set_property = conting_drawing_set_property;
@@ -190,11 +260,24 @@ conting_drawing_class_init(gpointer g_class,
 	drawing_class->place = NULL;
 	drawing_class->is_placed = NULL;
 	drawing_class->answer = NULL;
+	drawing_class->event = NULL;
+
+	param_type = G_TYPE_POINTER;
+	move_signal_id = g_signal_newv(
+			"move",
+			G_TYPE_FROM_CLASS(g_class),
+			G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+			NULL, /* class closure */
+			NULL, /* accumulator */
+			NULL, /* accu_data */
+			g_cclosure_marshal_VOID__POINTER,
+			G_TYPE_NONE, /* return_type */
+			1,
+			&param_type);
+			
 
 	g_type_class_add_private(g_class, sizeof(ContingDrawingPrivate));
 }
-
-
 
 GType
 conting_drawing_get_type(void)

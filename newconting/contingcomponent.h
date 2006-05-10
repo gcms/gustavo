@@ -29,6 +29,11 @@ struct ContingComponentClass_ {
 
 GType conting_component_get_type(void);
 
+gboolean conting_component_link(ContingComponent *self,
+		                        ContingDrawing *line,
+								gdouble world_x, gdouble world_y,
+								gdouble affine[6]);
+
 G_END_DECLS
 
 #endif /* CONTING_COMPONENT_H */
