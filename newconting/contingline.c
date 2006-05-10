@@ -7,6 +7,9 @@
 #define CONTING_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_LINE, ContingLinePrivate))
 
+#define TOLERANCE 3
+#define SIZE ((TOLERANCE * 2) - 1)
+
 typedef struct ContingLinePrivate_ ContingLinePrivate;
 struct ContingLinePrivate_ {
 	GSList *points;
@@ -16,6 +19,10 @@ struct ContingLinePrivate_ {
 
     gboolean placing;
     gboolean placed;
+
+	ArtPoint *link1, *link2;
+
+	ArtPoint *dragging_point;
 };
 
 static void
@@ -53,6 +60,10 @@ conting_line_draw(ContingDrawing *self,
 	art_affine_point(&pw0, &pw0, priv->affine);
 	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
 			pw0.x, pw0.y, &pw0.x, &pw0.y);
+	if (conting_drawing_is_selected(self)) {
+		gdk_draw_rectangle(drawable, gc, TRUE,
+				pw0.x - TOLERANCE, pw0.y - TOLERANCE, SIZE, SIZE);
+	}
 
 	for (n = g_slist_next(priv->points); n != NULL; n = g_slist_next(n)) {
 		pw1 = *((ArtPoint *) n->data);
@@ -65,6 +76,11 @@ conting_line_draw(ContingDrawing *self,
 		gdk_draw_line(drawable, gc,
 				(gint) pw0.x, (gint) pw0.y,
 				(gint) pw1.x, (gint) pw1.y);
+		if (conting_drawing_is_selected(self)) {
+			gdk_draw_rectangle(drawable, gc, TRUE,
+					pw1.x - TOLERANCE, pw1.y - TOLERANCE, SIZE, SIZE);
+		}
+
 
 		pw0 = pw1;
 	}
@@ -116,6 +132,12 @@ conting_line_get_bounds(ContingDrawing *self,
 			bounds->y1 = pw.y;
 		}
 	}
+
+	/* selection anchors */
+	bounds->x0 -= TOLERANCE;
+	bounds->y0 -= TOLERANCE;
+	bounds->x1 += TOLERANCE;
+	bounds->y1 += TOLERANCE;
 }
 
 static void
@@ -133,14 +155,34 @@ conting_line_instance_init(GTypeInstance *self,
 	priv->placing = FALSE;
 	priv->placed = FALSE;
 
+	priv->link1 = NULL;
+	priv->link2 = NULL;
+
+	priv->dragging_point = NULL;
 }
 
+#include "contingcomponent.h"
+
+static void
+conting_line_link_moved(ContingComponent *self,
+		                 gdouble affine[6],
+						 gpointer user_data)
+{
+	ArtPoint *p;
+
+	p = user_data;
+
+	art_affine_point(p, p, affine);
+
+	g_print("link_moved\n");
+}
 static void
 conting_line_place(ContingDrawing *self)
 {
 	ContingLinePrivate *priv;
-	gdouble affine[6];
-	ArtPoint *cur_p;
+	gdouble affine[6], tmp[6];
+	ArtPoint *cur_p, p;
+	GSList *n;
 
 	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
 
@@ -148,17 +190,42 @@ conting_line_place(ContingDrawing *self)
 
 	conting_drawing_get_affine(self, affine);
 
-	cur_p = g_new(ArtPoint, 1);
-	cur_p->x = cur_p->y = 0.0;		
-
 	if (!priv->placing) {
-		memcpy(priv->affine, affine, 6 * sizeof(gdouble));
+		p.x = p.y = 0.0;
+		art_affine_point(&p, &p, affine);
 
-		priv->points = g_slist_append(priv->points, cur_p);
+		for (n = conting_one_line_answer(conting_drawing_get_one_line(self),
+				p.x, p.y); n != NULL; n = g_slist_next(n)) {
+			if (CONTING_IS_COMPONENT(n->data)
+					&& conting_component_link(CONTING_COMPONENT(n->data),
+						self, p.x, p.y, tmp)) {
+				art_affine_multiply(affine, affine, tmp);
+				conting_drawing_affine_absolute(self, affine);
 
-		priv->placing = TRUE;
+				cur_p = g_new(ArtPoint, 1);
+				cur_p->x = cur_p->y = 0.0;		
+				priv->points = g_slist_append(priv->points, cur_p);
+
+				memcpy(priv->affine, affine, 6 * sizeof(gdouble));
+
+				priv->placing = TRUE;
+				priv->n_points++;
+
+				priv->link1 = cur_p;
+				g_signal_connect(G_OBJECT(n->data), "move",
+						G_CALLBACK(conting_line_link_moved), priv->link1);
+
+				return;
+			} 
+		}
 	} else {
 		gdouble tmp[6];
+
+		p.x = p.y = 0.0;
+		art_affine_point(&p, &p, affine);
+
+		cur_p = g_new(ArtPoint, 1);
+		cur_p->x = cur_p->y = 0.0;		
 
 		art_affine_invert(tmp, priv->affine);
 		art_affine_multiply(tmp, tmp, affine);
@@ -166,12 +233,30 @@ conting_line_place(ContingDrawing *self)
 		art_affine_point(cur_p, cur_p, tmp);
 		
 		priv->points = g_slist_append(priv->points, cur_p);
-	}
 
-	priv->n_points++;
-	if (priv->n_points >= 5) {
-		priv->placed = TRUE;
-		priv->placing = FALSE;
+		priv->n_points++;
+
+		for (n = conting_one_line_answer(conting_drawing_get_one_line(self),
+				p.x, p.y); n != NULL; n = g_slist_next(n)) {
+			if (CONTING_IS_COMPONENT(n->data)
+					&& conting_component_link(CONTING_COMPONENT(n->data),
+						self, p.x, p.y, tmp)) {
+				art_affine_point(cur_p, cur_p, tmp);
+
+				priv->placing = FALSE;
+				priv->placed = TRUE;
+
+				priv->link2 = cur_p;
+				g_signal_connect(G_OBJECT(n->data), "move",
+						G_CALLBACK(conting_line_link_moved), priv->link2);
+
+				conting_drawing_affine_absolute(self, priv->affine);
+				conting_drawing_set_selected(self, TRUE);
+
+				return;
+			}
+		}
+	
 	}
 }
 
@@ -185,6 +270,65 @@ conting_line_is_placed(ContingDrawing *self)
     priv = CONTING_LINE_GET_PRIVATE(self);
 
 	return priv->placed;
+}
+static gboolean
+conting_line_event(ContingDrawing *self,
+				   GdkEvent *event)
+{
+	ContingLinePrivate *priv;
+	gdouble invert[6];
+	ArtPoint pi;
+	GSList *n;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
+	g_return_val_if_fail(event != NULL, FALSE);
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	assert(priv->placed);
+
+	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
+			event->button.x, event->button.y, &pi.x, &pi.y);
+
+	art_affine_invert(invert, priv->affine);
+	art_affine_point(&pi, &pi, invert);
+
+	switch (event->type) {
+		case GDK_BUTTON_PRESS:
+			conting_drawing_set_selected(self, TRUE);
+			conting_drawing_update(self);
+			for (n = priv->points; n != NULL; n = g_slist_next(n)) {
+				ArtPoint *p = n->data;
+
+				if (fabs(p->x - pi.x) < TOLERANCE
+						&& fabs(p->y - pi.y) < TOLERANCE) {
+					g_print("pressed!\n");
+					priv->dragging_point = p;
+					conting_drawing_grab(self);
+					break;
+				}
+			}
+			break;
+		case GDK_BUTTON_RELEASE:
+			g_print("released!\n");
+			if (priv->dragging_point) {
+				priv->dragging_point = NULL;
+				conting_drawing_ungrab(self);
+			}
+			break;
+		case GDK_MOTION_NOTIFY:
+			if (priv->dragging_point) {
+				if (priv->dragging_point == priv->link1
+						|| priv->dragging_point == priv->link2) {
+				} else {
+					*(priv->dragging_point) = pi;
+				}
+			}
+			break;
+		default:
+			return FALSE;
+	}
+	return TRUE;
 }
 
 static gboolean
@@ -232,7 +376,7 @@ conting_line_answer(ContingDrawing *self,
 
 		d = fabs(m * ix + iy) / sqrt(m * m + 1);
 
-		if (d < 2 && fabs(ix) < fabs(dx) && fabs(iy) < fabs(dy)) {
+		if (d < TOLERANCE && fabs(ix) < fabs(dx) && fabs(iy) < fabs(dy)) {
 			return TRUE;
 		}
 
@@ -241,6 +385,7 @@ conting_line_answer(ContingDrawing *self,
 
 	return FALSE;
 }
+
 
 static void conting_line_class_init(gpointer g_class, gpointer class_data) {
     ContingDrawingClass *drawing_class;
@@ -251,6 +396,7 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->place = conting_line_place;
 	drawing_class->is_placed = conting_line_is_placed;
 	drawing_class->answer = conting_line_answer;
+	drawing_class->event = conting_line_event;
 
 	g_type_class_add_private(g_class, sizeof(ContingLinePrivate));
 }

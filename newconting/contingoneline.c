@@ -21,7 +21,86 @@ struct ContingOneLinePrivate_ {
 	ArtDRect scrolling_area;
 
 	GSList *drawings;
+
+	ContingDrawing *grabbed_drawing;
 };
+
+GSList *
+conting_one_line_answer(ContingOneLine *self,
+                        gdouble world_x, gdouble world_y)
+{
+	ContingOneLinePrivate *priv;
+	GSList *list, *n;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), NULL);
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	list = NULL;
+	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+		if (conting_drawing_answer(CONTING_DRAWING(n->data),
+					world_x, world_y)) {
+			list = g_slist_append(list, n->data);
+		}
+	}
+
+	return list;
+}
+void
+conting_one_line_update(ContingOneLine *self,
+		                ArtDRect *bounds)
+{
+	ContingOneLinePrivate *priv;
+	ArtDRect win_bounds;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+
+	conting_one_line_world_to_window(self,
+			bounds->x0, bounds->y0,
+			&win_bounds.x0, &win_bounds.y0);
+	conting_one_line_world_to_window(self,
+			bounds->x1, bounds->y1,
+			&win_bounds.x1, &win_bounds.y1);
+
+	g_print("update: (%lf, %lf); (%lf, %lf)\n",
+			win_bounds.x0, win_bounds.y0, win_bounds.x1, win_bounds.y1);
+
+	gtk_widget_queue_draw_area(priv->widget,
+			(gint) win_bounds.x0, (gint) win_bounds.y0,
+			(gint) (win_bounds.x1 - win_bounds.x0),
+			(gint) (win_bounds.y1 - win_bounds.y0));
+}
+
+void
+conting_one_line_grab(ContingOneLine *self,
+		              ContingDrawing *grabbed_drawing)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	priv->grabbed_drawing = grabbed_drawing;
+}
+
+void
+conting_one_line_ungrab(ContingOneLine *self,
+	                    ContingDrawing *grabbed_drawing)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	g_return_if_fail(priv->grabbed_drawing == grabbed_drawing);
+
+	priv->grabbed_drawing = NULL;
+}
 
 void
 conting_one_line_window_to_world(ContingOneLine *self,
@@ -80,15 +159,23 @@ widget_motion_notify_event(GtkWidget *widget,
 		case CONTING_ONE_LINE_NONE:
 			{
 				GSList *n;
+				if (priv->grabbed_drawing) {
+						conting_drawing_event(priv->grabbed_drawing,
+								(GdkEvent *) event);
+						break;
+				}
 				for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 					if (conting_drawing_answer(CONTING_DRAWING(n->data),
 								world_x, world_y)) {
+						conting_drawing_event(CONTING_DRAWING(n->data),
+								(GdkEvent *) event);
 						g_print("%p (%s) answered\n",
 								n->data, g_type_name(G_OBJECT_TYPE(n->data)));
+						break;
 					}
 				}
-			break;
 			}
+			break;
 		case CONTING_ONE_LINE_CREATED:
 			assert(priv->placing_drawing != NULL
 					&& CONTING_IS_DRAWING(priv->placing_drawing));
@@ -112,6 +199,7 @@ widget_button_press_event(GtkWidget *widget,
 						   gpointer user_data)
 {
 	ContingOneLinePrivate *priv;
+	GSList *n;
 	gdouble world_x, world_y;
 
 	g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
@@ -123,8 +211,30 @@ widget_button_press_event(GtkWidget *widget,
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
 
+	/* can add a check if CTRL key is hold */
+	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+		conting_drawing_set_selected(CONTING_DRAWING(n->data), FALSE);
+	}
+
 	switch (priv->state) {
 		case CONTING_ONE_LINE_NONE:
+			{
+				if (priv->grabbed_drawing) {
+						conting_drawing_event(priv->grabbed_drawing,
+								(GdkEvent *) event);
+						break;
+				}
+				for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+					if (conting_drawing_answer(CONTING_DRAWING(n->data),
+								world_x, world_y)) {
+						conting_drawing_event(CONTING_DRAWING(n->data),
+								(GdkEvent *) event);
+						g_print("%p (%s) answered\n",
+								n->data, g_type_name(G_OBJECT_TYPE(n->data)));
+						break;
+					}
+				}
+			}
 			break;
 		case CONTING_ONE_LINE_CREATED:
 			assert(priv->placing_drawing != NULL
@@ -155,11 +265,41 @@ widget_button_release_event(GtkWidget *widget,
 						    gpointer user_data)
 {
 	ContingOneLinePrivate *priv;
+	gdouble world_x, world_y;
 
 	g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
 			FALSE);
 
+	conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
+			event->x, event->y,
+			&world_x, &world_y);
+
 	priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
+
+	switch (priv->state) {
+		case CONTING_ONE_LINE_NONE:
+			{
+				GSList *n;
+				if (priv->grabbed_drawing) {
+						conting_drawing_event(priv->grabbed_drawing,
+								(GdkEvent *) event);
+						break;
+				}
+				for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+					if (conting_drawing_answer(CONTING_DRAWING(n->data),
+								world_x, world_y)) {
+						conting_drawing_event(CONTING_DRAWING(n->data),
+								(GdkEvent *) event);
+						g_print("%p (%s) answered\n",
+								n->data, g_type_name(G_OBJECT_TYPE(n->data)));
+						break;
+					}
+				}
+			}
+			break;
+		default:
+			break;
+	}
 
 	return TRUE;
 }

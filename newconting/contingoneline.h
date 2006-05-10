@@ -39,4 +39,13 @@ void conting_one_line_window_to_world(ContingOneLine *self,
 void conting_one_line_world_to_window(ContingOneLine *self,
 		                         gdouble world_x, gdouble world_y,
 								 gdouble *win_x, gdouble *win_y);
+void conting_one_line_grab(ContingOneLine *self,
+		              ContingDrawing *grabbed_drawing);
+void conting_one_line_ungrab(ContingOneLine *self,
+		              ContingDrawing *grabbed_drawing);
+
+void conting_one_line_update(ContingOneLine *self, ArtDRect *bounds);
+
+GSList *conting_one_line_answer(ContingOneLine *self,
+		                        gdouble world_x, gdouble world_y);
 #endif /* CONTING_ONE_LINE_H */
