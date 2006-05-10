@@ -2,6 +2,7 @@
 #include <string.h>
 
 static gint move_signal_id = 0;
+static gint delete_signal_id = 0;
 
 enum {
 	CONTING_DRAWING_PROP_0,
@@ -274,7 +275,18 @@ conting_drawing_class_init(gpointer g_class,
 			G_TYPE_NONE, /* return_type */
 			1,
 			&param_type);
-			
+
+	delete_signal_id = g_signal_newv(
+			"delete",
+			G_TYPE_FROM_CLASS(g_class),
+			G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+			NULL,
+			NULL,
+			NULL,
+			g_cclosure_marshal_VOID__VOID,
+			G_TYPE_NONE,
+			0,
+			NULL);
 
 	g_type_class_add_private(g_class, sizeof(ContingDrawingPrivate));
 }

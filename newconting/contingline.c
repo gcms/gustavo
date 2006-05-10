@@ -182,7 +182,7 @@ conting_line_place(ContingDrawing *self)
 	ContingLinePrivate *priv;
 	gdouble affine[6], tmp[6];
 	ArtPoint *cur_p, p;
-	GSList *n;
+	GSList *n, *answers;
 
 	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
 
@@ -194,8 +194,10 @@ conting_line_place(ContingDrawing *self)
 		p.x = p.y = 0.0;
 		art_affine_point(&p, &p, affine);
 
-		for (n = conting_one_line_answer(conting_drawing_get_one_line(self),
-				p.x, p.y); n != NULL; n = g_slist_next(n)) {
+		answers = conting_one_line_answer(conting_drawing_get_one_line(self),
+				p.x, p.y);
+
+		for (n = answers; n != NULL; n = g_slist_next(n)) {
 			if (CONTING_IS_COMPONENT(n->data)
 					&& conting_component_link(CONTING_COMPONENT(n->data),
 						self, p.x, p.y, tmp)) {
@@ -215,9 +217,10 @@ conting_line_place(ContingDrawing *self)
 				g_signal_connect(G_OBJECT(n->data), "move",
 						G_CALLBACK(conting_line_link_moved), priv->link1);
 
-				return;
-			} 
+				break;
+			}
 		}
+		g_slist_free(answers);
 	} else {
 		gdouble tmp[6];
 
