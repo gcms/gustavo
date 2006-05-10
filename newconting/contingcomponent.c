@@ -16,6 +16,8 @@ struct ContingComponentPrivate_ {
 
 	gboolean dragging;
 	ArtPoint dragging_point;
+
+	GSList *links;
 };
 
 static void
@@ -174,8 +176,10 @@ conting_component_instance_init(GTypeInstance *self,
 
 	priv->placed = FALSE;
 	priv->dragging = FALSE;
-}
 
+	priv->links = NULL;
+}
+#include <gdk/gdkkeysyms.h>
 static gboolean
 conting_component_event(ContingDrawing *self,
 		                GdkEvent *event)
@@ -190,7 +194,7 @@ conting_component_event(ContingDrawing *self,
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y,
 			&p.x, &p.y);
-	
+
 
 	switch (event->type) {
 		case GDK_BUTTON_PRESS:
@@ -216,11 +220,30 @@ conting_component_event(ContingDrawing *self,
 				conting_drawing_ungrab(self);
 			}
 			break;
+		case GDK_KEY_PRESS:
+			if (event->key.keyval == GDK_r) {
+				gdouble affine[6];
+				art_affine_rotate(affine, 90.0);
+				conting_drawing_affine(self, affine);
+			}
 		default:
 			return FALSE;
 	}
 
 	return TRUE;
+}
+
+static void
+conting_component_link_deleted(ContingDrawing *drawing,
+		                       gpointer user_data)
+{
+	ContingComponentPrivate *priv;
+
+	g_return_if_fail(user_data != NULL && CONTING_IS_COMPONENT(user_data));
+
+	priv = CONTING_COMPONENT_GET_PRIVATE(user_data);
+
+	priv->links = g_slist_remove(priv->links, drawing);
 }
 
 gboolean
@@ -257,6 +280,10 @@ conting_component_link(ContingComponent *self,
 	} else {
 		art_affine_translate(affine, priv->p1.x - pi.x, 0);
 	}
+
+	priv->links = g_slist_append(priv->links, drawing);
+	g_signal_connect(G_OBJECT(drawing), "delete",
+			G_CALLBACK(conting_component_link_deleted), self);
 
 	return TRUE;
 }
