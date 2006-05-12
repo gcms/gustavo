@@ -34,6 +34,10 @@ gboolean conting_component_link(ContingComponent *self,
 								gdouble world_x, gdouble world_y,
 								gdouble affine[6]);
 
+gboolean conting_component_get_link_point(ContingComponent *self,
+		                                  ContingDrawing *line,
+										  ArtPoint *p);
+
 G_END_DECLS
 
 #endif /* CONTING_COMPONENT_H */

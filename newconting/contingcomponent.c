@@ -17,6 +17,7 @@ struct ContingComponentPrivate_ {
 	gboolean dragging;
 	ArtPoint dragging_point;
 
+	GHashTable *points;
 	GSList *links;
 };
 
@@ -28,6 +29,7 @@ conting_component_draw(ContingDrawing *self,
     ContingComponentPrivate *priv;
 	gdouble affine[6];
     ArtPoint pw0, pw1;
+	GdkRectangle rect;
 
     static GdkGC *gc = NULL;
     if (gc == NULL) {
@@ -57,11 +59,15 @@ conting_component_draw(ContingDrawing *self,
 			pw1.x, pw1.y, &pw1.x, &pw1.y);
 
 
-//	g_print("drawing: (%lf, %lf); (%lf, %lf)\n", pw0.x, pw0.y, pw1.x, pw1.y);
-    gdk_draw_rectangle(drawable, gc, TRUE,
-            drawing_rect->x + (gint) pw0.x, drawing_rect->y + (gint) pw0.y,
-            (gint) (pw1.x - pw0.x),
-            (gint) (pw1.y - pw0.y));
+	g_print("drawing: (%lf, %lf); (%lf, %lf)\n", pw0.x, pw0.y, pw1.x, pw1.y);
+	
+	rect.x = (gint) (pw0.x < pw1.x ? pw0.x : pw1.x);
+	rect.y = (gint) (pw0.y < pw1.y ? pw0.y : pw1.y);
+	rect.width = (gint) fabs(pw0.x - pw1.x);
+	rect.height = (gint) fabs(pw0.y - pw1.y);
+
+	gdk_draw_rectangle(drawable, gc, TRUE,
+			rect.x, rect.y, rect.width, rect.height);
 
 	if (conting_drawing_is_selected(self)) {
 		gdk_draw_rectangle(drawable, gc, TRUE,
@@ -79,6 +85,35 @@ conting_component_draw(ContingDrawing *self,
 		
 	}
 }
+gboolean
+conting_component_get_link_point(ContingComponent *self,
+                                 ContingDrawing *line,
+                                 ArtPoint *p)
+{
+	ContingComponentPrivate *priv;
+	ArtPoint *point;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	point = g_hash_table_lookup(priv->points, line);
+
+	if (point == NULL) {
+		return FALSE;
+	} else if (p != NULL) {
+		gdouble affine[6];
+
+		*p = *point;
+		conting_drawing_get_affine(CONTING_DRAWING(self), affine);
+
+		art_affine_point(p, p, affine);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
 
 static void
 conting_component_get_bounds(ContingDrawing *self,
@@ -86,7 +121,7 @@ conting_component_get_bounds(ContingDrawing *self,
 {
 	ContingComponentPrivate *priv;
 	gdouble affine[6];
-	ArtPoint pw;
+	ArtPoint pw0, pw1;
 
 	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
@@ -94,13 +129,13 @@ conting_component_get_bounds(ContingDrawing *self,
 
 	conting_drawing_get_affine(self, affine);
 
-	art_affine_point(&pw, &priv->p0, affine);
-	bounds->x0 = pw.x;
-	bounds->y0 = pw.y;
+	art_affine_point(&pw0, &priv->p0, affine);
+	art_affine_point(&pw1, &priv->p1, affine);
 
-	art_affine_point(&pw, &priv->p1, affine);
-	bounds->x1 = pw.x;
-	bounds->y1 = pw.y;
+	bounds->x0 = MIN(pw0.x, pw1.x);
+	bounds->y0 = MIN(pw0.y, pw1.y);
+	bounds->x1 = MAX(pw0.x, pw1.x);
+	bounds->y1 = MAX(pw0.y, pw1.y);
 
 	bounds->x0 -= TOLERANCE;
 	bounds->x1 += TOLERANCE;
@@ -139,24 +174,17 @@ conting_component_answer(ContingDrawing *self,
 		                 gdouble world_x, gdouble world_y)
 {
 	ContingComponentPrivate *priv;
-	gdouble affine[6];
-	ArtPoint pw0, pw1;
+	ArtDRect bounds;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 
     priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-	conting_drawing_get_affine(self, affine);
 
-	art_affine_point(&pw0, &priv->p0, affine);
-	art_affine_point(&pw1, &priv->p1, affine);
-
-//	g_print("checking:(%lf, %lf), (%lf, %lf); (%lf, %lf), (%lf, %lf);"
-//			"(%lf, %lf)\n", priv->p0.x, priv->p0.y, priv->p1.x, priv->p1.y,
-//			pw0.x, pw0.y, pw1.x, pw1.y, world_x, world_y);
-
-	return world_x >= pw0.x && world_x <= pw1.x
-		&& world_y >= pw0.y && world_y <= pw1.y;
+	conting_drawing_get_bounds(self, &bounds);
+	
+	return world_x >= bounds.x0 && world_x <= bounds.x1
+		&& world_y >= bounds.y0 && world_y <= bounds.y1;
 }
 
 static void
@@ -177,6 +205,7 @@ conting_component_instance_init(GTypeInstance *self,
 	priv->placed = FALSE;
 	priv->dragging = FALSE;
 
+	priv->points = g_hash_table_new(NULL, NULL);
 	priv->links = NULL;
 }
 #include <gdk/gdkkeysyms.h>
@@ -210,7 +239,7 @@ conting_component_event(ContingDrawing *self,
 						p.x - priv->dragging_point.x,
 						p.y - priv->dragging_point.y);
 				conting_drawing_affine(self, affine);
-				g_signal_emit_by_name(self, "move", affine);
+				g_signal_emit_by_name(self, "move");
 				priv->dragging_point = p;
 			}
 			break;
@@ -223,9 +252,22 @@ conting_component_event(ContingDrawing *self,
 		case GDK_KEY_PRESS:
 			if (event->key.keyval == GDK_r) {
 				gdouble affine[6];
-				art_affine_rotate(affine, 90.0);
-				conting_drawing_affine(self, affine);
+				gdouble rotate[6];
+
+				conting_drawing_get_affine(self, affine);
+
+				art_affine_rotate(rotate, 90.0);
+				art_affine_multiply(affine, rotate, affine);
+				conting_drawing_affine_absolute(self, affine);
+
+				g_signal_emit_by_name(self, "move");
+
+				conting_drawing_update(self);
+			} else if (event->key.keyval == GDK_Delete) {
+				g_signal_emit_by_name(self, "delete");
+				conting_drawing_delete(self);
 			}
+			break;
 		default:
 			return FALSE;
 	}
@@ -244,6 +286,7 @@ conting_component_link_deleted(ContingDrawing *drawing,
 	priv = CONTING_COMPONENT_GET_PRIVATE(user_data);
 
 	priv->links = g_slist_remove(priv->links, drawing);
+	g_hash_table_remove(priv->points, drawing);
 }
 
 gboolean
@@ -259,6 +302,9 @@ conting_component_link(ContingComponent *self,
 	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 
     priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	if (g_slist_find(priv->links, drawing))
+		return FALSE;
 
 	conting_drawing_get_affine(CONTING_DRAWING(self), my_affine);
 	art_affine_invert(invert, my_affine);
@@ -277,11 +323,17 @@ conting_component_link(ContingComponent *self,
 
 	if (fabs(pi.x - priv->p0.x) < fabs(pi.x - priv->p1.x)) {
 		art_affine_translate(affine, priv->p0.x - pi.x, 0);
+		pi.x = priv->p0.x;
 	} else {
 		art_affine_translate(affine, priv->p1.x - pi.x, 0);
+		pi.x = priv->p1.x;
 	}
 
+	ArtPoint *p = g_new(ArtPoint, 1);
+	*p = pi;
+
 	priv->links = g_slist_append(priv->links, drawing);
+	g_hash_table_insert(priv->points, drawing, p); 
 	g_signal_connect(G_OBJECT(drawing), "delete",
 			G_CALLBACK(conting_component_link_deleted), self);
 

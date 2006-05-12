@@ -137,6 +137,20 @@ conting_one_line_world_to_window(ContingOneLine *self,
     if (*win_y)
         *win_y = (world_y - priv->scrolling_area.y0) * priv->ppu;
 }
+void
+conting_one_line_delete_drawing(ContingOneLine *self,
+		                        ContingDrawing *drawing)
+{
+    ContingOneLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	priv->drawings = g_slist_remove(priv->drawings, drawing);
+	
+	g_object_unref(drawing);
+}
 
 static gboolean
 widget_motion_notify_event(GtkWidget *widget,
@@ -344,20 +358,24 @@ widget_key_press_event(GtkWidget *widget,
 {
     ContingOneLinePrivate *priv;
     GSList *n;
+	ArtDRect bounds;
 
-    g_print("key_press\n");
     g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
             FALSE);
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
 
     if (priv->grabbed_drawing) {
+		conting_drawing_get_bounds(priv->grabbed_drawing, &bounds);
         conting_drawing_event(priv->grabbed_drawing, (GdkEvent *)event);
+		conting_one_line_update(CONTING_ONE_LINE(user_data), &bounds);
         return TRUE;
     }
 
     for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
         if (conting_drawing_is_selected(CONTING_DRAWING(n->data))) {
+			conting_drawing_get_bounds(CONTING_DRAWING(n->data), &bounds);
+			conting_one_line_update(CONTING_ONE_LINE(user_data), &bounds);
             conting_drawing_event(CONTING_DRAWING(n->data),
                     (GdkEvent *) event);
             break;
@@ -416,8 +434,8 @@ conting_one_line_set_widget(ContingOneLine *self,
             G_CALLBACK(widget_button_release_event), self);
     g_signal_connect(G_OBJECT(widget), "expose-event",
             G_CALLBACK(widget_expose_event), self);
-    g_signal_connect(G_OBJECT(widget), "key-press-event",
-            G_CALLBACK(widget_key_press_event), self);
+    g_signal_connect(G_OBJECT(gtk_widget_get_toplevel(widget)),
+			"key-press-event", G_CALLBACK(widget_key_press_event), self);
 }
 
 static void

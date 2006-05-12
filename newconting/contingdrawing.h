@@ -39,6 +39,8 @@ struct ContingDrawingClass_ {
 
 	void (*get_bounds)(ContingDrawing *self, ArtDRect *rect);
 
+	void (*delete)(ContingDrawing *self);
+
 	gboolean (*event)(ContingDrawing *self, GdkEvent *event);
 };
 
@@ -70,6 +72,7 @@ void conting_drawing_update(ContingDrawing *self);
 
 void conting_drawing_set_selected(ContingDrawing *self, gboolean selected);
 gboolean conting_drawing_is_selected(ContingDrawing *self);
+void conting_drawing_delete(ContingDrawing *self);
 
 G_END_DECLS
 
