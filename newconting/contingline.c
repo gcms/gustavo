@@ -1,8 +1,11 @@
 #include "contingline.h"
+#include "contingcomponent.h"
 #include <string.h>
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+
+static gpointer parent_class = NULL;
 
 #define CONTING_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_LINE, ContingLinePrivate))
@@ -19,6 +22,8 @@ struct ContingLinePrivate_ {
 
     gboolean placing;
     gboolean placed;
+
+	ContingComponent *comp1, *comp2;
 
 	ArtPoint *link1, *link2;
 
@@ -155,26 +160,50 @@ conting_line_instance_init(GTypeInstance *self,
 	priv->placing = FALSE;
 	priv->placed = FALSE;
 
+	priv->comp1 = NULL;
+	priv->comp2 = NULL;
 	priv->link1 = NULL;
 	priv->link2 = NULL;
 
 	priv->dragging_point = NULL;
 }
 
-#include "contingcomponent.h"
 
 static void
-conting_line_link_moved(ContingComponent *self,
-		                 gdouble affine[6],
+conting_line_link_moved(ContingComponent *comp,
 						 gpointer user_data)
 {
-	ArtPoint *p;
+	ContingLinePrivate *priv;
+	gdouble invert[6];
+	ArtPoint pi;
 
-	p = user_data;
+	g_return_if_fail(user_data != NULL && CONTING_IS_LINE(user_data));
+	g_return_if_fail(comp != NULL && CONTING_IS_COMPONENT(comp));
 
-	art_affine_point(p, p, affine);
+	priv = CONTING_LINE_GET_PRIVATE(user_data);
 
-	g_print("link_moved\n");
+	assert(conting_component_get_link_point(comp,
+				CONTING_DRAWING(user_data), &pi));
+
+	art_affine_invert(invert, priv->affine);
+	art_affine_point(&pi, &pi, invert);
+
+	if (priv->comp1 == comp) {
+		*(priv->link1) = pi;
+	} else if (priv->comp2 == comp) {
+		*(priv->link2) = pi;
+	} else {
+		assert(FALSE);
+	}
+
+	conting_drawing_update(CONTING_DRAWING(user_data));
+}
+static void
+conting_line_link_deleted(ContingComponent *link,
+		                  gpointer user_data)
+{
+	g_return_if_fail(user_data != NULL && CONTING_IS_LINE(user_data));
+	conting_drawing_delete(CONTING_DRAWING(user_data));
 }
 static void
 conting_line_place(ContingDrawing *self)
@@ -214,13 +243,19 @@ conting_line_place(ContingDrawing *self)
 				priv->n_points++;
 
 				priv->link1 = cur_p;
-				g_signal_connect(G_OBJECT(n->data), "move",
-						G_CALLBACK(conting_line_link_moved), priv->link1);
+				priv->comp1 = n->data;
+				g_signal_connect(G_OBJECT(priv->comp1), "move",
+						G_CALLBACK(conting_line_link_moved), self);
+				g_signal_connect(G_OBJECT(priv->comp1), "delete",
+						G_CALLBACK(conting_line_link_deleted), self);
 
 				break;
 			}
 		}
-		g_slist_free(answers);
+
+		if (answers) {
+			g_slist_free(answers);
+		}
 	} else {
 		gdouble tmp[6];
 
@@ -235,12 +270,19 @@ conting_line_place(ContingDrawing *self)
 
 		art_affine_point(cur_p, cur_p, tmp);
 		
-		priv->points = g_slist_append(priv->points, cur_p);
 
-		priv->n_points++;
+		answers = conting_one_line_answer(conting_drawing_get_one_line(self),
+				p.x, p.y);
+		
+		
+		if (!answers) {
+			priv->points = g_slist_append(priv->points, cur_p);
+			priv->n_points++;
+			return;
+		}
 
-		for (n = conting_one_line_answer(conting_drawing_get_one_line(self),
-				p.x, p.y); n != NULL; n = g_slist_next(n)) {
+
+		for (n = answers; n != NULL; n = g_slist_next(n)) {
 			if (CONTING_IS_COMPONENT(n->data)
 					&& conting_component_link(CONTING_COMPONENT(n->data),
 						self, p.x, p.y, tmp)) {
@@ -250,16 +292,24 @@ conting_line_place(ContingDrawing *self)
 				priv->placed = TRUE;
 
 				priv->link2 = cur_p;
-				g_signal_connect(G_OBJECT(n->data), "move",
-						G_CALLBACK(conting_line_link_moved), priv->link2);
+				priv->comp2 = n->data;
+				g_signal_connect(G_OBJECT(priv->comp2), "move",
+						G_CALLBACK(conting_line_link_moved), self);
+				g_signal_connect(G_OBJECT(priv->comp2), "delete",
+						G_CALLBACK(conting_line_link_deleted), self);
 
 				conting_drawing_affine_absolute(self, priv->affine);
 				conting_drawing_set_selected(self, TRUE);
 
+				priv->points = g_slist_append(priv->points, cur_p);
+				priv->n_points++;
+
 				return;
 			}
 		}
-	
+
+		g_free(cur_p);
+		g_slist_free(answers);
 	}
 }
 
@@ -274,6 +324,27 @@ conting_line_is_placed(ContingDrawing *self)
 
 	return priv->placed;
 }
+static void
+conting_line_delete(ContingDrawing *self)
+{
+	ContingLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	if (priv->comp1) {
+		g_signal_handlers_disconnect_matched(priv->comp1, G_SIGNAL_MATCH_DATA,
+				0, 0, 0, 0, self);
+	}
+	if (priv->comp2) {
+		g_signal_handlers_disconnect_matched(priv->comp2, G_SIGNAL_MATCH_DATA,
+				0, 0, 0, 0, self);
+	}
+
+	CONTING_DRAWING_CLASS(parent_class)->delete(self);
+}
+#include <gdk/gdkkeysyms.h>
 static gboolean
 conting_line_event(ContingDrawing *self,
 				   GdkEvent *event)
@@ -326,6 +397,12 @@ conting_line_event(ContingDrawing *self,
 				} else {
 					*(priv->dragging_point) = pi;
 				}
+			}
+			break;
+		case GDK_KEY_PRESS:
+			if (event->key.keyval == GDK_Delete) {
+				g_signal_emit_by_name(self, "delete");
+				conting_drawing_delete(self);
 			}
 			break;
 		default:
@@ -400,8 +477,11 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->is_placed = conting_line_is_placed;
 	drawing_class->answer = conting_line_answer;
 	drawing_class->event = conting_line_event;
+	drawing_class->delete = conting_line_delete;
 
 	g_type_class_add_private(g_class, sizeof(ContingLinePrivate));
+
+	parent_class = g_type_class_peek_parent(g_class);
 }
 
 GType conting_line_get_type(void) {

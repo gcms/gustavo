@@ -175,6 +175,27 @@ conting_drawing_is_selected(ContingDrawing *self)
 	return priv->selected;
 }
 
+void
+conting_drawing_delete(ContingDrawing *self)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->delete(self);
+}
+
+static void
+conting_drawing_delete_impl(ContingDrawing *self)
+{
+	ContingDrawingPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+	conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
+			self);
+}
+
 static void
 conting_drawing_get_property(GObject *self,
                              guint prop_id,
@@ -240,7 +261,6 @@ conting_drawing_class_init(gpointer g_class,
 {
     GObjectClass *gobject_class;
     ContingDrawingClass *drawing_class;
-	static GType param_type;
 
     gobject_class = G_OBJECT_CLASS(g_class);
     gobject_class->set_property = conting_drawing_set_property;
@@ -262,8 +282,8 @@ conting_drawing_class_init(gpointer g_class,
 	drawing_class->is_placed = NULL;
 	drawing_class->answer = NULL;
 	drawing_class->event = NULL;
+	drawing_class->delete = conting_drawing_delete_impl;
 
-	param_type = G_TYPE_POINTER;
 	move_signal_id = g_signal_newv(
 			"move",
 			G_TYPE_FROM_CLASS(g_class),
@@ -271,10 +291,10 @@ conting_drawing_class_init(gpointer g_class,
 			NULL, /* class closure */
 			NULL, /* accumulator */
 			NULL, /* accu_data */
-			g_cclosure_marshal_VOID__POINTER,
+			g_cclosure_marshal_VOID__VOID,
 			G_TYPE_NONE, /* return_type */
-			1,
-			&param_type);
+			0,
+			NULL);
 
 	delete_signal_id = g_signal_newv(
 			"delete",

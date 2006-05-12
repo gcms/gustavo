@@ -48,4 +48,6 @@ void conting_one_line_update(ContingOneLine *self, ArtDRect *bounds);
 
 GSList *conting_one_line_answer(ContingOneLine *self,
 		                        gdouble world_x, gdouble world_y);
+
+void conting_one_line_delete_drawing(ContingOneLine *self, ContingDrawing *);
 #endif /* CONTING_ONE_LINE_H */
