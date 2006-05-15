@@ -197,9 +197,9 @@ conting_component_instance_init(GTypeInstance *self,
 
     priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-	priv->p0.x = -5;
+	priv->p0.x = -3;
 	priv->p0.y = -20;
-	priv->p1.x = 5;
+	priv->p1.x = 3;
 	priv->p1.y = 20;
 
 	priv->placed = FALSE;

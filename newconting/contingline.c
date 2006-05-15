@@ -166,6 +166,8 @@ conting_line_instance_init(GTypeInstance *self,
 	priv->link2 = NULL;
 
 	priv->dragging_point = NULL;
+
+	art_affine_identity(priv->affine);
 }
 
 
@@ -176,6 +178,7 @@ conting_line_link_moved(ContingComponent *comp,
 	ContingLinePrivate *priv;
 	gdouble invert[6];
 	ArtPoint pi;
+	ArtDRect bounds;
 
 	g_return_if_fail(user_data != NULL && CONTING_IS_LINE(user_data));
 	g_return_if_fail(comp != NULL && CONTING_IS_COMPONENT(comp));
@@ -184,6 +187,8 @@ conting_line_link_moved(ContingComponent *comp,
 
 	assert(conting_component_get_link_point(comp,
 				CONTING_DRAWING(user_data), &pi));
+
+	conting_drawing_get_bounds(CONTING_DRAWING(user_data), &bounds);
 
 	art_affine_invert(invert, priv->affine);
 	art_affine_point(&pi, &pi, invert);
@@ -196,6 +201,9 @@ conting_line_link_moved(ContingComponent *comp,
 		assert(FALSE);
 	}
 
+	conting_one_line_update(
+			conting_drawing_get_one_line(CONTING_DRAWING(user_data)),
+			&bounds);
 	conting_drawing_update(CONTING_DRAWING(user_data));
 }
 static void
@@ -205,13 +213,35 @@ conting_line_link_deleted(ContingComponent *link,
 	g_return_if_fail(user_data != NULL && CONTING_IS_LINE(user_data));
 	conting_drawing_delete(CONTING_DRAWING(user_data));
 }
+static ArtPoint *
+conting_line_add_point(ContingLine *self, gdouble ix, gdouble iy)
+{
+	ContingLinePrivate *priv;
+	ArtPoint *p;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), NULL);
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	p = g_new(ArtPoint, 1);
+
+	p->x = ix;
+	p->y = iy;
+
+	priv->points = g_slist_append(priv->points, p);
+
+	priv->n_points++;
+	
+	return p;
+}
 static void
 conting_line_place(ContingDrawing *self)
 {
 	ContingLinePrivate *priv;
 	gdouble affine[6], tmp[6];
-	ArtPoint *cur_p, p;
+	ArtPoint p;
 	GSList *n, *answers;
+	ContingComponent *comp;
 
 	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
 
@@ -219,98 +249,69 @@ conting_line_place(ContingDrawing *self)
 
 	conting_drawing_get_affine(self, affine);
 
-	if (!priv->placing) {
-		p.x = p.y = 0.0;
-		art_affine_point(&p, &p, affine);
+	p.x = p.y = 0.0;
+	art_affine_point(&p, &p, affine);
 
-		answers = conting_one_line_answer(conting_drawing_get_one_line(self),
-				p.x, p.y);
+	answers = conting_one_line_answer(conting_drawing_get_one_line(self),
+			p.x, p.y);
 
-		for (n = answers; n != NULL; n = g_slist_next(n)) {
-			if (CONTING_IS_COMPONENT(n->data)
-					&& conting_component_link(CONTING_COMPONENT(n->data),
-						self, p.x, p.y, tmp)) {
-				art_affine_multiply(affine, affine, tmp);
-				conting_drawing_affine_absolute(self, affine);
-
-				cur_p = g_new(ArtPoint, 1);
-				cur_p->x = cur_p->y = 0.0;		
-				priv->points = g_slist_append(priv->points, cur_p);
-
-				memcpy(priv->affine, affine, 6 * sizeof(gdouble));
-
-				priv->placing = TRUE;
-				priv->n_points++;
-
-				priv->link1 = cur_p;
-				priv->comp1 = n->data;
-				g_signal_connect(G_OBJECT(priv->comp1), "move",
-						G_CALLBACK(conting_line_link_moved), self);
-				g_signal_connect(G_OBJECT(priv->comp1), "delete",
-						G_CALLBACK(conting_line_link_deleted), self);
-
-				break;
-			}
+	comp = NULL;
+	for (n = answers; n != NULL; n = g_slist_next(n)) {
+		if (CONTING_IS_COMPONENT(n->data)
+				&& conting_component_link(CONTING_COMPONENT(n->data), self,
+					p.x, p.y, tmp)) {
+			comp = CONTING_COMPONENT(n->data);
+			break;
 		}
+	}
 
-		if (answers) {
-			g_slist_free(answers);
+	if (!priv->placing) {
+		if (comp != NULL) {
+			art_affine_multiply(affine, affine, tmp);
+			conting_drawing_affine_absolute(self, affine);
+			conting_drawing_get_affine(self, priv->affine);
+
+			priv->placing = TRUE;
+
+			priv->link1 = conting_line_add_point(CONTING_LINE(self),
+					0.0, 0.0);
+			priv->comp1 = comp;
+
+			g_signal_connect(G_OBJECT(priv->comp1), "move",
+					G_CALLBACK(conting_line_link_moved), self);
+			g_signal_connect(G_OBJECT(priv->comp1), "delete",
+					G_CALLBACK(conting_line_link_deleted), self);
 		}
 	} else {
-		gdouble tmp[6];
+		gdouble invert[6];
+		assert(!priv->placed);
 
-		p.x = p.y = 0.0;
-		art_affine_point(&p, &p, affine);
+		art_affine_invert(invert, priv->affine);
 
-		cur_p = g_new(ArtPoint, 1);
-		cur_p->x = cur_p->y = 0.0;		
+		art_affine_point(&p, &p, invert);
 
-		art_affine_invert(tmp, priv->affine);
-		art_affine_multiply(tmp, tmp, affine);
+		if (comp == NULL) {
+			conting_line_add_point(CONTING_LINE(self), p.x, p.y);
+		} else {
+			art_affine_point(&p, &p, tmp);
 
-		art_affine_point(cur_p, cur_p, tmp);
-		
+			priv->placing = FALSE;
+			priv->placed = TRUE;
 
-		answers = conting_one_line_answer(conting_drawing_get_one_line(self),
-				p.x, p.y);
-		
-		
-		if (!answers) {
-			priv->points = g_slist_append(priv->points, cur_p);
-			priv->n_points++;
-			return;
+			priv->link2 = conting_line_add_point(CONTING_LINE(self), p.x, p.y);
+			priv->comp2 = comp;
+			g_signal_connect(G_OBJECT(priv->comp2), "move",
+					G_CALLBACK(conting_line_link_moved), self);
+			g_signal_connect(G_OBJECT(priv->comp2), "delete",
+					G_CALLBACK(conting_line_link_deleted), self);
+
+			conting_drawing_affine_absolute(self, priv->affine);
+			conting_drawing_set_selected(self, TRUE);
+
 		}
-
-
-		for (n = answers; n != NULL; n = g_slist_next(n)) {
-			if (CONTING_IS_COMPONENT(n->data)
-					&& conting_component_link(CONTING_COMPONENT(n->data),
-						self, p.x, p.y, tmp)) {
-				art_affine_point(cur_p, cur_p, tmp);
-
-				priv->placing = FALSE;
-				priv->placed = TRUE;
-
-				priv->link2 = cur_p;
-				priv->comp2 = n->data;
-				g_signal_connect(G_OBJECT(priv->comp2), "move",
-						G_CALLBACK(conting_line_link_moved), self);
-				g_signal_connect(G_OBJECT(priv->comp2), "delete",
-						G_CALLBACK(conting_line_link_deleted), self);
-
-				conting_drawing_affine_absolute(self, priv->affine);
-				conting_drawing_set_selected(self, TRUE);
-
-				priv->points = g_slist_append(priv->points, cur_p);
-				priv->n_points++;
-
-				return;
-			}
-		}
-
-		g_free(cur_p);
-		g_slist_free(answers);
 	}
+
+	g_slist_free(answers);
 }
 
 static gboolean
