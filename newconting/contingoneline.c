@@ -399,7 +399,7 @@ widget_expose_event(GtkWidget *widget,
 
     return TRUE;
 }
-
+#include <gdk/gdkkeysyms.h>
 static gboolean
 widget_key_press_event(GtkWidget *widget,
                        GdkEventKey *event,
@@ -412,6 +412,18 @@ widget_key_press_event(GtkWidget *widget,
             FALSE);
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
+
+	if (event->keyval == GDK_Page_Up) {
+		priv->ppu++;
+		gtk_widget_queue_draw(priv->widget);
+		return TRUE;
+	} else if (event->keyval == GDK_Page_Down) {
+		priv->ppu--;
+		if (priv->ppu < 1.0)
+			priv->ppu = 1.0;
+		gtk_widget_queue_draw(priv->widget);
+		return TRUE;
+	}
 
     if (priv->grabbed_drawing) {
 		assert(priv->state == CONTING_ONE_LINE_GRABBING);

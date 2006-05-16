@@ -8,6 +8,8 @@
 #define TOLERANCE 3
 #define SIZE ((TOLERANCE * 2) - 1)
 
+static gpointer parent_class = NULL;
+
 typedef struct ContingComponentPrivate_ ContingComponentPrivate;
 struct ContingComponentPrivate_ {
 	ArtPoint p0, p1;
@@ -19,6 +21,10 @@ struct ContingComponentPrivate_ {
 
 	GHashTable *points;
 	GSList *links;
+
+	ArtPoint *start_resize;
+
+	gdouble rotate[6];
 };
 
 static void
@@ -204,9 +210,41 @@ conting_component_instance_init(GTypeInstance *self,
 
 	priv->placed = FALSE;
 	priv->dragging = FALSE;
+	priv->start_resize = NULL;
 
 	priv->points = g_hash_table_new(NULL, NULL);
 	priv->links = NULL;
+
+	art_affine_rotate(priv->rotate, 0.0);
+}
+static void
+conting_component_center(ContingComponent *self)
+{
+	ContingComponentPrivate *priv;
+	gdouble w, h;
+	ArtPoint np0, np1;
+	gdouble translate[6];
+
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	w = fabs(priv->p0.x - priv->p1.x);
+	h = fabs(priv->p0.y - priv->p1.y);
+
+	np0.x = - (w / 2);
+	np0.y = - (h / 2);
+	np1.x = np0.x + w;
+	np1.y = np0.y + h;
+
+	art_affine_translate(translate,
+			priv->p0.x - np0.x,
+			priv->p0.y - np0.y);
+	
+	priv->p0 = np0;
+	priv->p1 = np1;
+
+	conting_drawing_affine(CONTING_DRAWING(self), translate);
 }
 #include <gdk/gdkkeysyms.h>
 static gboolean
@@ -224,7 +262,6 @@ conting_component_event(ContingDrawing *self,
 			event->button.x, event->button.y,
 			&p.x, &p.y);
 
-
 	switch (event->type) {
 		case GDK_BUTTON_PRESS:
 			conting_drawing_set_selected(self, TRUE);
@@ -233,7 +270,26 @@ conting_component_event(ContingDrawing *self,
 			priv->dragging = TRUE;
 			break;
 		case GDK_MOTION_NOTIFY:
-			if (priv->dragging) {
+			if (priv->dragging && priv->start_resize != NULL) {
+				ArtPoint pi;
+				gdouble invert[6];
+
+				CONTING_DRAWING_CLASS(parent_class)->get_affine(self, invert);
+				art_affine_invert(invert, invert);
+				art_affine_point(&pi, &p, invert);
+
+				art_affine_invert(invert, priv->rotate);
+				art_affine_point(&pi, &pi, invert);
+
+				if ((priv->start_resize == &priv->p0
+					   && fabs(pi.y - priv->p1.y) > 20)
+						|| (priv->start_resize == &priv->p1
+							&& fabs(pi.y - priv->p0.y) > 20)) {
+					priv->start_resize->y = pi.y;
+				}
+
+				conting_drawing_update(self);
+			} else if (priv->dragging) {
 				gdouble affine[6];
 				art_affine_translate(affine,
 						p.x - priv->dragging_point.x,
@@ -241,6 +297,26 @@ conting_component_event(ContingDrawing *self,
 				conting_drawing_affine(self, affine);
 				g_signal_emit_by_name(self, "move");
 				priv->dragging_point = p;
+			} else {
+				ArtPoint pi;
+				gdouble invert[6];
+
+				CONTING_DRAWING_CLASS(parent_class)->get_affine(self, invert);
+				art_affine_invert(invert, invert);
+				art_affine_point(&pi, &p, invert);
+
+				art_affine_invert(invert, priv->rotate);
+				art_affine_point(&pi, &pi, invert);
+
+				g_print("internal: (%lf, %lf)\n", pi.x, pi.y);
+
+				if (fabs(pi.y - priv->p0.y) < TOLERANCE) {
+					priv->start_resize = &priv->p0;
+				} else if (fabs(pi.y - priv->p1.y) < TOLERANCE) {
+					priv->start_resize = &priv->p1;
+				} else {
+					priv->start_resize = NULL;
+				}
 			}
 			break;
 		case GDK_BUTTON_RELEASE:
@@ -251,14 +327,9 @@ conting_component_event(ContingDrawing *self,
 			break;
 		case GDK_KEY_PRESS:
 			if (event->key.keyval == GDK_r) {
-				gdouble affine[6];
 				gdouble rotate[6];
-
-				conting_drawing_get_affine(self, affine);
-
 				art_affine_rotate(rotate, 90.0);
-				art_affine_multiply(affine, rotate, affine);
-				conting_drawing_affine_absolute(self, affine);
+				art_affine_multiply(priv->rotate, priv->rotate, rotate);
 
 				g_signal_emit_by_name(self, "move");
 
@@ -306,10 +377,14 @@ conting_component_link(ContingComponent *self,
 	if (g_slist_find(priv->links, drawing))
 		return FALSE;
 
-	conting_drawing_get_affine(CONTING_DRAWING(self), my_affine);
-	art_affine_invert(invert, my_affine);
 	pi.x = world_x;
 	pi.y = world_y;
+	CONTING_DRAWING_CLASS(parent_class)->get_affine(CONTING_DRAWING(self),
+			my_affine);
+	art_affine_invert(invert, my_affine);
+	art_affine_point(&pi, &pi, invert);
+
+	art_affine_invert(invert, priv->rotate);
 	art_affine_point(&pi, &pi, invert);
 	
 	g_print("link: (%lf, %lf); (%lf, %lf) : (%lf, %lf)\n",
@@ -339,7 +414,20 @@ conting_component_link(ContingComponent *self,
 
 	return TRUE;
 }
+static void
+conting_component_get_affine(ContingDrawing *self,
+		                     gdouble affine[6])
+{
+	ContingComponentPrivate *priv;
 
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	CONTING_DRAWING_CLASS(parent_class)->get_affine(self, affine);
+
+	art_affine_multiply(affine, priv->rotate, affine);
+}
 static void
 conting_component_class_init(gpointer g_class, gpointer class_data)
 {
@@ -352,8 +440,11 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
 	drawing_class->is_placed = conting_component_is_placed;
 	drawing_class->answer = conting_component_answer;
 	drawing_class->event = conting_component_event;
+	drawing_class->get_affine = conting_component_get_affine;
 
 	g_type_class_add_private(g_class, sizeof(ContingComponentPrivate));
+
+	parent_class = g_type_class_peek_parent(g_class);
 }
 
 GType conting_component_get_type(void) {

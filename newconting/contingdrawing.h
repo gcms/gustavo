@@ -39,6 +39,8 @@ struct ContingDrawingClass_ {
 
 	void (*get_bounds)(ContingDrawing *self, ArtDRect *rect);
 
+	void (*get_affine)(ContingDrawing *self, gdouble affine[6]);
+
 	void (*delete)(ContingDrawing *self);
 
 	gboolean (*event)(ContingDrawing *self, GdkEvent *event);
