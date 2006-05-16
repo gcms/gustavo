@@ -67,8 +67,8 @@ conting_drawing_affine_absolute(ContingDrawing *self,
 	memcpy(priv->affine, affine, 6 * sizeof(double));
 }
 
-void
-conting_drawing_get_affine(ContingDrawing *self,
+static void
+conting_drawing_get_affine_impl(ContingDrawing *self,
 		                   gdouble affine[6])
 {
 	ContingDrawingPrivate *priv;
@@ -78,6 +78,14 @@ conting_drawing_get_affine(ContingDrawing *self,
 	priv = CONTING_DRAWING_GET_PRIVATE(self);
 
 	memcpy(affine, priv->affine, 6 * sizeof(gdouble));
+}
+
+void conting_drawing_get_affine(ContingDrawing *self,
+						        gdouble affine[6])
+{
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->get_affine(self, affine);
 }
 
 void
@@ -283,6 +291,7 @@ conting_drawing_class_init(gpointer g_class,
 	drawing_class->answer = NULL;
 	drawing_class->event = NULL;
 	drawing_class->delete = conting_drawing_delete_impl;
+	drawing_class->get_affine = conting_drawing_get_affine_impl;
 
 	move_signal_id = g_signal_newv(
 			"move",

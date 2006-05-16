@@ -290,9 +290,9 @@ conting_line_place(ContingDrawing *self)
 
 		art_affine_point(&p, &p, invert);
 
-		if (comp == NULL) {
+		if (comp == NULL && answers == NULL) {
 			conting_line_add_point(CONTING_LINE(self), p.x, p.y);
-		} else {
+		} else if (comp != NULL) {
 			art_affine_point(&p, &p, tmp);
 
 			priv->placing = FALSE;
