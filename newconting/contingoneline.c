@@ -179,6 +179,7 @@ conting_one_line_delete_drawing(ContingOneLine *self,
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+	/* is it evil? */
 	if (priv->state == CONTING_ONE_LINE_GRABBING
 			&& priv->grabbed_drawing == drawing) {
 		conting_drawing_ungrab(drawing);
@@ -222,7 +223,10 @@ conting_one_line_cancel_placing(ContingOneLine *self)
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+	/* trabalho semelhante a conting_one_line_delete_drawing() */
+
 	priv->state = CONTING_ONE_LINE_NONE;
+	conting_drawing_delete(priv->placing_drawing); /* disconnect handlers */
 	g_object_unref(priv->placing_drawing);
 	priv->placing_drawing = NULL;
 }
@@ -332,7 +336,8 @@ widget_motion_notify_event(GtkWidget *widget,
 	            for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
     	        	if (conting_drawing_answer(CONTING_DRAWING(n->data),
 								world_x, world_y)) {
-						conting_one_line_send_event(CONTING_ONE_LINE(user_data),
+						conting_one_line_send_event(
+								CONTING_ONE_LINE(user_data),
 								CONTING_DRAWING(n->data), (GdkEvent *) event);
 						break;
 					}
@@ -399,7 +404,8 @@ widget_button_press_event(GtkWidget *widget,
 				for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
                 	if (conting_drawing_answer(CONTING_DRAWING(n->data),
                                 world_x, world_y)) {
-						conting_one_line_send_event(CONTING_ONE_LINE(user_data),
+						conting_one_line_send_event(
+								CONTING_ONE_LINE(user_data),
 								CONTING_DRAWING(n->data), (GdkEvent *) event);
                         g_print("%p (%s) answered\n",
                                 n->data, g_type_name(G_OBJECT_TYPE(n->data)));
@@ -480,7 +486,8 @@ widget_button_release_event(GtkWidget *widget,
                 for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
                     if (conting_drawing_answer(CONTING_DRAWING(n->data),
                                 world_x, world_y)) {
-						conting_one_line_send_event(CONTING_ONE_LINE(user_data),
+						conting_one_line_send_event(
+								CONTING_ONE_LINE(user_data),
 								CONTING_DRAWING(n->data), (GdkEvent *) event);
                         g_print("%p (%s) answered\n",
                                 n->data, g_type_name(G_OBJECT_TYPE(n->data)));

@@ -200,8 +200,9 @@ conting_drawing_delete_impl(ContingDrawing *self)
 
 	priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
-			self);
+	if (conting_drawing_is_placed(self))
+		conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
+				self);
 }
 
 static void
