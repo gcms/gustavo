@@ -1,6 +1,8 @@
 #include <gtk/gtk.h>
 #include "contingoneline.h"
+#include "contingutil.h"
 #include <assert.h>
+#include <math.h>
 
 enum {
 	CONTING_ONE_LINE_PROP_0,
@@ -10,7 +12,8 @@ enum {
 typedef enum {
     CONTING_ONE_LINE_NONE,
     CONTING_ONE_LINE_CREATED,
-	CONTING_ONE_LINE_GRABBING
+	CONTING_ONE_LINE_GRABBING,
+	CONTING_ONE_LINE_SELECTING
 } ContingOneLineState;
 
 #define CONTING_ONE_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
@@ -29,6 +32,8 @@ struct ContingOneLinePrivate_ {
     GSList *drawings;
 
     ContingDrawing *grabbed_drawing;
+
+	ArtDRect selection_box;
 };
 
 gboolean
@@ -174,6 +179,12 @@ conting_one_line_delete_drawing(ContingOneLine *self,
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+	if (priv->state == CONTING_ONE_LINE_GRABBING
+			&& priv->grabbed_drawing == drawing) {
+		conting_drawing_ungrab(drawing);
+		priv->state = CONTING_ONE_LINE_NONE;
+	}
+
     priv->drawings = g_slist_remove(priv->drawings, drawing);
 
     g_object_unref(drawing);
@@ -214,6 +225,34 @@ conting_one_line_cancel_placing(ContingOneLine *self)
 	priv->state = CONTING_ONE_LINE_NONE;
 	g_object_unref(priv->placing_drawing);
 	priv->placing_drawing = NULL;
+}
+
+static void
+conting_one_line_update_selection(ContingOneLine *self, gdouble x, gdouble y)
+{
+	/* FIXME: create functions to handle selection.
+	 * Need to avoid calling gtk_widget_queue_draw*() directly */
+	ContingOneLinePrivate *priv;
+	ArtDRect old_bounds, bounds;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	conting_util_correct_bounds(&priv->selection_box, &old_bounds);
+
+	priv->selection_box.x1 = x;
+	priv->selection_box.y1 = y;
+
+	conting_util_correct_bounds(&priv->selection_box, &bounds);
+	
+	conting_util_union_bounds(&bounds, &old_bounds, &bounds);
+
+	conting_util_expand_bounds(&bounds, priv->ppu + 4);
+	gtk_widget_queue_draw_area(priv->widget,
+			(gint) bounds.x0, (gint) bounds.y0,
+			(gint) (bounds.x1 - bounds.x0),
+			(gint) (bounds.y1 - bounds.y0));
 }
 static void
 conting_one_line_get_property(GObject *self,
@@ -277,6 +316,10 @@ widget_motion_notify_event(GtkWidget *widget,
             &world_x, &world_y);
 
     switch (priv->state) {
+		case CONTING_ONE_LINE_SELECTING:
+			conting_one_line_update_selection(CONTING_ONE_LINE(user_data),
+					event->x, event->y);
+			break;
 		case CONTING_ONE_LINE_GRABBING:
 			assert(priv->grabbed_drawing
 					&& CONTING_IS_DRAWING(priv->grabbed_drawing));
@@ -342,6 +385,9 @@ widget_button_press_event(GtkWidget *widget,
     }
 
     switch (priv->state) {
+		case CONTING_ONE_LINE_SELECTING:
+			assert(FALSE);
+			break;
 		case CONTING_ONE_LINE_GRABBING:
 			assert(priv->grabbed_drawing
 					&& CONTING_IS_DRAWING(priv->grabbed_drawing));
@@ -360,6 +406,14 @@ widget_button_press_event(GtkWidget *widget,
                         break;
                     }
                 }
+				if (n != NULL)
+					break;
+
+				g_print("selecting start()\n");
+				priv->state = CONTING_ONE_LINE_SELECTING;
+				priv->selection_box.x0 = event->x;
+				priv->selection_box.y0 = event->y;
+				
             }
             break;
         case CONTING_ONE_LINE_CREATED:
@@ -408,6 +462,12 @@ widget_button_release_event(GtkWidget *widget,
     priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
 
     switch (priv->state) {
+		case CONTING_ONE_LINE_SELECTING:
+			g_print("selecting end()\n");
+			priv->state = CONTING_ONE_LINE_NONE;
+			conting_one_line_update_selection(CONTING_ONE_LINE(user_data),
+					event->x, event->y);
+			break;
 		case CONTING_ONE_LINE_GRABBING:
 			assert(priv->grabbed_drawing
 					&& CONTING_IS_DRAWING(priv->grabbed_drawing));
@@ -457,6 +517,28 @@ widget_expose_event(GtkWidget *widget,
     }
 
     switch (priv->state) {
+		case CONTING_ONE_LINE_SELECTING:
+			{
+				GdkRectangle rect;
+    			static GdkGC *gc = NULL;
+			    if (gc == NULL) {
+			        static GdkColor color;
+			        gdk_color_parse("black", &color);
+			        gc = gdk_gc_new(widget->window);
+			        gdk_gc_set_foreground(gc, &color);
+			        gdk_gc_set_background(gc, &color);
+					gdk_gc_set_rgb_fg_color(gc, &color);
+					gdk_gc_set_rgb_bg_color(gc, &color);
+					gdk_gc_set_fill(gc, GDK_SOLID);
+					gdk_gc_set_line_attributes(gc, 1,
+							GDK_LINE_ON_OFF_DASH, GDK_CAP_NOT_LAST,
+							GDK_JOIN_MITER);
+				}
+				conting_util_bounds_to_rect(&priv->selection_box, &rect);
+				gdk_draw_rectangle(priv->widget->window, gc, FALSE,
+						rect.x, rect.y, rect.width, rect.height);
+			}
+			break;
         case CONTING_ONE_LINE_NONE:
             break;
         case CONTING_ONE_LINE_CREATED:
@@ -485,11 +567,11 @@ widget_key_press_event(GtkWidget *widget,
     priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
 
 	if (event->keyval == GDK_Page_Up) {
-		priv->ppu++;
+		priv->ppu += 0.3;
 		gtk_widget_queue_draw(priv->widget);
 		return TRUE;
 	} else if (event->keyval == GDK_Page_Down) {
-		priv->ppu--;
+		priv->ppu -= 0.3;
 		if (priv->ppu < 1.0)
 			priv->ppu = 1.0;
 		gtk_widget_queue_draw(priv->widget);
