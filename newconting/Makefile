@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-Wall -g `pkg-config gtk+-2.0 libart-2.0 --cflags`
-LIBS=`pkg-config gtk+-2.0 libart-2.0 --libs`
+LIBS=`pkg-config gtk+-2.0 libart-2.0 --libs` -lm
 
 all: build
 	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o -o main

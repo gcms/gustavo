@@ -15,7 +15,7 @@ static gpointer parent_class = NULL;
 
 typedef struct ContingLinePrivate_ ContingLinePrivate;
 struct ContingLinePrivate_ {
-	GSList *points;
+	GList *points;
 	gint n_points;
 
 	gdouble affine[6];
@@ -28,6 +28,7 @@ struct ContingLinePrivate_ {
 	ArtPoint *link1, *link2;
 
 	ArtPoint *dragging_point;
+	GList *answered;
 };
 
 static void
@@ -37,7 +38,7 @@ conting_line_draw(ContingDrawing *self,
 {
     ContingLinePrivate *priv;
 	gdouble affine[6];
-	GSList *n;
+	GList *n;
 	ArtPoint pw0, pw1;
 
     static GdkGC *gc = NULL;
@@ -70,7 +71,7 @@ conting_line_draw(ContingDrawing *self,
 				pw0.x - TOLERANCE, pw0.y - TOLERANCE, SIZE, SIZE);
 	}
 
-	for (n = g_slist_next(priv->points); n != NULL; n = g_slist_next(n)) {
+	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		pw1 = *((ArtPoint *) n->data);
 		art_affine_point(&pw1, &pw1, priv->affine);
 		conting_one_line_world_to_window(conting_drawing_get_one_line(self),
@@ -109,7 +110,7 @@ conting_line_get_bounds(ContingDrawing *self,
 	ContingLinePrivate *priv;
 	gdouble affine[6];
 	ArtPoint pw;
-	GSList *n;
+	GList *n;
 
 	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
 
@@ -122,7 +123,7 @@ conting_line_get_bounds(ContingDrawing *self,
 	bounds->x0 = bounds->x1 = pw.x;
 	bounds->y0 = bounds->y1 = pw.y;
 
-	for (n = priv->points; n != NULL; n = g_slist_next(n)) {
+	for (n = priv->points; n != NULL; n = g_list_next(n)) {
 		art_affine_point(&pw, (ArtPoint *) n->data, affine);
 
 		if (pw.x < bounds->x0) {
@@ -228,7 +229,7 @@ conting_line_add_point(ContingLine *self, gdouble ix, gdouble iy)
 	p->x = ix;
 	p->y = iy;
 
-	priv->points = g_slist_append(priv->points, p);
+	priv->points = g_list_append(priv->points, p);
 
 	priv->n_points++;
 	
@@ -240,7 +241,7 @@ conting_line_place(ContingDrawing *self)
 	ContingLinePrivate *priv;
 	gdouble affine[6], tmp[6];
 	ArtPoint p;
-	GSList *n, *answers;
+    GSList *n, *answers;
 	ContingComponent *comp;
 
 	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
@@ -347,18 +348,79 @@ conting_line_delete(ContingDrawing *self)
 }
 #include <gdk/gdkkeysyms.h>
 static gboolean
+conting_line_event_place(ContingDrawing *self,
+		                 GdkEvent *event)
+{
+	ContingLinePrivate *priv;
+	ArtPoint pw;
+	gdouble affine[6];
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
+	g_return_val_if_fail(event != NULL, FALSE);
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
+			event->button.x, event->button.y, &pw.x, &pw.y);
+
+	art_affine_translate(affine, pw.x, pw.y);
+	conting_drawing_affine_absolute(self, affine);
+
+	switch (event->type) {
+		case GDK_MOTION_NOTIFY:
+			if (priv->placing && (event->motion.state & GDK_SHIFT_MASK)) {
+				ArtPoint last_point;
+				gdouble angle, s;
+			   
+				last_point = *((ArtPoint *) g_list_last(priv->points)->data);
+				art_affine_point(&last_point, &last_point, priv->affine);
+
+				angle = atan2(pw.y - last_point.y, pw.x - last_point.x);
+
+				g_print("angle: %lf\n", (angle * 180) / M_PI );
+				g_print("(%lf, %lf); (%lf, %lf)\n",
+						last_point.x, last_point.y, pw.x, pw.y);
+
+				/* TODO: improve to allow all possibilities */
+				s = sin(angle);
+				g_print("sin: %lf\n", s);
+				if (fabs(s) <= 0.33) {
+					art_affine_translate(affine, pw.x, last_point.y);
+				} else if (fabs(s) >= 0.66) {
+					art_affine_translate(affine, last_point.x, pw.y);
+				} else {
+					gdouble size;
+				   
+					size = MIN(pw.x - last_point.x, pw.y - last_point.y);
+					art_affine_translate(affine,
+							last_point.x + size, last_point.y + size);
+				}
+
+				conting_drawing_affine_absolute(self, affine);
+			}
+			break;
+		default:
+			break;
+	}
+
+	return TRUE;
+}
+static gboolean
 conting_line_event(ContingDrawing *self,
 				   GdkEvent *event)
 {
 	ContingLinePrivate *priv;
 	gdouble invert[6];
 	ArtPoint pi;
-	GSList *n;
+	GList *n;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
 	g_return_val_if_fail(event != NULL, FALSE);
 
 	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	if (!priv->placed)
+		return conting_line_event_place(self, event);
 
 	assert(priv->placed);
 
@@ -372,7 +434,15 @@ conting_line_event(ContingDrawing *self,
 		case GDK_BUTTON_PRESS:
 			conting_drawing_set_selected(self, TRUE);
 			conting_drawing_update(self);
-			for (n = priv->points; n != NULL; n = g_slist_next(n)) {
+
+			if (event->button.state & GDK_CONTROL_MASK) {
+				ArtPoint *new_p = g_new(ArtPoint, 1);
+				*new_p = pi;
+
+				g_list_insert_before(priv->points, priv->answered, new_p);
+				
+			}
+			for (n = priv->points; n != NULL; n = g_list_next(n)) {
 				ArtPoint *p = n->data;
 
 				if (fabs(p->x - pi.x) < TOLERANCE
@@ -417,7 +487,7 @@ conting_line_answer(ContingDrawing *self,
 					  gdouble world_x, gdouble world_y)
 {
 	ContingLinePrivate *priv;
-	GSList *n;
+	GList *n;
 
 	gdouble invert[6];
 
@@ -440,7 +510,7 @@ conting_line_answer(ContingDrawing *self,
 			pw.x, pw.y);
 
 	p0 = priv->points->data;
-	for (n = g_slist_next(priv->points); n != NULL; n = g_slist_next(n)) {
+	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		gdouble dx, dy;
 		gdouble m, d;
 		gdouble ix, iy;
@@ -458,6 +528,7 @@ conting_line_answer(ContingDrawing *self,
 		d = fabs(m * ix + iy) / sqrt(m * m + 1);
 
 		if (d < TOLERANCE && fabs(ix) < fabs(dx) && fabs(iy) < fabs(dy)) {
+			priv->answered = n;
 			return TRUE;
 		}
 
