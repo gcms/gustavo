@@ -258,7 +258,7 @@ conting_drawing_instance_init(GTypeInstance *self,
 
     priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	art_affine_translate(priv->affine, 0.0, 0.0);
+	art_affine_identity(priv->affine);
 
 	priv->selected = FALSE;
 }

@@ -2,6 +2,11 @@
 #include "contingoneline.h"
 #include <assert.h>
 
+enum {
+	CONTING_ONE_LINE_PROP_0,
+	CONTING_ONE_LINE_PROP_PPU
+};
+
 typedef enum {
     CONTING_ONE_LINE_NONE,
     CONTING_ONE_LINE_CREATED,
@@ -196,6 +201,63 @@ conting_one_line_send_event(ContingOneLine *self,
 		conting_drawing_update(drawing);
 	}
 }
+
+static void
+conting_one_line_cancel_placing(ContingOneLine *self)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	priv->state = CONTING_ONE_LINE_NONE;
+	g_object_unref(priv->placing_drawing);
+	priv->placing_drawing = NULL;
+}
+static void
+conting_one_line_get_property(GObject *self,
+                              guint prop_id,
+                              GValue *value,
+                              GParamSpec *pspec)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	switch (prop_id) {
+		case CONTING_ONE_LINE_PROP_PPU:
+			g_value_set_int(value, priv->ppu);
+			break;
+		default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+static void
+conting_one_line_set_property(GObject *self,
+                              guint prop_id,
+                              const GValue *value,
+                              GParamSpec *pspec)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	switch (prop_id) {
+		case CONTING_ONE_LINE_PROP_PPU:
+			priv->ppu = g_value_get_int(value);
+			break;
+		default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+
 
 static gboolean
 widget_motion_notify_event(GtkWidget *widget,
@@ -438,6 +500,9 @@ widget_key_press_event(GtkWidget *widget,
 		case CONTING_ONE_LINE_CREATED:
 			conting_one_line_send_event(CONTING_ONE_LINE(user_data),
 					priv->placing_drawing, (GdkEvent *) event);
+			if (event->keyval == GDK_Escape) {
+				conting_one_line_cancel_placing(CONTING_ONE_LINE(user_data));
+			}
 			break;
 		case CONTING_ONE_LINE_GRABBING:
 			conting_one_line_send_event(CONTING_ONE_LINE(user_data),
@@ -528,7 +593,24 @@ static void
 conting_one_line_class_init(gpointer g_class,
                             gpointer class_data)
 {
+	GObjectClass *gobject_class;
+
+	gobject_class = G_OBJECT_CLASS(g_class);
+	gobject_class->set_property = conting_one_line_set_property;
+	gobject_class->get_property = conting_one_line_get_property;
+
+	g_object_class_install_property(G_OBJECT_CLASS(g_class),
+			CONTING_ONE_LINE_PROP_PPU,
+			g_param_spec_int("ppu",
+							 "Points per unit",
+							 "The zooming of this diagram",
+							 0.5,	/* 50% zoom, minimum value */
+							 4,		/* 400% zoom, maximum value */
+							 1,		/* 100% zoom, default value */
+							 G_PARAM_READABLE | G_PARAM_WRITABLE));
+
     g_type_class_add_private(g_class, sizeof(ContingOneLinePrivate));
+
 }
 
 static void
