@@ -3,10 +3,12 @@ CFLAGS=-Wall -g `pkg-config gtk+-2.0 libart-2.0 --cflags`
 LIBS=`pkg-config gtk+-2.0 libart-2.0 --libs` -lm
 
 all: build
-	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o -o main
+	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o -o main
 
-build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o
+build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o
 
+contingutil.o: contingutil.c
+	$(CC) $(CFLAGS) -c contingutil.c -o contingutil.o
 
 contingoneline.o: contingoneline.c
 	$(CC) $(CFLAGS) -c contingoneline.c -o contingoneline.o
@@ -25,4 +27,5 @@ clean:
 	rm -f contingdrawing.o
 	rm -f contingcomponent.o
 	rm -f contingline.o
+	rm -f contingutil.o
 	rm -f main
