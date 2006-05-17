@@ -248,6 +248,43 @@ conting_component_center(ContingComponent *self)
 }
 #include <gdk/gdkkeysyms.h>
 static gboolean
+conting_component_event_place(ContingDrawing *self,
+		                GdkEvent *event)
+{
+	ContingComponentPrivate *priv;
+	ArtPoint p;
+	gdouble affine[6];
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
+			event->button.x, event->button.y,
+			&p.x, &p.y);
+
+	art_affine_translate(affine, p.x, p.y);
+	conting_drawing_affine_absolute(self, affine);
+
+	switch (event->type) {
+		case GDK_KEY_PRESS:
+			if (event->key.keyval == GDK_r) {
+				gdouble rotate[6];
+				art_affine_rotate(rotate, 90.0);
+				art_affine_multiply(priv->rotate, priv->rotate, rotate);
+
+//				g_signal_emit_by_name(self, "move");
+
+				conting_drawing_update(self);
+			}
+			break;
+		default:
+			break;
+	}
+	return TRUE;
+}
+
+static gboolean
 conting_component_event(ContingDrawing *self,
 		                GdkEvent *event)
 {
@@ -257,6 +294,9 @@ conting_component_event(ContingDrawing *self,
 	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 
     priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	if (!priv->placed)
+		return conting_component_event_place(self, event);
 
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y,
