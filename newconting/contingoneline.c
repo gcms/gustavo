@@ -175,22 +175,37 @@ conting_one_line_delete_drawing(ContingOneLine *self,
                                 ContingDrawing *drawing)
 {
     ContingOneLinePrivate *priv;
+	ArtDRect bounds;
 
     g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
-	/* is it evil? */
+	/* is it evil?
 	if (priv->state == CONTING_ONE_LINE_GRABBING
 			&& priv->grabbed_drawing == drawing) {
 		conting_drawing_ungrab(drawing);
 		priv->state = CONTING_ONE_LINE_NONE;
 	}
+	*/
 
-    priv->drawings = g_slist_remove(priv->drawings, drawing);
+	conting_drawing_get_bounds(drawing, &bounds);
+
+	if (priv->state == CONTING_ONE_LINE_CREATED
+			&& drawing == priv->placing_drawing) {
+		priv->placing_drawing = NULL;
+		priv->state = CONTING_ONE_LINE_NONE;
+	} else {
+	    priv->drawings = g_slist_remove(priv->drawings, drawing);
+	}
+
+    g_print("%p (%s) (%lf, %lf), (%lf, %lf) deleting\n",
+			drawing, g_type_name(G_OBJECT_TYPE(drawing)),
+			bounds.x0, bounds.y0, bounds.x1, bounds.y1);
 
     g_object_unref(drawing);
 
+	conting_one_line_update(self, &bounds);
 	/*
 	 * TODO: remove this from here and find some way to update the screen
 	 * when a drawing is deleted.
@@ -378,7 +393,6 @@ widget_button_press_event(GtkWidget *widget,
 
     g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
             FALSE);
-	fprintf(stderr, "button_press\n");
 
     conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
             event->x, event->y,
@@ -419,6 +433,8 @@ widget_button_press_event(GtkWidget *widget,
 				priv->state = CONTING_ONE_LINE_SELECTING;
 				priv->selection_box.x0 = event->x;
 				priv->selection_box.y0 = event->y;
+				priv->selection_box.x1 = event->x;
+				priv->selection_box.y1 = event->y;
 				
             }
             break;
@@ -460,7 +476,6 @@ widget_button_release_event(GtkWidget *widget,
 
     g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
             FALSE);
-	fprintf(stderr, "button_release\n");
 
     conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
             event->x, event->y,
@@ -590,9 +605,11 @@ widget_key_press_event(GtkWidget *widget,
 		case CONTING_ONE_LINE_CREATED:
 			conting_one_line_send_event(CONTING_ONE_LINE(user_data),
 					priv->placing_drawing, (GdkEvent *) event);
+			/*
 			if (event->keyval == GDK_Escape) {
 				conting_one_line_cancel_placing(CONTING_ONE_LINE(user_data));
 			}
+			*/
 			break;
 		case CONTING_ONE_LINE_GRABBING:
 			conting_one_line_send_event(CONTING_ONE_LINE(user_data),
@@ -639,6 +656,7 @@ conting_one_line_create(ContingOneLine *self,
 				priv->placing_drawing = NULL;
 				conting_one_line_update(self, &bounds);
 				priv->placing_drawing = drawing;
+				conting_drawing_update(drawing);
 			}
 			break;
         default:
