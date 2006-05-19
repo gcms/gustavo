@@ -231,23 +231,6 @@ conting_one_line_send_event(ContingOneLine *self,
 }
 
 static void
-conting_one_line_cancel_placing(ContingOneLine *self)
-{
-	ContingOneLinePrivate *priv;
-
-	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
-
-	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
-
-	/* trabalho semelhante a conting_one_line_delete_drawing() */
-
-	priv->state = CONTING_ONE_LINE_NONE;
-	conting_drawing_delete(priv->placing_drawing); /* disconnect handlers */
-	g_object_unref(priv->placing_drawing);
-	priv->placing_drawing = NULL;
-}
-
-static void
 conting_one_line_update_selection(ContingOneLine *self, gdouble x, gdouble y)
 {
 	/* FIXME: create functions to handle selection.
