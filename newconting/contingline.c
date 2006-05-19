@@ -365,6 +365,7 @@ conting_line_event_place(ContingDrawing *self,
 		                 GdkEvent *event)
 {
 	ContingLinePrivate *priv;
+	gdouble affine[6];
 	ArtPoint pw;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
@@ -374,6 +375,8 @@ conting_line_event_place(ContingDrawing *self,
 
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y, &pw.x, &pw.y);
+
+	conting_drawing_get_affine(self, affine);
 
 /*
 	art_affine_translate(affine, pw.x, pw.y);
@@ -385,21 +388,27 @@ conting_line_event_place(ContingDrawing *self,
 			priv->placing_point = pw;
 			if (priv->placing && (event->motion.state & GDK_SHIFT_MASK)) {
 				ArtPoint last_point;
+				gdouble invert[6];
 				gdouble angle, s, c;
-			   
+
 				last_point = *((ArtPoint *) g_list_last(priv->points)->data);
+				art_affine_point(&last_point, &last_point, affine);
 
 				angle = atan2(pw.y - last_point.y, pw.x - last_point.x);
 
 				/* TODO: improve to allow all possibilities */
 				s = sin(angle);
 				c = cos(angle);
+
+				art_affine_invert(invert, affine);
 				if (fabs(s) <= 0.33) {
+					art_affine_point(&last_point, &last_point, invert);
 					priv->placing_point.y = last_point.y;
 					/*
 					art_affine_translate(affine, pw.x, last_point.y);
 					*/
 				} else if (fabs(s) >= 0.66) {
+					art_affine_point(&last_point, &last_point, invert);
 					priv->placing_point.x = last_point.x;
 					/*
 					art_affine_translate(affine, last_point.x, pw.y);
@@ -410,10 +419,12 @@ conting_line_event_place(ContingDrawing *self,
 					size = MIN(fabs(pw.x - last_point.x),
 							fabs(pw.y - last_point.y));
 						
-					priv->placing_point.x = last_point.x
-						+ (c < 0 ? -size : size);
-					priv->placing_point.y = last_point.y
-						+ (s < 0 ? -size : size);
+					last_point.x += (c < 0 ? -size : size);
+					last_point.y += (s < 0 ? -size : size);
+
+					art_affine_point(&last_point, &last_point, invert);
+					priv->placing_point.x = last_point.x;
+					priv->placing_point.y = last_point.y;
 				}
 				
 
