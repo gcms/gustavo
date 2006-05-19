@@ -46,7 +46,8 @@ conting_one_line_contains(ContingOneLine *self,
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
-	return g_slist_find(priv->drawings, drawing) != NULL;
+	return drawing == priv->placing_drawing
+		|| g_slist_find(priv->drawings, drawing) != NULL;
 }
 
 GSList *
@@ -377,6 +378,7 @@ widget_button_press_event(GtkWidget *widget,
 
     g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
             FALSE);
+	fprintf(stderr, "button_press\n");
 
     conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
             event->x, event->y,
@@ -390,15 +392,13 @@ widget_button_press_event(GtkWidget *widget,
     }
 
     switch (priv->state) {
-		case CONTING_ONE_LINE_SELECTING:
-			assert(FALSE);
-			break;
 		case CONTING_ONE_LINE_GRABBING:
 			assert(priv->grabbed_drawing
 					&& CONTING_IS_DRAWING(priv->grabbed_drawing));
 			conting_one_line_send_event(CONTING_ONE_LINE(user_data),
 					priv->grabbed_drawing, (GdkEvent *) event);
 			break;
+		case CONTING_ONE_LINE_SELECTING:
         case CONTING_ONE_LINE_NONE:
 			{
 				for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
@@ -460,6 +460,7 @@ widget_button_release_event(GtkWidget *widget,
 
     g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
             FALSE);
+	fprintf(stderr, "button_release\n");
 
     conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
             event->x, event->y,
