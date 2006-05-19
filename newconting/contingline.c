@@ -351,7 +351,6 @@ conting_line_event_place(ContingDrawing *self,
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y, &pw.x, &pw.y);
 
-	priv->placing_point = pw;
 /*
 	art_affine_translate(affine, pw.x, pw.y);
 	conting_drawing_affine_absolute(self, affine);
@@ -359,6 +358,7 @@ conting_line_event_place(ContingDrawing *self,
 
 	switch (event->type) {
 		case GDK_MOTION_NOTIFY:
+			priv->placing_point = pw;
 			if (priv->placing && (event->motion.state & GDK_SHIFT_MASK)) {
 				ArtPoint last_point;
 				gdouble angle, s, c;

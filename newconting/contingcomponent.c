@@ -263,10 +263,11 @@ conting_component_event_place(ContingDrawing *self,
 			event->button.x, event->button.y,
 			&p.x, &p.y);
 
-	art_affine_translate(affine, p.x, p.y);
-	conting_drawing_affine_absolute(self, affine);
-
 	switch (event->type) {
+		case GDK_MOTION_NOTIFY:
+			art_affine_translate(affine, p.x, p.y);
+			conting_drawing_affine_absolute(self, affine);
+			break;
 		case GDK_KEY_PRESS:
 			if (event->key.keyval == GDK_r) {
 				gdouble rotate[6];
