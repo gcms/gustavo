@@ -342,6 +342,11 @@ conting_line_delete(ContingDrawing *self)
 
 	priv = CONTING_LINE_GET_PRIVATE(self);
 
+	if (priv->dragging_point != NULL) {
+		priv->dragging_point = NULL;
+		conting_drawing_ungrab(self);
+	}
+
 	if (priv->comp1) {
 		g_signal_handlers_disconnect_matched(priv->comp1, G_SIGNAL_MATCH_DATA,
 				0, 0, 0, 0, self);

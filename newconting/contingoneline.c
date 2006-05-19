@@ -213,21 +213,24 @@ conting_one_line_delete_drawing(ContingOneLine *self,
 	gtk_widget_queue_draw(priv->widget);
 }
 
-static void
+static gboolean
 conting_one_line_send_event(ContingOneLine *self,
 		                    ContingDrawing *drawing,
                         	GdkEvent *event)
 {
 	ArtDRect bounds;
+	gboolean result;
 
-	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), FALSE);
 
 	conting_drawing_get_bounds(drawing, &bounds);
-	conting_drawing_event(drawing, event);
+	result = conting_drawing_event(drawing, event);
 	conting_one_line_update(self, &bounds);
 	if (conting_one_line_contains(self, drawing)) {
 		conting_drawing_update(drawing);
 	}
+
+	return result;
 }
 
 static void
@@ -335,10 +338,10 @@ widget_motion_notify_event(GtkWidget *widget,
 	            for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
     	        	if (conting_drawing_answer(CONTING_DRAWING(n->data),
 								world_x, world_y)) {
-						conting_one_line_send_event(
+						if (conting_one_line_send_event(
 								CONTING_ONE_LINE(user_data),
-								CONTING_DRAWING(n->data), (GdkEvent *) event);
-						break;
+								CONTING_DRAWING(n->data), (GdkEvent *) event))
+							break;
 					}
 				}
 			}
@@ -401,12 +404,12 @@ widget_button_press_event(GtkWidget *widget,
 				for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
                 	if (conting_drawing_answer(CONTING_DRAWING(n->data),
                                 world_x, world_y)) {
-						conting_one_line_send_event(
-								CONTING_ONE_LINE(user_data),
-								CONTING_DRAWING(n->data), (GdkEvent *) event);
                         g_print("%p (%s) answered\n",
                                 n->data, g_type_name(G_OBJECT_TYPE(n->data)));
-                        break;
+						if (conting_one_line_send_event(
+								CONTING_ONE_LINE(user_data),
+								CONTING_DRAWING(n->data), (GdkEvent *) event))
+                        	break;
                     }
                 }
 				if (n != NULL)
@@ -485,12 +488,12 @@ widget_button_release_event(GtkWidget *widget,
                 for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
                     if (conting_drawing_answer(CONTING_DRAWING(n->data),
                                 world_x, world_y)) {
-						conting_one_line_send_event(
-								CONTING_ONE_LINE(user_data),
-								CONTING_DRAWING(n->data), (GdkEvent *) event);
                         g_print("%p (%s) answered\n",
                                 n->data, g_type_name(G_OBJECT_TYPE(n->data)));
-                        break;
+						if (conting_one_line_send_event(
+								CONTING_ONE_LINE(user_data),
+								CONTING_DRAWING(n->data), (GdkEvent *) event))
+                        	break;
                     }
                 }
             }
@@ -601,9 +604,9 @@ widget_key_press_event(GtkWidget *widget,
 		case CONTING_ONE_LINE_NONE:
     		for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 		        if (conting_drawing_is_selected(CONTING_DRAWING(n->data))) {
-        		    conting_one_line_send_event(CONTING_ONE_LINE(user_data),
-							CONTING_DRAWING(n->data), (GdkEvent *) event);
-		            break;
+        		    if (conting_one_line_send_event(CONTING_ONE_LINE(user_data),
+							CONTING_DRAWING(n->data), (GdkEvent *) event))
+			            break;
         		}
 		    }
 			break;
