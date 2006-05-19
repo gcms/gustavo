@@ -121,14 +121,19 @@ conting_line_get_bounds(ContingDrawing *self,
 
     priv = CONTING_LINE_GET_PRIVATE(self);
 
+	if (!priv->placing && !priv->placed) {
+		bounds->x0 = bounds->y0 = bounds->x1 = bounds->y1 = 0;
+		return;
+	}
+
 	conting_drawing_get_affine(self, affine);
 
-	pw.x = pw.y = 0;
+	pw = *((ArtPoint *) priv->points->data);
 	art_affine_point(&pw, &pw, affine);
 	bounds->x0 = bounds->x1 = pw.x;
 	bounds->y0 = bounds->y1 = pw.y;
 
-	for (n = priv->points; n != NULL; n = g_list_next(n)) {
+	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		art_affine_point(&pw, (ArtPoint *) n->data, affine);
 
 		if (pw.x < bounds->x0) {
@@ -142,6 +147,19 @@ conting_line_get_bounds(ContingDrawing *self,
 		} else if (pw.y > bounds->y1) {
 			bounds->y1 = pw.y;
 		}
+	}
+	art_affine_point(&pw, &priv->placing_point, affine);
+
+	if (pw.x < bounds->x0) {
+		bounds->x0 = pw.x;
+	} else if (pw.x > bounds->x1) {
+		bounds->x1 = pw.x;
+	}
+
+	if (pw.y < bounds->y0) {
+		bounds->y0 = pw.y;
+	} else if (pw.y > bounds->y1) {
+		bounds->y1 = pw.y;
 	}
 
 	/* selection anchors */
@@ -332,6 +350,7 @@ conting_line_delete(ContingDrawing *self)
 		g_signal_handlers_disconnect_matched(priv->comp2, G_SIGNAL_MATCH_DATA,
 				0, 0, 0, 0, self);
 	}
+	g_signal_emit_by_name(self, "delete");
 
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
@@ -391,6 +410,7 @@ conting_line_event_place(ContingDrawing *self,
 					priv->placing_point.y = last_point.y
 						+ (s < 0 ? -size : size);
 				}
+				
 
 				/*
 				art_affine_point(&priv->placing_point, &priv->placing_point,
@@ -399,6 +419,11 @@ conting_line_event_place(ContingDrawing *self,
 			    */
 			}
 			break;
+		case GDK_KEY_PRESS:
+			if (event->key.keyval == GDK_Escape) {
+				conting_drawing_delete(self);
+			}
+
 		default:
 			break;
 	}
@@ -468,7 +493,6 @@ conting_line_event(ContingDrawing *self,
 			break;
 		case GDK_KEY_PRESS:
 			if (event->key.keyval == GDK_Delete) {
-				g_signal_emit_by_name(self, "delete");
 				conting_drawing_delete(self);
 			}
 			break;
@@ -484,7 +508,8 @@ conting_line_answer(ContingDrawing *self,
 {
 	ContingLinePrivate *priv;
 	GList *n;
-	ArtPoint pw, *p0, *p1;
+	ArtPoint pi, *p0, *p1;
+	gdouble invert[6];
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
 
@@ -493,26 +518,34 @@ conting_line_answer(ContingDrawing *self,
 	assert(priv->placed);
 	assert(priv->points);
 
-	pw.x = world_x;
-	pw.y = world_y;
+	conting_drawing_get_affine(self, invert);
+	art_affine_invert(invert, invert);
+	pi.x = world_x;
+	pi.y = world_y;
+	art_affine_point(&pi, &pi, invert);
 
 	g_print("%lf %lf) -> (%lf, %lf)\n",
 			world_x, world_y,
-			pw.x, pw.y);
+			pi.x, pi.y);
 
 	p0 = priv->points->data;
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		gdouble dx, dy;
 		gdouble m, d;
 		gdouble ix, iy;
+
+		if (fabs(p0->x - pi.x) < TOLERANCE
+				&& fabs(p0->y - pi.y) < TOLERANCE) {
+			return TRUE;
+		}
 		
 		p1 = n->data;
 
 		dx = p1->x - p0->x;
 		dy = p1->y - p0->y;
 
-		ix = pw.x - p0->x;
-		iy = p0->y - pw.y;
+		ix = pi.x - p0->x;
+		iy = p0->y - pi.y;
 
 		m = dy / dx;
 

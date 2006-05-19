@@ -218,33 +218,57 @@ conting_component_instance_init(GTypeInstance *self,
 	art_affine_rotate(priv->rotate, 0.0);
 }
 static void
-conting_component_center(ContingComponent *self)
+conting_component_disconnect_link(ContingComponent *self,
+		                      ContingDrawing *drawing)
 {
 	ContingComponentPrivate *priv;
-	gdouble w, h;
-	ArtPoint np0, np1;
-	gdouble translate[6];
 
 	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
 	priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-	w = fabs(priv->p0.x - priv->p1.x);
-	h = fabs(priv->p0.y - priv->p1.y);
+	g_print("line %p disconnected from %p\n", drawing, self);
 
-	np0.x = - (w / 2);
-	np0.y = - (h / 2);
-	np1.x = np0.x + w;
-	np1.y = np0.y + h;
-
-	art_affine_translate(translate,
-			priv->p0.x - np0.x,
-			priv->p0.y - np0.y);
+	g_hash_table_remove(priv->points, drawing);
+	g_signal_handlers_disconnect_matched(drawing,
+			G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, self);
 	
-	priv->p0 = np0;
-	priv->p1 = np1;
+	{
+		GSList *n;
+		g_print("still linked: ");
+		for (n = priv->links; n != NULL; n = g_slist_next(n)) {
+			g_print("%p, ", n->data);
+		}
+		g_print("\n");
+	}
+}
+static void conting_component_delete(ContingDrawing *self)
+{
+	ContingComponentPrivate *priv;
+	GSList *n;
 
-	conting_drawing_affine(CONTING_DRAWING(self), translate);
+	g_print("DELETING\n");
+
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	if (priv->dragging) {
+		priv->dragging = FALSE;
+		conting_drawing_ungrab(self);
+	}
+
+	for (n = priv->links; n != NULL; n = g_slist_next(n)) {
+		conting_component_disconnect_link(CONTING_COMPONENT(self),
+				CONTING_DRAWING(n->data));
+	}
+	
+	g_slist_free(priv->links);
+	priv->links = NULL;
+
+	g_signal_emit_by_name(self, "delete");
+
+	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
 #include <gdk/gdkkeysyms.h>
 static gboolean
@@ -277,6 +301,8 @@ conting_component_event_place(ContingDrawing *self,
 //				g_signal_emit_by_name(self, "move");
 
 				conting_drawing_update(self);
+			} else if (event->key.keyval == GDK_Escape) {
+				conting_drawing_delete(self);
 			}
 			break;
 		default:
@@ -376,7 +402,6 @@ conting_component_event(ContingDrawing *self,
 
 				conting_drawing_update(self);
 			} else if (event->key.keyval == GDK_Delete) {
-				g_signal_emit_by_name(self, "delete");
 				conting_drawing_delete(self);
 			}
 			break;
@@ -386,6 +411,7 @@ conting_component_event(ContingDrawing *self,
 
 	return TRUE;
 }
+
 
 static void
 conting_component_link_deleted(ContingDrawing *drawing,
@@ -397,8 +423,9 @@ conting_component_link_deleted(ContingDrawing *drawing,
 
 	priv = CONTING_COMPONENT_GET_PRIVATE(user_data);
 
+	g_print("link %p deleted from %p\n", drawing, user_data);
 	priv->links = g_slist_remove(priv->links, drawing);
-	g_hash_table_remove(priv->points, drawing);
+	conting_component_disconnect_link(CONTING_COMPONENT(user_data), drawing);
 }
 
 gboolean
@@ -482,6 +509,7 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
 	drawing_class->answer = conting_component_answer;
 	drawing_class->event = conting_component_event;
 	drawing_class->get_affine = conting_component_get_affine;
+	drawing_class->delete = conting_component_delete;
 
 	g_type_class_add_private(g_class, sizeof(ContingComponentPrivate));
 

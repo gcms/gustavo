@@ -1,4 +1,5 @@
 #include "contingutil.h"
+#include <math.h>
 
 void conting_util_get_bounds(const ArtPoint *p0, const ArtPoint *p1,
 		ArtDRect *bounds) {
