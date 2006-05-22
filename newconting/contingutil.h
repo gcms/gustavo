@@ -3,6 +3,9 @@
 #include <gtk/gtk.h>
 #include <libart_lgpl/libart.h>
 
+#define conting_util_in_bounds(b, p) ((p)->x >= (b)->x0 && (p)->x <= (b)->x1 \
+		&& (p)->y >= (b)->y0 && (p)->y <= (b)->y1)
+
 void conting_util_get_bounds(const ArtPoint *p1, const ArtPoint *p2,
 		ArtDRect *bounds);
 
