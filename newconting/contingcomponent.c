@@ -1,4 +1,5 @@
 #include "contingcomponent.h"
+#include "contingutil.h"
 #include <string.h>
 #include <math.h>
 
@@ -310,6 +311,36 @@ conting_component_event_place(ContingDrawing *self,
 	}
 	return TRUE;
 }
+static void
+conting_component_get_points_bounds(ContingComponent *self,
+			                        ArtDRect *bounds)
+{
+	ContingComponentPrivate *priv;
+	GSList *n;
+	ArtPoint *p;
+
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	p = g_hash_table_lookup(priv->points, priv->links->data);
+	bounds->x0 = bounds->x1 = p->x;
+	bounds->y0 = bounds->y1 = p->y;
+
+	for (n = g_slist_next(priv->links); n != NULL; n = g_slist_next(n)) {
+		p = g_hash_table_lookup(priv->points, n->data);
+
+		if (p->x < bounds->x0)
+			bounds->x0 = p->x;
+		else if (p->x > bounds->x1)
+			bounds->x1 = p->x;
+
+		if (p->y < bounds->y0)
+			bounds->y0 = p->y;
+		else if (p->y > bounds->y1)
+			bounds->y1 = p->y;
+	}
+}
 
 static gboolean
 conting_component_event(ContingDrawing *self,
@@ -340,6 +371,7 @@ conting_component_event(ContingDrawing *self,
 			if (priv->dragging && priv->start_resize != NULL) {
 				ArtPoint pi;
 				gdouble invert[6];
+				ArtDRect p_bounds;
 
 				CONTING_DRAWING_CLASS(parent_class)->get_affine(self, invert);
 				art_affine_invert(invert, invert);
@@ -348,11 +380,28 @@ conting_component_event(ContingDrawing *self,
 				art_affine_invert(invert, priv->rotate);
 				art_affine_point(&pi, &pi, invert);
 
+				/* Cluttered code, checks if the size of the bar is at
+				 * minimum 20, and if it doesn't goes outside linked lines */
 				if ((priv->start_resize == &priv->p0
 					   && fabs(pi.y - priv->p1.y) > 20)
 						|| (priv->start_resize == &priv->p1
 							&& fabs(pi.y - priv->p0.y) > 20)) {
-					priv->start_resize->y = pi.y;
+					if (priv->links) {
+						conting_component_get_points_bounds(
+								CONTING_COMPONENT(self), &p_bounds);
+						g_print("p_bounds: (%lf, %lf); (%lf, %lf)\n",
+								p_bounds.x0, p_bounds.y0,
+								p_bounds.x1, p_bounds.y1);
+						g_print("p: (%lf, %lf)\n", p.x, p.y);
+						if ((priv->start_resize == &priv->p0
+									&& p_bounds.y0 > pi.y)
+								|| (priv->start_resize == &priv->p1
+									&& p_bounds.y1 < pi.y)) {
+							priv->start_resize->y = pi.y;
+						}
+					} else {
+						priv->start_resize->y = pi.y;
+					}
 				}
 
 				conting_drawing_update(self);
@@ -389,6 +438,7 @@ conting_component_event(ContingDrawing *self,
 		case GDK_BUTTON_RELEASE:
 			if (priv->dragging) {
 				priv->dragging = FALSE;
+				priv->start_resize = NULL;
 				conting_drawing_ungrab(self);
 			}
 			break;
