@@ -52,8 +52,10 @@ void conting_drawing_draw(ContingDrawing *self,
 		GdkDrawable *drawable, const GdkRectangle *drawing_rect);
 
 #include "contingoneline.h"
+#include "continggroup.h"
 
 ContingOneLine *conting_drawing_get_one_line(ContingDrawing *self);
+ContingGroup *conting_drawing_get_group(ContingDrawing *self);
 void conting_drawing_affine(ContingDrawing *self, const gdouble affine[6]);
 void conting_drawing_affine_absolute(ContingDrawing *self,
 		const gdouble affine[6]);

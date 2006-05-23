@@ -1,4 +1,5 @@
 #include "contingdrawing.h"
+#include "continggroup.h"
 #include <string.h>
 
 static gint move_signal_id = 0;
@@ -6,7 +7,8 @@ static gint delete_signal_id = 0;
 
 enum {
 	CONTING_DRAWING_PROP_0,
-    CONTING_DRAWING_PROP_ONE_LINE
+    CONTING_DRAWING_PROP_ONE_LINE,
+	CONTING_DRAWING_PROP_GROUP
 };
 
 #define CONTING_DRAWING_GET_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE((o), \
@@ -15,6 +17,7 @@ enum {
 typedef struct ContingDrawingPrivate_ ContingDrawingPrivate;
 struct ContingDrawingPrivate_ {
     ContingOneLine *oneline;
+	ContingGroup *group;
 	gdouble affine[6];
 
 	gboolean selected;
@@ -40,6 +43,18 @@ conting_drawing_get_one_line(ContingDrawing *self)
 			NULL);
 
 	return oneline;
+}
+
+ContingGroup *
+conting_drawing_get_group(ContingDrawing *self)
+{
+	ContingGroup *group;
+
+	g_object_get(G_OBJECT(self),
+			"group", &group,
+			NULL);
+
+	return group;
 }
 
 void
@@ -134,17 +149,27 @@ conting_drawing_event(ContingDrawing *self,
 void
 conting_drawing_grab(ContingDrawing *self)
 {
+	ContingGroup *group;
+
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	conting_one_line_grab(conting_drawing_get_one_line(self), self);
+	if ((group = conting_drawing_get_group(self)) != NULL)
+		conting_group_grab(group, self);
+	else
+		conting_one_line_grab(conting_drawing_get_one_line(self), self);
 }
 
 void
 conting_drawing_ungrab(ContingDrawing *self)
 {
+	ContingGroup *group;
+
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	conting_one_line_ungrab(conting_drawing_get_one_line(self), self);
+	if ((group = conting_drawing_get_group(self)) != NULL)
+		conting_group_grab(group, self);
+	else
+		conting_one_line_ungrab(conting_drawing_get_one_line(self), self);
 }
 
 void
@@ -200,8 +225,8 @@ conting_drawing_delete_impl(ContingDrawing *self)
 
 	priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-		conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
-				self);
+	conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
+			self);
 }
 
 static void
@@ -220,6 +245,9 @@ conting_drawing_get_property(GObject *self,
         case CONTING_DRAWING_PROP_ONE_LINE:
             g_value_set_object(value, priv->oneline);
             break;
+		case CONTING_DRAWING_PROP_GROUP:
+			g_value_set_object(value, priv->group);
+			break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -242,6 +270,9 @@ conting_drawing_set_property(GObject *self,
         case CONTING_DRAWING_PROP_ONE_LINE:
             priv->oneline = g_value_get_object(value);
             break;
+		case CONTING_DRAWING_PROP_GROUP:
+			priv->group = g_value_get_object(value);
+			break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -261,6 +292,9 @@ conting_drawing_instance_init(GTypeInstance *self,
 	art_affine_identity(priv->affine);
 
 	priv->selected = FALSE;
+
+	priv->oneline = NULL;
+	priv->group = NULL;
 }
 
 static void
@@ -282,6 +316,14 @@ conting_drawing_class_init(gpointer g_class,
                                 CONTING_TYPE_ONE_LINE,
                                 G_PARAM_READABLE | G_PARAM_CONSTRUCT_ONLY
 							    | G_PARAM_WRITABLE));
+
+	g_object_class_install_property(G_OBJECT_CLASS(g_class),
+			CONTING_DRAWING_PROP_GROUP,
+			g_param_spec_object("group",
+								"Group",
+								"Group in which the item is contained",
+								CONTING_TYPE_GROUP,
+								G_PARAM_READABLE | G_PARAM_WRITABLE));
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = NULL;

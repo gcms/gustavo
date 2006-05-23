@@ -187,7 +187,6 @@ conting_component_answer(ContingDrawing *self,
 
     priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-
 	conting_drawing_get_bounds(self, &bounds);
 	
 	return world_x >= bounds.x0 && world_x <= bounds.x1
