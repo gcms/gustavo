@@ -198,6 +198,8 @@ conting_line_link_moved(ContingComponent *comp,
 						 gpointer user_data)
 {
 	ContingLinePrivate *priv;
+	ContingGroup *group;
+	gdouble affine[6];
 	ArtPoint pi;
 	ArtDRect bounds;
 
@@ -206,8 +208,17 @@ conting_line_link_moved(ContingComponent *comp,
 
 	priv = CONTING_LINE_GET_PRIVATE(user_data);
 
+	if ((group = conting_drawing_get_group(CONTING_DRAWING(user_data))) != NULL
+			&& conting_group_contains(group, CONTING_DRAWING(comp))) {
+		return;
+	}
+
 	assert(conting_component_get_link_point(comp,
 				CONTING_DRAWING(user_data), &pi));
+
+	conting_drawing_get_affine(CONTING_DRAWING(user_data), affine);
+	art_affine_invert(affine, affine);
+	art_affine_point(&pi, &pi, affine);
 
 	conting_drawing_get_bounds(CONTING_DRAWING(user_data), &bounds);
 
@@ -294,6 +305,8 @@ conting_line_place(ContingDrawing *self)
 
 			g_signal_connect(G_OBJECT(priv->comp1), "move",
 					G_CALLBACK(conting_line_link_moved), self);
+			g_signal_connect_swapped(G_OBJECT(self), "move",
+					G_CALLBACK(conting_line_link_moved), priv->comp1);
 			g_signal_connect(G_OBJECT(priv->comp1), "delete",
 					G_CALLBACK(conting_line_link_deleted), self);
 		}
@@ -311,6 +324,8 @@ conting_line_place(ContingDrawing *self)
 			priv->comp2 = comp;
 			g_signal_connect(G_OBJECT(priv->comp2), "move",
 					G_CALLBACK(conting_line_link_moved), self);
+			g_signal_connect_swapped(G_OBJECT(self), "move",
+					G_CALLBACK(conting_line_link_moved), priv->comp2);
 			g_signal_connect(G_OBJECT(priv->comp2), "delete",
 					G_CALLBACK(conting_line_link_deleted), self);
 
@@ -350,10 +365,14 @@ conting_line_delete(ContingDrawing *self)
 	if (priv->comp1) {
 		g_signal_handlers_disconnect_matched(priv->comp1, G_SIGNAL_MATCH_DATA,
 				0, 0, 0, 0, self);
+		g_signal_handlers_disconnect_matched(self, G_SIGNAL_MATCH_DATA,
+				0, 0, 0, 0, priv->comp1);
 	}
 	if (priv->comp2) {
 		g_signal_handlers_disconnect_matched(priv->comp2, G_SIGNAL_MATCH_DATA,
 				0, 0, 0, 0, self);
+		g_signal_handlers_disconnect_matched(self, G_SIGNAL_MATCH_DATA,
+				0, 0, 0, 0, priv->comp2);
 	}
 	g_signal_emit_by_name(self, "delete");
 
@@ -451,6 +470,7 @@ conting_line_event(ContingDrawing *self,
 				   GdkEvent *event)
 {
 	ContingLinePrivate *priv;
+	gdouble affine[6];
 	ArtPoint pi;
 	GList *n;
 
@@ -464,13 +484,18 @@ conting_line_event(ContingDrawing *self,
 
 	assert(priv->placed);
 
+	conting_drawing_get_affine(self, affine);
+
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y, &pi.x, &pi.y);
+	art_affine_invert(affine, affine);
+	art_affine_point(&pi, &pi, affine);
 
 	switch (event->type) {
 		case GDK_BUTTON_PRESS:
 			conting_drawing_set_selected(self, TRUE);
 			conting_drawing_update(self);
+
 
 			if (event->button.state & GDK_CONTROL_MASK) {
 				ArtPoint *new_p = g_new(ArtPoint, 1);

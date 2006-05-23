@@ -44,3 +44,11 @@ void conting_util_bounds_to_rect(const ArtDRect *src, GdkRectangle *dst) {
 	dst->width = (gint) fabs(src->x1 - src->x0);
 	dst->height = (gint) fabs(src->y1 - src->y0);
 }
+
+/*
+ * b1 contains b2?
+ */
+gboolean conting_util_bounds_contains(const ArtDRect *b1, const ArtDRect *b2) {
+	return b1->x0 <= b2->x0 && b1->y0 <= b2->y0
+		&& b1->x1 >= b2->x1 && b1->y1 >= b2->y1;
+}

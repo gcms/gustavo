@@ -16,4 +16,6 @@ void conting_util_union_bounds(const ArtDRect *bounds0,
 
 void conting_util_correct_bounds(const ArtDRect *src, ArtDRect *dst);
 void conting_util_bounds_to_rect(const ArtDRect *src, GdkRectangle *dst);
+
+gboolean conting_util_bounds_contains(const ArtDRect *b1, const ArtDRect *b2);
 #endif /* CONTING_UTIL_H */
