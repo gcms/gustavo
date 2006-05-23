@@ -365,14 +365,10 @@ conting_line_delete(ContingDrawing *self)
 	if (priv->comp1) {
 		g_signal_handlers_disconnect_matched(priv->comp1, G_SIGNAL_MATCH_DATA,
 				0, 0, 0, 0, self);
-		g_signal_handlers_disconnect_matched(self, G_SIGNAL_MATCH_DATA,
-				0, 0, 0, 0, priv->comp1);
 	}
 	if (priv->comp2) {
 		g_signal_handlers_disconnect_matched(priv->comp2, G_SIGNAL_MATCH_DATA,
 				0, 0, 0, 0, self);
-		g_signal_handlers_disconnect_matched(self, G_SIGNAL_MATCH_DATA,
-				0, 0, 0, 0, priv->comp2);
 	}
 	g_signal_emit_by_name(self, "delete");
 
