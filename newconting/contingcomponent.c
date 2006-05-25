@@ -494,7 +494,7 @@ gboolean
 conting_component_link(ContingComponent *self,
 		               ContingDrawing *drawing,
 					   gdouble world_x, gdouble world_y,
-					   gdouble affine[6])
+					   ArtPoint *pw)
 {
 	ContingComponentPrivate *priv;
 	ArtPoint pi;
@@ -527,12 +527,15 @@ conting_component_link(ContingComponent *self,
 	}
 
 	if (fabs(pi.x - priv->p0.x) < fabs(pi.x - priv->p1.x)) {
-		art_affine_translate(affine, priv->p0.x - pi.x, 0);
+//		art_affine_translate(affine, priv->p0.x - pi.x, 0);
 		pi.x = priv->p0.x;
 	} else {
-		art_affine_translate(affine, priv->p1.x - pi.x, 0);
+//		art_affine_translate(affine, priv->p1.x - pi.x, 0);
 		pi.x = priv->p1.x;
 	}
+
+	conting_drawing_get_affine(CONTING_DRAWING(self), my_affine);
+	art_affine_point(pw, &pi, my_affine);
 
 	ArtPoint *p = g_new(ArtPoint, 1);
 	*p = pi;

@@ -285,7 +285,7 @@ conting_line_place(ContingDrawing *self)
 {
 	ContingLinePrivate *priv;
 	gdouble affine[6], tmp[6];
-	ArtPoint p;
+	ArtPoint p, pcomp;
     GSList *n, *answers;
 	ContingComponent *comp;
 
@@ -304,11 +304,15 @@ conting_line_place(ContingDrawing *self)
 	for (n = answers; n != NULL; n = g_slist_next(n)) {
 		if (CONTING_IS_COMPONENT(n->data)
 				&& conting_component_link(CONTING_COMPONENT(n->data), self,
-					p.x, p.y, tmp)) {
+					p.x, p.y, &pcomp)) {
 			comp = CONTING_COMPONENT(n->data);
 			break;
 		}
 	}
+
+	art_affine_invert(tmp, affine);
+	art_affine_point(&pcomp, &pcomp, tmp);
+	art_affine_translate(tmp, pcomp.x - p.x, pcomp.y - p.y);
 
 	if (!priv->placing) {
 		if (comp != NULL) {
