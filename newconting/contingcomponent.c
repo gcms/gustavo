@@ -194,6 +194,19 @@ conting_component_answer(ContingDrawing *self,
 }
 
 static void
+conting_component_finalize(GObject *self)
+{
+	ContingComponentPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+
+	g_hash_table_destroy(priv->points);
+	g_slist_free(priv->links);
+}
+
+static void
 conting_component_instance_init(GTypeInstance *self,
 		                   gpointer g_class)
 {
@@ -212,7 +225,7 @@ conting_component_instance_init(GTypeInstance *self,
 	priv->dragging = FALSE;
 	priv->start_resize = NULL;
 
-	priv->points = g_hash_table_new(NULL, NULL);
+	priv->points = g_hash_table_new_full(NULL, NULL, NULL, g_free);
 	priv->links = NULL;
 
 	art_affine_rotate(priv->rotate, 0.0);
@@ -549,6 +562,7 @@ static void
 conting_component_class_init(gpointer g_class, gpointer class_data)
 {
     ContingDrawingClass *drawing_class;
+	GObjectClass *gobject_class;
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_component_draw;
@@ -559,6 +573,9 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
 	drawing_class->event = conting_component_event;
 	drawing_class->get_affine = conting_component_get_affine;
 	drawing_class->delete = conting_component_delete;
+
+	gobject_class = G_OBJECT_CLASS(g_class);
+	gobject_class->finalize = conting_component_finalize;
 
 	g_type_class_add_private(g_class, sizeof(ContingComponentPrivate));
 
