@@ -836,7 +836,7 @@ conting_one_line_create_by_type(ContingOneLine *oneline, GType type)
 	conting_one_line_create(oneline, CONTING_DRAWING(object));
 }
 static void
-left_button_clicked(GtkButton *button,
+bus_button_clicked(GtkButton *button,
                     gpointer user_data)
 {
 	conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
@@ -844,7 +844,7 @@ left_button_clicked(GtkButton *button,
 }
 
 static void
-right_button_clicked(GtkButton *button,
+line_button_clicked(GtkButton *button,
                     gpointer user_data)
 {
 	conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
@@ -861,7 +861,7 @@ static void darea_realize(GtkWidget *widget, gpointer user_data) {
 int main(int argc, char *argv[]) {
     GtkWidget *window, *swindow, *darea;
     GtkWidget *vbox, *hbox;
-    GtkWidget *left_button, *right_button;
+    GtkWidget *bus_button, *line_button;
     ContingOneLine *oneline;
 
     gtk_init(&argc, &argv);
@@ -890,15 +890,15 @@ int main(int argc, char *argv[]) {
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 
-    left_button = gtk_button_new_with_label("LEFT");
-    g_signal_connect(G_OBJECT(left_button), "clicked",
-            G_CALLBACK(left_button_clicked), oneline);
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), left_button);
+    bus_button = gtk_button_new_with_label("BUS");
+    g_signal_connect(G_OBJECT(bus_button), "clicked",
+            G_CALLBACK(bus_button_clicked), oneline);
+    gtk_box_pack_start_defaults(GTK_BOX(hbox), bus_button);
 
-    right_button = gtk_button_new_with_label("RIGHT");
-    g_signal_connect(G_OBJECT(right_button), "clicked",
-            G_CALLBACK(right_button_clicked), oneline);
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), right_button);
+    line_button = gtk_button_new_with_label("LINE");
+    g_signal_connect(G_OBJECT(line_button), "clicked",
+            G_CALLBACK(line_button_clicked), oneline);
+    gtk_box_pack_start_defaults(GTK_BOX(hbox), line_button);
     
     gtk_widget_show_all(window);
 
