@@ -90,7 +90,9 @@ conting_one_line_update(ContingOneLine *self,
             bounds->x1, bounds->y1,
             &win_bounds.x1, &win_bounds.y1);
 
-    g_print("update: (%lf, %lf); (%lf, %lf)\n",
+    g_print("update1: (%lf, %lf); (%lf, %lf)\n",
+			bounds->x0, bounds->y0, bounds->x1, bounds->y1);
+    g_print("update2: (%lf, %lf); (%lf, %lf)\n",
             win_bounds.x0, win_bounds.y0, win_bounds.x1, win_bounds.y1);
 
     gtk_widget_queue_draw_area(priv->widget,
@@ -165,10 +167,10 @@ conting_one_line_world_to_window(ContingOneLine *self,
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
-    if (*win_x)
+    if (win_x)
         *win_x = (world_x - priv->scrolling_area.x0) * priv->ppu;
 
-    if (*win_y)
+    if (win_y)
         *win_y = (world_y - priv->scrolling_area.y0) * priv->ppu;
 }
 void
@@ -207,11 +209,6 @@ conting_one_line_delete_drawing(ContingOneLine *self,
     g_object_unref(drawing);
 
 	conting_one_line_update(self, &bounds);
-	/*
-	 * TODO: remove this from here and find some way to update the screen
-	 * when a drawing is deleted.
-	 */
-	gtk_widget_queue_draw(priv->widget);
 }
 
 static gboolean
@@ -359,7 +356,9 @@ widget_motion_notify_event(GtkWidget *widget,
                 conting_drawing_affine_absolute(priv->placing_drawing,
                         translate);
 				*/
+				/*
                 gtk_widget_queue_draw(priv->widget);
+				*/
             }
             break;
     }
