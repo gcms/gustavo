@@ -170,6 +170,23 @@ conting_line_get_bounds(ContingDrawing *self,
 }
 
 static void
+conting_line_finalize(GObject *self)
+{
+	ContingLinePrivate *priv;
+	GList *n;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	for (n = priv->points; n != NULL; n = g_list_next(n)) {
+		g_free(n->data);
+	}
+
+	g_list_free(priv->points);
+}
+
+static void
 conting_line_instance_init(GTypeInstance *self,
 		                   gpointer g_class)
 {
@@ -604,6 +621,7 @@ conting_line_answer(ContingDrawing *self,
 
 static void conting_line_class_init(gpointer g_class, gpointer class_data) {
     ContingDrawingClass *drawing_class;
+	GObjectClass *gobject_class;
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_line_draw;
@@ -613,6 +631,9 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->answer = conting_line_answer;
 	drawing_class->event = conting_line_event;
 	drawing_class->delete = conting_line_delete;
+
+	gobject_class = G_OBJECT_CLASS(g_class);
+	gobject_class->finalize = conting_line_finalize;
 
 	g_type_class_add_private(g_class, sizeof(ContingLinePrivate));
 
