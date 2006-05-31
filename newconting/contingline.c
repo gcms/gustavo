@@ -302,6 +302,8 @@ conting_line_place(ContingDrawing *self)
 
 	comp = NULL;
 	for (n = answers; n != NULL; n = g_slist_next(n)) {
+		g_print("CONTING_IS_COMPONENT(%p) ? %s\n", n->data,
+				CONTING_IS_COMPONENT(n->data) ? "YES" : "NO");
 		if (CONTING_IS_COMPONENT(n->data)
 				&& conting_component_link(CONTING_COMPONENT(n->data), self,
 					p.x, p.y, &pcomp)) {

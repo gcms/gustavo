@@ -25,6 +25,12 @@ struct ContingComponent_ {
 typedef struct ContingComponentClass_ ContingComponentClass;
 struct ContingComponentClass_ {
     ContingDrawingClass parent;
+
+	gboolean (*link)(ContingComponent *self, ContingDrawing *line,
+			gdouble world_x, gdouble world_y, ArtPoint *pw);
+
+	gboolean (*get_link_point)(ContingComponent *self, ContingDrawing *line,
+			ArtPoint *p);
 };
 
 GType conting_component_get_type(void);
