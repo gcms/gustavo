@@ -1,18 +1,18 @@
-#include "contingtrans2.h"
+#include "contingbus.h"
 #include "contingutil.h"
 #include <string.h>
 #include <math.h>
 
-#define CONTING_TRANS2_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
-        CONTING_TYPE_TRANS2, ContingTrans2Private))
+#define CONTING_BUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
+        CONTING_TYPE_BUS, ContingBusPrivate))
 
 #define TOLERANCE 3
 #define SIZE ((TOLERANCE * 2) - 1)
 
 static gpointer parent_class = NULL;
 
-typedef struct ContingTrans2Private_ ContingTrans2Private;
-struct ContingTrans2Private_ {
+typedef struct ContingBusPrivate_ ContingBusPrivate;
+struct ContingBusPrivate_ {
 	ArtPoint p0, p1;
 
     gboolean placed;
@@ -20,17 +20,20 @@ struct ContingTrans2Private_ {
 	gboolean dragging;
 	ArtPoint dragging_point;
 
-	ContingDrawing *link0, *link1;
+	GHashTable *points;
+	GSList *links;
+
+	ArtPoint *start_resize;
 
 	gdouble rotate[6];
 };
 
 static void
-conting_trans2_draw(ContingDrawing *self,
+conting_bus_draw(ContingDrawing *self,
                   GdkDrawable *drawable,
                   const GdkRectangle *drawing_rect)
 {
-    ContingTrans2Private *priv;
+    ContingBusPrivate *priv;
 	gdouble affine[6];
     ArtPoint pw0, pw1;
 	GdkRectangle rect;
@@ -47,56 +50,31 @@ conting_trans2_draw(ContingDrawing *self,
 		gdk_gc_set_fill(gc, GDK_SOLID);
     }
 
-    g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+    g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
 	conting_drawing_get_affine(self, affine);
 
-	pw0 = priv->p0;
-	pw1 = priv->p1;
-	pw1.y = pw1.y - (pw1.y - pw0.y) / 3;
+    art_affine_point(&pw0, &priv->p0, affine);
 
-	art_affine_point(&pw0, &pw0, affine);
-	art_affine_point(&pw1, &pw1, affine);
+    art_affine_point(&pw1, &priv->p1, affine);
+
 	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
 			pw0.x, pw0.y, &pw0.x, &pw0.y);
 	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
 			pw1.x, pw1.y, &pw1.x, &pw1.y);
 
-	rect.x = (pw0.x < pw1.x ? pw0.x : pw1.x);
-	rect.y = (pw0.y < pw1.y ? pw0.y : pw1.y);
-	rect.width = fabs(pw1.x - pw0.x);
-	rect.height = fabs(pw1.y - pw0.y);
 
-	gdk_draw_arc(drawable, gc, FALSE,
-			rect.x, rect.y, rect.width, rect.height, 0, 360 * 64);
+	g_print("drawing: (%lf, %lf); (%lf, %lf)\n", pw0.x, pw0.y, pw1.x, pw1.y);
+	
+	rect.x = (gint) (pw0.x < pw1.x ? pw0.x : pw1.x);
+	rect.y = (gint) (pw0.y < pw1.y ? pw0.y : pw1.y);
+	rect.width = (gint) fabs(pw0.x - pw1.x);
+	rect.height = (gint) fabs(pw0.y - pw1.y);
 
-	pw0 = priv->p0;
-	pw1 = priv->p1;
-	pw0.y = pw0.y + (pw1.y - pw0.y) / 3;
-
-	art_affine_point(&pw0, &pw0, affine);
-	art_affine_point(&pw1, &pw1, affine);
-	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-			pw0.x, pw0.y, &pw0.x, &pw0.y);
-	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-			pw1.x, pw1.y, &pw1.x, &pw1.y);
-
-	rect.x = (pw0.x < pw1.x ? pw0.x : pw1.x);
-	rect.y = (pw0.y < pw1.y ? pw0.y : pw1.y);
-	rect.width = fabs(pw1.x - pw0.x);
-	rect.height = fabs(pw1.y - pw0.y);
-
-	gdk_draw_arc(drawable, gc, FALSE,
-			rect.x, rect.y, rect.width, rect.height, 0, 360 * 64);
-
-	art_affine_point(&pw0, &priv->p0, affine);
-	art_affine_point(&pw1, &priv->p1, affine);
-	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-			pw0.x, pw0.y, &pw0.x, &pw0.y);
-	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-			pw1.x, pw1.y, &pw1.x, &pw1.y);
+	gdk_draw_rectangle(drawable, gc, TRUE,
+			rect.x, rect.y, rect.width, rect.height);
 
 	if (conting_drawing_is_selected(self)) {
 		gdk_draw_rectangle(drawable, gc, TRUE,
@@ -115,25 +93,17 @@ conting_trans2_draw(ContingDrawing *self,
 	}
 }
 static gboolean
-conting_trans2_get_link_point(ContingComponent *self,
+conting_bus_get_link_point(ContingComponent *self,
                                  ContingDrawing *line,
                                  ArtPoint *p)
 {
-	ContingTrans2Private *priv;
-	ArtPoint point;
+	ContingBusPrivate *priv;
+	ArtPoint *point;
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
+	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
-	point.x = 0;
-	if (line == priv->link0) {
-		point.y = priv->p0.y;
-	} else if (line == priv->link1) {
-		point.y = priv->p1.y;
-	} else {
-		return FALSE;
-	}
 	point = g_hash_table_lookup(priv->points, line);
 
 	if (point == NULL) {
@@ -153,16 +123,16 @@ conting_trans2_get_link_point(ContingComponent *self,
 }
 
 static void
-conting_trans2_get_bounds(ContingDrawing *self,
+conting_bus_get_bounds(ContingDrawing *self,
 		                ArtDRect *bounds)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 	gdouble affine[6];
 	ArtPoint pw0, pw1;
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
 	conting_drawing_get_affine(self, affine);
 
@@ -181,13 +151,13 @@ conting_trans2_get_bounds(ContingDrawing *self,
 }
 
 static void
-conting_trans2_place(ContingDrawing *self)
+conting_bus_place(ContingDrawing *self)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
 	priv->placed = TRUE;
 
@@ -195,27 +165,27 @@ conting_trans2_place(ContingDrawing *self)
 }
 
 static gboolean
-conting_trans2_is_placed(ContingDrawing *self)
+conting_bus_is_placed(ContingDrawing *self)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
+	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
 	return priv->placed;
 }
 
 static gboolean
-conting_trans2_answer(ContingDrawing *self,
+conting_bus_answer(ContingDrawing *self,
 		                 gdouble world_x, gdouble world_y)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 	ArtDRect bounds;
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
+	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
 	conting_drawing_get_bounds(self, &bounds);
 	
@@ -224,35 +194,36 @@ conting_trans2_answer(ContingDrawing *self,
 }
 
 static void
-conting_trans2_finalize(GObject *self)
+conting_bus_finalize(GObject *self)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-	priv = CONTING_TRANS2_GET_PRIVATE(self);
+	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	g_hash_table_destroy(priv->points);
 	g_slist_free(priv->links);
 }
 
 static void
-conting_trans2_instance_init(GTypeInstance *self,
+conting_bus_instance_init(GTypeInstance *self,
 		                   gpointer g_class)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
-	priv->p0.x = -5;
-	priv->p0.y = -8.5;
-	priv->p1.x = 5;
-	priv->p1.y = 8.5;
+	priv->p0.x = -3;
+	priv->p0.y = -20;
+	priv->p1.x = 3;
+	priv->p1.y = 20;
 
 	priv->placed = FALSE;
 	priv->dragging = FALSE;
+	priv->start_resize = NULL;
 
 	priv->points = g_hash_table_new_full(NULL, NULL, NULL, g_free);
 	priv->links = NULL;
@@ -260,14 +231,14 @@ conting_trans2_instance_init(GTypeInstance *self,
 	art_affine_rotate(priv->rotate, 0.0);
 }
 static void
-conting_trans2_disconnect_link(ContingTrans2 *self,
+conting_bus_disconnect_link(ContingBus *self,
 		                      ContingDrawing *drawing)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-	priv = CONTING_TRANS2_GET_PRIVATE(self);
+	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	g_print("line %p disconnected from %p\n", drawing, self);
 
@@ -284,16 +255,16 @@ conting_trans2_disconnect_link(ContingTrans2 *self,
 		g_print("\n");
 	}
 }
-static void conting_trans2_delete(ContingDrawing *self)
+static void conting_bus_delete(ContingDrawing *self)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 	GSList *n;
 
 	g_print("DELETING\n");
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-	priv = CONTING_TRANS2_GET_PRIVATE(self);
+	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	if (priv->dragging) {
 		priv->dragging = FALSE;
@@ -301,7 +272,7 @@ static void conting_trans2_delete(ContingDrawing *self)
 	}
 
 	for (n = priv->links; n != NULL; n = g_slist_next(n)) {
-		conting_trans2_disconnect_link(CONTING_TRANS2(self),
+		conting_bus_disconnect_link(CONTING_BUS(self),
 				CONTING_DRAWING(n->data));
 	}
 	
@@ -314,16 +285,16 @@ static void conting_trans2_delete(ContingDrawing *self)
 }
 #include <gdk/gdkkeysyms.h>
 static gboolean
-conting_trans2_event_place(ContingDrawing *self,
+conting_bus_event_place(ContingDrawing *self,
 		                GdkEvent *event)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 	ArtPoint p;
 	gdouble affine[6];
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
+	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y,
@@ -353,16 +324,16 @@ conting_trans2_event_place(ContingDrawing *self,
 	return TRUE;
 }
 static void
-conting_trans2_get_points_bounds(ContingTrans2 *self,
+conting_bus_get_points_bounds(ContingBus *self,
 			                        ArtDRect *bounds)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 	GSList *n;
 	ArtPoint *p;
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-	priv = CONTING_TRANS2_GET_PRIVATE(self);
+	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	p = g_hash_table_lookup(priv->points, priv->links->data);
 	bounds->x0 = bounds->x1 = p->x;
@@ -384,18 +355,18 @@ conting_trans2_get_points_bounds(ContingTrans2 *self,
 }
 
 static gboolean
-conting_trans2_event(ContingDrawing *self,
+conting_bus_event(ContingDrawing *self,
 		                GdkEvent *event)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 	ArtPoint p;
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
+	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
 	if (!priv->placed)
-		return conting_trans2_event_place(self, event);
+		return conting_bus_event_place(self, event);
 
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y,
@@ -409,7 +380,44 @@ conting_trans2_event(ContingDrawing *self,
 			priv->dragging = TRUE;
 			break;
 		case GDK_MOTION_NOTIFY:
-			if (priv->dragging) {
+			if (priv->dragging && priv->start_resize != NULL) {
+				ArtPoint pi;
+				gdouble invert[6];
+				ArtDRect p_bounds;
+
+				CONTING_DRAWING_CLASS(parent_class)->get_affine(self, invert);
+				art_affine_invert(invert, invert);
+				art_affine_point(&pi, &p, invert);
+
+				art_affine_invert(invert, priv->rotate);
+				art_affine_point(&pi, &pi, invert);
+
+				/* Cluttered code, checks if the size of the bar is at
+				 * minimum 20, and if it doesn't goes outside linked lines */
+				if ((priv->start_resize == &priv->p0
+					   && fabs(pi.y - priv->p1.y) > 20)
+						|| (priv->start_resize == &priv->p1
+							&& fabs(pi.y - priv->p0.y) > 20)) {
+					if (priv->links) {
+						conting_bus_get_points_bounds(
+								CONTING_BUS(self), &p_bounds);
+						g_print("p_bounds: (%lf, %lf); (%lf, %lf)\n",
+								p_bounds.x0, p_bounds.y0,
+								p_bounds.x1, p_bounds.y1);
+						g_print("p: (%lf, %lf)\n", p.x, p.y);
+						if ((priv->start_resize == &priv->p0
+									&& p_bounds.y0 > pi.y)
+								|| (priv->start_resize == &priv->p1
+									&& p_bounds.y1 < pi.y)) {
+							priv->start_resize->y = pi.y;
+						}
+					} else {
+						priv->start_resize->y = pi.y;
+					}
+				}
+
+				conting_drawing_update(self);
+			} else if (priv->dragging) {
 				gdouble affine[6];
 				art_affine_translate(affine,
 						p.x - priv->dragging_point.x,
@@ -417,11 +425,32 @@ conting_trans2_event(ContingDrawing *self,
 				conting_drawing_affine(self, affine);
 				g_signal_emit_by_name(self, "move");
 				priv->dragging_point = p;
+			} else {
+				ArtPoint pi;
+				gdouble invert[6];
+
+				CONTING_DRAWING_CLASS(parent_class)->get_affine(self, invert);
+				art_affine_invert(invert, invert);
+				art_affine_point(&pi, &p, invert);
+
+				art_affine_invert(invert, priv->rotate);
+				art_affine_point(&pi, &pi, invert);
+
+				g_print("internal: (%lf, %lf)\n", pi.x, pi.y);
+
+				if (fabs(pi.y - priv->p0.y) < TOLERANCE) {
+					priv->start_resize = &priv->p0;
+				} else if (fabs(pi.y - priv->p1.y) < TOLERANCE) {
+					priv->start_resize = &priv->p1;
+				} else {
+					priv->start_resize = NULL;
+				}
 			}
 			break;
 		case GDK_BUTTON_RELEASE:
 			if (priv->dragging) {
 				priv->dragging = FALSE;
+				priv->start_resize = NULL;
 				conting_drawing_ungrab(self);
 			}
 			break;
@@ -447,33 +476,33 @@ conting_trans2_event(ContingDrawing *self,
 
 
 static void
-conting_trans2_link_deleted(ContingDrawing *drawing,
+conting_bus_link_deleted(ContingDrawing *drawing,
 		                       gpointer user_data)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 
-	g_return_if_fail(user_data != NULL && CONTING_IS_TRANS2(user_data));
+	g_return_if_fail(user_data != NULL && CONTING_IS_BUS(user_data));
 
-	priv = CONTING_TRANS2_GET_PRIVATE(user_data);
+	priv = CONTING_BUS_GET_PRIVATE(user_data);
 
 	g_print("link %p deleted from %p\n", drawing, user_data);
 	priv->links = g_slist_remove(priv->links, drawing);
-	conting_trans2_disconnect_link(CONTING_TRANS2(user_data), drawing);
+	conting_bus_disconnect_link(CONTING_BUS(user_data), drawing);
 }
 
 static gboolean
-conting_trans2_link(ContingComponent *self,
+conting_bus_link(ContingComponent *self,
 		               ContingDrawing *drawing,
 					   gdouble world_x, gdouble world_y,
 					   ArtPoint *pw)
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 	ArtPoint pi;
 	gdouble invert[6], my_affine[6];
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
+	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
+    priv = CONTING_BUS_GET_PRIVATE(self);
 
 	if (g_slist_find(priv->links, drawing))
 		return FALSE;
@@ -514,72 +543,72 @@ conting_trans2_link(ContingComponent *self,
 	priv->links = g_slist_append(priv->links, drawing);
 	g_hash_table_insert(priv->points, drawing, p); 
 	g_signal_connect(G_OBJECT(drawing), "delete",
-			G_CALLBACK(conting_trans2_link_deleted), self);
+			G_CALLBACK(conting_bus_link_deleted), self);
 
 	return TRUE;
 }
 static void
-conting_trans2_get_affine(ContingDrawing *self,
+conting_bus_get_affine(ContingDrawing *self,
 		                     gdouble affine[6])
 {
-	ContingTrans2Private *priv;
+	ContingBusPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
-	priv = CONTING_TRANS2_GET_PRIVATE(self);
+	priv = CONTING_BUS_GET_PRIVATE(self);
 
 	CONTING_DRAWING_CLASS(parent_class)->get_affine(self, affine);
 
 	art_affine_multiply(affine, priv->rotate, affine);
 }
 static void
-conting_trans2_class_init(gpointer g_class, gpointer class_data)
+conting_bus_class_init(gpointer g_class, gpointer class_data)
 {
     ContingDrawingClass *drawing_class;
 	ContingComponentClass *component_class;
 	GObjectClass *gobject_class;
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
-    drawing_class->draw = conting_trans2_draw;
-	drawing_class->get_bounds = conting_trans2_get_bounds;
-	drawing_class->place = conting_trans2_place;
-	drawing_class->is_placed = conting_trans2_is_placed;
-	drawing_class->answer = conting_trans2_answer;
-	drawing_class->event = conting_trans2_event;
-	drawing_class->get_affine = conting_trans2_get_affine;
-	drawing_class->delete = conting_trans2_delete;
+    drawing_class->draw = conting_bus_draw;
+	drawing_class->get_bounds = conting_bus_get_bounds;
+	drawing_class->place = conting_bus_place;
+	drawing_class->is_placed = conting_bus_is_placed;
+	drawing_class->answer = conting_bus_answer;
+	drawing_class->event = conting_bus_event;
+	drawing_class->get_affine = conting_bus_get_affine;
+	drawing_class->delete = conting_bus_delete;
 
 	component_class = CONTING_COMPONENT_CLASS(g_class);
-	component_class->link = conting_trans2_link;
-	component_class->get_link_point = conting_trans2_get_link_point;
+	component_class->link = conting_bus_link;
+	component_class->get_link_point = conting_bus_get_link_point;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
-	gobject_class->finalize = conting_trans2_finalize;
+	gobject_class->finalize = conting_bus_finalize;
 
-	g_type_class_add_private(g_class, sizeof(ContingTrans2Private));
+	g_type_class_add_private(g_class, sizeof(ContingBusPrivate));
 
 	parent_class = g_type_class_peek_parent(g_class);
 }
 
-GType conting_trans2_get_type(void) {
+GType conting_bus_get_type(void) {
     static GType type = 0;
 
     if (type == 0) {
         static GTypeInfo type_info = {
-            sizeof(ContingTrans2Class),
+            sizeof(ContingBusClass),
             NULL,
             NULL,
-            conting_trans2_class_init,
+            conting_bus_class_init,
             NULL,
             NULL,
-            sizeof(ContingTrans2),
+            sizeof(ContingBus),
             0,
-            conting_trans2_instance_init,
+            conting_bus_instance_init,
             NULL
         };
 
         type = g_type_register_static(CONTING_TYPE_COMPONENT,
-                "ContingTrans2",
+                "ContingBus",
                 &type_info, 0);
     }
 
