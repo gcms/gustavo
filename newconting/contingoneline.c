@@ -2,6 +2,8 @@
 #include "contingoneline.h"
 #include "contingutil.h"
 #include "continggroup.h"
+#include "contingtrans2.h"
+#include "contingbus.h"
 #include <assert.h>
 #include <math.h>
 
@@ -840,7 +842,7 @@ bus_button_clicked(GtkButton *button,
                     gpointer user_data)
 {
 	conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
-			CONTING_TYPE_COMPONENT);
+			CONTING_TYPE_BUS);
 }
 
 static void
@@ -849,6 +851,14 @@ line_button_clicked(GtkButton *button,
 {
 	conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
 			CONTING_TYPE_LINE);
+}
+
+static void
+trans2_button_clicked(GtkButton *button,
+					  gpointer user_data)
+{
+	conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
+			CONTING_TYPE_TRANS2);
 }
 static void darea_realize(GtkWidget *widget, gpointer user_data) {
     gtk_widget_add_events(widget, GDK_EXPOSURE_MASK
@@ -861,7 +871,7 @@ static void darea_realize(GtkWidget *widget, gpointer user_data) {
 int main(int argc, char *argv[]) {
     GtkWidget *window, *swindow, *darea;
     GtkWidget *vbox, *hbox;
-    GtkWidget *bus_button, *line_button;
+    GtkWidget *bus_button, *line_button, *trans2_button;
     ContingOneLine *oneline;
 
     gtk_init(&argc, &argv);
@@ -899,6 +909,11 @@ int main(int argc, char *argv[]) {
     g_signal_connect(G_OBJECT(line_button), "clicked",
             G_CALLBACK(line_button_clicked), oneline);
     gtk_box_pack_start_defaults(GTK_BOX(hbox), line_button);
+
+	trans2_button = gtk_button_new_with_label("TRANS2");
+	g_signal_connect(G_OBJECT(trans2_button), "clicked",
+			G_CALLBACK(trans2_button_clicked), oneline);
+    gtk_box_pack_start_defaults(GTK_BOX(hbox), trans2_button);
     
     gtk_widget_show_all(window);
 
