@@ -184,6 +184,8 @@ conting_line_finalize(GObject *self)
 	}
 
 	g_list_free(priv->points);
+
+	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
 static void

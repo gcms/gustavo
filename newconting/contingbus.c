@@ -204,6 +204,8 @@ conting_bus_finalize(GObject *self)
 
 	g_hash_table_destroy(priv->points);
 	g_slist_free(priv->links);
+
+	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
 static void

@@ -647,12 +647,14 @@ widget_key_press_event(GtkWidget *widget,
 	if (event->keyval == GDK_Page_Up) {
 		priv->ppu += 0.3;
 		gtk_widget_queue_draw(priv->widget);
+
 		return TRUE;
 	} else if (event->keyval == GDK_Page_Down) {
 		priv->ppu -= 0.3;
 		if (priv->ppu < 1.0)
 			priv->ppu = 1.0;
 		gtk_widget_queue_draw(priv->widget);
+
 		return TRUE;
 	}
 	
