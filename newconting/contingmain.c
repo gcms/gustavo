@@ -37,6 +37,7 @@ static void combo_box_changed(GtkComboBox *combo,
 			NULL);
 }
 
+/*
 static gboolean
 zoom_key_press_event(GtkWidget *entry,
                      GdkEventKey *event,
@@ -95,13 +96,13 @@ zoom_key_press_event(GtkWidget *entry,
 
     return FALSE;
 }
-
 static void
 zoom_realize(GtkWidget *zoom,
              gpointer user_data)
 {
 	gtk_widget_add_events(zoom, GDK_KEY_PRESS_MASK);
 }
+*/
 static void darea_realize(GtkWidget *widget, gpointer user_data) {
     gtk_widget_add_events(widget, GDK_EXPOSURE_MASK
             | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK
