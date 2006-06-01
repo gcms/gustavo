@@ -85,6 +85,11 @@ conting_one_line_update(ContingOneLine *self,
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+	if (bounds == NULL) {
+		gtk_widget_queue_draw(priv->widget);
+		return;
+	}
+
     conting_one_line_world_to_window(self,
             bounds->x0, bounds->y0,
             &win_bounds.x0, &win_bounds.y0);
@@ -274,7 +279,7 @@ conting_one_line_get_property(GObject *self,
 
 	switch (prop_id) {
 		case CONTING_ONE_LINE_PROP_PPU:
-			g_value_set_int(value, priv->ppu);
+			g_value_set_double(value, priv->ppu);
 			break;
 		default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
@@ -295,7 +300,8 @@ conting_one_line_set_property(GObject *self,
 
 	switch (prop_id) {
 		case CONTING_ONE_LINE_PROP_PPU:
-			priv->ppu = g_value_get_int(value);
+			priv->ppu = g_value_get_double(value);
+			conting_one_line_update(CONTING_ONE_LINE(self), NULL);
 			break;
 		default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
@@ -768,7 +774,7 @@ conting_one_line_class_init(gpointer g_class,
 
 	g_object_class_install_property(G_OBJECT_CLASS(g_class),
 			CONTING_ONE_LINE_PROP_PPU,
-			g_param_spec_int("ppu",
+			g_param_spec_double("ppu",
 							 "Points per unit",
 							 "The zooming of this diagram",
 							 0.5,	/* 50% zoom, minimum value */
@@ -826,6 +832,7 @@ conting_one_line_get_type(void)
     return type;
 }
 
+/*
 #include "contingcomponent.h"
 #include "contingline.h"
 static void
@@ -862,13 +869,13 @@ trans2_button_clicked(GtkButton *button,
 	conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
 			CONTING_TYPE_TRANS2);
 }
+
 static void darea_realize(GtkWidget *widget, gpointer user_data) {
     gtk_widget_add_events(widget, GDK_EXPOSURE_MASK
             | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK
             | GDK_POINTER_MOTION_MASK | GDK_KEY_PRESS_MASK
             | GDK_KEY_RELEASE_MASK);
 }
-
 
 int main(int argc, char *argv[]) {
     GtkWidget *window, *swindow, *darea;
@@ -923,3 +930,4 @@ int main(int argc, char *argv[]) {
     
     return 0;
 }
+*/

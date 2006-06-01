@@ -1,6 +1,7 @@
 #ifndef CONTING_ONE_LINE_H
 #define CONTING_ONE_LINE_H
 
+#include <gtk/gtk.h>
 #include <gtk/gtkenums.h>
 
 G_BEGIN_DECLS
@@ -50,4 +51,6 @@ GSList *conting_one_line_answer(ContingOneLine *self,
 		                        gdouble world_x, gdouble world_y);
 
 void conting_one_line_delete_drawing(ContingOneLine *self, ContingDrawing *);
+void conting_one_line_set_widget(ContingOneLine *self, GtkWidget *widget);
+void conting_one_line_create(ContingOneLine *self, ContingDrawing *drawing);
 #endif /* CONTING_ONE_LINE_H */

@@ -39,7 +39,7 @@ conting_line_draw(ContingDrawing *self,
 	gdouble affine[6];
 	GList *n;
 	ArtPoint pw0, pw1;
-	int width;
+	gdouble width;
 
     static GdkGC *gc = NULL;
     if (gc == NULL) {
@@ -55,7 +55,8 @@ conting_line_draw(ContingDrawing *self,
 	g_object_get(conting_drawing_get_one_line(self),
 			"ppu", &width,
 			NULL);
-	gdk_gc_set_line_attributes(gc, width, GDK_LINE_SOLID, GDK_CAP_NOT_LAST,
+	gdk_gc_set_line_attributes(gc, (gint) width, GDK_LINE_SOLID,
+			GDK_CAP_NOT_LAST,
 			GDK_JOIN_MITER);
 
     g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
