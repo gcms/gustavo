@@ -424,6 +424,8 @@ widget_button_press_event(GtkWidget *widget,
 							found = TRUE;
 						}
                     } else if (CONTING_IS_GROUP(drawing)) {
+						/* TODO: change the place of this group
+						 * creation/deletion code. */
 						GSList *gn = conting_group_get_children(
 								CONTING_GROUP(drawing));
 
@@ -505,6 +507,8 @@ widget_button_release_event(GtkWidget *widget,
     switch (priv->state) {
 		case CONTING_ONE_LINE_SELECTING:
 			{
+				/* TODO: change the place of this group creation/deletion
+				 * code. maybe make it part of continggroup.c */
 				GSList *n;
 				ArtDRect selection_bounds;
 				ContingGroup *group = CONTING_GROUP(
@@ -798,7 +802,7 @@ conting_one_line_instance_init(GTypeInstance *self,
 
     priv->widget = NULL;
     priv->state = CONTING_ONE_LINE_NONE;
-    priv->ppu = 2;
+    priv->ppu = 1.5;
 
     priv->placing_drawing = NULL;
     priv->drawings = NULL;
