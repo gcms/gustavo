@@ -102,6 +102,7 @@ red_black_find(red_black_t *self, const void *data)
 
 static void
 red_black_remove_update_color(red_black_t *self, red_black_node_t *x) {
+    /* Based on Introduction to Algorithms, by Cormen et al */
     while (x != self->root && x->color == BLACK) {
         if (x == x->parent->left) {
             red_black_node_t *w = x->parent->right;
@@ -170,8 +171,6 @@ red_black_remove(red_black_t *self, void *data)
 	void *result;
 
 	node = red_black_find_node(self->root, data, self->compare);
-
-	printf("red_black_remove(%p)\n", node);
 
 	if (node == NULL_NODE)
 		return NULL;
@@ -257,6 +256,7 @@ red_black_insert(red_black_t *self, void *data)
     node->data = data;
     node->color = RED;
 
+    /* Based on Introduction to Algorithms, by Cormen et al */
     while (node != self->root && node->parent->color == RED) {
         if (node->parent == GRANDPARENT(node)->left) {
             red_black_node_t *tmp = GRANDPARENT(node)->right;
@@ -402,71 +402,3 @@ rotate_right(red_black_t *self, red_black_node_t *node)
     tmp->right = node;
     node->parent = tmp;
 }
-/*
-static void
-red_black_print_node(red_black_node_t *node, int level)
-{
-    if (node != NULL_NODE) {
-        assert(level == 0 || node->parent != NULL_NODE);
-        red_black_print_node(node->left, level + 1);
-        printf("\"%s\"\t%s\t%d\n", (char *) node->data,
-                node->color == RED ? "RED" : "BLACK", level);
-        red_black_print_node(node->right, level + 1);
-    }
-}
-
-
-static void
-red_black_print(red_black_t *self)
-{
-    red_black_print_node(self->root, 0);
-}
-
-#include "io/fileutil.h"
-
-static int
-string_cmp(const void *a, const void *b)
-{
-    return strcmp((const char *) a, (const char *) b);
-}
-
-int
-main(int argc, char *argv[]) {
-    FILE *fp;
-    red_black_t *rb;
-    char *buff;
-
-    if (argc < 2) {
-        fprintf(stderr, "usage: %s <filename>\n", argv[0]);
-        return 1;
-    }
-
-    if ((fp = fopen(argv[1], "r")) == NULL) {
-        return 1;
-    }
-
-    rb = red_black_new_full(string_cmp, NULL, FALSE);
-
-    while ((buff = get_string_token(fp, " \t\r\n")) != NULL) {
-        red_black_insert(rb, strdup(buff));
-        red_black_print(rb);
-        assert(rb->root->color == BLACK);
-        printf("\n\n");
-        free(buff);
-    }
-
-    red_black_print(rb);
-
-	printf("%s\n", red_black_find(rb, "while") ? "TRUE" : "FALSE");
-	printf("%s\n", (char *) red_black_remove(rb, "while"));
-	red_black_print(rb);
-	printf("%s\n", (char *) red_black_remove(rb, "two"));
-	red_black_print(rb);
-	printf("%s\n", (char *) red_black_remove(rb, "was"));
-	red_black_print(rb);
-
-    red_black_delete(rb);
-    
-    return 0;
-}
-*/
