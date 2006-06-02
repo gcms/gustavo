@@ -26,7 +26,7 @@ static boolean red_black_inorder_itr(void *data, void *user_data) {
 int main() {
 	red_black_t *rb;
 
-	assert(rb = red_black_new_full(bst_strcmp, NULL, TRUE));
+	assert(rb = red_black_new_full(red_black_strcmp, NULL, TRUE));
 	assert(red_black_insert(rb, "hello"));
 	assert(red_black_insert(rb, "world"));
 	assert(red_black_insert(rb, "abacaxi"));
