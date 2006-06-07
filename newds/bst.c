@@ -101,7 +101,8 @@ static void bst_delete_node(node_t *root, destroy_func_t destructor) {
 }
 
 void bst_delete(bst_t *bst, destroy_func_t destructor) {
-    return bst_delete_node(bst->root, destructor);
+    bst_delete_node(bst->root, destructor);
+	free(bst);
 }
 
 void *bst_remove(bst_t *bst, void *data) {
