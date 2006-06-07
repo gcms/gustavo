@@ -37,5 +37,7 @@ int main() {
 
 	bst_inorder(bst, bst_inorder_itr, NULL);
 
+	bst_delete(bst, NULL);
+
 	return 0;
 }

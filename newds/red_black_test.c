@@ -37,5 +37,7 @@ int main() {
 
 	red_black_inorder(rb, red_black_inorder_itr, NULL);
 
+	red_black_delete(rb);
+
 	return 0;
 }
