@@ -114,6 +114,9 @@ static void darea_realize(GtkWidget *widget, gpointer user_data) {
 int main(int argc, char *argv[]) {
     GtkWidget *window, *swindow, *darea;
     GtkWidget *vbox, *hbox;
+
+	GtkWidget *menubar, *menu, *submenu;
+
     GtkWidget *toolbar, *handle;
     GtkToolItem *toolbutton;
     GtkWidget *zoom;
@@ -133,6 +136,23 @@ int main(int argc, char *argv[]) {
 
     vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
+
+
+	menubar = gtk_menu_bar_new();
+	menu = gtk_menu_item_new_with_label("Arquivo");
+	gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu);
+	submenu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
+	menu = submenu;
+	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
+	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu),
+			gtk_separator_menu_item_new());
+	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_CLOSE, NULL);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
+    gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
