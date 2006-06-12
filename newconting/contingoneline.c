@@ -39,6 +39,39 @@ struct ContingOneLinePrivate_ {
 	ArtDRect selection_box;
 };
 
+void
+conting_one_line_save(ContingOneLine *self, const char *filename)
+{
+    ContingOneLinePrivate *priv;
+    xmlDocPtr doc = NULL;
+    xmlNodePtr root_node = NULL;
+    xmlNodePtr drawing_node = NULL;
+    char buff[256];
+    guint id;
+    GSList *n;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    doc = xmlNewDoc(BAD_CAST "1.0");
+    root_node = xmlNewNode(NULL, BAD_CAST "one-line");
+    xmlDocSetRootElement(doc, root_node);
+
+    for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+        drawing_node = xmlNewNode(NULL, BAD_CAST "drawing");
+        g_object_get(G_OBJECT(n->data), "id", &id, NULL);
+        sprintf(buff, "%d", id);
+        xmlNewProp(drawing_node, BAD_CAST "id", BAD_CAST buff);
+        conting_drawing_xml_node(CONTING_DRAWING(n->data), drawing_node);
+        xmlAddChild(root_node, drawing_node);
+    }
+
+    xmlSaveFormatFileEnc(filename, doc, "UTF-8", 1);
+    xmlFreeDoc(doc);
+    xmlCleanupParser();
+}
+
 gboolean
 conting_one_line_contains(ContingOneLine *self,
 		                  ContingDrawing *drawing)

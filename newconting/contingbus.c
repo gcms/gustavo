@@ -285,6 +285,29 @@ static void conting_bus_delete(ContingDrawing *self)
 
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
+static xmlNodePtr
+conting_bus_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
+{
+    ContingBusPrivate *priv;
+    xmlNodePtr class_node;
+
+    g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), NULL);
+
+    priv = CONTING_BUS_GET_PRIVATE(self);
+
+    class_node = xmlNewNode(NULL, BAD_CAST "class");
+    xmlNewProp(class_node, BAD_CAST "name",
+            BAD_CAST g_type_name(CONTING_TYPE_BUS));
+
+    xmlAddChild(class_node, conting_util_point_node("p0", &priv->p0));
+    xmlAddChild(class_node, conting_util_point_node("p1", &priv->p1));
+    
+    xmlAddChild(class_node, conting_util_affine_node("rotate", priv->rotate));
+
+    xmlAddChild(drawing_node, class_node);
+
+    return CONTING_DRAWING_CLASS(parent_class)->xml_node(self, drawing_node);
+}
 #include <gdk/gdkkeysyms.h>
 static gboolean
 conting_bus_event_place(ContingDrawing *self,
@@ -579,6 +602,7 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
 	drawing_class->event = conting_bus_event;
 	drawing_class->get_affine = conting_bus_get_affine;
 	drawing_class->delete = conting_bus_delete;
+    drawing_class->xml_node = conting_bus_xml_node;
 
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->link = conting_bus_link;

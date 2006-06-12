@@ -10,6 +10,13 @@
 static ContingOneLine *oneline;
 
 static void
+save_menu_activate(GtkMenuItem *menuitem,
+                   gpointer user_data)  
+{
+    conting_one_line_save(oneline, "-");
+}
+
+static void
 toolbutton_clicked(GtkToolButton *button,
                    gpointer user_data)
 {
@@ -147,6 +154,8 @@ int main(int argc, char *argv[]) {
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
+    g_signal_connect(G_OBJECT(submenu), "activate",
+            G_CALLBACK(save_menu_activate), NULL);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu),
 			gtk_separator_menu_item_new());
