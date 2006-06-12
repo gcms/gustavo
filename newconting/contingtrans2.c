@@ -489,6 +489,43 @@ conting_trans2_get_affine(ContingDrawing *self,
 
     art_affine_multiply(affine, priv->rotate, affine);
 }
+
+static xmlNodePtr
+conting_trans2_xml_node(ContingDrawing *self,
+		                xmlNodePtr drawing_node)
+{
+	ContingTrans2Private *priv;
+	xmlNodePtr class_node;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), NULL);
+
+	priv = CONTING_TRANS2_GET_PRIVATE(self);
+
+	class_node = xmlNewNode(NULL, BAD_CAST "class");
+	xmlNewProp(class_node, BAD_CAST "type",
+			BAD_CAST g_type_name(CONTING_TYPE_TRANS2));
+
+	xmlAddChild(class_node,
+			conting_util_point_node("p0", &priv->p0));
+	xmlAddChild(class_node,
+			conting_util_point_node("p1", &priv->p1));
+
+	if (priv->link0)
+		xmlAddChild(class_node,
+				conting_util_drawing_node("link0", priv->link0));
+	if (priv->link1)
+		xmlAddChild(class_node,
+				conting_util_drawing_node("link1", priv->link1));
+
+	xmlAddChild(class_node,
+			conting_util_affine_node("rotate", priv->rotate));
+
+	xmlAddChild(drawing_node, class_node);
+
+	return CONTING_DRAWING_CLASS(parent_class)->xml_node(self, drawing_node);
+}
+
+
 static void
 conting_trans2_class_init(gpointer g_class, gpointer class_data)
 {
@@ -505,6 +542,7 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
     drawing_class->event = conting_trans2_event;
     drawing_class->get_affine = conting_trans2_get_affine;
     drawing_class->delete = conting_trans2_delete;
+	drawing_class->xml_node = conting_trans2_xml_node;
 
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = conting_trans2_link;

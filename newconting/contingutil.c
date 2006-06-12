@@ -94,8 +94,65 @@ xmlNodePtr conting_util_drawing_node(const char *name, ContingDrawing *drawing)
     g_object_get(G_OBJECT(drawing),
             "id", &id,
             NULL);
-    sprintf(buff, "%u\n", id);
+    sprintf(buff, "%u", id);
     xmlNewProp(node, BAD_CAST "id", BAD_CAST buff);
 
-    return NULL;
+    return node;
+}
+
+static void hash_foreach(gpointer key, gpointer value, gpointer user_data)
+{
+	xmlNodePtr parent;
+	xmlNodePtr node;
+	ContingSerializeFunc key_func;
+	ContingSerializeFunc val_func;
+
+	gpointer *data = user_data;
+
+	parent = data[0];
+	key_func = data[1];
+	val_func = data[2];
+
+	node = xmlNewNode(NULL, "node");
+	xmlAddChild(node, key_func(key));
+	xmlAddChild(node, val_func(value));
+
+	xmlAddChild(parent, node);
+}
+
+xmlNodePtr conting_util_hash_node(const char *name,
+		                          GHashTable *hash_table,
+								  ContingSerializeFunc key_func,
+								  ContingSerializeFunc val_func)
+{
+	xmlNodePtr node;
+	gpointer user_data[3];
+
+	node = xmlNewNode(NULL, BAD_CAST "attribute");
+	xmlNewProp(node, BAD_CAST "type", BAD_CAST "map");
+	xmlNewProp(node, BAD_CAST "name", BAD_CAST name);
+
+	user_data[0] = node;
+	user_data[1] = key_func;
+	user_data[2] = val_func;
+	g_hash_table_foreach(hash_table, hash_foreach, user_data);
+
+	return node;
+}
+xmlNodePtr conting_util_list_node(const char *name,
+		                          GList *list,
+								  ContingSerializeFunc serialize)
+{
+	xmlNodePtr node;
+	GList *n;
+
+	node = xmlNewNode(NULL, BAD_CAST "attribute");
+	xmlNewProp(node, BAD_CAST "type", BAD_CAST "list");
+	xmlNewProp(node, BAD_CAST "name", name);
+
+	for (n = list; n != NULL; n = g_list_next(n)) {
+		xmlAddChild(node, serialize(n->data));
+	}
+
+	return node;
 }
