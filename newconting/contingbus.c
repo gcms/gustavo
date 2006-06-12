@@ -285,6 +285,40 @@ static void conting_bus_delete(ContingDrawing *self)
 
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
+static xmlNodePtr conting_bus_point_node(gconstpointer data)
+{
+	xmlNodePtr node;
+	char buff[256];
+	const ArtPoint *p = data;
+
+	node = xmlNewNode(NULL, BAD_CAST "point");
+
+	sprintf(buff, "%lf %lf", p->x, p->y);
+	xmlAddChild(node, xmlNewText(BAD_CAST buff));
+
+
+	return node;
+}
+static xmlNodePtr conting_bus_drawing_node(gconstpointer data)
+{
+	xmlNodePtr node;
+	char buff[256];
+	guint id;
+	const ContingDrawing *drawing = data;
+
+	g_return_val_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing), NULL);
+
+	node = xmlNewNode(NULL, BAD_CAST "drawing");
+
+	g_object_get(G_OBJECT(drawing),
+			"id", &id,
+			NULL);
+	
+	sprintf(buff, "%u", id);
+	xmlNewProp(node, BAD_CAST "id", BAD_CAST buff);
+
+	return node;
+}
 static xmlNodePtr
 conting_bus_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
 {
@@ -303,6 +337,9 @@ conting_bus_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
     xmlAddChild(class_node, conting_util_point_node("p1", &priv->p1));
     
     xmlAddChild(class_node, conting_util_affine_node("rotate", priv->rotate));
+
+	xmlAddChild(class_node, conting_util_hash_node("points", priv->points,
+				conting_bus_drawing_node, conting_bus_point_node));
 
     xmlAddChild(drawing_node, class_node);
 

@@ -63,6 +63,8 @@ conting_one_line_save(ContingOneLine *self, const char *filename)
         g_object_get(G_OBJECT(n->data), "id", &id, NULL);
         sprintf(buff, "%d", id);
         xmlNewProp(drawing_node, BAD_CAST "id", BAD_CAST buff);
+		xmlNewProp(drawing_node, BAD_CAST "class",
+				BAD_CAST G_OBJECT_TYPE_NAME(n->data));
         conting_drawing_xml_node(CONTING_DRAWING(n->data), drawing_node);
         xmlAddChild(root_node, drawing_node);
     }

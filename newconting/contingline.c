@@ -1,5 +1,6 @@
 #include "contingline.h"
 #include "contingcomponent.h"
+#include "contingutil.h"
 #include <string.h>
 #include <assert.h>
 #include <math.h>
@@ -18,9 +19,9 @@ struct ContingLinePrivate_ {
 	GList *points;
 	gint n_points;
 
-	ContingComponent *comp1, *comp2;
+	ContingComponent *comp0, *comp1;
 
-	ArtPoint *link1, *link2;
+	ArtPoint *link0, *link1;
 
     gboolean placing;
     gboolean placed;
@@ -204,10 +205,10 @@ conting_line_instance_init(GTypeInstance *self,
 	priv->placing = FALSE;
 	priv->placed = FALSE;
 
+	priv->comp0 = NULL;
 	priv->comp1 = NULL;
-	priv->comp2 = NULL;
+	priv->link0 = NULL;
 	priv->link1 = NULL;
-	priv->link2 = NULL;
 
 	priv->dragging_point = NULL;
 }
@@ -242,10 +243,10 @@ conting_line_link_moved(ContingComponent *comp,
 
 	conting_drawing_get_bounds(CONTING_DRAWING(user_data), &bounds);
 
-	if (priv->comp1 == comp) {
+	if (priv->comp0 == comp) {
+		*(priv->link0) = pi;
+	} else if (priv->comp1 == comp) {
 		*(priv->link1) = pi;
-	} else if (priv->comp2 == comp) {
-		*(priv->link2) = pi;
 	} else {
 		assert(FALSE);
 	}
@@ -325,15 +326,15 @@ conting_line_place(ContingDrawing *self)
 
 			priv->placing = TRUE;
 
-			priv->link1 = conting_line_add_point(CONTING_LINE(self),
+			priv->link0 = conting_line_add_point(CONTING_LINE(self),
 					p.x, p.y);
-			priv->comp1 = comp;
+			priv->comp0 = comp;
 
-			g_signal_connect(G_OBJECT(priv->comp1), "move",
+			g_signal_connect(G_OBJECT(priv->comp0), "move",
 					G_CALLBACK(conting_line_link_moved), self);
 			g_signal_connect_swapped(G_OBJECT(self), "move",
-					G_CALLBACK(conting_line_link_moved), priv->comp1);
-			g_signal_connect(G_OBJECT(priv->comp1), "delete",
+					G_CALLBACK(conting_line_link_moved), priv->comp0);
+			g_signal_connect(G_OBJECT(priv->comp0), "delete",
 					G_CALLBACK(conting_line_link_deleted), self);
 		}
 	} else {
@@ -346,13 +347,13 @@ conting_line_place(ContingDrawing *self)
 			priv->placing = FALSE;
 			priv->placed = TRUE;
 
-			priv->link2 = conting_line_add_point(CONTING_LINE(self), p.x, p.y);
-			priv->comp2 = comp;
-			g_signal_connect(G_OBJECT(priv->comp2), "move",
+			priv->link1 = conting_line_add_point(CONTING_LINE(self), p.x, p.y);
+			priv->comp1 = comp;
+			g_signal_connect(G_OBJECT(priv->comp1), "move",
 					G_CALLBACK(conting_line_link_moved), self);
 			g_signal_connect_swapped(G_OBJECT(self), "move",
-					G_CALLBACK(conting_line_link_moved), priv->comp2);
-			g_signal_connect(G_OBJECT(priv->comp2), "delete",
+					G_CALLBACK(conting_line_link_moved), priv->comp1);
+			g_signal_connect(G_OBJECT(priv->comp1), "delete",
 					G_CALLBACK(conting_line_link_deleted), self);
 
 			conting_drawing_set_selected(self, TRUE);
@@ -390,18 +391,64 @@ conting_line_delete(ContingDrawing *self)
 
 	g_signal_handlers_disconnect_matched(self, G_SIGNAL_MATCH_FUNC,
 			0, 0, 0, conting_line_link_moved, 0);
-	if (priv->comp1) {
-		g_signal_handlers_disconnect_matched(priv->comp1, G_SIGNAL_MATCH_DATA,
+	if (priv->comp0) {
+		g_signal_handlers_disconnect_matched(priv->comp0, G_SIGNAL_MATCH_DATA,
 				0, 0, 0, 0, self);
 	}
-	if (priv->comp2) {
-		g_signal_handlers_disconnect_matched(priv->comp2, G_SIGNAL_MATCH_DATA,
+	if (priv->comp1) {
+		g_signal_handlers_disconnect_matched(priv->comp1, G_SIGNAL_MATCH_DATA,
 				0, 0, 0, 0, self);
 	}
 	g_signal_emit_by_name(self, "delete");
 
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
+static xmlNodePtr
+conting_line_point_node(gconstpointer data)
+{
+	xmlNodePtr node;
+	char buff[256];
+	const ArtPoint *p = data;
+
+	node = xmlNewNode(NULL, BAD_CAST "point");
+	
+	sprintf(buff, "%lf %lf", p->x, p->y);
+	xmlAddChild(node, xmlNewText(BAD_CAST buff));
+
+	return node;
+}
+
+static xmlNodePtr
+conting_line_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
+{
+	ContingLinePrivate *priv;
+	xmlNodePtr class_node;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), NULL);
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	class_node = xmlNewNode(NULL, BAD_CAST "class");
+	xmlNewProp(class_node, BAD_CAST "name",
+			BAD_CAST g_type_name(CONTING_TYPE_LINE));
+
+	xmlAddChild(class_node,
+			conting_util_drawing_node("comp0", CONTING_DRAWING(priv->comp0)));
+	xmlAddChild(class_node,
+			conting_util_drawing_node("comp1", CONTING_DRAWING(priv->comp1)));
+	xmlAddChild(class_node,
+			conting_util_point_node("link0", priv->link0));
+	xmlAddChild(class_node,
+			conting_util_point_node("link1", priv->link1));
+	xmlAddChild(class_node,
+			conting_util_list_node("points", priv->points,
+				conting_line_point_node));
+
+	xmlAddChild(drawing_node, class_node);
+
+	return CONTING_DRAWING_CLASS(parent_class)->xml_node(self, drawing_node);
+}
+
 #include <gdk/gdkkeysyms.h>
 static gboolean
 conting_line_event_place(ContingDrawing *self,
@@ -549,8 +596,8 @@ conting_line_event(ContingDrawing *self,
 			break;
 		case GDK_MOTION_NOTIFY:
 			if (priv->dragging_point) {
-				if (priv->dragging_point == priv->link1
-						|| priv->dragging_point == priv->link2) {
+				if (priv->dragging_point == priv->link0
+						|| priv->dragging_point == priv->link1) {
 				} else {
 					*(priv->dragging_point) = pi;
 				}
@@ -640,6 +687,7 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->answer = conting_line_answer;
 	drawing_class->event = conting_line_event;
 	drawing_class->delete = conting_line_delete;
+	drawing_class->xml_node = conting_line_xml_node;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;

@@ -5,6 +5,8 @@
 #include <libxml/tree.h>
 #include "contingdrawing.h"
 
+typedef xmlNodePtr (*ContingSerializeFunc)(gconstpointer object);
+
 #define conting_util_in_bounds(b, p) ((p)->x >= (b)->x0 && (p)->x <= (b)->x1 \
 		&& (p)->y >= (b)->y0 && (p)->y <= (b)->y1)
 
@@ -24,4 +26,11 @@ gboolean conting_util_bounds_contains(const ArtDRect *b1, const ArtDRect *b2);
 xmlNodePtr conting_util_affine_node(const char *name, gdouble affine[6]);
 xmlNodePtr conting_util_point_node(const char *name, ArtPoint *p);
 xmlNodePtr conting_util_drawing_node(const char *name, ContingDrawing *drawing);
+xmlNodePtr conting_util_hash_node(const char *name,
+		                          GHashTable *hash_table,
+								  ContingSerializeFunc key_func,
+								  ContingSerializeFunc val_func);
+xmlNodePtr conting_util_list_node(const char *name,
+		                          GList *list,
+								  ContingSerializeFunc serialize);
 #endif /* CONTING_UTIL_H */
