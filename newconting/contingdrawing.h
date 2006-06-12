@@ -4,6 +4,7 @@
 #include <glib-object.h>
 #include <gdk/gdk.h>
 #include <libart_lgpl/libart.h>
+#include <libxml/tree.h>
 
 G_BEGIN_DECLS
 
@@ -44,6 +45,8 @@ struct ContingDrawingClass_ {
 	void (*delete)(ContingDrawing *self);
 
 	gboolean (*event)(ContingDrawing *self, GdkEvent *event);
+
+    xmlNodePtr (*xml_node)(ContingDrawing *self, xmlNodePtr drawing_node);
 };
 
 GType conting_drawing_get_type(void);
@@ -77,6 +80,8 @@ void conting_drawing_update(ContingDrawing *self);
 void conting_drawing_set_selected(ContingDrawing *self, gboolean selected);
 gboolean conting_drawing_is_selected(ContingDrawing *self);
 void conting_drawing_delete(ContingDrawing *self);
+xmlNodePtr conting_drawing_xml_node(ContingDrawing *self,
+        xmlNodePtr drawing_node);
 
 G_END_DECLS
 

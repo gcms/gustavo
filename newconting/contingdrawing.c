@@ -1,5 +1,6 @@
 #include "contingdrawing.h"
 #include "continggroup.h"
+#include "contingutil.h"
 #include <string.h>
 
 static gint move_signal_id = 0;
@@ -8,7 +9,8 @@ static gint delete_signal_id = 0;
 enum {
 	CONTING_DRAWING_PROP_0,
     CONTING_DRAWING_PROP_ONE_LINE,
-	CONTING_DRAWING_PROP_GROUP
+	CONTING_DRAWING_PROP_GROUP,
+    CONTING_DRAWING_PROP_ID
 };
 
 #define CONTING_DRAWING_GET_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE((o), \
@@ -18,6 +20,9 @@ typedef struct ContingDrawingPrivate_ ContingDrawingPrivate;
 struct ContingDrawingPrivate_ {
     ContingOneLine *oneline;
 	ContingGroup *group;
+
+    guint id;
+
 	gdouble affine[6];
 
 	gboolean selected;
@@ -216,6 +221,35 @@ conting_drawing_delete(ContingDrawing *self)
 	CONTING_DRAWING_GET_CLASS(self)->delete(self);
 }
 
+xmlNodePtr
+conting_drawing_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
+{
+    g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), NULL);
+
+    return CONTING_DRAWING_GET_CLASS(self)->xml_node(self, drawing_node);
+}
+
+static xmlNodePtr
+conting_drawing_xml_node_impl(ContingDrawing *self,
+                              xmlNodePtr drawing_node)
+{
+    ContingDrawingPrivate *priv;
+    xmlNodePtr class_node;
+
+    g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), NULL);
+
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+    class_node = xmlNewNode(NULL, BAD_CAST "class");
+    xmlNewProp(class_node, BAD_CAST "name",
+            BAD_CAST g_type_name(CONTING_TYPE_DRAWING));
+    xmlAddChild(class_node, conting_util_affine_node("affine", priv->affine));
+
+    xmlAddChild(drawing_node, class_node);
+
+    return class_node;
+}
+
 static void
 conting_drawing_delete_impl(ContingDrawing *self)
 {
@@ -248,6 +282,9 @@ conting_drawing_get_property(GObject *self,
 		case CONTING_DRAWING_PROP_GROUP:
 			g_value_set_object(value, priv->group);
 			break;
+        case CONTING_DRAWING_PROP_ID:
+            g_value_set_uint(value, priv->id);
+            break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -273,10 +310,21 @@ conting_drawing_set_property(GObject *self,
 		case CONTING_DRAWING_PROP_GROUP:
 			priv->group = g_value_get_object(value);
 			break;
+        case CONTING_DRAWING_PROP_ID:
+            priv->id = g_value_get_uint(value);
+            break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
     }
+}
+
+static guint
+conting_drawing_get_id(void)
+{
+    static guint id = 0;
+
+    return ++id;
 }
 
 static void
@@ -295,6 +343,8 @@ conting_drawing_instance_init(GTypeInstance *self,
 
 	priv->oneline = NULL;
 	priv->group = NULL;
+
+    priv->id = conting_drawing_get_id();
 }
 
 static void
@@ -325,6 +375,14 @@ conting_drawing_class_init(gpointer g_class,
 								CONTING_TYPE_GROUP,
 								G_PARAM_READABLE | G_PARAM_WRITABLE));
 
+    g_object_class_install_property(G_OBJECT_CLASS(g_class),
+            CONTING_DRAWING_PROP_ID,
+            g_param_spec_uint("id",
+                             "ID",
+                             "Drawing unique identifier",
+                             0, G_MAXUINT, 0,
+                             G_PARAM_READABLE));
+
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = NULL;
     drawing_class->get_bounds = NULL;
@@ -334,6 +392,7 @@ conting_drawing_class_init(gpointer g_class,
 	drawing_class->event = NULL;
 	drawing_class->delete = conting_drawing_delete_impl;
 	drawing_class->get_affine = conting_drawing_get_affine_impl;
+    drawing_class->xml_node = conting_drawing_xml_node_impl;
 
 	move_signal_id = g_signal_newv(
 			"move",

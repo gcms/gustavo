@@ -1,4 +1,5 @@
 #include "contingutil.h"
+#include "contingdrawing.h"
 #include <math.h>
 
 void conting_util_get_bounds(const ArtPoint *p0, const ArtPoint *p1,
@@ -51,4 +52,50 @@ void conting_util_bounds_to_rect(const ArtDRect *src, GdkRectangle *dst) {
 gboolean conting_util_bounds_contains(const ArtDRect *b1, const ArtDRect *b2) {
 	return b1->x0 <= b2->x0 && b1->y0 <= b2->y0
 		&& b1->x1 >= b2->x1 && b1->y1 >= b2->y1;
+}
+xmlNodePtr conting_util_affine_node(const char *name, gdouble affine[6]) {
+    xmlNodePtr node;
+    char buff[256];
+
+    node = xmlNewNode(NULL, BAD_CAST "attribute");
+    xmlNewProp(node, BAD_CAST "type", BAD_CAST "affine");
+    xmlNewProp(node, BAD_CAST "name", BAD_CAST name);
+
+    sprintf(buff, "%lf %lf %lf %lf %lf %lf", affine[0], affine[1], affine[2],
+            affine[3], affine[4], affine[5]);
+    xmlAddChild(node, xmlNewText(BAD_CAST buff));
+
+    return node;
+}
+xmlNodePtr conting_util_point_node(const char *name, ArtPoint *p)
+{
+    xmlNodePtr node;
+    char buff[256];
+
+    node = xmlNewNode(NULL, BAD_CAST "attribute");
+    xmlNewProp(node, BAD_CAST "type", BAD_CAST "point");
+    xmlNewProp(node, BAD_CAST "name", BAD_CAST name);
+
+    sprintf(buff, "%lf %lf", p->x, p->y);
+    xmlAddChild(node, xmlNewText(BAD_CAST buff));
+
+    return node;
+}
+xmlNodePtr conting_util_drawing_node(const char *name, ContingDrawing *drawing)
+{
+    xmlNodePtr node;
+    guint id;
+    char buff[256];
+
+    node = xmlNewNode(NULL, BAD_CAST "attribute");
+    xmlNewProp(node, BAD_CAST "type", BAD_CAST "drawing");
+    xmlNewProp(node, BAD_CAST "name", name);
+    
+    g_object_get(G_OBJECT(drawing),
+            "id", &id,
+            NULL);
+    sprintf(buff, "%u\n", id);
+    xmlNewProp(node, BAD_CAST "id", BAD_CAST buff);
+
+    return NULL;
 }

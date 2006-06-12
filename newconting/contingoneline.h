@@ -53,4 +53,6 @@ GSList *conting_one_line_answer(ContingOneLine *self,
 void conting_one_line_delete_drawing(ContingOneLine *self, ContingDrawing *);
 void conting_one_line_set_widget(ContingOneLine *self, GtkWidget *widget);
 void conting_one_line_create(ContingOneLine *self, ContingDrawing *drawing);
+
+void conting_one_line_save(ContingOneLine *self, const char *filename);
 #endif /* CONTING_ONE_LINE_H */
