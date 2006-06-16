@@ -377,7 +377,6 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
 
         if (class_name && xmlStrEqual(class_name, "ContingBus")) {
             xmlNodePtr attr;
-            xmlFree(class_name);
 
             for (attr = class_node->children; attr; attr = attr->next) {
                 xmlChar *name, *type;
@@ -410,6 +409,9 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                 xmlFree(type);
             }
         }
+
+        if (class_name)
+            xmlFree(class_name);
     }
 
     priv->placed = TRUE;
