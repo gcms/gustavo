@@ -33,4 +33,5 @@ xmlNodePtr conting_util_hash_node(const char *name,
 xmlNodePtr conting_util_list_node(const char *name,
 		                          GList *list,
 								  ContingSerializeFunc serialize);
+void conting_util_load_affine(xmlNodePtr affine_node, gdouble affine[6]);
 #endif /* CONTING_UTIL_H */

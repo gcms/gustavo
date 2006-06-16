@@ -228,6 +228,59 @@ conting_drawing_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
 
     return CONTING_DRAWING_GET_CLASS(self)->xml_node(self, drawing_node);
 }
+void
+conting_drawing_place_xml(ContingDrawing *self, xmlNodePtr node,
+                          GHashTable *id_drawing)
+{
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+    CONTING_DRAWING_GET_CLASS(self)->place_xml(self, node, id_drawing);
+}
+
+static void
+conting_drawing_place_xml_impl(ContingDrawing *self, xmlNodePtr drawing_node,
+                               GHashTable *id_drawing)
+{
+    ContingDrawingPrivate *priv;
+    xmlChar *id;
+    xmlNodePtr class_node;
+
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+    id = xmlGetProp(drawing_node, BAD_CAST "id");
+    priv->id = strtoul(id, NULL, 10);
+
+    for (class_node = drawing_node->children; class_node;
+            class_node = class_node->next) {
+        xmlChar *class_name;
+
+        if (!xmlStrEqual(class_node->name, BAD_CAST "class"))
+            continue;
+
+        class_name = xmlGetProp(class_node, BAD_CAST "name");
+        if (class_name && xmlStrEqual(class_name, "ContingDrawing")) {
+            xmlNodePtr attr;
+
+            for (attr = class_node->children; attr; attr = attr->next) {
+                xmlChar *name, *type;
+                if (!xmlStrEqual(attr->name, BAD_CAST "attribute"))
+                    continue;
+
+                name = xmlGetProp(attr, BAD_CAST "name");
+                type = xmlGetProp(attr, BAD_CAST "type");
+
+                if (xmlStrEqual(type, BAD_CAST "affine")
+                        && xmlStrEqual(name, BAD_CAST "affine")) {
+                    conting_util_load_affine(attr, priv->affine);
+                }
+            }
+            break;
+        }
+    }
+    
+}
 
 static xmlNodePtr
 conting_drawing_xml_node_impl(ContingDrawing *self,
@@ -393,6 +446,7 @@ conting_drawing_class_init(gpointer g_class,
 	drawing_class->delete = conting_drawing_delete_impl;
 	drawing_class->get_affine = conting_drawing_get_affine_impl;
     drawing_class->xml_node = conting_drawing_xml_node_impl;
+    drawing_class->place_xml = conting_drawing_place_xml_impl;
 
 	move_signal_id = g_signal_newv(
 			"move",

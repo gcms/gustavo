@@ -319,6 +319,53 @@ static xmlNodePtr conting_bus_drawing_node(gconstpointer data)
 
 	return node;
 }
+static void
+conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
+                      GHashTable *id_drawing)
+{
+    ContingBusPrivate *priv;
+    xmlNodePtr class_node;
+
+    g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+
+    priv = CONTING_BUS_GET_PRIVATE(self);
+    
+    for (class_node = drawing_node->children; class_node;
+            class_node = class_node->next) {
+        xmlChar *class_name;
+
+        if (!xmlStrEqual(class_node->name, BAD_CAST "class"))
+            continue;
+
+        class_name = xmlGetProp(class_node, BAD_CAST "name");
+
+        if (class_name && xmlStrEqual(class_name, "ContingBus")) {
+            xmlNodePtr attr;
+
+            for (attr = class_node->children; attr; attr = attr->next) {
+                xmlChar *name, *type;
+
+                if (!xmlStrEqual(attr->name, BAD_CAST "attribute"))
+                    continue;
+
+                name = xmlGetProp(attr, BAD_CAST "name");
+                type = xmlGetProp(attr, BAD_CAST "type");
+
+                if (xmlStrEqual(type, BAD_CAST "point")
+                        && xmlStrEqual(name, BAD_CAST "p0")) {
+                } else if (xmlStrEqual(type, BAD_CAST "point")
+                        && xmlStrEqual(name, BAD_CAST "p1")) {
+                } else if (xmlStrEqual(type, BAD_CAST "affine")
+                        && xmlStrEqual(name, BAD_CAST "rotate")) {
+                    conting_util_load_affine(attr, priv->rotate);
+                } else if (xmlStrEqual(type, BAD_CAST "map")
+                        && xmlStrEqual(name, BAD_CAST "points")) {
+                }
+            }
+        }
+    }
+}
+
 static xmlNodePtr
 conting_bus_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
 {
@@ -640,6 +687,7 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
 	drawing_class->get_affine = conting_bus_get_affine;
 	drawing_class->delete = conting_bus_delete;
     drawing_class->xml_node = conting_bus_xml_node;
+    drawing_class->place_xml = conting_bus_place_xml;
 
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->link = conting_bus_link;
