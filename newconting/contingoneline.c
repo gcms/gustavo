@@ -123,6 +123,8 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
     xmlFreeDoc(doc);
 
     xmlCleanupParser();
+
+    conting_one_line_update(self, NULL);
 }
 
 void

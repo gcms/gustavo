@@ -404,7 +404,7 @@ conting_line_delete(ContingDrawing *self)
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
 static xmlNodePtr
-conting_line_point_node(gconstpointer data)
+conting_line_point_node(gconstpointer data, gpointer user_data)
 {
 	xmlNodePtr node;
 	char buff[256];
@@ -416,6 +416,108 @@ conting_line_point_node(gconstpointer data)
 	xmlAddChild(node, xmlNewText(BAD_CAST buff));
 
 	return node;
+}
+static gpointer
+conting_line_load_point(xmlNodePtr point_node, gpointer user_data)
+{
+    xmlChar *point_text;
+    ArtPoint *p = g_new(ArtPoint, 1);
+    assert(xmlStrEqual(point_node->name, "point"));
+
+    point_text = xmlNodeListGetString(point_node->doc, point_node->children,
+            TRUE);
+
+    sscanf(point_text, "%lf %lf", &p->x, &p->y);
+
+    xmlFree(point_text);
+
+    return p;
+}
+
+static void
+conting_line_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
+        GHashTable *id_drawing)
+{
+    ContingLinePrivate *priv;
+    xmlNodePtr class_node;
+    ArtPoint link0, link1;
+    GList *n;
+
+    g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+    priv = CONTING_LINE_GET_PRIVATE(self);
+
+    for (class_node = drawing_node->children; class_node;
+            class_node = class_node->next) {
+        xmlChar *class_name;
+
+        if (!xmlStrEqual(class_node->name, BAD_CAST "class"))
+            continue;
+
+        class_name = xmlGetProp(class_node, BAD_CAST "name");
+
+        if (class_name && xmlStrEqual(class_name, "ContingLine")) {
+            xmlNodePtr attr;
+            xmlFree(class_name);
+
+            for (attr = class_node->children; attr; attr = attr->next) {
+                xmlChar *name, *type;
+
+                if (!xmlStrEqual(attr->name, BAD_CAST "attribute"))
+                    continue;
+
+                name = xmlGetProp(attr, BAD_CAST "name");
+                type = xmlGetProp(attr, BAD_CAST "type");
+
+                if (xmlStrEqual(type, BAD_CAST "drawing")
+                        && xmlStrEqual(name, BAD_CAST "comp0")) {
+                    priv->comp0 = CONTING_COMPONENT(
+                            conting_util_load_drawing(attr, id_drawing));
+			        g_signal_connect(G_OBJECT(priv->comp0), "move",
+					        G_CALLBACK(conting_line_link_moved), self);
+        			g_signal_connect_swapped(G_OBJECT(self), "move",
+		        			G_CALLBACK(conting_line_link_moved), priv->comp0);
+        			g_signal_connect(G_OBJECT(priv->comp0), "delete",
+		        			G_CALLBACK(conting_line_link_deleted), self);
+                } else if (xmlStrEqual(type, BAD_CAST "drawing")
+                        && xmlStrEqual(name, BAD_CAST "comp1")) {
+                    priv->comp1 = CONTING_COMPONENT(
+                            conting_util_load_drawing(attr, id_drawing));
+			        g_signal_connect(G_OBJECT(priv->comp1), "move",
+					        G_CALLBACK(conting_line_link_moved), self);
+        			g_signal_connect_swapped(G_OBJECT(self), "move",
+		        			G_CALLBACK(conting_line_link_moved), priv->comp1);
+        			g_signal_connect(G_OBJECT(priv->comp1), "delete",
+		        			G_CALLBACK(conting_line_link_deleted), self);
+                } else if (xmlStrEqual(type, BAD_CAST "point")
+                        && xmlStrEqual(name, BAD_CAST "link0")) {
+                    conting_util_load_point(attr, &link0);
+                } else if (xmlStrEqual(type, BAD_CAST "point")
+                        && xmlStrEqual(name, BAD_CAST "link1")) {
+                    conting_util_load_point(attr, &link1);
+                } else if (xmlStrEqual(type, BAD_CAST "list")
+                        && xmlStrEqual(name, BAD_CAST "points")) {
+                    conting_util_load_list(attr, &priv->points,
+                            conting_line_load_point, NULL);
+                }
+            }
+        }
+    }
+
+    for (n = priv->points; n != NULL; n = g_list_next(n)) {
+        ArtPoint *p = n->data;
+        if (p->x == link0.x && p->y == link0.y) {
+            priv->link0 = n->data;
+        } else if (p->x == link1.x && p->y == link1.y) {
+            priv->link1 = n->data;
+        }
+    }
+
+    priv->placing = FALSE;
+    priv->placed = TRUE;
+
+    CONTING_DRAWING_CLASS(parent_class)->place_xml(self, drawing_node,
+            id_drawing);
 }
 
 static xmlNodePtr
@@ -442,7 +544,7 @@ conting_line_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
 			conting_util_point_node("link1", priv->link1));
 	xmlAddChild(class_node,
 			conting_util_list_node("points", priv->points,
-				conting_line_point_node));
+				conting_line_point_node, NULL));
 
 	xmlAddChild(drawing_node, class_node);
 
@@ -688,6 +790,7 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->event = conting_line_event;
 	drawing_class->delete = conting_line_delete;
 	drawing_class->xml_node = conting_line_xml_node;
+	drawing_class->place_xml = conting_line_place_xml;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;
