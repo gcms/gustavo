@@ -40,6 +40,92 @@ struct ContingOneLinePrivate_ {
 };
 
 void
+conting_one_line_clear(ContingOneLine *self)
+{
+    ContingOneLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    while (priv->drawings) {
+        conting_drawing_delete(CONTING_DRAWING(priv->drawings->data));
+    }
+}
+
+void
+conting_one_line_open(ContingOneLine *self, const char *filename)
+{
+    ContingOneLinePrivate *priv;
+    xmlDocPtr doc;
+    xmlNodePtr oneline;
+    xmlNodePtr drawing_node;
+    GHashTable *id_drawing;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    conting_one_line_clear(self);
+
+    id_drawing = g_hash_table_new(NULL, NULL);
+
+    LIBXML_TEST_VERSION
+
+    doc = xmlReadFile(filename, NULL, 0);
+
+    oneline = xmlDocGetRootElement(doc);
+
+    for (drawing_node = oneline->children; drawing_node;
+            drawing_node = drawing_node->next) {
+        xmlChar *id, *class;
+        ContingDrawing *drawing;
+
+        if (!xmlStrEqual(drawing_node->name, BAD_CAST "drawing"))
+            continue;
+
+        id = xmlGetProp(drawing_node, BAD_CAST "id");
+        class = xmlGetProp(drawing_node, BAD_CAST "class");
+
+        drawing = CONTING_DRAWING(g_object_new(g_type_from_name(class),
+                "one-line", self,
+                NULL));
+
+        printf("putting %lu = %p\n", strtoul(id, NULL, 10), drawing);
+
+        g_hash_table_insert(id_drawing,
+                GUINT_TO_POINTER(strtoul(id, NULL, 10)), drawing);
+
+        xmlFree(id);
+        xmlFree(class);
+    }
+
+    for (drawing_node = oneline->children; drawing_node;
+            drawing_node = drawing_node->next) {
+        xmlChar *id;
+        ContingDrawing *drawing;
+
+        if (!xmlStrEqual(drawing_node->name, BAD_CAST "drawing"))
+            continue;
+
+        id = xmlGetProp(drawing_node, BAD_CAST "id");
+        drawing = g_hash_table_lookup(id_drawing,
+                GUINT_TO_POINTER(strtoul(id, NULL, 10)));
+        printf("drawing %lu = %p\n", strtoul(id, NULL, 10), drawing);
+        
+        
+        conting_drawing_place_xml(drawing, drawing_node, id_drawing);
+        priv->drawings = g_slist_append(priv->drawings, drawing);
+
+        xmlFree(id);
+    }
+
+    xmlFreeDoc(doc);
+
+    xmlCleanupParser();
+}
+
+void
 conting_one_line_save(ContingOneLine *self, const char *filename)
 {
     ContingOneLinePrivate *priv;

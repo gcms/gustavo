@@ -47,6 +47,8 @@ struct ContingDrawingClass_ {
 	gboolean (*event)(ContingDrawing *self, GdkEvent *event);
 
     xmlNodePtr (*xml_node)(ContingDrawing *self, xmlNodePtr drawing_node);
+    void (*place_xml)(ContingDrawing *self, xmlNodePtr drawing_node,
+            GHashTable *id_drawing);
 };
 
 GType conting_drawing_get_type(void);
@@ -82,6 +84,8 @@ gboolean conting_drawing_is_selected(ContingDrawing *self);
 void conting_drawing_delete(ContingDrawing *self);
 xmlNodePtr conting_drawing_xml_node(ContingDrawing *self,
         xmlNodePtr drawing_node);
+void conting_drawing_place_xml(ContingDrawing *self, xmlNodePtr node,
+                               GHashTable *id_drawing);
 
 G_END_DECLS
 

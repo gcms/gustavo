@@ -13,8 +13,51 @@ static void
 save_menu_activate(GtkMenuItem *menuitem,
                    gpointer user_data)  
 {
-    conting_one_line_save(oneline, "-");
+    GtkWidget *save;
+
+    save = gtk_file_chooser_dialog_new("Save One Line Diagram",
+            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+            GTK_FILE_CHOOSER_ACTION_SAVE,
+            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+            GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+            NULL);
+
+    if (gtk_dialog_run(GTK_DIALOG(save)) == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(save));
+        conting_one_line_save(oneline, filename);
+        g_free(filename);
+    }
+
+    gtk_widget_destroy(save);
 }
+
+static void
+open_menu_activate(GtkMenuItem *menuitem,
+                   gpointer user_data)  
+{
+    GtkWidget *open;
+
+    open = gtk_file_chooser_dialog_new("Open One Line Diagram",
+            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+            GTK_FILE_CHOOSER_ACTION_OPEN,
+            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+            GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+            NULL);
+
+    if (gtk_dialog_run(GTK_DIALOG(open)) == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open));
+        conting_one_line_open(oneline, filename);
+        g_free(filename);
+    }
+
+    gtk_widget_destroy(open);
+}
+
+
 
 static void
 toolbutton_clicked(GtkToolButton *button,
@@ -152,6 +195,8 @@ int main(int argc, char *argv[]) {
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
 	menu = submenu;
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
+    g_signal_connect(G_OBJECT(submenu), "activate",
+            G_CALLBACK(open_menu_activate), NULL);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
     g_signal_connect(G_OBJECT(submenu), "activate",

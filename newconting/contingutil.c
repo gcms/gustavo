@@ -156,3 +156,14 @@ xmlNodePtr conting_util_list_node(const char *name,
 
 	return node;
 }
+
+void conting_util_load_affine(xmlNodePtr affine_node, gdouble affine[6])
+{
+    xmlChar *affine_text;
+
+    affine_text = xmlNodeListGetString(affine_node->doc, affine_node, TRUE);
+
+    sscanf(affine_text, "%lf %lf %lf %lf %lf %lf",
+            affine, affine + 1, affine + 2,
+            affine + 3, affine + 4, affine + 5);
+}
