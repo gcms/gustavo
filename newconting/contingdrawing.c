@@ -249,6 +249,8 @@ conting_drawing_place_xml_impl(ContingDrawing *self, xmlNodePtr drawing_node,
 
     priv = CONTING_DRAWING_GET_PRIVATE(self);
 
+    printf("conting_drawing_place_xml()\n");
+
     id = xmlGetProp(drawing_node, BAD_CAST "id");
     priv->id = strtoul(id, NULL, 10);
 
@@ -262,6 +264,7 @@ conting_drawing_place_xml_impl(ContingDrawing *self, xmlNodePtr drawing_node,
         class_name = xmlGetProp(class_node, BAD_CAST "name");
         if (class_name && xmlStrEqual(class_name, "ContingDrawing")) {
             xmlNodePtr attr;
+            xmlFree(class_name);
 
             for (attr = class_node->children; attr; attr = attr->next) {
                 xmlChar *name, *type;
@@ -278,6 +281,7 @@ conting_drawing_place_xml_impl(ContingDrawing *self, xmlNodePtr drawing_node,
             }
             break;
         }
+
     }
     
 }

@@ -2,6 +2,7 @@
 #include "contingutil.h"
 #include <string.h>
 #include <math.h>
+#include <assert.h>
 
 #define CONTING_BUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_BUS, ContingBusPrivate))
@@ -285,7 +286,7 @@ static void conting_bus_delete(ContingDrawing *self)
 
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
-static xmlNodePtr conting_bus_point_node(gconstpointer data)
+static xmlNodePtr conting_bus_point_node(gconstpointer data, gpointer user_data)
 {
 	xmlNodePtr node;
 	char buff[256];
@@ -299,7 +300,7 @@ static xmlNodePtr conting_bus_point_node(gconstpointer data)
 
 	return node;
 }
-static xmlNodePtr conting_bus_drawing_node(gconstpointer data)
+static xmlNodePtr conting_bus_drawing_node(gconstpointer data, gpointer user_data)
 {
 	xmlNodePtr node;
 	char buff[256];
@@ -318,6 +319,41 @@ static xmlNodePtr conting_bus_drawing_node(gconstpointer data)
 	xmlNewProp(node, BAD_CAST "id", BAD_CAST buff);
 
 	return node;
+}
+
+static gpointer
+conting_bus_load_drawing(xmlNodePtr node, gpointer user_data)
+{
+    GHashTable *id_drawing = user_data;
+    xmlChar *id;
+    gpointer result;
+
+    assert(xmlStrEqual(node->name, "drawing"));
+
+    id = xmlGetProp(node, BAD_CAST "id");
+
+    result = g_hash_table_lookup(id_drawing,
+            GUINT_TO_POINTER(strtoul(id, NULL, 10)));
+    assert(result);
+
+    xmlFree(id);
+
+    return result;
+}
+static gpointer
+conting_bus_load_point(xmlNodePtr node, gpointer user_data)
+{
+    xmlChar *point_text;
+    ArtPoint *p = g_new(ArtPoint, 1);
+    assert(xmlStrEqual(node->name, "point"));
+
+    point_text = xmlNodeListGetString(node->doc, node->children, TRUE);
+
+    sscanf(point_text, "%lf %lf", &p->x, &p->y);
+
+    xmlFree(point_text);
+
+    return p;
 }
 static void
 conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
@@ -341,6 +377,7 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
 
         if (class_name && xmlStrEqual(class_name, "ContingBus")) {
             xmlNodePtr attr;
+            xmlFree(class_name);
 
             for (attr = class_node->children; attr; attr = attr->next) {
                 xmlChar *name, *type;
@@ -351,19 +388,34 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                 name = xmlGetProp(attr, BAD_CAST "name");
                 type = xmlGetProp(attr, BAD_CAST "type");
 
+                printf("type = %s\tname = %s\n", type, name);
+
                 if (xmlStrEqual(type, BAD_CAST "point")
                         && xmlStrEqual(name, BAD_CAST "p0")) {
+                    conting_util_load_point(attr, &priv->p0);
                 } else if (xmlStrEqual(type, BAD_CAST "point")
                         && xmlStrEqual(name, BAD_CAST "p1")) {
+                    conting_util_load_point(attr, &priv->p1);
                 } else if (xmlStrEqual(type, BAD_CAST "affine")
                         && xmlStrEqual(name, BAD_CAST "rotate")) {
                     conting_util_load_affine(attr, priv->rotate);
                 } else if (xmlStrEqual(type, BAD_CAST "map")
                         && xmlStrEqual(name, BAD_CAST "points")) {
+                    conting_util_load_hash(attr, priv->points,
+                            conting_bus_load_drawing, conting_bus_load_point,
+                            id_drawing);
                 }
+
+                xmlFree(name);
+                xmlFree(type);
             }
         }
     }
+
+    priv->placed = TRUE;
+
+    CONTING_DRAWING_CLASS(parent_class)->place_xml(self,
+            drawing_node, id_drawing);
 }
 
 static xmlNodePtr
@@ -386,7 +438,7 @@ conting_bus_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
     xmlAddChild(class_node, conting_util_affine_node("rotate", priv->rotate));
 
 	xmlAddChild(class_node, conting_util_hash_node("points", priv->points,
-				conting_bus_drawing_node, conting_bus_point_node));
+				conting_bus_drawing_node, conting_bus_point_node, NULL));
 
     xmlAddChild(drawing_node, class_node);
 
