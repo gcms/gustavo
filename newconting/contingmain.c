@@ -16,7 +16,7 @@ save_menu_activate(GtkMenuItem *menuitem,
     GtkWidget *save;
 
     save = gtk_file_chooser_dialog_new("Save One Line Diagram",
-            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+            GTK_WINDOW(user_data),
             GTK_FILE_CHOOSER_ACTION_SAVE,
             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
@@ -40,7 +40,7 @@ open_menu_activate(GtkMenuItem *menuitem,
     GtkWidget *open;
 
     open = gtk_file_chooser_dialog_new("Open One Line Diagram",
-            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+            GTK_WINDOW(user_data),
             GTK_FILE_CHOOSER_ACTION_OPEN,
             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
@@ -57,6 +57,12 @@ open_menu_activate(GtkMenuItem *menuitem,
     gtk_widget_destroy(open);
 }
 
+static void
+close_menu_activate(GtkMenuItem *menuitem,
+                    gpointer user_data)
+{
+    gtk_widget_destroy(GTK_WIDGET(user_data));
+}
 
 
 static void
@@ -196,15 +202,17 @@ int main(int argc, char *argv[]) {
 	menu = submenu;
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
     g_signal_connect(G_OBJECT(submenu), "activate",
-            G_CALLBACK(open_menu_activate), NULL);
+            G_CALLBACK(open_menu_activate), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
     g_signal_connect(G_OBJECT(submenu), "activate",
-            G_CALLBACK(save_menu_activate), NULL);
+            G_CALLBACK(save_menu_activate), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu),
 			gtk_separator_menu_item_new());
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_CLOSE, NULL);
+    g_signal_connect(G_OBJECT(submenu), "activate",
+            G_CALLBACK(close_menu_activate), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
     gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 

@@ -502,7 +502,7 @@ conting_trans2_xml_node(ContingDrawing *self,
 	priv = CONTING_TRANS2_GET_PRIVATE(self);
 
 	class_node = xmlNewNode(NULL, BAD_CAST "class");
-	xmlNewProp(class_node, BAD_CAST "type",
+	xmlNewProp(class_node, BAD_CAST "name",
 			BAD_CAST g_type_name(CONTING_TYPE_TRANS2));
 
 	xmlAddChild(class_node,
@@ -524,6 +524,78 @@ conting_trans2_xml_node(ContingDrawing *self,
 
 	return CONTING_DRAWING_CLASS(parent_class)->xml_node(self, drawing_node);
 }
+static void
+conting_trans2_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
+                         GHashTable *id_drawing)
+{
+    ContingTrans2Private *priv;
+    xmlNodePtr class_node;
+
+    g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+
+    priv = CONTING_TRANS2_GET_PRIVATE(self);
+
+    g_print("conting_trans2_place_xml()\n");
+
+    for (class_node = drawing_node->children; class_node;
+            class_node = class_node->next) {
+        xmlChar *class_name;
+
+        if (!xmlStrEqual(class_node->name, BAD_CAST "class"))
+            continue;
+
+        
+        class_name = xmlGetProp(class_node, BAD_CAST "name");
+
+        if (class_name && xmlStrEqual(class_name, "ContingTrans2")) {
+            xmlNodePtr attr;
+
+            for (attr = class_node->children; attr; attr = attr->next) {
+                xmlChar *name, *type;
+
+                if (!xmlStrEqual(attr->name, BAD_CAST "attribute"))
+                    continue;
+
+                name = xmlGetProp(attr, BAD_CAST "name");
+                type = xmlGetProp(attr, BAD_CAST "type");
+
+                printf("type = %s\tname = %s\n", type, name);
+
+                if (xmlStrEqual(type, BAD_CAST "point")
+                        && xmlStrEqual(name, BAD_CAST "p0")) {
+                    conting_util_load_point(attr, &priv->p0);
+                } else if (xmlStrEqual(type, BAD_CAST "point")
+                        && xmlStrEqual(name, BAD_CAST "p1")) {
+                    conting_util_load_point(attr, &priv->p1);
+                } else if (xmlStrEqual(type, BAD_CAST "drawing")
+                        && xmlStrEqual(name, BAD_CAST "link0")) {
+                    priv->link0 = conting_util_load_drawing(attr, id_drawing);
+                } else if (xmlStrEqual(type, BAD_CAST "drawing")
+                        && xmlStrEqual(name, BAD_CAST "link1")) {
+                    priv->link1 = conting_util_load_drawing(attr, id_drawing);
+                } else if (xmlStrEqual(type, BAD_CAST "affine")
+                        && xmlStrEqual(name, BAD_CAST "rotate")) {
+                    conting_util_load_affine(attr, priv->rotate);
+                    printf("%lf %lf %lf %lf %lf %lf\n",
+                            priv->rotate[0], priv->rotate[1], priv->rotate[2],
+                            priv->rotate[3], priv->rotate[4], priv->rotate[5]);
+                }
+
+                xmlFree(name);
+                xmlFree(type);
+            }
+        }
+
+        if (class_name)
+            xmlFree(class_name);
+    }
+
+    priv->placed = TRUE;
+
+    CONTING_DRAWING_CLASS(parent_class)->place_xml(self,
+            drawing_node, id_drawing);
+
+}
 
 
 static void
@@ -543,6 +615,7 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
     drawing_class->get_affine = conting_trans2_get_affine;
     drawing_class->delete = conting_trans2_delete;
 	drawing_class->xml_node = conting_trans2_xml_node;
+	drawing_class->place_xml = conting_trans2_place_xml;
 
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = conting_trans2_link;

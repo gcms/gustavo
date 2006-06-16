@@ -120,6 +120,8 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
         xmlFree(id);
     }
 
+    g_hash_table_destroy(id_drawing);
+
     xmlFreeDoc(doc);
 
     xmlCleanupParser();
@@ -141,6 +143,8 @@ conting_one_line_save(ContingOneLine *self, const char *filename)
     g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    LIBXML_TEST_VERSION
 
     doc = xmlNewDoc(BAD_CAST "1.0");
     root_node = xmlNewNode(NULL, BAD_CAST "one-line");
