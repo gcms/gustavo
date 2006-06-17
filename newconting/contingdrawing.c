@@ -7,9 +7,9 @@ static gint move_signal_id = 0;
 static gint delete_signal_id = 0;
 
 enum {
-	CONTING_DRAWING_PROP_0,
+    CONTING_DRAWING_PROP_0,
     CONTING_DRAWING_PROP_ONE_LINE,
-	CONTING_DRAWING_PROP_GROUP,
+    CONTING_DRAWING_PROP_GROUP,
     CONTING_DRAWING_PROP_ID
 };
 
@@ -19,13 +19,13 @@ enum {
 typedef struct ContingDrawingPrivate_ ContingDrawingPrivate;
 struct ContingDrawingPrivate_ {
     ContingOneLine *oneline;
-	ContingGroup *group;
+    ContingGroup *group;
 
     guint id;
 
-	gdouble affine[6];
+    gdouble affine[6];
 
-	gboolean selected;
+    gboolean selected;
 };
 
 void
@@ -41,184 +41,230 @@ conting_drawing_draw(ContingDrawing *self,
 ContingOneLine *
 conting_drawing_get_one_line(ContingDrawing *self)
 {
-	ContingOneLine *oneline;
+    ContingOneLine *oneline;
 
-	g_object_get(G_OBJECT(self),
-			"one-line", &oneline,
-			NULL);
+    g_object_get(G_OBJECT(self),
+            "one-line", &oneline,
+            NULL);
 
-	return oneline;
+    return oneline;
 }
 
 ContingGroup *
 conting_drawing_get_group(ContingDrawing *self)
 {
-	ContingGroup *group;
+    ContingGroup *group;
 
-	g_object_get(G_OBJECT(self),
-			"group", &group,
-			NULL);
+    g_object_get(G_OBJECT(self),
+            "group", &group,
+            NULL);
 
-	return group;
+    return group;
 }
 
 void
 conting_drawing_affine(ContingDrawing *self,
                        const gdouble affine[6])
 {
-	ContingDrawingPrivate *priv;
+    ContingDrawingPrivate *priv;
 
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	priv = CONTING_DRAWING_GET_PRIVATE(self);
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	art_affine_multiply(priv->affine, priv->affine, affine);
+    art_affine_multiply(priv->affine, priv->affine, affine);
 }
 void
 conting_drawing_affine_absolute(ContingDrawing *self,
                        const gdouble affine[6])
 {
-	ContingDrawingPrivate *priv;
+    ContingDrawingPrivate *priv;
 
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	priv = CONTING_DRAWING_GET_PRIVATE(self);
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	memcpy(priv->affine, affine, 6 * sizeof(double));
+    memcpy(priv->affine, affine, 6 * sizeof(double));
+}
+
+void
+conting_drawing_i2w(ContingDrawing *self, ArtPoint *dst, ArtPoint *src) {
+    gdouble affine[6];
+
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+    conting_drawing_get_i2w_affine(self, affine);
+    art_affine_point(dst, src, affine);
+}
+
+void
+conting_drawing_w2i(ContingDrawing *self, ArtPoint *dst, ArtPoint *src) {
+    gdouble affine[6];
+
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+    conting_drawing_get_w2i_affine(self, affine);
+    art_affine_point(dst, src, affine);
 }
 
 static void
-conting_drawing_get_affine_impl(ContingDrawing *self,
-		                   gdouble affine[6])
+conting_drawing_get_i2w_affine_impl(ContingDrawing *self,
+                           gdouble affine[6])
 {
-	ContingDrawingPrivate *priv;
+    ContingDrawingPrivate *priv;
 
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	priv = CONTING_DRAWING_GET_PRIVATE(self);
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	memcpy(affine, priv->affine, 6 * sizeof(gdouble));
+    memcpy(affine, priv->affine, 6 * sizeof(gdouble));
 }
 
-void conting_drawing_get_affine(ContingDrawing *self,
-						        gdouble affine[6])
+static void
+conting_drawing_get_w2i_affine_impl(ContingDrawing *self,
+                                    gdouble affine[6])
+{
+    ContingDrawingPrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+    art_affine_invert(affine, priv->affine);
+}
+
+
+void
+conting_drawing_get_i2w_affine(ContingDrawing *self,
+                                gdouble affine[6])
 {
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	CONTING_DRAWING_GET_CLASS(self)->get_affine(self, affine);
+    CONTING_DRAWING_GET_CLASS(self)->get_i2w_affine(self, affine);
 }
+
+void
+conting_drawing_get_w2i_affine(ContingDrawing *self,
+                                gdouble affine[6])
+{
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+    CONTING_DRAWING_GET_CLASS(self)->get_w2i_affine(self, affine);
+}
+
+
 
 void
 conting_drawing_get_bounds(ContingDrawing *self,
                            ArtDRect *rect)
 {
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	CONTING_DRAWING_GET_CLASS(self)->get_bounds(self, rect);
+    CONTING_DRAWING_GET_CLASS(self)->get_bounds(self, rect);
 }
 void
 conting_drawing_place(ContingDrawing *self)
 {
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	CONTING_DRAWING_GET_CLASS(self)->place(self);
+    CONTING_DRAWING_GET_CLASS(self)->place(self);
 }
 
 gboolean
 conting_drawing_is_placed(ContingDrawing *self)
 {
-	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+    g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
-	return CONTING_DRAWING_GET_CLASS(self)->is_placed(self);
+    return CONTING_DRAWING_GET_CLASS(self)->is_placed(self);
 }
 gboolean
 conting_drawing_answer(ContingDrawing *self,
-		               gdouble world_x, gdouble world_y)
+                       gdouble world_x, gdouble world_y)
 {
-	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+    g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
-	return CONTING_DRAWING_GET_CLASS(self)->answer(self, world_x, world_y);
+    return CONTING_DRAWING_GET_CLASS(self)->answer(self, world_x, world_y);
 }
 gboolean
 conting_drawing_event(ContingDrawing *self,
-		              GdkEvent *event)
+                      GdkEvent *event)
 {
-	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+    g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
-	if (CONTING_DRAWING_GET_CLASS(self)->event)
-		return CONTING_DRAWING_GET_CLASS(self)->event(self, event);
+    if (CONTING_DRAWING_GET_CLASS(self)->event)
+        return CONTING_DRAWING_GET_CLASS(self)->event(self, event);
 
-	return FALSE;
+    return FALSE;
 }
 
 void
 conting_drawing_grab(ContingDrawing *self)
 {
-	ContingGroup *group;
+    ContingGroup *group;
 
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	if ((group = conting_drawing_get_group(self)) != NULL)
-		conting_group_grab(group, self);
-	else
-		conting_one_line_grab(conting_drawing_get_one_line(self), self);
+    if ((group = conting_drawing_get_group(self)) != NULL)
+        conting_group_grab(group, self);
+    else
+        conting_one_line_grab(conting_drawing_get_one_line(self), self);
 }
 
 void
 conting_drawing_ungrab(ContingDrawing *self)
 {
-	ContingGroup *group;
+    ContingGroup *group;
 
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	if ((group = conting_drawing_get_group(self)) != NULL)
-		conting_group_grab(group, self);
-	else
-		conting_one_line_ungrab(conting_drawing_get_one_line(self), self);
+    if ((group = conting_drawing_get_group(self)) != NULL)
+        conting_group_grab(group, self);
+    else
+        conting_one_line_ungrab(conting_drawing_get_one_line(self), self);
 }
 
 void
 conting_drawing_update(ContingDrawing *self)
 {
-	ArtDRect bounds;
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+    ArtDRect bounds;
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	conting_drawing_get_bounds(self, &bounds);
-	conting_one_line_update(conting_drawing_get_one_line(self), &bounds);
+    conting_drawing_get_bounds(self, &bounds);
+    conting_one_line_update(conting_drawing_get_one_line(self), &bounds);
 }
 void
 conting_drawing_set_selected(ContingDrawing *self,
-		                     gboolean selected)
+                             gboolean selected)
 {
-	ContingDrawingPrivate *priv;
+    ContingDrawingPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	priv = CONTING_DRAWING_GET_PRIVATE(self);
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	if (priv->selected != selected) {
-		priv->selected = selected;
-		conting_drawing_update(self);
-	}
+    if (priv->selected != selected) {
+        priv->selected = selected;
+        conting_drawing_update(self);
+    }
 }
 gboolean
 conting_drawing_is_selected(ContingDrawing *self)
 {
-	ContingDrawingPrivate *priv;
+    ContingDrawingPrivate *priv;
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+    g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
-	priv = CONTING_DRAWING_GET_PRIVATE(self);
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	return priv->selected;
+    return priv->selected;
 }
 
 void
 conting_drawing_delete(ContingDrawing *self)
 {
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	CONTING_DRAWING_GET_CLASS(self)->delete(self);
+    CONTING_DRAWING_GET_CLASS(self)->delete(self);
 }
 
 xmlNodePtr
@@ -310,14 +356,14 @@ conting_drawing_xml_node_impl(ContingDrawing *self,
 static void
 conting_drawing_delete_impl(ContingDrawing *self)
 {
-	ContingDrawingPrivate *priv;
+    ContingDrawingPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-	priv = CONTING_DRAWING_GET_PRIVATE(self);
+    priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
-			self);
+    conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
+            self);
 }
 
 static void
@@ -336,9 +382,9 @@ conting_drawing_get_property(GObject *self,
         case CONTING_DRAWING_PROP_ONE_LINE:
             g_value_set_object(value, priv->oneline);
             break;
-		case CONTING_DRAWING_PROP_GROUP:
-			g_value_set_object(value, priv->group);
-			break;
+        case CONTING_DRAWING_PROP_GROUP:
+            g_value_set_object(value, priv->group);
+            break;
         case CONTING_DRAWING_PROP_ID:
             g_value_set_uint(value, priv->id);
             break;
@@ -364,9 +410,9 @@ conting_drawing_set_property(GObject *self,
         case CONTING_DRAWING_PROP_ONE_LINE:
             priv->oneline = g_value_get_object(value);
             break;
-		case CONTING_DRAWING_PROP_GROUP:
-			priv->group = g_value_get_object(value);
-			break;
+        case CONTING_DRAWING_PROP_GROUP:
+            priv->group = g_value_get_object(value);
+            break;
         case CONTING_DRAWING_PROP_ID:
             priv->id = g_value_get_uint(value);
             break;
@@ -386,7 +432,7 @@ conting_drawing_get_id(void)
 
 static void
 conting_drawing_instance_init(GTypeInstance *self,
-							  gpointer g_class)
+                              gpointer g_class)
 {
     ContingDrawingPrivate *priv;
 
@@ -394,12 +440,12 @@ conting_drawing_instance_init(GTypeInstance *self,
 
     priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	art_affine_identity(priv->affine);
+    art_affine_identity(priv->affine);
 
-	priv->selected = FALSE;
+    priv->selected = FALSE;
 
-	priv->oneline = NULL;
-	priv->group = NULL;
+    priv->oneline = NULL;
+    priv->group = NULL;
 
     priv->id = conting_drawing_get_id();
 }
@@ -422,15 +468,15 @@ conting_drawing_class_init(gpointer g_class,
                                 "The one-line diagram of this item",
                                 CONTING_TYPE_ONE_LINE,
                                 G_PARAM_READABLE | G_PARAM_CONSTRUCT_ONLY
-							    | G_PARAM_WRITABLE));
+                                | G_PARAM_WRITABLE));
 
-	g_object_class_install_property(G_OBJECT_CLASS(g_class),
-			CONTING_DRAWING_PROP_GROUP,
-			g_param_spec_object("group",
-								"Group",
-								"Group in which the item is contained",
-								CONTING_TYPE_GROUP,
-								G_PARAM_READABLE | G_PARAM_WRITABLE));
+    g_object_class_install_property(G_OBJECT_CLASS(g_class),
+            CONTING_DRAWING_PROP_GROUP,
+            g_param_spec_object("group",
+                                "Group",
+                                "Group in which the item is contained",
+                                CONTING_TYPE_GROUP,
+                                G_PARAM_READABLE | G_PARAM_WRITABLE));
 
     g_object_class_install_property(G_OBJECT_CLASS(g_class),
             CONTING_DRAWING_PROP_ID,
@@ -443,40 +489,41 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = NULL;
     drawing_class->get_bounds = NULL;
-	drawing_class->place = NULL;
-	drawing_class->is_placed = NULL;
-	drawing_class->answer = NULL;
-	drawing_class->event = NULL;
-	drawing_class->delete = conting_drawing_delete_impl;
-	drawing_class->get_affine = conting_drawing_get_affine_impl;
+    drawing_class->place = NULL;
+    drawing_class->is_placed = NULL;
+    drawing_class->answer = NULL;
+    drawing_class->event = NULL;
+    drawing_class->delete = conting_drawing_delete_impl;
+    drawing_class->get_i2w_affine = conting_drawing_get_i2w_affine_impl;
+    drawing_class->get_w2i_affine = conting_drawing_get_w2i_affine_impl;
     drawing_class->xml_node = conting_drawing_xml_node_impl;
     drawing_class->place_xml = conting_drawing_place_xml_impl;
 
-	move_signal_id = g_signal_newv(
-			"move",
-			G_TYPE_FROM_CLASS(g_class),
-			G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-			NULL, /* class closure */
-			NULL, /* accumulator */
-			NULL, /* accu_data */
-			g_cclosure_marshal_VOID__VOID,
-			G_TYPE_NONE, /* return_type */
-			0,
-			NULL);
+    move_signal_id = g_signal_newv(
+            "move",
+            G_TYPE_FROM_CLASS(g_class),
+            G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            NULL, /* class closure */
+            NULL, /* accumulator */
+            NULL, /* accu_data */
+            g_cclosure_marshal_VOID__VOID,
+            G_TYPE_NONE, /* return_type */
+            0,
+            NULL);
 
-	delete_signal_id = g_signal_newv(
-			"delete",
-			G_TYPE_FROM_CLASS(g_class),
-			G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-			NULL,
-			NULL,
-			NULL,
-			g_cclosure_marshal_VOID__VOID,
-			G_TYPE_NONE,
-			0,
-			NULL);
+    delete_signal_id = g_signal_newv(
+            "delete",
+            G_TYPE_FROM_CLASS(g_class),
+            G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            NULL,
+            NULL,
+            NULL,
+            g_cclosure_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0,
+            NULL);
 
-	g_type_class_add_private(g_class, sizeof(ContingDrawingPrivate));
+    g_type_class_add_private(g_class, sizeof(ContingDrawingPrivate));
 }
 
 GType
