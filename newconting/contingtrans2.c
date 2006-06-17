@@ -13,10 +13,6 @@ static gpointer parent_class = NULL;
 
 typedef struct ContingTrans2Private_ ContingTrans2Private;
 struct ContingTrans2Private_ {
-    ArtPoint p0, p1;
-
-    gboolean placed;
-
     gboolean dragging;
     ArtPoint dragging_point;
 
@@ -27,10 +23,11 @@ struct ContingTrans2Private_ {
 
 static void
 conting_trans2_draw(ContingDrawing *self,
-                  GdkDrawable *drawable,
-                  const GdkRectangle *drawing_rect)
+                    GdkDrawable *drawable,
+                    const GdkRectangle *drawing_rect)
 {
     ContingTrans2Private *priv;
+    ContingComponent *comp;
     gdouble affine[6];
     ArtPoint pw0, pw1;
     GdkRectangle rect;
@@ -50,11 +47,12 @@ conting_trans2_draw(ContingDrawing *self,
     g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
     conting_drawing_get_affine(self, affine);
 
-    pw0 = priv->p0;
-    pw1 = priv->p1;
+    pw0 = comp->p0;
+    pw1 = comp->p1;
     pw1.y = pw1.y - (pw1.y - pw0.y) / 3;
 
     art_affine_point(&pw0, &pw0, affine);
@@ -72,8 +70,8 @@ conting_trans2_draw(ContingDrawing *self,
     gdk_draw_arc(drawable, gc, FALSE,
             rect.x, rect.y, rect.width, rect.height, 0, 360 * 64);
 
-    pw0 = priv->p0;
-    pw1 = priv->p1;
+    pw0 = comp->p0;
+    pw1 = comp->p1;
     pw0.y = pw0.y + (pw1.y - pw0.y) / 3;
 
     art_affine_point(&pw0, &pw0, affine);
@@ -91,8 +89,8 @@ conting_trans2_draw(ContingDrawing *self,
     gdk_draw_arc(drawable, gc, FALSE,
             rect.x, rect.y, rect.width, rect.height, 0, 360 * 64);
 
-    art_affine_point(&pw0, &priv->p0, affine);
-    art_affine_point(&pw1, &priv->p1, affine);
+    art_affine_point(&pw0, &comp->p0, affine);
+    art_affine_point(&pw1, &comp->p1, affine);
     conting_one_line_world_to_window(conting_drawing_get_one_line(self),
             pw0.x, pw0.y, &pw0.x, &pw0.y);
     conting_one_line_world_to_window(conting_drawing_get_one_line(self),
@@ -120,18 +118,20 @@ conting_trans2_get_link_point(ContingComponent *self,
                                  ArtPoint *p)
 {
     ContingTrans2Private *priv;
+    ContingComponent *comp;
     ArtPoint point;
     gdouble affine[6];
 
     g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
     point.x = 0;
     if (line == priv->link0) {
-        point.y = priv->p0.y;
+        point.y = comp->p0.y;
     } else if (line == priv->link1) {
-        point.y = priv->p1.y;
+        point.y = comp->p1.y;
     } else {
         return FALSE;
     }
@@ -143,77 +143,6 @@ conting_trans2_get_link_point(ContingComponent *self,
     art_affine_point(p, p, affine);
 
     return TRUE;
-}
-
-static void
-conting_trans2_get_bounds(ContingDrawing *self,
-                        ArtDRect *bounds)
-{
-    ContingTrans2Private *priv;
-    gdouble affine[6];
-    ArtPoint pw0, pw1;
-
-    g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    conting_drawing_get_affine(self, affine);
-
-    art_affine_point(&pw0, &priv->p0, affine);
-    art_affine_point(&pw1, &priv->p1, affine);
-
-    bounds->x0 = MIN(pw0.x, pw1.x);
-    bounds->y0 = MIN(pw0.y, pw1.y);
-    bounds->x1 = MAX(pw0.x, pw1.x);
-    bounds->y1 = MAX(pw0.y, pw1.y);
-
-    bounds->x0 -= TOLERANCE;
-    bounds->x1 += TOLERANCE;
-    bounds->y0 -= TOLERANCE;
-    bounds->y1 += TOLERANCE;
-}
-
-static void
-conting_trans2_place(ContingDrawing *self)
-{
-    ContingTrans2Private *priv;
-
-    g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    priv->placed = TRUE;
-
-    conting_drawing_set_selected(self, TRUE);
-}
-
-static gboolean
-conting_trans2_is_placed(ContingDrawing *self)
-{
-    ContingTrans2Private *priv;
-
-    g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    return priv->placed;
-}
-
-static gboolean
-conting_trans2_answer(ContingDrawing *self,
-                         gdouble world_x, gdouble world_y)
-{
-    ContingTrans2Private *priv;
-    ArtDRect bounds;
-
-    g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    conting_drawing_get_bounds(self, &bounds);
-    
-    return world_x >= bounds.x0 && world_x <= bounds.x1
-        && world_y >= bounds.y0 && world_y <= bounds.y1;
 }
 
 static void
@@ -233,17 +162,21 @@ conting_trans2_instance_init(GTypeInstance *self,
                            gpointer g_class)
 {
     ContingTrans2Private *priv;
+    ContingComponent *comp;
 
     g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
-    priv->p0.x = -5;
-    priv->p0.y = -8.5;
-    priv->p1.x = 5;
-    priv->p1.y = 8.5;
+    comp->p0.x = -5;
+    comp->p0.y = -8.5;
+    comp->p1.x = 5;
+    comp->p1.y = 8.5;
 
+    /*
     priv->placed = FALSE;
+    */
     priv->dragging = FALSE;
 
     priv->link0 = priv->link1 = NULL;
@@ -345,7 +278,7 @@ conting_trans2_event(ContingDrawing *self,
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
 
-    if (!priv->placed)
+    if (!conting_drawing_is_placed(self))
         return conting_trans2_event_place(self, event);
 
     conting_one_line_window_to_world(conting_drawing_get_one_line(self),
@@ -425,12 +358,14 @@ conting_trans2_link(ContingComponent *self,
                     ArtPoint *pw)
 {
     ContingTrans2Private *priv;
+    ContingComponent *comp;
     ArtPoint pi;
     gdouble invert[6], my_affine[6];
 
     g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
 	if (drawing == priv->link0
 			|| drawing == priv->link1) {
@@ -448,21 +383,21 @@ conting_trans2_link(ContingComponent *self,
     art_affine_point(&pi, &pi, invert);
     
     g_print("link: (%lf, %lf); (%lf, %lf) : (%lf, %lf)\n",
-            priv->p0.x, priv->p0.y, priv->p1.x, priv->p1.y,
+            comp->p0.x, comp->p0.y, comp->p1.x, comp->p1.y,
             pi.x, pi.y);
 
-    if (pi.y < priv->p0.y || pi.y > priv->p1.y
-            || pi.x < priv->p0.x || pi.x > priv->p1.x) {
+    if (pi.y < comp->p0.y || pi.y > comp->p1.y
+            || pi.x < comp->p0.x || pi.x > comp->p1.x) {
         return FALSE;
     }
 
-    if (fabs(pi.y - priv->p0.y) < fabs(pi.y - priv->p1.y)) {
-//        art_affine_translate(affine, priv->p0.x - pi.x, 0);
-        pi.y = priv->p0.y;
+    if (fabs(pi.y - comp->p0.y) < fabs(pi.y - comp->p1.y)) {
+//        art_affine_translate(affine, comp->p0.x - pi.x, 0);
+        pi.y = comp->p0.y;
 		priv->link0 = drawing;
     } else {
-//        art_affine_translate(affine, priv->p1.x - pi.x, 0);
-        pi.y = priv->p1.y;
+//        art_affine_translate(affine, comp->p1.x - pi.x, 0);
+        pi.y = comp->p1.y;
 		priv->link1 = drawing;
     }
 	pi.x = 0;
@@ -495,20 +430,22 @@ conting_trans2_xml_node(ContingDrawing *self,
 		                xmlNodePtr drawing_node)
 {
 	ContingTrans2Private *priv;
+    ContingComponent *comp;
 	xmlNodePtr class_node;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), NULL);
 
 	priv = CONTING_TRANS2_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
 	class_node = xmlNewNode(NULL, BAD_CAST "class");
 	xmlNewProp(class_node, BAD_CAST "name",
 			BAD_CAST g_type_name(CONTING_TYPE_TRANS2));
 
 	xmlAddChild(class_node,
-			conting_util_point_node("p0", &priv->p0));
+			conting_util_point_node("p0", &comp->p0));
 	xmlAddChild(class_node,
-			conting_util_point_node("p1", &priv->p1));
+			conting_util_point_node("p1", &comp->p1));
 
 	if (priv->link0)
 		xmlAddChild(class_node,
@@ -529,11 +466,13 @@ conting_trans2_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                          GHashTable *id_drawing)
 {
     ContingTrans2Private *priv;
+    ContingComponent *comp;
     xmlNodePtr class_node;
 
     g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
     g_print("conting_trans2_place_xml()\n");
 
@@ -563,10 +502,10 @@ conting_trans2_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
 
                 if (xmlStrEqual(type, BAD_CAST "point")
                         && xmlStrEqual(name, BAD_CAST "p0")) {
-                    conting_util_load_point(attr, &priv->p0);
+                    conting_util_load_point(attr, &comp->p0);
                 } else if (xmlStrEqual(type, BAD_CAST "point")
                         && xmlStrEqual(name, BAD_CAST "p1")) {
-                    conting_util_load_point(attr, &priv->p1);
+                    conting_util_load_point(attr, &comp->p1);
                 } else if (xmlStrEqual(type, BAD_CAST "drawing")
                         && xmlStrEqual(name, BAD_CAST "link0")) {
                     priv->link0 = conting_util_load_drawing(attr, id_drawing);
@@ -589,8 +528,9 @@ conting_trans2_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
         if (class_name)
             xmlFree(class_name);
     }
-
+/*
     priv->placed = TRUE;
+    */
 
     CONTING_DRAWING_CLASS(parent_class)->place_xml(self,
             drawing_node, id_drawing);
@@ -607,10 +547,6 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_trans2_draw;
-    drawing_class->get_bounds = conting_trans2_get_bounds;
-    drawing_class->place = conting_trans2_place;
-    drawing_class->is_placed = conting_trans2_is_placed;
-    drawing_class->answer = conting_trans2_answer;
     drawing_class->event = conting_trans2_event;
     drawing_class->get_affine = conting_trans2_get_affine;
     drawing_class->delete = conting_trans2_delete;
