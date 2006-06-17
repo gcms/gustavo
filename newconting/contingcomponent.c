@@ -36,7 +36,7 @@ conting_component_get_bounds(ContingDrawing *self,
 
     comp = CONTING_COMPONENT(self);
 
-	conting_drawing_get_affine(self, affine);
+	conting_drawing_get_i2w_affine(self, affine);
 
 	art_affine_point(&pw0, &comp->p0, affine);
 	art_affine_point(&pw1, &comp->p1, affine);

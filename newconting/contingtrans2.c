@@ -49,7 +49,7 @@ conting_trans2_draw(ContingDrawing *self,
     priv = CONTING_TRANS2_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-    conting_drawing_get_affine(self, affine);
+    conting_drawing_get_i2w_affine(self, affine);
 
     pw0 = comp->p0;
     pw1 = comp->p1;
@@ -138,7 +138,7 @@ conting_trans2_get_link_point(ContingComponent *self,
 
 
     *p = point;
-    conting_drawing_get_affine(CONTING_DRAWING(self), affine);
+    conting_drawing_get_i2w_affine(CONTING_DRAWING(self), affine);
 
     art_affine_point(p, p, affine);
 
@@ -374,7 +374,7 @@ conting_trans2_link(ContingComponent *self,
 
     pi.x = world_x;
     pi.y = world_y;
-    CONTING_DRAWING_CLASS(parent_class)->get_affine(CONTING_DRAWING(self),
+    CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(CONTING_DRAWING(self),
             my_affine);
     art_affine_invert(invert, my_affine);
     art_affine_point(&pi, &pi, invert);
@@ -402,7 +402,7 @@ conting_trans2_link(ContingComponent *self,
     }
 	pi.x = 0;
 
-    conting_drawing_get_affine(CONTING_DRAWING(self), my_affine);
+    conting_drawing_get_i2w_affine(CONTING_DRAWING(self), my_affine);
     art_affine_point(pw, &pi, my_affine);
 
     g_signal_connect(G_OBJECT(drawing), "delete",
@@ -411,7 +411,7 @@ conting_trans2_link(ContingComponent *self,
     return TRUE;
 }
 static void
-conting_trans2_get_affine(ContingDrawing *self,
+conting_trans2_get_i2w_affine(ContingDrawing *self,
                              gdouble affine[6])
 {
     ContingTrans2Private *priv;
@@ -420,7 +420,7 @@ conting_trans2_get_affine(ContingDrawing *self,
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
 
-    CONTING_DRAWING_CLASS(parent_class)->get_affine(self, affine);
+    CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(self, affine);
 
     art_affine_multiply(affine, priv->rotate, affine);
 }
@@ -548,7 +548,7 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_trans2_draw;
     drawing_class->event = conting_trans2_event;
-    drawing_class->get_affine = conting_trans2_get_affine;
+    drawing_class->get_i2w_affine = conting_trans2_get_i2w_affine;
     drawing_class->delete = conting_trans2_delete;
 	drawing_class->xml_node = conting_trans2_xml_node;
 	drawing_class->place_xml = conting_trans2_place_xml;

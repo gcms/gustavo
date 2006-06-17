@@ -30,21 +30,22 @@ struct ContingDrawingClass_ {
     GObjectClass parent;
 
     void (*draw)(ContingDrawing *self, GdkDrawable *drawable,
-			const GdkRectangle *drawing_rect);
+            const GdkRectangle *drawing_rect);
 
-	void (*place)(ContingDrawing *self);
-	gboolean (*is_placed)(ContingDrawing *self);
+    void (*place)(ContingDrawing *self);
+    gboolean (*is_placed)(ContingDrawing *self);
 
-	gboolean (*answer)(ContingDrawing *self,
-			gdouble world_x, gdouble world_y);
+    gboolean (*answer)(ContingDrawing *self,
+            gdouble world_x, gdouble world_y);
 
-	void (*get_bounds)(ContingDrawing *self, ArtDRect *rect);
+    void (*get_bounds)(ContingDrawing *self, ArtDRect *rect);
 
-	void (*get_affine)(ContingDrawing *self, gdouble affine[6]);
+    void (*get_i2w_affine)(ContingDrawing *self, gdouble affine[6]);
+    void (*get_w2i_affine)(ContingDrawing *self, gdouble affine[6]);
 
-	void (*delete)(ContingDrawing *self);
+    void (*delete)(ContingDrawing *self);
 
-	gboolean (*event)(ContingDrawing *self, GdkEvent *event);
+    gboolean (*event)(ContingDrawing *self, GdkEvent *event);
 
     xmlNodePtr (*xml_node)(ContingDrawing *self, xmlNodePtr drawing_node);
     void (*place_xml)(ContingDrawing *self, xmlNodePtr drawing_node,
@@ -54,7 +55,7 @@ struct ContingDrawingClass_ {
 GType conting_drawing_get_type(void);
 
 void conting_drawing_draw(ContingDrawing *self,
-		GdkDrawable *drawable, const GdkRectangle *drawing_rect);
+        GdkDrawable *drawable, const GdkRectangle *drawing_rect);
 
 #include "contingoneline.h"
 #include "continggroup.h"
@@ -63,15 +64,18 @@ ContingOneLine *conting_drawing_get_one_line(ContingDrawing *self);
 ContingGroup *conting_drawing_get_group(ContingDrawing *self);
 void conting_drawing_affine(ContingDrawing *self, const gdouble affine[6]);
 void conting_drawing_affine_absolute(ContingDrawing *self,
-		const gdouble affine[6]);
-void conting_drawing_get_affine(ContingDrawing *self, gdouble affine[6]);
+        const gdouble affine[6]);
+void conting_drawing_get_i2w_affine(ContingDrawing *self, gdouble affine[6]);
+void conting_drawing_get_w2i_affine(ContingDrawing *self, gdouble affine[6]);
+void conting_drawing_i2w(ContingDrawing *self, ArtPoint *src, ArtPoint *dst);
+void conting_drawing_w2i(ContingDrawing *self, ArtPoint *src, ArtPoint *dst);
 
 void conting_drawing_get_bounds(ContingDrawing *self, ArtDRect *rect);
 
 void conting_drawing_place(ContingDrawing *self);
 gboolean conting_drawing_is_placed(ContingDrawing *self);
 gboolean conting_drawing_answer(ContingDrawing *self,
-		gdouble world_x, gdouble world_y);
+        gdouble world_x, gdouble world_y);
 
 gboolean conting_drawing_event(ContingDrawing *self, GdkEvent *event);
 

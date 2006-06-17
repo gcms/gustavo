@@ -64,7 +64,7 @@ conting_line_draw(ContingDrawing *self,
 
     priv = CONTING_LINE_GET_PRIVATE(self);
 
-	conting_drawing_get_affine(self, affine);
+	conting_drawing_get_i2w_affine(self, affine);
 
 	if (!priv->placing && !priv->placed)
 		return;
@@ -128,7 +128,7 @@ conting_line_get_bounds(ContingDrawing *self,
 		return;
 	}
 
-	conting_drawing_get_affine(self, affine);
+	conting_drawing_get_i2w_affine(self, affine);
 
 	pw = *((ArtPoint *) priv->points->data);
 	art_affine_point(&pw, &pw, affine);
@@ -237,7 +237,7 @@ conting_line_link_moved(ContingComponent *comp,
 	assert(conting_component_get_link_point(comp,
 				CONTING_DRAWING(user_data), &pi));
 
-	conting_drawing_get_affine(CONTING_DRAWING(user_data), affine);
+	conting_drawing_get_i2w_affine(CONTING_DRAWING(user_data), affine);
 	art_affine_invert(affine, affine);
 	art_affine_point(&pi, &pi, affine);
 
@@ -297,7 +297,7 @@ conting_line_place(ContingDrawing *self)
 
     priv = CONTING_LINE_GET_PRIVATE(self);
 
-	conting_drawing_get_affine(self, affine);
+	conting_drawing_get_i2w_affine(self, affine);
 
 	p = priv->placing_point;
 
@@ -568,7 +568,7 @@ conting_line_event_place(ContingDrawing *self,
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y, &pw.x, &pw.y);
 
-	conting_drawing_get_affine(self, affine);
+	conting_drawing_get_i2w_affine(self, affine);
 
 /*
 	art_affine_translate(affine, pw.x, pw.y);
@@ -657,7 +657,7 @@ conting_line_event(ContingDrawing *self,
 
 	assert(priv->placed);
 
-	conting_drawing_get_affine(self, affine);
+	conting_drawing_get_i2w_affine(self, affine);
 
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y, &pi.x, &pi.y);
@@ -732,7 +732,7 @@ conting_line_answer(ContingDrawing *self,
 	assert(priv->placed);
 	assert(priv->points);
 
-	conting_drawing_get_affine(self, invert);
+	conting_drawing_get_i2w_affine(self, invert);
 	art_affine_invert(invert, invert);
 	pi.x = world_x;
 	pi.y = world_y;

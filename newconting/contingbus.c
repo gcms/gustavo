@@ -53,7 +53,7 @@ conting_bus_draw(ContingDrawing *self,
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	conting_drawing_get_affine(self, affine);
+	conting_drawing_get_i2w_affine(self, affine);
 
     art_affine_point(&pw0, &comp->p0, affine);
 
@@ -111,7 +111,7 @@ conting_bus_get_link_point(ContingComponent *self,
 		gdouble affine[6];
 
 		*p = *point;
-		conting_drawing_get_affine(CONTING_DRAWING(self), affine);
+		conting_drawing_get_i2w_affine(CONTING_DRAWING(self), affine);
 
 		art_affine_point(p, p, affine);
 
@@ -483,15 +483,9 @@ conting_bus_event(ContingDrawing *self,
 		case GDK_MOTION_NOTIFY:
 			if (priv->dragging && priv->start_resize != NULL) {
 				ArtPoint pi;
-				gdouble invert[6];
 				ArtDRect p_bounds;
 
-				CONTING_DRAWING_CLASS(parent_class)->get_affine(self, invert);
-				art_affine_invert(invert, invert);
-				art_affine_point(&pi, &p, invert);
-
-				art_affine_invert(invert, priv->rotate);
-				art_affine_point(&pi, &pi, invert);
+                conting_drawing_w2i(self, &pi, &p);
 
 				/* Cluttered code, checks if the size of the bar is at
 				 * minimum 20, and if it doesn't goes outside linked lines */
@@ -528,16 +522,8 @@ conting_bus_event(ContingDrawing *self,
 				priv->dragging_point = p;
 			} else {
 				ArtPoint pi;
-				gdouble invert[6];
 
-				CONTING_DRAWING_CLASS(parent_class)->get_affine(self, invert);
-				art_affine_invert(invert, invert);
-				art_affine_point(&pi, &p, invert);
-
-				art_affine_invert(invert, priv->rotate);
-				art_affine_point(&pi, &pi, invert);
-
-				g_print("internal: (%lf, %lf)\n", pi.x, pi.y);
+                conting_drawing_w2i(self, &pi, &p);
 
 				if (fabs(pi.y - comp->p0.y) < TOLERANCE) {
 					priv->start_resize = &comp->p0;
@@ -600,7 +586,6 @@ conting_bus_link(ContingComponent *self,
 	ContingBusPrivate *priv;
     ContingComponent *comp;
 	ArtPoint pi;
-	gdouble invert[6], my_affine[6];
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
@@ -612,13 +597,8 @@ conting_bus_link(ContingComponent *self,
 
 	pi.x = world_x;
 	pi.y = world_y;
-	CONTING_DRAWING_CLASS(parent_class)->get_affine(CONTING_DRAWING(self),
-			my_affine);
-	art_affine_invert(invert, my_affine);
-	art_affine_point(&pi, &pi, invert);
 
-	art_affine_invert(invert, priv->rotate);
-	art_affine_point(&pi, &pi, invert);
+    conting_drawing_w2i(CONTING_DRAWING(self), &pi, &pi);
 	
 	g_print("link: (%lf, %lf); (%lf, %lf) : (%lf, %lf)\n",
 			comp->p0.x, comp->p0.y, comp->p1.x, comp->p1.y,
@@ -637,8 +617,7 @@ conting_bus_link(ContingComponent *self,
 		pi.x = comp->p1.x;
 	}
 
-	conting_drawing_get_affine(CONTING_DRAWING(self), my_affine);
-	art_affine_point(pw, &pi, my_affine);
+    conting_drawing_i2w(CONTING_DRAWING(self), pw, &pi);
 
 	ArtPoint *p = g_new(ArtPoint, 1);
 	*p = pi;
@@ -651,7 +630,7 @@ conting_bus_link(ContingComponent *self,
 	return TRUE;
 }
 static void
-conting_bus_get_affine(ContingDrawing *self,
+conting_bus_get_i2w_affine(ContingDrawing *self,
 		                     gdouble affine[6])
 {
 	ContingBusPrivate *priv;
@@ -660,10 +639,29 @@ conting_bus_get_affine(ContingDrawing *self,
 
 	priv = CONTING_BUS_GET_PRIVATE(self);
 
-	CONTING_DRAWING_CLASS(parent_class)->get_affine(self, affine);
+	CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(self, affine);
 
 	art_affine_multiply(affine, priv->rotate, affine);
 }
+static void
+conting_bus_get_w2i_affine(ContingDrawing *self,
+		                     gdouble affine[6])
+{
+	ContingBusPrivate *priv;
+    gdouble invert_drawing[6];
+    gdouble invert_rotate[6];
+
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+
+	priv = CONTING_BUS_GET_PRIVATE(self);
+
+    CONTING_DRAWING_CLASS(parent_class)->get_w2i_affine(self, invert_drawing);
+
+    art_affine_invert(invert_rotate, priv->rotate);
+
+    art_affine_multiply(affine, invert_drawing, invert_rotate);
+}
+
 static void
 conting_bus_class_init(gpointer g_class, gpointer class_data)
 {
@@ -674,7 +672,8 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_bus_draw;
 	drawing_class->event = conting_bus_event;
-	drawing_class->get_affine = conting_bus_get_affine;
+	drawing_class->get_i2w_affine = conting_bus_get_i2w_affine;
+	drawing_class->get_w2i_affine = conting_bus_get_w2i_affine;
 	drawing_class->delete = conting_bus_delete;
     drawing_class->xml_node = conting_bus_xml_node;
     drawing_class->place_xml = conting_bus_place_xml;
