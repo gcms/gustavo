@@ -14,10 +14,6 @@ static gpointer parent_class = NULL;
 
 typedef struct ContingBusPrivate_ ContingBusPrivate;
 struct ContingBusPrivate_ {
-	ArtPoint p0, p1;
-
-    gboolean placed;
-
 	gboolean dragging;
 	ArtPoint dragging_point;
 
@@ -35,6 +31,7 @@ conting_bus_draw(ContingDrawing *self,
                   const GdkRectangle *drawing_rect)
 {
     ContingBusPrivate *priv;
+    ContingComponent *comp;
 	gdouble affine[6];
     ArtPoint pw0, pw1;
 	GdkRectangle rect;
@@ -54,12 +51,13 @@ conting_bus_draw(ContingDrawing *self,
     g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
     priv = CONTING_BUS_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
 	conting_drawing_get_affine(self, affine);
 
-    art_affine_point(&pw0, &priv->p0, affine);
+    art_affine_point(&pw0, &comp->p0, affine);
 
-    art_affine_point(&pw1, &priv->p1, affine);
+    art_affine_point(&pw1, &comp->p1, affine);
 
 	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
 			pw0.x, pw0.y, &pw0.x, &pw0.y);
@@ -95,8 +93,8 @@ conting_bus_draw(ContingDrawing *self,
 }
 static gboolean
 conting_bus_get_link_point(ContingComponent *self,
-                                 ContingDrawing *line,
-                                 ArtPoint *p)
+                           ContingDrawing *line,
+                           ArtPoint *p)
 {
 	ContingBusPrivate *priv;
 	ArtPoint *point;
@@ -124,77 +122,6 @@ conting_bus_get_link_point(ContingComponent *self,
 }
 
 static void
-conting_bus_get_bounds(ContingDrawing *self,
-		                ArtDRect *bounds)
-{
-	ContingBusPrivate *priv;
-	gdouble affine[6];
-	ArtPoint pw0, pw1;
-
-	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
-
-    priv = CONTING_BUS_GET_PRIVATE(self);
-
-	conting_drawing_get_affine(self, affine);
-
-	art_affine_point(&pw0, &priv->p0, affine);
-	art_affine_point(&pw1, &priv->p1, affine);
-
-	bounds->x0 = MIN(pw0.x, pw1.x);
-	bounds->y0 = MIN(pw0.y, pw1.y);
-	bounds->x1 = MAX(pw0.x, pw1.x);
-	bounds->y1 = MAX(pw0.y, pw1.y);
-
-	bounds->x0 -= TOLERANCE;
-	bounds->x1 += TOLERANCE;
-	bounds->y0 -= TOLERANCE;
-	bounds->y1 += TOLERANCE;
-}
-
-static void
-conting_bus_place(ContingDrawing *self)
-{
-	ContingBusPrivate *priv;
-
-	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
-
-    priv = CONTING_BUS_GET_PRIVATE(self);
-
-	priv->placed = TRUE;
-
-	conting_drawing_set_selected(self, TRUE);
-}
-
-static gboolean
-conting_bus_is_placed(ContingDrawing *self)
-{
-	ContingBusPrivate *priv;
-
-	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
-
-    priv = CONTING_BUS_GET_PRIVATE(self);
-
-	return priv->placed;
-}
-
-static gboolean
-conting_bus_answer(ContingDrawing *self,
-		                 gdouble world_x, gdouble world_y)
-{
-	ContingBusPrivate *priv;
-	ArtDRect bounds;
-
-	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
-
-    priv = CONTING_BUS_GET_PRIVATE(self);
-
-	conting_drawing_get_bounds(self, &bounds);
-	
-	return world_x >= bounds.x0 && world_x <= bounds.x1
-		&& world_y >= bounds.y0 && world_y <= bounds.y1;
-}
-
-static void
 conting_bus_finalize(GObject *self)
 {
 	ContingBusPrivate *priv;
@@ -214,17 +141,21 @@ conting_bus_instance_init(GTypeInstance *self,
 		                   gpointer g_class)
 {
 	ContingBusPrivate *priv;
+    ContingComponent *comp;
 
 	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
     priv = CONTING_BUS_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
-	priv->p0.x = -3;
-	priv->p0.y = -20;
-	priv->p1.x = 3;
-	priv->p1.y = 20;
+	comp->p0.x = -3;
+	comp->p0.y = -20;
+	comp->p1.x = 3;
+	comp->p1.y = 20;
 
-	priv->placed = FALSE;
+    /*
+	comp->placed = FALSE;
+    */
 	priv->dragging = FALSE;
 	priv->start_resize = NULL;
 
@@ -360,11 +291,13 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                       GHashTable *id_drawing)
 {
     ContingBusPrivate *priv;
+    ContingComponent *comp;
     xmlNodePtr class_node;
 
     g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
     priv = CONTING_BUS_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
     
     for (class_node = drawing_node->children; class_node;
             class_node = class_node->next) {
@@ -391,10 +324,10 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
 
                 if (xmlStrEqual(type, BAD_CAST "point")
                         && xmlStrEqual(name, BAD_CAST "p0")) {
-                    conting_util_load_point(attr, &priv->p0);
+                    conting_util_load_point(attr, &comp->p0);
                 } else if (xmlStrEqual(type, BAD_CAST "point")
                         && xmlStrEqual(name, BAD_CAST "p1")) {
-                    conting_util_load_point(attr, &priv->p1);
+                    conting_util_load_point(attr, &comp->p1);
                 } else if (xmlStrEqual(type, BAD_CAST "affine")
                         && xmlStrEqual(name, BAD_CAST "rotate")) {
                     conting_util_load_affine(attr, priv->rotate);
@@ -413,8 +346,9 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
         if (class_name)
             xmlFree(class_name);
     }
-
+/*
     priv->placed = TRUE;
+    */
 
     CONTING_DRAWING_CLASS(parent_class)->place_xml(self,
             drawing_node, id_drawing);
@@ -424,18 +358,20 @@ static xmlNodePtr
 conting_bus_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
 {
     ContingBusPrivate *priv;
+    ContingComponent *comp;
     xmlNodePtr class_node;
 
     g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), NULL);
 
     priv = CONTING_BUS_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
     class_node = xmlNewNode(NULL, BAD_CAST "class");
     xmlNewProp(class_node, BAD_CAST "name",
             BAD_CAST g_type_name(CONTING_TYPE_BUS));
 
-    xmlAddChild(class_node, conting_util_point_node("p0", &priv->p0));
-    xmlAddChild(class_node, conting_util_point_node("p1", &priv->p1));
+    xmlAddChild(class_node, conting_util_point_node("p0", &comp->p0));
+    xmlAddChild(class_node, conting_util_point_node("p1", &comp->p1));
     
     xmlAddChild(class_node, conting_util_affine_node("rotate", priv->rotate));
 
@@ -522,13 +458,15 @@ conting_bus_event(ContingDrawing *self,
 		                GdkEvent *event)
 {
 	ContingBusPrivate *priv;
+    ContingComponent *comp;
 	ArtPoint p;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
     priv = CONTING_BUS_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
-	if (!priv->placed)
+	if (!conting_drawing_is_placed(self))
 		return conting_bus_event_place(self, event);
 
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
@@ -557,10 +495,10 @@ conting_bus_event(ContingDrawing *self,
 
 				/* Cluttered code, checks if the size of the bar is at
 				 * minimum 20, and if it doesn't goes outside linked lines */
-				if ((priv->start_resize == &priv->p0
-					   && fabs(pi.y - priv->p1.y) > 20)
-						|| (priv->start_resize == &priv->p1
-							&& fabs(pi.y - priv->p0.y) > 20)) {
+				if ((priv->start_resize == &comp->p0
+					   && fabs(pi.y - comp->p1.y) > 20)
+						|| (priv->start_resize == &comp->p1
+							&& fabs(pi.y - comp->p0.y) > 20)) {
 					if (priv->links) {
 						conting_bus_get_points_bounds(
 								CONTING_BUS(self), &p_bounds);
@@ -568,9 +506,9 @@ conting_bus_event(ContingDrawing *self,
 								p_bounds.x0, p_bounds.y0,
 								p_bounds.x1, p_bounds.y1);
 						g_print("p: (%lf, %lf)\n", p.x, p.y);
-						if ((priv->start_resize == &priv->p0
+						if ((priv->start_resize == &comp->p0
 									&& p_bounds.y0 > pi.y)
-								|| (priv->start_resize == &priv->p1
+								|| (priv->start_resize == &comp->p1
 									&& p_bounds.y1 < pi.y)) {
 							priv->start_resize->y = pi.y;
 						}
@@ -601,10 +539,10 @@ conting_bus_event(ContingDrawing *self,
 
 				g_print("internal: (%lf, %lf)\n", pi.x, pi.y);
 
-				if (fabs(pi.y - priv->p0.y) < TOLERANCE) {
-					priv->start_resize = &priv->p0;
-				} else if (fabs(pi.y - priv->p1.y) < TOLERANCE) {
-					priv->start_resize = &priv->p1;
+				if (fabs(pi.y - comp->p0.y) < TOLERANCE) {
+					priv->start_resize = &comp->p0;
+				} else if (fabs(pi.y - comp->p1.y) < TOLERANCE) {
+					priv->start_resize = &comp->p1;
 				} else {
 					priv->start_resize = NULL;
 				}
@@ -660,12 +598,14 @@ conting_bus_link(ContingComponent *self,
 					   ArtPoint *pw)
 {
 	ContingBusPrivate *priv;
+    ContingComponent *comp;
 	ArtPoint pi;
 	gdouble invert[6], my_affine[6];
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
 
     priv = CONTING_BUS_GET_PRIVATE(self);
+    comp = CONTING_COMPONENT(self);
 
 	if (g_slist_find(priv->links, drawing))
 		return FALSE;
@@ -681,20 +621,20 @@ conting_bus_link(ContingComponent *self,
 	art_affine_point(&pi, &pi, invert);
 	
 	g_print("link: (%lf, %lf); (%lf, %lf) : (%lf, %lf)\n",
-			priv->p0.x, priv->p0.y, priv->p1.x, priv->p1.y,
+			comp->p0.x, comp->p0.y, comp->p1.x, comp->p1.y,
 			pi.x, pi.y);
 
-	if (pi.y < priv->p0.y || pi.y > priv->p1.y
-			|| pi.x < priv->p0.x || pi.x > priv->p1.x) {
+	if (pi.y < comp->p0.y || pi.y > comp->p1.y
+			|| pi.x < comp->p0.x || pi.x > comp->p1.x) {
 		return FALSE;
 	}
 
-	if (fabs(pi.x - priv->p0.x) < fabs(pi.x - priv->p1.x)) {
+	if (fabs(pi.x - comp->p0.x) < fabs(pi.x - comp->p1.x)) {
 //		art_affine_translate(affine, priv->p0.x - pi.x, 0);
-		pi.x = priv->p0.x;
+		pi.x = comp->p0.x;
 	} else {
 //		art_affine_translate(affine, priv->p1.x - pi.x, 0);
-		pi.x = priv->p1.x;
+		pi.x = comp->p1.x;
 	}
 
 	conting_drawing_get_affine(CONTING_DRAWING(self), my_affine);
@@ -733,10 +673,6 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_bus_draw;
-	drawing_class->get_bounds = conting_bus_get_bounds;
-	drawing_class->place = conting_bus_place;
-	drawing_class->is_placed = conting_bus_is_placed;
-	drawing_class->answer = conting_bus_answer;
 	drawing_class->event = conting_bus_event;
 	drawing_class->get_affine = conting_bus_get_affine;
 	drawing_class->delete = conting_bus_delete;

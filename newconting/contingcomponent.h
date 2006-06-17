@@ -20,29 +20,32 @@ G_BEGIN_DECLS
 typedef struct ContingComponent_ ContingComponent;
 struct ContingComponent_ {
     ContingDrawing parent;
+    /* protected */
+    ArtPoint p0, p1;
+    gboolean placed;
 };
 
 typedef struct ContingComponentClass_ ContingComponentClass;
 struct ContingComponentClass_ {
     ContingDrawingClass parent;
 
-	gboolean (*link)(ContingComponent *self, ContingDrawing *line,
-			gdouble world_x, gdouble world_y, ArtPoint *pw);
+    gboolean (*link)(ContingComponent *self, ContingDrawing *line,
+            gdouble world_x, gdouble world_y, ArtPoint *pw);
 
-	gboolean (*get_link_point)(ContingComponent *self, ContingDrawing *line,
-			ArtPoint *p);
+    gboolean (*get_link_point)(ContingComponent *self, ContingDrawing *line,
+            ArtPoint *p);
 };
 
 GType conting_component_get_type(void);
 
 gboolean conting_component_link(ContingComponent *self,
-		                        ContingDrawing *line,
-								gdouble world_x, gdouble world_y,
-								ArtPoint *pw);
+                                ContingDrawing *line,
+                                gdouble world_x, gdouble world_y,
+                                ArtPoint *pw);
 
 gboolean conting_component_get_link_point(ContingComponent *self,
-		                                  ContingDrawing *line,
-										  ArtPoint *p);
+                                          ContingDrawing *line,
+                                          ArtPoint *p);
 
 G_END_DECLS
 
