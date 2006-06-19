@@ -21,8 +21,6 @@ struct ContingBusPrivate_ {
 	GSList *links;
 
 	ArtPoint *start_resize;
-
-	gdouble rotate[6];
 };
 
 static void
@@ -56,7 +54,6 @@ conting_bus_draw(ContingDrawing *self,
 	conting_drawing_get_i2w_affine(self, affine);
 
     art_affine_point(&pw0, &comp->p0, affine);
-
     art_affine_point(&pw1, &comp->p1, affine);
 
 	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
@@ -162,7 +159,6 @@ conting_bus_instance_init(GTypeInstance *self,
 	priv->points = g_hash_table_new_full(NULL, NULL, NULL, g_free);
 	priv->links = NULL;
 
-	art_affine_rotate(priv->rotate, 0.0);
 }
 static void
 conting_bus_disconnect_link(ContingBus *self,
@@ -330,7 +326,9 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                     conting_util_load_point(attr, &comp->p1);
                 } else if (xmlStrEqual(type, BAD_CAST "affine")
                         && xmlStrEqual(name, BAD_CAST "rotate")) {
+                    /*
                     conting_util_load_affine(attr, priv->rotate);
+                    */
                 } else if (xmlStrEqual(type, BAD_CAST "map")
                         && xmlStrEqual(name, BAD_CAST "points")) {
                     conting_util_load_hash(attr, priv->points,
@@ -373,7 +371,9 @@ conting_bus_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
     xmlAddChild(class_node, conting_util_point_node("p0", &comp->p0));
     xmlAddChild(class_node, conting_util_point_node("p1", &comp->p1));
     
+    /*
     xmlAddChild(class_node, conting_util_affine_node("rotate", priv->rotate));
+    */
 
 	xmlAddChild(class_node, conting_util_hash_node("points", priv->points,
 				conting_bus_drawing_node, conting_bus_point_node, NULL));
@@ -405,15 +405,7 @@ conting_bus_event_place(ContingDrawing *self,
 			conting_drawing_affine_absolute(self, affine);
 			break;
 		case GDK_KEY_PRESS:
-			if (event->key.keyval == GDK_r) {
-				gdouble rotate[6];
-				art_affine_rotate(rotate, 90.0);
-				art_affine_multiply(priv->rotate, priv->rotate, rotate);
-
-//				g_signal_emit_by_name(self, "move");
-
-				conting_drawing_update(self);
-			} else if (event->key.keyval == GDK_Escape) {
+			if (event->key.keyval == GDK_Escape) {
 				conting_drawing_delete(self);
 			}
 			break;
@@ -462,6 +454,10 @@ conting_bus_event(ContingDrawing *self,
 	ArtPoint p;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
+
+    if (CONTING_DRAWING_CLASS(parent_class)->event(self, event)) {
+        return TRUE;
+    }
 
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
@@ -542,15 +538,7 @@ conting_bus_event(ContingDrawing *self,
 			}
 			break;
 		case GDK_KEY_PRESS:
-			if (event->key.keyval == GDK_r) {
-				gdouble rotate[6];
-				art_affine_rotate(rotate, 90.0);
-				art_affine_multiply(priv->rotate, priv->rotate, rotate);
-
-				g_signal_emit_by_name(self, "move");
-
-				conting_drawing_update(self);
-			} else if (event->key.keyval == GDK_Delete) {
+			if (event->key.keyval == GDK_Delete) {
 				conting_drawing_delete(self);
 			}
 			break;
@@ -630,39 +618,6 @@ conting_bus_link(ContingComponent *self,
 	return TRUE;
 }
 static void
-conting_bus_get_i2w_affine(ContingDrawing *self,
-		                     gdouble affine[6])
-{
-	ContingBusPrivate *priv;
-
-	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
-
-	priv = CONTING_BUS_GET_PRIVATE(self);
-
-	CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(self, affine);
-
-	art_affine_multiply(affine, priv->rotate, affine);
-}
-static void
-conting_bus_get_w2i_affine(ContingDrawing *self,
-		                     gdouble affine[6])
-{
-	ContingBusPrivate *priv;
-    gdouble invert_drawing[6];
-    gdouble invert_rotate[6];
-
-	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
-
-	priv = CONTING_BUS_GET_PRIVATE(self);
-
-    CONTING_DRAWING_CLASS(parent_class)->get_w2i_affine(self, invert_drawing);
-
-    art_affine_invert(invert_rotate, priv->rotate);
-
-    art_affine_multiply(affine, invert_drawing, invert_rotate);
-}
-
-static void
 conting_bus_class_init(gpointer g_class, gpointer class_data)
 {
     ContingDrawingClass *drawing_class;
@@ -672,8 +627,6 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_bus_draw;
 	drawing_class->event = conting_bus_event;
-	drawing_class->get_i2w_affine = conting_bus_get_i2w_affine;
-	drawing_class->get_w2i_affine = conting_bus_get_w2i_affine;
 	drawing_class->delete = conting_bus_delete;
     drawing_class->xml_node = conting_bus_xml_node;
     drawing_class->place_xml = conting_bus_place_xml;
