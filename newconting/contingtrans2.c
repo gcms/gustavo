@@ -17,8 +17,6 @@ struct ContingTrans2Private_ {
     ArtPoint dragging_point;
 
     ContingDrawing *link0, *link1;
-
-    gdouble rotate[6];
 };
 
 static void
@@ -180,8 +178,6 @@ conting_trans2_instance_init(GTypeInstance *self,
     priv->dragging = FALSE;
 
     priv->link0 = priv->link1 = NULL;
-
-    art_affine_rotate(priv->rotate, 0.0);
 }
 static void
 conting_trans2_disconnect_link(ContingTrans2 *self,
@@ -249,15 +245,7 @@ conting_trans2_event_place(ContingDrawing *self,
             conting_drawing_affine_absolute(self, affine);
             break;
         case GDK_KEY_PRESS:
-            if (event->key.keyval == GDK_r) {
-                gdouble rotate[6];
-                art_affine_rotate(rotate, 90.0);
-                art_affine_multiply(priv->rotate, priv->rotate, rotate);
-
-//                g_signal_emit_by_name(self, "move");
-
-                conting_drawing_update(self);
-            } else if (event->key.keyval == GDK_Escape) {
+            if (event->key.keyval == GDK_Escape) {
                 conting_drawing_delete(self);
             }
             break;
@@ -269,12 +257,15 @@ conting_trans2_event_place(ContingDrawing *self,
 
 static gboolean
 conting_trans2_event(ContingDrawing *self,
-                        GdkEvent *event)
+                     GdkEvent *event)
 {
     ContingTrans2Private *priv;
     ArtPoint p;
 
     g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
+
+    if (CONTING_DRAWING_CLASS(parent_class)->event(self, event))
+        return TRUE;
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
 
@@ -310,15 +301,7 @@ conting_trans2_event(ContingDrawing *self,
             }
             break;
         case GDK_KEY_PRESS:
-            if (event->key.keyval == GDK_r) {
-                gdouble rotate[6];
-                art_affine_rotate(rotate, 90.0);
-                art_affine_multiply(priv->rotate, priv->rotate, rotate);
-
-                g_signal_emit_by_name(self, "move");
-
-                conting_drawing_update(self);
-            } else if (event->key.keyval == GDK_Delete) {
+            if (event->key.keyval == GDK_Delete) {
                 conting_drawing_delete(self);
             }
             break;
@@ -360,7 +343,6 @@ conting_trans2_link(ContingComponent *self,
     ContingTrans2Private *priv;
     ContingComponent *comp;
     ArtPoint pi;
-    gdouble invert[6], my_affine[6];
 
     g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
 
@@ -374,13 +356,8 @@ conting_trans2_link(ContingComponent *self,
 
     pi.x = world_x;
     pi.y = world_y;
-    CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(CONTING_DRAWING(self),
-            my_affine);
-    art_affine_invert(invert, my_affine);
-    art_affine_point(&pi, &pi, invert);
 
-    art_affine_invert(invert, priv->rotate);
-    art_affine_point(&pi, &pi, invert);
+    conting_drawing_w2i(CONTING_DRAWING(self), &pi, &pi);
     
     g_print("link: (%lf, %lf); (%lf, %lf) : (%lf, %lf)\n",
             comp->p0.x, comp->p0.y, comp->p1.x, comp->p1.y,
@@ -402,27 +379,12 @@ conting_trans2_link(ContingComponent *self,
     }
 	pi.x = 0;
 
-    conting_drawing_get_i2w_affine(CONTING_DRAWING(self), my_affine);
-    art_affine_point(pw, &pi, my_affine);
+    conting_drawing_i2w(CONTING_DRAWING(self), pw, &pi);
 
     g_signal_connect(G_OBJECT(drawing), "delete",
             G_CALLBACK(conting_trans2_link_deleted), self);
 
     return TRUE;
-}
-static void
-conting_trans2_get_i2w_affine(ContingDrawing *self,
-                             gdouble affine[6])
-{
-    ContingTrans2Private *priv;
-
-    g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(self, affine);
-
-    art_affine_multiply(affine, priv->rotate, affine);
 }
 
 static xmlNodePtr
@@ -453,9 +415,10 @@ conting_trans2_xml_node(ContingDrawing *self,
 	if (priv->link1)
 		xmlAddChild(class_node,
 				conting_util_drawing_node("link1", priv->link1));
-
+/*
 	xmlAddChild(class_node,
 			conting_util_affine_node("rotate", priv->rotate));
+            */
 
 	xmlAddChild(drawing_node, class_node);
 
@@ -514,10 +477,12 @@ conting_trans2_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                     priv->link1 = conting_util_load_drawing(attr, id_drawing);
                 } else if (xmlStrEqual(type, BAD_CAST "affine")
                         && xmlStrEqual(name, BAD_CAST "rotate")) {
+                    /*
                     conting_util_load_affine(attr, priv->rotate);
                     printf("%lf %lf %lf %lf %lf %lf\n",
                             priv->rotate[0], priv->rotate[1], priv->rotate[2],
                             priv->rotate[3], priv->rotate[4], priv->rotate[5]);
+                            */
                 }
 
                 xmlFree(name);
@@ -548,7 +513,6 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_trans2_draw;
     drawing_class->event = conting_trans2_event;
-    drawing_class->get_i2w_affine = conting_trans2_get_i2w_affine;
     drawing_class->delete = conting_trans2_delete;
 	drawing_class->xml_node = conting_trans2_xml_node;
 	drawing_class->place_xml = conting_trans2_place_xml;

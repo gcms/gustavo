@@ -23,6 +23,8 @@ struct ContingComponent_ {
     /* protected */
     ArtPoint p0, p1;
     gboolean placed;
+	/* private */
+    gdouble rotate[6];
 };
 
 typedef struct ContingComponentClass_ ContingComponentClass;

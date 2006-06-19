@@ -1,5 +1,7 @@
 #include "contingcomponent.h"
 
+static gpointer parent_class = NULL;
+
 
 #define TOLERANCE 3
 #define SIZE ((TOLERANCE * 2) - 1)
@@ -28,52 +30,52 @@ static void
 conting_component_get_bounds(ContingDrawing *self,
                              ArtDRect *bounds)
 {
-	ContingComponent *comp;
-	gdouble affine[6];
-	ArtPoint pw0, pw1;
+    ContingComponent *comp;
+    gdouble affine[6];
+    ArtPoint pw0, pw1;
 
-	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
     comp = CONTING_COMPONENT(self);
 
-	conting_drawing_get_i2w_affine(self, affine);
+    conting_drawing_get_i2w_affine(self, affine);
 
-	art_affine_point(&pw0, &comp->p0, affine);
-	art_affine_point(&pw1, &comp->p1, affine);
+    art_affine_point(&pw0, &comp->p0, affine);
+    art_affine_point(&pw1, &comp->p1, affine);
 
-	bounds->x0 = MIN(pw0.x, pw1.x);
-	bounds->y0 = MIN(pw0.y, pw1.y);
-	bounds->x1 = MAX(pw0.x, pw1.x);
-	bounds->y1 = MAX(pw0.y, pw1.y);
+    bounds->x0 = MIN(pw0.x, pw1.x);
+    bounds->y0 = MIN(pw0.y, pw1.y);
+    bounds->x1 = MAX(pw0.x, pw1.x);
+    bounds->y1 = MAX(pw0.y, pw1.y);
 
-	bounds->x0 -= TOLERANCE;
-	bounds->x1 += TOLERANCE;
-	bounds->y0 -= TOLERANCE;
-	bounds->y1 += TOLERANCE;
+    bounds->x0 -= TOLERANCE;
+    bounds->x1 += TOLERANCE;
+    bounds->y0 -= TOLERANCE;
+    bounds->y1 += TOLERANCE;
 }
 static void
 conting_component_place(ContingDrawing *self)
 {
-	ContingComponent *comp;
+    ContingComponent *comp;
 
-	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
     comp = CONTING_COMPONENT(self);
 
-	comp->placed = TRUE;
+    comp->placed = TRUE;
 
-	conting_drawing_set_selected(self, TRUE);
+    conting_drawing_set_selected(self, TRUE);
 }
 static gboolean
 conting_component_is_placed(ContingDrawing *self)
 {
-	ContingComponent *comp;
+    ContingComponent *comp;
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+    g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 
     comp = CONTING_COMPONENT(self);
 
-	return comp->placed;
+    return comp->placed;
 }
 static gboolean
 conting_component_answer(ContingDrawing *self,
@@ -85,9 +87,75 @@ conting_component_answer(ContingDrawing *self,
 
     conting_drawing_get_bounds(self, &bounds);
 
-	return world_x >= bounds.x0 && world_x <= bounds.x1
-		&& world_y >= bounds.y0 && world_y <= bounds.y1;
+    return world_x >= bounds.x0 && world_x <= bounds.x1
+        && world_y >= bounds.y0 && world_y <= bounds.y1;
 }
+static void
+conting_component_get_i2w_affine(ContingDrawing *self,
+                                 gdouble affine[6])
+{
+    ContingComponent *comp;
+
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+    comp = CONTING_COMPONENT(self);
+
+    CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(self, affine);
+
+    art_affine_multiply(affine, comp->rotate, affine);
+}
+static void
+conting_component_get_w2i_affine(ContingDrawing *self,
+                                 gdouble affine[6])
+{
+    ContingComponent *comp;
+    gdouble invert_drawing[6];
+    gdouble invert_rotate[6];
+
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+    comp = CONTING_COMPONENT(self);
+
+    CONTING_DRAWING_CLASS(parent_class)->get_w2i_affine(self, invert_drawing);
+
+    art_affine_invert(invert_rotate, comp->rotate);
+
+    art_affine_multiply(affine, invert_drawing, invert_rotate);
+}
+
+#include <gdk/gdkkeysyms.h>
+static gboolean
+conting_component_event(ContingDrawing *self,
+                        GdkEvent *event)
+{
+    ContingComponent *comp;
+
+    g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
+
+    comp = CONTING_COMPONENT(self);
+
+    switch (event->type) {
+        case GDK_KEY_PRESS:
+            if (event->key.keyval == GDK_r) {
+                gdouble rotate[6];
+                art_affine_rotate(rotate, 90.0);
+                art_affine_multiply(comp->rotate, comp->rotate, rotate);
+
+                if (!comp->placed)
+                    g_signal_emit_by_name(self, "move");
+
+                conting_drawing_update(self);
+
+                return TRUE;
+            }
+            break;
+        default:
+            break;
+    }
+
+    return FALSE;
+}
+
 static void
 conting_component_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                             GHashTable *id_drawing)
@@ -113,6 +181,8 @@ conting_component_instance_init(GTypeInstance *self, gpointer g_class)
 
     comp->p0.x = comp->p0.y = comp->p1.x = comp->p1.y = 0;
     comp->placed = FALSE;
+
+    art_affine_rotate(comp->rotate, 0.0);
 }
 
 static void
@@ -126,12 +196,17 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
     drawing_class->place = conting_component_place;
     drawing_class->is_placed = conting_component_is_placed;
     drawing_class->answer = conting_component_answer;
+    drawing_class->get_i2w_affine = conting_component_get_i2w_affine;
+    drawing_class->get_w2i_affine = conting_component_get_w2i_affine;
+    drawing_class->event = conting_component_event;
 
     drawing_class->place_xml = conting_component_place_xml;
 
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = NULL;
     component_class->get_link_point = NULL;
+
+    parent_class = g_type_class_peek_parent(g_class);
 }
 
 GType conting_component_get_type(void) {
