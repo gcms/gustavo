@@ -1,5 +1,6 @@
 #include "contingtrans2.h"
 #include "contingutil.h"
+#include "contingxml.h"
 #include <string.h>
 #include <math.h>
 
@@ -350,21 +351,12 @@ conting_trans2_xml_node(ContingDrawing *self,
 	xmlNewProp(class_node, BAD_CAST "name",
 			BAD_CAST g_type_name(CONTING_TYPE_TRANS2));
 
-	xmlAddChild(class_node,
-			conting_util_point_node("p0", &comp->p0));
-	xmlAddChild(class_node,
-			conting_util_point_node("p1", &comp->p1));
-
 	if (priv->link0)
 		xmlAddChild(class_node,
 				conting_util_drawing_node("link0", priv->link0));
 	if (priv->link1)
 		xmlAddChild(class_node,
 				conting_util_drawing_node("link1", priv->link1));
-/*
-	xmlAddChild(class_node,
-			conting_util_affine_node("rotate", priv->rotate));
-            */
 
 	xmlAddChild(drawing_node, class_node);
 
@@ -409,26 +401,12 @@ conting_trans2_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
 
                 printf("type = %s\tname = %s\n", type, name);
 
-                if (xmlStrEqual(type, BAD_CAST "point")
-                        && xmlStrEqual(name, BAD_CAST "p0")) {
-                    conting_util_load_point(attr, &comp->p0);
-                } else if (xmlStrEqual(type, BAD_CAST "point")
-                        && xmlStrEqual(name, BAD_CAST "p1")) {
-                    conting_util_load_point(attr, &comp->p1);
-                } else if (xmlStrEqual(type, BAD_CAST "drawing")
+                if (xmlStrEqual(type, BAD_CAST "drawing")
                         && xmlStrEqual(name, BAD_CAST "link0")) {
                     priv->link0 = conting_util_load_drawing(attr, id_drawing);
                 } else if (xmlStrEqual(type, BAD_CAST "drawing")
                         && xmlStrEqual(name, BAD_CAST "link1")) {
                     priv->link1 = conting_util_load_drawing(attr, id_drawing);
-                } else if (xmlStrEqual(type, BAD_CAST "affine")
-                        && xmlStrEqual(name, BAD_CAST "rotate")) {
-                    /*
-                    conting_util_load_affine(attr, priv->rotate);
-                    printf("%lf %lf %lf %lf %lf %lf\n",
-                            priv->rotate[0], priv->rotate[1], priv->rotate[2],
-                            priv->rotate[3], priv->rotate[4], priv->rotate[5]);
-                            */
                 }
 
                 xmlFree(name);

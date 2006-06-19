@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include "contingoneline.h"
 #include "contingutil.h"
+#include "contingxml.h"
 #include "continggroup.h"
 #include "contingtrans2.h"
 #include "contingbus.h"
