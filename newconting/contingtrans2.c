@@ -110,38 +110,6 @@ conting_trans2_draw(ContingDrawing *self,
         
     }
 }
-static gboolean
-conting_trans2_get_link_point(ContingComponent *self,
-                                 ContingDrawing *line,
-                                 ArtPoint *p)
-{
-    ContingTrans2Private *priv;
-    ContingComponent *comp;
-    ArtPoint point;
-    gdouble affine[6];
-
-    g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-    comp = CONTING_COMPONENT(self);
-
-    point.x = 0;
-    if (line == priv->link0) {
-        point.y = comp->p0.y;
-    } else if (line == priv->link1) {
-        point.y = comp->p1.y;
-    } else {
-        return FALSE;
-    }
-
-
-    *p = point;
-    conting_drawing_get_i2w_affine(CONTING_DRAWING(self), affine);
-
-    art_affine_point(p, p, affine);
-
-    return TRUE;
-}
 
 static void
 conting_trans2_finalize(GObject *self)
@@ -179,21 +147,6 @@ conting_trans2_instance_init(GTypeInstance *self,
 
     priv->link0 = priv->link1 = NULL;
 }
-static void
-conting_trans2_disconnect_link(ContingTrans2 *self,
-                              ContingDrawing *drawing)
-{
-    ContingTrans2Private *priv;
-
-    g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    g_print("line %p disconnected from %p\n", drawing, self);
-
-    g_signal_handlers_disconnect_matched(drawing,
-            G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, self);
-}
 static void conting_trans2_delete(ContingDrawing *self)
 {
     ContingTrans2Private *priv;
@@ -209,16 +162,7 @@ static void conting_trans2_delete(ContingDrawing *self)
         conting_drawing_ungrab(self);
     }
 
-	if (priv->link0) {
-        conting_trans2_disconnect_link(CONTING_TRANS2(self), priv->link0);
-	}
-	if (priv->link1) {
-        conting_trans2_disconnect_link(CONTING_TRANS2(self), priv->link1);
-    }
-    
 	priv->link0 = priv->link1 = NULL;
-
-    g_signal_emit_by_name(self, "delete");
 
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
@@ -314,16 +258,16 @@ conting_trans2_event(ContingDrawing *self,
 
 
 static void
-conting_trans2_link_deleted(ContingDrawing *drawing,
-                               gpointer user_data)
+conting_trans2_link_deleted(ContingComponent *comp,
+                            ContingDrawing *drawing)
 {
     ContingTrans2Private *priv;
 
-    g_return_if_fail(user_data != NULL && CONTING_IS_TRANS2(user_data));
+    g_return_if_fail(comp != NULL && CONTING_IS_TRANS2(comp));
 
-    priv = CONTING_TRANS2_GET_PRIVATE(user_data);
+    priv = CONTING_TRANS2_GET_PRIVATE(comp);
 
-    g_print("link %p deleted from %p\n", drawing, user_data);
+    g_print("link %p deleted from %p\n", drawing, comp);
 	if (drawing == priv->link0) {
 		priv->link0 = NULL;
 	} else if (drawing == priv->link1) {
@@ -331,7 +275,8 @@ conting_trans2_link_deleted(ContingDrawing *drawing,
 	} else {
 		return;
 	}
-    conting_trans2_disconnect_link(CONTING_TRANS2(user_data), drawing);
+
+	CONTING_COMPONENT_CLASS(parent_class)->link_deleted(comp, drawing);
 }
 
 static gboolean
@@ -349,10 +294,8 @@ conting_trans2_link(ContingComponent *self,
     priv = CONTING_TRANS2_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	if (drawing == priv->link0
-			|| drawing == priv->link1) {
+	if (g_list_find(comp->links, drawing))
 		return FALSE;
-	}
 
     pi.x = world_x;
     pi.y = world_y;
@@ -368,21 +311,24 @@ conting_trans2_link(ContingComponent *self,
         return FALSE;
     }
 
-    if (fabs(pi.y - comp->p0.y) < fabs(pi.y - comp->p1.y)) {
+    if (fabs(pi.y - comp->p0.y) < fabs(pi.y - comp->p1.y)
+			&& priv->link0 == NULL) {
 //        art_affine_translate(affine, comp->p0.x - pi.x, 0);
         pi.y = comp->p0.y;
 		priv->link0 = drawing;
-    } else {
+    } else if (priv->link1 == NULL) {
 //        art_affine_translate(affine, comp->p1.x - pi.x, 0);
         pi.y = comp->p1.y;
 		priv->link1 = drawing;
-    }
+    } else {
+		return FALSE;
+	}
 	pi.x = 0;
 
+	/* pw is the paramter */
     conting_drawing_i2w(CONTING_DRAWING(self), pw, &pi);
 
-    g_signal_connect(G_OBJECT(drawing), "delete",
-            G_CALLBACK(conting_trans2_link_deleted), self);
+	conting_component_connect_link(self, drawing, &pi);
 
     return TRUE;
 }
@@ -519,7 +465,7 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
 
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = conting_trans2_link;
-    component_class->get_link_point = conting_trans2_get_link_point;
+    component_class->link_deleted = conting_trans2_link_deleted;
 
     gobject_class = G_OBJECT_CLASS(g_class);
     gobject_class->finalize = conting_trans2_finalize;
