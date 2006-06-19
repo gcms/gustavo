@@ -17,9 +17,6 @@ struct ContingBusPrivate_ {
 	gboolean dragging;
 	ArtPoint dragging_point;
 
-	GHashTable *points;
-	GSList *links;
-
 	ArtPoint *start_resize;
 };
 
@@ -88,36 +85,6 @@ conting_bus_draw(ContingDrawing *self,
 		
 	}
 }
-static gboolean
-conting_bus_get_link_point(ContingComponent *self,
-                           ContingDrawing *line,
-                           ArtPoint *p)
-{
-	ContingBusPrivate *priv;
-	ArtPoint *point;
-
-	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
-
-    priv = CONTING_BUS_GET_PRIVATE(self);
-
-	point = g_hash_table_lookup(priv->points, line);
-
-	if (point == NULL) {
-		return FALSE;
-	} else if (p != NULL) {
-		gdouble affine[6];
-
-		*p = *point;
-		conting_drawing_get_i2w_affine(CONTING_DRAWING(self), affine);
-
-		art_affine_point(p, p, affine);
-
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
 static void
 conting_bus_finalize(GObject *self)
 {
@@ -126,9 +93,6 @@ conting_bus_finalize(GObject *self)
 	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
 	priv = CONTING_BUS_GET_PRIVATE(self);
-
-	g_hash_table_destroy(priv->points);
-	g_slist_free(priv->links);
 
 	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
@@ -156,41 +120,10 @@ conting_bus_instance_init(GTypeInstance *self,
 	priv->dragging = FALSE;
 	priv->start_resize = NULL;
 
-	priv->points = g_hash_table_new_full(NULL, NULL, NULL, g_free);
-	priv->links = NULL;
-
-}
-static void
-conting_bus_disconnect_link(ContingBus *self,
-		                      ContingDrawing *drawing)
-{
-	ContingBusPrivate *priv;
-
-	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
-
-	priv = CONTING_BUS_GET_PRIVATE(self);
-
-	g_print("line %p disconnected from %p\n", drawing, self);
-
-	g_hash_table_remove(priv->points, drawing);
-	g_signal_handlers_disconnect_matched(drawing,
-			G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, self);
-	
-	{
-		GSList *n;
-		g_print("still linked: ");
-		for (n = priv->links; n != NULL; n = g_slist_next(n)) {
-			g_print("%p, ", n->data);
-		}
-		g_print("\n");
-	}
 }
 static void conting_bus_delete(ContingDrawing *self)
 {
 	ContingBusPrivate *priv;
-	GSList *n;
-
-	g_print("DELETING\n");
 
 	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
@@ -200,16 +133,6 @@ static void conting_bus_delete(ContingDrawing *self)
 		priv->dragging = FALSE;
 		conting_drawing_ungrab(self);
 	}
-
-	for (n = priv->links; n != NULL; n = g_slist_next(n)) {
-		conting_bus_disconnect_link(CONTING_BUS(self),
-				CONTING_DRAWING(n->data));
-	}
-	
-	g_slist_free(priv->links);
-	priv->links = NULL;
-
-	g_signal_emit_by_name(self, "delete");
 
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
@@ -331,9 +254,11 @@ conting_bus_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                     */
                 } else if (xmlStrEqual(type, BAD_CAST "map")
                         && xmlStrEqual(name, BAD_CAST "points")) {
+					/*
                     conting_util_load_hash(attr, priv->points,
                             conting_bus_load_drawing, conting_bus_load_point,
                             id_drawing);
+							*/
                 }
 
                 xmlFree(name);
@@ -375,8 +300,10 @@ conting_bus_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
     xmlAddChild(class_node, conting_util_affine_node("rotate", priv->rotate));
     */
 
+	/*
 	xmlAddChild(class_node, conting_util_hash_node("points", priv->points,
 				conting_bus_drawing_node, conting_bus_point_node, NULL));
+				*/
 
     xmlAddChild(drawing_node, class_node);
 
@@ -414,6 +341,7 @@ conting_bus_event_place(ContingDrawing *self,
 	}
 	return TRUE;
 }
+/*
 static void
 conting_bus_get_points_bounds(ContingBus *self,
 			                        ArtDRect *bounds)
@@ -444,6 +372,7 @@ conting_bus_get_points_bounds(ContingBus *self,
 			bounds->y1 = p->y;
 	}
 }
+*/
 
 static gboolean
 conting_bus_event(ContingDrawing *self,
@@ -477,14 +406,16 @@ conting_bus_event(ContingDrawing *self,
 			priv->dragging = TRUE;
 			break;
 		case GDK_MOTION_NOTIFY:
+			/*
 			if (priv->dragging && priv->start_resize != NULL) {
 				ArtPoint pi;
 				ArtDRect p_bounds;
 
                 conting_drawing_w2i(self, &pi, &p);
-
+*/
 				/* Cluttered code, checks if the size of the bar is at
 				 * minimum 20, and if it doesn't goes outside linked lines */
+			/*
 				if ((priv->start_resize == &comp->p0
 					   && fabs(pi.y - comp->p1.y) > 20)
 						|| (priv->start_resize == &comp->p1
@@ -508,7 +439,7 @@ conting_bus_event(ContingDrawing *self,
 				}
 
 				conting_drawing_update(self);
-			} else if (priv->dragging) {
+			} else */ if (priv->dragging) {
 				gdouble affine[6];
 				art_affine_translate(affine,
 						p.x - priv->dragging_point.x,
@@ -550,20 +481,6 @@ conting_bus_event(ContingDrawing *self,
 }
 
 
-static void
-conting_bus_link_deleted(ContingDrawing *drawing,
-		                       gpointer user_data)
-{
-	ContingBusPrivate *priv;
-
-	g_return_if_fail(user_data != NULL && CONTING_IS_BUS(user_data));
-
-	priv = CONTING_BUS_GET_PRIVATE(user_data);
-
-	g_print("link %p deleted from %p\n", drawing, user_data);
-	priv->links = g_slist_remove(priv->links, drawing);
-	conting_bus_disconnect_link(CONTING_BUS(user_data), drawing);
-}
 
 static gboolean
 conting_bus_link(ContingComponent *self,
@@ -580,7 +497,7 @@ conting_bus_link(ContingComponent *self,
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	if (g_slist_find(priv->links, drawing))
+	if (g_list_find(comp->links, drawing))
 		return FALSE;
 
 	pi.x = world_x;
@@ -607,13 +524,7 @@ conting_bus_link(ContingComponent *self,
 
     conting_drawing_i2w(CONTING_DRAWING(self), pw, &pi);
 
-	ArtPoint *p = g_new(ArtPoint, 1);
-	*p = pi;
-
-	priv->links = g_slist_append(priv->links, drawing);
-	g_hash_table_insert(priv->points, drawing, p); 
-	g_signal_connect(G_OBJECT(drawing), "delete",
-			G_CALLBACK(conting_bus_link_deleted), self);
+	conting_component_connect_link(self, drawing, &pi);
 
 	return TRUE;
 }
@@ -633,7 +544,6 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
 
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->link = conting_bus_link;
-	component_class->get_link_point = conting_bus_get_link_point;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_bus_finalize;

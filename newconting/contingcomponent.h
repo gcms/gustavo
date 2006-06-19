@@ -23,8 +23,11 @@ struct ContingComponent_ {
     /* protected */
     ArtPoint p0, p1;
     gboolean placed;
+
 	/* private */
     gdouble rotate[6];
+	GHashTable *points;
+	GList *links;
 };
 
 typedef struct ContingComponentClass_ ContingComponentClass;
@@ -36,6 +39,9 @@ struct ContingComponentClass_ {
 
     gboolean (*get_link_point)(ContingComponent *self, ContingDrawing *line,
             ArtPoint *p);
+
+	/* protected */
+	void (*link_deleted)(ContingComponent *self, ContingDrawing *drawing);
 };
 
 GType conting_component_get_type(void);
@@ -48,6 +54,23 @@ gboolean conting_component_link(ContingComponent *self,
 gboolean conting_component_get_link_point(ContingComponent *self,
                                           ContingDrawing *line,
                                           ArtPoint *p);
+/* protected */
+
+GType conting_component_get_type(void);
+
+gboolean conting_component_link(ContingComponent *self,
+                                ContingDrawing *line,
+                                gdouble world_x, gdouble world_y,
+                                ArtPoint *pw);
+
+gboolean conting_component_get_link_point(ContingComponent *self,
+                                          ContingDrawing *line,
+                                          ArtPoint *p);
+
+void conting_component_disconnect_link(ContingComponent *self,
+		                               ContingDrawing *drawing);
+void conting_component_connect_link(ContingComponent *self,
+		                        ContingDrawing *link, ArtPoint *p);
 
 G_END_DECLS
 
