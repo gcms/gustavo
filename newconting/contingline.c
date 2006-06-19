@@ -1,6 +1,7 @@
 #include "contingline.h"
 #include "contingcomponent.h"
 #include "contingutil.h"
+#include "contingxml.h"
 #include <string.h>
 #include <assert.h>
 #include <math.h>

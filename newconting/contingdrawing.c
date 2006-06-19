@@ -1,6 +1,7 @@
 #include "contingdrawing.h"
 #include "continggroup.h"
 #include "contingutil.h"
+#include "contingxml.h"
 #include <string.h>
 
 static gint move_signal_id = 0;
