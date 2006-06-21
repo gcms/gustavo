@@ -50,6 +50,9 @@ struct ContingDrawingClass_ {
     xmlNodePtr (*xml_node)(ContingDrawing *self, xmlNodePtr drawing_node);
     void (*place_xml)(ContingDrawing *self, xmlNodePtr drawing_node,
             GHashTable *id_drawing);
+
+	void (*get_center)(ContingDrawing *self,
+		               ArtPoint *pw_dst, const ArtPoint *pw_src);
 };
 
 GType conting_drawing_get_type(void);
@@ -90,6 +93,9 @@ xmlNodePtr conting_drawing_xml_node(ContingDrawing *self,
         xmlNodePtr drawing_node);
 void conting_drawing_place_xml(ContingDrawing *self, xmlNodePtr node,
                                GHashTable *id_drawing);
+
+void conting_drawing_get_center(ContingDrawing *self,
+		                        ArtPoint *pw_dst, const ArtPoint *pw_src);
 
 G_END_DECLS
 

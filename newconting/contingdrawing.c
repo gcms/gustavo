@@ -3,6 +3,7 @@
 #include "contingutil.h"
 #include "contingxml.h"
 #include <string.h>
+#include <math.h>
 
 static gint move_signal_id = 0;
 static gint delete_signal_id = 0;
@@ -28,6 +29,28 @@ struct ContingDrawingPrivate_ {
 
     gboolean selected;
 };
+
+void
+conting_drawing_get_center(ContingDrawing *self,
+                           ArtPoint *pw_dst, const ArtPoint *pw_src)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->get_center(self, pw_dst, pw_src);
+}
+static void
+conting_drawing_get_center_impl(ContingDrawing *self,
+                                ArtPoint *pw_dst, const ArtPoint *pw_src)
+{
+	ArtDRect bounds;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	conting_drawing_get_bounds(self, &bounds);
+
+	pw_dst->x = bounds.x0 + fabs(bounds.x0 - bounds.x1) / 2;
+	pw_dst->y = bounds.y0 + fabs(bounds.y0 - bounds.y1) / 2;
+}
 
 void
 conting_drawing_draw(ContingDrawing *self,
@@ -495,10 +518,14 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class->answer = NULL;
     drawing_class->event = NULL;
     drawing_class->delete = conting_drawing_delete_impl;
+
     drawing_class->get_i2w_affine = conting_drawing_get_i2w_affine_impl;
     drawing_class->get_w2i_affine = conting_drawing_get_w2i_affine_impl;
+
     drawing_class->xml_node = conting_drawing_xml_node_impl;
     drawing_class->place_xml = conting_drawing_place_xml_impl;
+
+	drawing_class->get_center = conting_drawing_get_center_impl;
 
     move_signal_id = g_signal_newv(
             "move",

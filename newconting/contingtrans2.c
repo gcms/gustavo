@@ -95,21 +95,7 @@ conting_trans2_draw(ContingDrawing *self,
     conting_one_line_world_to_window(conting_drawing_get_one_line(self),
             pw1.x, pw1.y, &pw1.x, &pw1.y);
 
-    if (conting_drawing_is_selected(self)) {
-        gdk_draw_rectangle(drawable, gc, TRUE,
-                (gint) (pw0.x - TOLERANCE), (gint) (pw0.y - TOLERANCE),
-                SIZE, SIZE);
-        gdk_draw_rectangle(drawable, gc, TRUE,
-                (gint) (pw1.x - TOLERANCE), (gint) (pw0.y - TOLERANCE),
-                SIZE, SIZE);
-        gdk_draw_rectangle(drawable, gc, TRUE,
-                (gint) (pw0.x - TOLERANCE), (gint) (pw1.y - TOLERANCE),
-                SIZE, SIZE);
-        gdk_draw_rectangle(drawable, gc, TRUE,
-                (gint) (pw1.x - TOLERANCE), (gint) (pw1.y - TOLERANCE),
-                SIZE, SIZE);
-        
-    }
+	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
 }
 
 static void
