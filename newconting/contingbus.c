@@ -125,37 +125,6 @@ static void conting_bus_delete(ContingDrawing *self)
 }
 
 #include <gdk/gdkkeysyms.h>
-static gboolean
-conting_bus_event_place(ContingDrawing *self,
-		                GdkEvent *event)
-{
-	ContingBusPrivate *priv;
-	ArtPoint p;
-	gdouble affine[6];
-
-	g_return_val_if_fail(self != NULL && CONTING_IS_BUS(self), FALSE);
-
-    priv = CONTING_BUS_GET_PRIVATE(self);
-
-	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
-			event->button.x, event->button.y,
-			&p.x, &p.y);
-
-	switch (event->type) {
-		case GDK_MOTION_NOTIFY:
-			art_affine_translate(affine, p.x, p.y);
-			conting_drawing_affine_absolute(self, affine);
-			break;
-		case GDK_KEY_PRESS:
-			if (event->key.keyval == GDK_Escape) {
-				conting_drawing_delete(self);
-			}
-			break;
-		default:
-			break;
-	}
-	return TRUE;
-}
 /*
 static void
 conting_bus_get_points_bounds(ContingBus *self,
@@ -205,9 +174,6 @@ conting_bus_event(ContingDrawing *self,
 
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
-
-	if (!conting_drawing_is_placed(self))
-		return conting_bus_event_place(self, event);
 
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y,

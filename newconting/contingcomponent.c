@@ -235,12 +235,27 @@ conting_component_event(ContingDrawing *self,
                         GdkEvent *event)
 {
     ContingComponent *comp;
+	ArtPoint p;
 
     g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 
     comp = CONTING_COMPONENT(self);
 
+	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
+			event->button.x, event->button.y,
+			&p.x, &p.y);
+
     switch (event->type) {
+		case GDK_MOTION_NOTIFY:
+			if (!comp->placed) {
+				gdouble affine[6];
+
+				art_affine_translate(affine, p.x, p.y);
+				conting_drawing_affine_absolute(self, affine);
+
+				return TRUE;
+			}
+			break;
         case GDK_KEY_PRESS:
             if (event->key.keyval == GDK_r) {
 				GList *n;
@@ -261,6 +276,18 @@ conting_component_event(ContingDrawing *self,
 
 			if (event->key.keyval == GDK_s) {
 				comp->show = TRUE;
+
+				return TRUE;
+			}
+
+			if (event->key.keyval == GDK_Escape && !comp->placed) {
+				conting_drawing_delete(self);
+
+				return TRUE;
+			}
+
+			if (event->key.keyval == GDK_Delete) {
+				conting_drawing_delete(self);
 
 				return TRUE;
 			}
