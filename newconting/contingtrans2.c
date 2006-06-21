@@ -155,38 +155,6 @@ static void conting_trans2_delete(ContingDrawing *self)
 }
 #include <gdk/gdkkeysyms.h>
 static gboolean
-conting_trans2_event_place(ContingDrawing *self,
-                        GdkEvent *event)
-{
-    ContingTrans2Private *priv;
-    ArtPoint p;
-    gdouble affine[6];
-
-    g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    conting_one_line_window_to_world(conting_drawing_get_one_line(self),
-            event->button.x, event->button.y,
-            &p.x, &p.y);
-
-    switch (event->type) {
-        case GDK_MOTION_NOTIFY:
-            art_affine_translate(affine, p.x, p.y);
-            conting_drawing_affine_absolute(self, affine);
-            break;
-        case GDK_KEY_PRESS:
-            if (event->key.keyval == GDK_Escape) {
-                conting_drawing_delete(self);
-            }
-            break;
-        default:
-            break;
-    }
-    return TRUE;
-}
-
-static gboolean
 conting_trans2_event(ContingDrawing *self,
                      GdkEvent *event)
 {
@@ -199,9 +167,6 @@ conting_trans2_event(ContingDrawing *self,
         return TRUE;
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    if (!conting_drawing_is_placed(self))
-        return conting_trans2_event_place(self, event);
 
     conting_one_line_window_to_world(conting_drawing_get_one_line(self),
             event->button.x, event->button.y,
