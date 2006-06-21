@@ -70,21 +70,7 @@ conting_bus_draw(ContingDrawing *self,
 	gdk_draw_rectangle(drawable, gc, TRUE,
 			rect.x, rect.y, rect.width, rect.height);
 
-	if (conting_drawing_is_selected(self)) {
-		gdk_draw_rectangle(drawable, gc, TRUE,
-				(gint) (pw0.x - TOLERANCE), (gint) (pw0.y - TOLERANCE),
-				SIZE, SIZE);
-		gdk_draw_rectangle(drawable, gc, TRUE,
-				(gint) (pw1.x - TOLERANCE), (gint) (pw0.y - TOLERANCE),
-				SIZE, SIZE);
-		gdk_draw_rectangle(drawable, gc, TRUE,
-				(gint) (pw0.x - TOLERANCE), (gint) (pw1.y - TOLERANCE),
-				SIZE, SIZE);
-		gdk_draw_rectangle(drawable, gc, TRUE,
-				(gint) (pw1.x - TOLERANCE), (gint) (pw1.y - TOLERANCE),
-				SIZE, SIZE);
-		
-	}
+	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
 }
 static void
 conting_bus_finalize(GObject *self)

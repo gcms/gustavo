@@ -202,6 +202,7 @@ conting_one_line_answer(ContingOneLine *self,
 
     return list;
 }
+#define TOLERANCE 3
 void
 conting_one_line_update(ContingOneLine *self,
                         ArtDRect *bounds)
@@ -218,12 +219,15 @@ conting_one_line_update(ContingOneLine *self,
 		return;
 	}
 
+	conting_util_expand_bounds(bounds, TOLERANCE);
+
     conting_one_line_world_to_window(self,
             bounds->x0, bounds->y0,
             &win_bounds.x0, &win_bounds.y0);
     conting_one_line_world_to_window(self,
             bounds->x1, bounds->y1,
             &win_bounds.x1, &win_bounds.y1);
+
 
     g_print("update1: (%lf, %lf); (%lf, %lf)\n",
 			bounds->x0, bounds->y0, bounds->x1, bounds->y1);

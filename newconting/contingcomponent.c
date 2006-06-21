@@ -31,6 +31,84 @@ conting_component_link(ContingComponent *self,
 }
 
 static void
+conting_component_draw(ContingDrawing *self,
+		               GdkDrawable *drawable,
+					   const GdkRectangle *drawing_rect)
+{
+	ContingComponent *comp;
+	ArtDRect bounds;
+	ArtPoint pw0, pw1;
+
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+    static GdkGC *gc = NULL;
+    if (gc == NULL) {
+        static GdkColor color;
+        gdk_color_parse("black", &color);
+        gc = gdk_gc_new(drawable);
+        gdk_gc_set_foreground(gc, &color);
+        gdk_gc_set_background(gc, &color);
+		gdk_gc_set_rgb_fg_color(gc, &color);
+		gdk_gc_set_rgb_bg_color(gc, &color);
+		gdk_gc_set_fill(gc, GDK_SOLID);
+    }
+
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	conting_drawing_get_bounds(self, &bounds);
+
+	pw0.x = bounds.x0;
+	pw0.y = bounds.y0;
+	pw1.x = bounds.x1;
+	pw1.y = bounds.y1;
+
+	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
+			pw0.x, pw0.y, &pw0.x, &pw0.y);
+	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
+			pw1.x, pw1.y, &pw1.x, &pw1.y);
+
+	if (conting_drawing_is_selected(self)) {
+		gdk_draw_rectangle(drawable, gc, TRUE,
+				(gint) (pw0.x - TOLERANCE), (gint) (pw0.y - TOLERANCE),
+				SIZE, SIZE);
+		gdk_draw_rectangle(drawable, gc, TRUE,
+				(gint) (pw1.x - TOLERANCE), (gint) (pw0.y - TOLERANCE),
+				SIZE, SIZE);
+		gdk_draw_rectangle(drawable, gc, TRUE,
+				(gint) (pw0.x - TOLERANCE), (gint) (pw1.y - TOLERANCE),
+				SIZE, SIZE);
+		gdk_draw_rectangle(drawable, gc, TRUE,
+				(gint) (pw1.x - TOLERANCE), (gint) (pw1.y - TOLERANCE),
+				SIZE, SIZE);
+		
+	}
+
+	comp = CONTING_COMPONENT(self);
+
+	if (comp->show) {
+		GList *n;
+
+		for (n = comp->links; n != NULL; n = g_list_next(n)) {
+			ArtPoint dst, src;
+
+			conting_drawing_get_center(self, &src, NULL);
+
+			conting_drawing_get_center(CONTING_DRAWING(n->data), &dst, &src);
+
+			conting_one_line_world_to_window(conting_drawing_get_one_line(self),
+					src.x, src.y, &src.x, &src.y);
+			conting_one_line_world_to_window(conting_drawing_get_one_line(self),
+					dst.x, dst.y, &dst.x, &dst.y);
+
+			gdk_draw_line(drawable, gc,
+					(gint) src.x, (gint) src.y,
+					(gint) dst.x, (gint) dst.y);
+			
+		}
+	}
+}
+
+static void
 conting_component_link_deleted(ContingComponent *comp,
 		                       ContingDrawing *link);
 static void
@@ -79,11 +157,6 @@ conting_component_get_bounds(ContingDrawing *self,
     bounds->y0 = MIN(pw0.y, pw1.y);
     bounds->x1 = MAX(pw0.x, pw1.x);
     bounds->y1 = MAX(pw0.y, pw1.y);
-
-    bounds->x0 -= TOLERANCE;
-    bounds->x1 += TOLERANCE;
-    bounds->y0 -= TOLERANCE;
-    bounds->y1 += TOLERANCE;
 }
 static void
 conting_component_place(ContingDrawing *self)
@@ -185,10 +258,19 @@ conting_component_event(ContingDrawing *self,
 
                 return TRUE;
             }
+
+			if (event->key.keyval == GDK_s) {
+				comp->show = TRUE;
+
+				return TRUE;
+			}
+
+			comp->show = FALSE;
             break;
         default:
             break;
     }
+
 
     return FALSE;
 }
@@ -472,6 +554,7 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
 	object_class->finalize = conting_component_finalize;
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
+    drawing_class->draw = conting_component_draw;
     drawing_class->get_bounds = conting_component_get_bounds;
     drawing_class->place = conting_component_place;
     drawing_class->is_placed = conting_component_is_placed;

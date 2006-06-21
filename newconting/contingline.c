@@ -192,6 +192,73 @@ conting_line_finalize(GObject *self)
 }
 
 static void
+conting_line_get_center(ContingDrawing *self,
+		                ArtPoint *pw_dst, const ArtPoint *pw_src)
+{
+	ContingLinePrivate *priv;
+	gdouble width;
+	GList *n, *next;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	width = 0;
+
+	n = priv->points;
+	for (next = g_list_next(n); n && next; next = g_list_next(next)) {
+		ArtPoint p0, p1;
+		gdouble w, h;
+
+		conting_drawing_i2w(self, &p0, n->data);
+		conting_drawing_i2w(self, &p1, next->data);
+
+		w = fabs(p0.x - p1.x);
+		h = fabs(p0.y - p1.y);
+
+		width += sqrt(w * w + h * h);
+
+		n = next;
+	}
+
+	width /= 2;
+
+	n = priv->points;
+	for (next = g_list_next(n); n && next; next = g_list_next(next)) {
+		ArtPoint p0, p1;
+		gdouble w, h, seg_w;
+
+		conting_drawing_i2w(self, &p0, n->data);
+		conting_drawing_i2w(self, &p1, next->data);
+
+		w = fabs(p0.x - p1.x);
+		h = fabs(p0.y - p1.y);
+
+		seg_w = sqrt(w * w + h * h);
+		width -= seg_w;
+
+		if (width <= 0) {
+			width = seg_w + width;
+
+			/*
+			 * Could multiply by (width / seg_w) to get more precise
+			 * centering. Or multiply by 0.5 to always get the medium
+			 * of a line segment.
+			 */
+			pw_dst->x = p0.x + (p1.x - p0.x) * (width / seg_w);
+			pw_dst->y = p0.y + (p1.y - p0.y) * (width / seg_w);
+			return;
+		}
+
+		n = next;
+		
+
+		n = next;
+	}
+	
+}
+
+static void
 conting_line_instance_init(GTypeInstance *self,
 		                   gpointer g_class)
 {
@@ -790,8 +857,11 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->answer = conting_line_answer;
 	drawing_class->event = conting_line_event;
 	drawing_class->delete = conting_line_delete;
+
 	drawing_class->xml_node = conting_line_xml_node;
 	drawing_class->place_xml = conting_line_place_xml;
+
+	drawing_class->get_center = conting_line_get_center;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;

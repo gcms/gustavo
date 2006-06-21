@@ -28,6 +28,8 @@ struct ContingComponent_ {
     gdouble rotate[6];
 	GHashTable *points;
 	GList *links;
+
+	gboolean show;
 };
 
 typedef struct ContingComponentClass_ ContingComponentClass;
