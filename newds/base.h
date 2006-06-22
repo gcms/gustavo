@@ -41,4 +41,6 @@ typedef boolean (*iterate_func_t)(void *value, void *user_data);
 
 typedef void (*destroy_func_t)(void *);
 
+void stub_destructor(void *);
+
 #endif /* BASE_H */
