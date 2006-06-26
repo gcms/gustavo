@@ -42,7 +42,8 @@ conting_line_draw(ContingDrawing *self,
 	GList *n;
 	ArtPoint pw0, pw1;
 	gdouble width;
-
+	cairo_t *cr;
+/*
     static GdkGC *gc = NULL;
     if (gc == NULL) {
         static GdkColor color;
@@ -54,12 +55,15 @@ conting_line_draw(ContingDrawing *self,
 		gdk_gc_set_rgb_bg_color(gc, &color);
 		gdk_gc_set_fill(gc, GDK_SOLID);
     }
+	*/
 	g_object_get(conting_drawing_get_one_line(self),
 			"ppu", &width,
 			NULL);
+	/*
 	gdk_gc_set_line_attributes(gc, (gint) width, GDK_LINE_SOLID,
 			GDK_CAP_NOT_LAST,
 			GDK_JOIN_MITER);
+			*/
 
     g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
 
@@ -70,13 +74,27 @@ conting_line_draw(ContingDrawing *self,
 	if (!priv->placing && !priv->placed)
 		return;
 
+	cr = gdk_cairo_create(drawable);
+	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+	cairo_set_line_width(cr, width);
+
 	pw0 = *((ArtPoint *) priv->points->data);
 	art_affine_point(&pw0, &pw0, affine);
 	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
 			pw0.x, pw0.y, &pw0.x, &pw0.y);
 	if (conting_drawing_is_selected(self)) {
+		cairo_move_to(cr, pw0.x - TOLERANCE, pw0.y - TOLERANCE);
+		cairo_line_to(cr, pw0.x - TOLERANCE + SIZE, pw0.y - TOLERANCE);
+		cairo_line_to(cr, pw0.x - TOLERANCE + SIZE, pw0.y - TOLERANCE + SIZE);
+		cairo_line_to(cr, pw0.x - TOLERANCE, pw0.y - TOLERANCE + SIZE);
+		cairo_line_to(cr, pw0.x - TOLERANCE, pw0.y - TOLERANCE);
+		cairo_set_source_rgb(cr, 0, 0, 0);
+		cairo_fill(cr);
+		cairo_stroke(cr);
+		/*
 		gdk_draw_rectangle(drawable, gc, TRUE,
 				pw0.x - TOLERANCE, pw0.y - TOLERANCE, SIZE, SIZE);
+				*/
 	}
 
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
@@ -87,12 +105,28 @@ conting_line_draw(ContingDrawing *self,
 
 		g_print("drawing: (%lf, %lf); (%lf, %lf)\n",
 				pw0.x, pw0.y, pw1.x, pw1.y);
+		cairo_move_to(cr, pw0.x, pw0.y);
+		cairo_line_to(cr, pw1.x, pw1.y);
+		cairo_stroke(cr);
+		/*
 		gdk_draw_line(drawable, gc,
 				(gint) pw0.x, (gint) pw0.y,
 				(gint) pw1.x, (gint) pw1.y);
+				*/
 		if (conting_drawing_is_selected(self)) {
+			cairo_move_to(cr, pw1.x - TOLERANCE, pw1.y - TOLERANCE);
+			cairo_line_to(cr, pw1.x - TOLERANCE + SIZE, pw1.y - TOLERANCE);
+			cairo_line_to(cr, pw1.x - TOLERANCE + SIZE,
+					pw1.y - TOLERANCE + SIZE);
+			cairo_line_to(cr, pw1.x - TOLERANCE, pw1.y - TOLERANCE + SIZE);
+			cairo_line_to(cr, pw1.x - TOLERANCE, pw1.y - TOLERANCE);
+			cairo_set_source_rgb(cr, 0, 0, 0);
+			cairo_fill(cr);
+			cairo_stroke(cr);
+			/*
 			gdk_draw_rectangle(drawable, gc, TRUE,
 					pw1.x - TOLERANCE, pw1.y - TOLERANCE, SIZE, SIZE);
+					*/
 		}
 
 
@@ -105,10 +139,17 @@ conting_line_draw(ContingDrawing *self,
 		conting_one_line_world_to_window(conting_drawing_get_one_line(self),
 				pw1.x, pw1.y, &pw1.x, &pw1.y);
 
+		cairo_move_to(cr, pw0.x, pw0.y);
+		cairo_line_to(cr, pw1.x, pw1.y);
+		cairo_stroke(cr);
+		/*
 		gdk_draw_line(drawable, gc,
 				(gint) pw0.x, (gint) pw0.y,
 				(gint) pw1.x, (gint) pw1.y);
+				*/
 	}
+
+	cairo_destroy(cr);
 }
 
 static void
@@ -852,6 +893,7 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_line_draw;
 	drawing_class->get_bounds = conting_line_get_bounds;
+	drawing_class->get_update_bounds = conting_line_get_bounds;
 	drawing_class->place = conting_line_place;
 	drawing_class->is_placed = conting_line_is_placed;
 	drawing_class->answer = conting_line_answer;

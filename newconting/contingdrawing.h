@@ -39,6 +39,7 @@ struct ContingDrawingClass_ {
             gdouble world_x, gdouble world_y);
 
     void (*get_bounds)(ContingDrawing *self, ArtDRect *rect);
+    void (*get_update_bounds)(ContingDrawing *self, ArtDRect *rect);
 
     void (*get_i2w_affine)(ContingDrawing *self, gdouble affine[6]);
     void (*get_w2i_affine)(ContingDrawing *self, gdouble affine[6]);
@@ -74,6 +75,7 @@ void conting_drawing_i2w(ContingDrawing *self, ArtPoint *src, ArtPoint *dst);
 void conting_drawing_w2i(ContingDrawing *self, ArtPoint *src, ArtPoint *dst);
 
 void conting_drawing_get_bounds(ContingDrawing *self, ArtDRect *rect);
+void conting_drawing_get_update_bounds(ContingDrawing *self, ArtDRect *rect);
 
 void conting_drawing_place(ContingDrawing *self);
 gboolean conting_drawing_is_placed(ContingDrawing *self);

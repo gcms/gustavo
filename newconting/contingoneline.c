@@ -360,7 +360,7 @@ conting_one_line_send_event(ContingOneLine *self,
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), FALSE);
 
-	conting_drawing_get_bounds(drawing, &bounds);
+	conting_drawing_get_update_bounds(drawing, &bounds);
 	result = conting_drawing_event(drawing, event);
 	conting_one_line_update(self, &bounds);
 	if (conting_one_line_contains(self, drawing)) {

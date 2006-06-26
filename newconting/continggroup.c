@@ -43,6 +43,41 @@ conting_group_draw(ContingDrawing *self,
 		conting_drawing_draw(drawing, drawable, drawing_rect);
 	}
 }
+static void
+conting_group_get_update_bounds(ContingDrawing *self,
+	        	                ArtDRect *bounds)
+{
+	ContingGroupPrivate *priv;
+	GSList *n;
+	ContingDrawing *drawing;
+	ArtDRect d_bounds;
+
+	g_return_if_fail(self != NULL && CONTING_IS_GROUP(self));
+
+    priv = CONTING_GROUP_GET_PRIVATE(self);
+
+	if (!priv->drawings) {
+		bounds->x0 = bounds->y0 = bounds->x1 = bounds->y1 = 0.0;
+		return;
+	}
+
+
+	drawing = priv->drawings->data;
+	conting_drawing_get_update_bounds(drawing, &d_bounds);
+	*bounds = d_bounds;
+
+	for (n = g_slist_next(priv->drawings); n != NULL; n = g_slist_next(n)) {
+		drawing	= n->data;
+		conting_drawing_get_update_bounds(drawing, &d_bounds);
+
+		conting_util_union_bounds(&d_bounds, bounds, bounds);
+	}
+
+	bounds->x0 -= TOLERANCE;
+	bounds->x1 += TOLERANCE;
+	bounds->y0 -= TOLERANCE;
+	bounds->y1 += TOLERANCE;
+}
 
 static void
 conting_group_get_bounds(ContingDrawing *self,
@@ -73,11 +108,6 @@ conting_group_get_bounds(ContingDrawing *self,
 
 		conting_util_union_bounds(&d_bounds, bounds, bounds);
 	}
-
-	bounds->x0 -= TOLERANCE;
-	bounds->x1 += TOLERANCE;
-	bounds->y0 -= TOLERANCE;
-	bounds->y1 += TOLERANCE;
 }
 
 static void
@@ -209,6 +239,7 @@ conting_group_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_group_draw;
 	drawing_class->get_bounds = conting_group_get_bounds;
+	drawing_class->get_update_bounds = conting_group_get_update_bounds;
 	drawing_class->place = conting_group_place;
 	drawing_class->is_placed = conting_group_is_placed;
 	drawing_class->answer = conting_group_answer;

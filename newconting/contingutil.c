@@ -53,3 +53,9 @@ gboolean conting_util_bounds_contains(const ArtDRect *b1, const ArtDRect *b2) {
 	return b1->x0 <= b2->x0 && b1->y0 <= b2->y0
 		&& b1->x1 >= b2->x1 && b1->y1 >= b2->y1;
 }
+void conting_util_bounds_add_point(ArtDRect *dr, const ArtPoint *p) {
+	dr->x0 = MIN(dr->x0, p->x);
+	dr->y0 = MIN(dr->y0, p->y);
+	dr->x1 = MAX(dr->x1, p->x);
+	dr->y1 = MAX(dr->y1, p->y);
+}

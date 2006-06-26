@@ -177,6 +177,14 @@ conting_drawing_get_w2i_affine(ContingDrawing *self,
 }
 
 
+void
+conting_drawing_get_update_bounds(ContingDrawing *self, ArtDRect *bounds)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->get_update_bounds(self, bounds);
+}
+
 
 void
 conting_drawing_get_bounds(ContingDrawing *self,
@@ -253,7 +261,7 @@ conting_drawing_update(ContingDrawing *self)
     ArtDRect bounds;
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-    conting_drawing_get_bounds(self, &bounds);
+    conting_drawing_get_update_bounds(self, &bounds);
     conting_one_line_update(conting_drawing_get_one_line(self), &bounds);
 }
 void
@@ -513,6 +521,7 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = NULL;
     drawing_class->get_bounds = NULL;
+    drawing_class->get_update_bounds = NULL;
     drawing_class->place = NULL;
     drawing_class->is_placed = NULL;
     drawing_class->answer = NULL;
