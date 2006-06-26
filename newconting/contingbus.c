@@ -31,7 +31,8 @@ conting_bus_draw(ContingDrawing *self,
 	gdouble affine[6];
     ArtPoint pw0, pw1;
 	GdkRectangle rect;
-
+	cairo_t *cr;
+/*
     static GdkGC *gc = NULL;
     if (gc == NULL) {
         static GdkColor color;
@@ -43,6 +44,7 @@ conting_bus_draw(ContingDrawing *self,
 		gdk_gc_set_rgb_bg_color(gc, &color);
 		gdk_gc_set_fill(gc, GDK_SOLID);
     }
+	*/
 
     g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
@@ -66,9 +68,23 @@ conting_bus_draw(ContingDrawing *self,
 	rect.y = (gint) (pw0.y < pw1.y ? pw0.y : pw1.y);
 	rect.width = (gint) fabs(pw0.x - pw1.x);
 	rect.height = (gint) fabs(pw0.y - pw1.y);
-
+/*
 	gdk_draw_rectangle(drawable, gc, TRUE,
 			rect.x, rect.y, rect.width, rect.height);
+			*/
+	cr = gdk_cairo_create(drawable);
+	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+	
+	cairo_move_to(cr, rect.x, rect.y);
+	cairo_line_to(cr, rect.x + rect.width, rect.y);
+	cairo_line_to(cr, rect.x + rect.width, rect.y + rect.height);
+	cairo_line_to(cr, rect.x, rect.y + rect.height);
+	cairo_line_to(cr, rect.x, rect.y);
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_fill(cr);
+	cairo_stroke(cr);
+
+	cairo_destroy(cr);
 
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
 }

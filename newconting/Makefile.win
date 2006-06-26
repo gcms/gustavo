@@ -1,14 +1,17 @@
 CC=gcc
-CFLAGS=-Wall -g -mms-bitfields -ID:/GTK/include/gtk-2.0 -ID:/GTK/lib/gtk-2.0/include -ID:/GTK/include/atk-1.0 -ID:/GTK/include/cairo -ID:/GTK/include/pango-1.0 -ID:/GTK/include/glib-2.0 -ID:/GTK/lib/glib-2.0/include -ID:/GTK/include/libart-2.0  -ID:/GTK/include
-LIBS=D:/GTK/lib/*.a D:/GTK/bin/*.dll -lm
+CFLAGS=-Wall -g -mms-bitfields -IU:/GTK/include/gtk-2.0 -IU:/GTK/lib/gtk-2.0/include -IU:/GTK/include/atk-1.0 -IU:/GTK/include/cairo -IU:/GTK/include/pango-1.0 -IU:/GTK/include/glib-2.0 -IU:/GTK/lib/glib-2.0/include -IU:/GTK/include/libart-2.0  -IU:/GTK/include
+LIBS=U:/GTK/lib/*.a U:/GTK/bin/*.dll -lm
 
 all: build
-	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o -o main.exe
+	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o contingxml.o continggroup.o contingtrans2.o contingbus.o contingmain.o -o main.exe
 
-build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o
+build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o contingxml.o continggroup.o contingtrans2.o contingbus.o contingmain.o
 
 contingutil.o: contingutil.c
 	$(CC) $(CFLAGS) -c contingutil.c -o contingutil.o
+
+contingxml.o: contingxml.c
+	$(CC) $(CFLAGS) -c contingxml.c -o contingxml.o
 
 contingoneline.o: contingoneline.c
 	$(CC) $(CFLAGS) -c contingoneline.c -o contingoneline.o
@@ -40,6 +43,7 @@ clean:
 	rm -f contingcomponent.o
 	rm -f contingline.o
 	rm -f contingutil.o
+	rm -f contingxml.o
 	rm -f continggroup.o
 	rm -f contingtrans2.o
 	rm -f contingbus.o

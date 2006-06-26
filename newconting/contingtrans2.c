@@ -30,7 +30,8 @@ conting_trans2_draw(ContingDrawing *self,
     gdouble affine[6];
     ArtPoint pw0, pw1;
     GdkRectangle rect;
-
+	cairo_t *cr;
+/*
     static GdkGC *gc = NULL;
     if (gc == NULL) {
         static GdkColor color;
@@ -42,6 +43,7 @@ conting_trans2_draw(ContingDrawing *self,
         gdk_gc_set_rgb_bg_color(gc, &color);
         gdk_gc_set_fill(gc, GDK_SOLID);
     }
+	*/
 
     g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
 
@@ -66,8 +68,19 @@ conting_trans2_draw(ContingDrawing *self,
     rect.width = fabs(pw1.x - pw0.x);
     rect.height = fabs(pw1.y - pw0.y);
 
+	cr = gdk_cairo_create(drawable);
+	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+
+	cairo_arc(cr,
+			rect.x + ((gdouble) rect.width / 2.0),
+			rect.y + ((gdouble) rect.height / 2.0),
+			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_stroke(cr);
+	/*
     gdk_draw_arc(drawable, gc, FALSE,
             rect.x, rect.y, rect.width, rect.height, 0, 360 * 64);
+			*/
 
     pw0 = comp->p0;
     pw1 = comp->p1;
@@ -85,8 +98,20 @@ conting_trans2_draw(ContingDrawing *self,
     rect.width = fabs(pw1.x - pw0.x);
     rect.height = fabs(pw1.y - pw0.y);
 
+
+	cairo_arc(cr,
+			rect.x + ((gdouble) rect.width / 2.0),
+			rect.y + ((gdouble) rect.height / 2.0),
+			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_stroke(cr);
+
+	cairo_destroy(cr);
+/*
     gdk_draw_arc(drawable, gc, FALSE,
             rect.x, rect.y, rect.width, rect.height, 0, 360 * 64);
+			*/
+
 
     art_affine_point(&pw0, &comp->p0, affine);
     art_affine_point(&pw1, &comp->p1, affine);

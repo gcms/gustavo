@@ -22,4 +22,6 @@ void conting_util_bounds_to_rect(const ArtDRect *src, GdkRectangle *dst);
 
 gboolean conting_util_bounds_contains(const ArtDRect *b1, const ArtDRect *b2);
 
+void conting_util_bounds_add_point(ArtDRect *dr, const ArtPoint *p);
+
 #endif /* CONTING_UTIL_H */

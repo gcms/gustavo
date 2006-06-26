@@ -1,4 +1,5 @@
 #include "contingcomponent.h"
+#include "contingutil.h"
 #include "contingxml.h"
 #include <assert.h>
 
@@ -88,6 +89,20 @@ conting_component_draw(ContingDrawing *self,
 	if (comp->show) {
 		GList *n;
 
+    	static GdkGC *show_gc = NULL;
+	    if (show_gc == NULL) {
+	        static GdkColor color;
+    	    gdk_color_parse("red", &color);
+	        show_gc = gdk_gc_new(drawable);
+    	    gdk_gc_set_foreground(show_gc, &color);
+	        gdk_gc_set_background(show_gc, &color);
+			gdk_gc_set_rgb_fg_color(show_gc, &color);
+			gdk_gc_set_rgb_bg_color(show_gc, &color);
+			gdk_gc_set_fill(show_gc, GDK_SOLID);
+		}
+		gdk_gc_set_line_attributes(show_gc, 3, GDK_LINE_ON_OFF_DASH,
+				GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
+
 		for (n = comp->links; n != NULL; n = g_list_next(n)) {
 			ArtPoint dst, src;
 
@@ -100,9 +115,13 @@ conting_component_draw(ContingDrawing *self,
 			conting_one_line_world_to_window(conting_drawing_get_one_line(self),
 					dst.x, dst.y, &dst.x, &dst.y);
 
-			gdk_draw_line(drawable, gc,
+			gdk_draw_line(drawable, show_gc,
 					(gint) src.x, (gint) src.y,
 					(gint) dst.x, (gint) dst.y);
+
+			gdk_draw_arc(drawable, show_gc, TRUE,
+					dst.x - 5, dst.y - 5,
+					9, 9, 0, 360 * 64);
 			
 		}
 	}
@@ -134,6 +153,40 @@ conting_component_connect_link(ContingComponent *comp,
 
 	g_signal_connect(G_OBJECT(link), "delete",
 			G_CALLBACK(conting_component_link_deleted_stub), comp);
+}
+static void
+conting_component_get_update_bounds(ContingDrawing *self,
+                                    ArtDRect *bounds)
+{
+    ContingComponent *comp;
+    gdouble affine[6];
+    ArtPoint pw0, pw1;
+
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+    comp = CONTING_COMPONENT(self);
+
+    conting_drawing_get_i2w_affine(self, affine);
+
+    art_affine_point(&pw0, &comp->p0, affine);
+    art_affine_point(&pw1, &comp->p1, affine);
+
+    bounds->x0 = MIN(pw0.x, pw1.x);
+    bounds->y0 = MIN(pw0.y, pw1.y);
+    bounds->x1 = MAX(pw0.x, pw1.x);
+    bounds->y1 = MAX(pw0.y, pw1.y);
+
+	if (comp->show) {
+		GList *n;
+		ArtPoint p;
+
+		for (n = comp->links; n != NULL; n = g_list_next(n)) {
+			conting_drawing_get_center(CONTING_DRAWING(n->data), &p, &p);
+			conting_util_bounds_add_point(bounds, &p);
+		}
+
+		conting_util_expand_bounds(bounds, 9);
+	}
 }
 
 static void
@@ -583,6 +636,7 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_component_draw;
     drawing_class->get_bounds = conting_component_get_bounds;
+    drawing_class->get_update_bounds = conting_component_get_update_bounds;
     drawing_class->place = conting_component_place;
     drawing_class->is_placed = conting_component_is_placed;
     drawing_class->answer = conting_component_answer;
