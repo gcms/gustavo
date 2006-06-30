@@ -73,7 +73,6 @@ conting_line_draw(ContingDrawing *self,
 
 	if (!priv->placing && !priv->placed)
 		return;
-
 	cr = gdk_cairo_create(drawable);
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 	cairo_set_line_width(cr, width);
