@@ -43,7 +43,7 @@ open_menu_activate(GtkMenuItem *menuitem,
             GTK_WINDOW(user_data),
             GTK_FILE_CHOOSER_ACTION_OPEN,
             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-            GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+            GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
             NULL);
 
     if (gtk_dialog_run(GTK_DIALOG(open)) == GTK_RESPONSE_ACCEPT) {
