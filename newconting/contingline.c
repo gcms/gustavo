@@ -758,6 +758,9 @@ conting_line_event(ContingDrawing *self,
 	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
 	g_return_val_if_fail(event != NULL, FALSE);
 
+	if (CONTING_DRAWING_CLASS(parent_class)->event(self, event))
+		return TRUE;
+
 	priv = CONTING_LINE_GET_PRIVATE(self);
 
 	if (!priv->placed)
@@ -797,6 +800,7 @@ conting_line_event(ContingDrawing *self,
 				}
 			}
 			break;
+		case GDK_2BUTTON_PRESS:
 		case GDK_BUTTON_RELEASE:
 			g_print("released!\n");
 			if (priv->dragging_point) {

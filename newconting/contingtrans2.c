@@ -215,6 +215,7 @@ conting_trans2_event(ContingDrawing *self,
                 priv->dragging_point = p;
             }
             break;
+		case GDK_2BUTTON_PRESS:
         case GDK_BUTTON_RELEASE:
             if (priv->dragging) {
                 priv->dragging = FALSE;
