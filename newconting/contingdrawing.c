@@ -291,12 +291,36 @@ conting_drawing_is_selected(ContingDrawing *self)
     return priv->selected;
 }
 
+gboolean
+conting_drawing_set_data(ContingDrawing *self, data_t *data)
+{
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+
+	return CONTING_DRAWING_GET_CLASS(self)->set_data(self, data);
+}
+
 void
 conting_drawing_delete(ContingDrawing *self)
 {
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
     CONTING_DRAWING_GET_CLASS(self)->delete(self);
+}
+
+static gboolean
+conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
+{
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+
+	if (!conting_drawing_is_placed(self))
+		return FALSE;
+
+	if (event->type == GDK_2BUTTON_PRESS) {
+		conting_one_line_edit(conting_drawing_get_one_line(self), self);
+		return FALSE;
+	}
+
+	return FALSE;
 }
 
 xmlNodePtr
@@ -525,7 +549,7 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class->place = NULL;
     drawing_class->is_placed = NULL;
     drawing_class->answer = NULL;
-    drawing_class->event = NULL;
+    drawing_class->event = conting_drawing_event_impl;
     drawing_class->delete = conting_drawing_delete_impl;
 
     drawing_class->get_i2w_affine = conting_drawing_get_i2w_affine_impl;
@@ -535,6 +559,8 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class->place_xml = conting_drawing_place_xml_impl;
 
 	drawing_class->get_center = conting_drawing_get_center_impl;
+
+	drawing_class->set_data = NULL;
 
     move_signal_id = g_signal_newv(
             "move",

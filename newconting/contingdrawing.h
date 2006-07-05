@@ -6,6 +6,7 @@
 #include <libart_lgpl/libart.h>
 #include <libxml/tree.h>
 
+
 G_BEGIN_DECLS
 
 #define CONTING_TYPE_DRAWING        (conting_drawing_get_type())
@@ -24,6 +25,10 @@ typedef struct ContingDrawing_ ContingDrawing;
 struct ContingDrawing_ {
     GObject parent;
 };
+
+#ifndef CONTING_DATA_H
+#include "contingdata.h"
+#endif
 
 typedef struct ContingDrawingClass_ ContingDrawingClass;
 struct ContingDrawingClass_ {
@@ -54,6 +59,8 @@ struct ContingDrawingClass_ {
 
 	void (*get_center)(ContingDrawing *self,
 		               ArtPoint *pw_dst, const ArtPoint *pw_src);
+
+	gboolean (*set_data)(ContingDrawing *self, data_t *data);
 };
 
 GType conting_drawing_get_type(void);
@@ -98,6 +105,8 @@ void conting_drawing_place_xml(ContingDrawing *self, xmlNodePtr node,
 
 void conting_drawing_get_center(ContingDrawing *self,
 		                        ArtPoint *pw_dst, const ArtPoint *pw_src);
+
+gboolean conting_drawing_set_data(ContingDrawing *self, data_t *data);
 
 G_END_DECLS
 

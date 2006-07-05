@@ -3,8 +3,7 @@
 #include "contingutil.h"
 #include "contingxml.h"
 #include "continggroup.h"
-#include "contingtrans2.h"
-#include "contingbus.h"
+#include "contingdata.h"
 #include <assert.h>
 #include <math.h>
 
@@ -38,7 +37,53 @@ struct ContingOneLinePrivate_ {
     ContingDrawing *grabbed_drawing;
 
 	ArtDRect selection_box;
+
+	ContingData *file_data;
 };
+
+static void
+conting_one_line_dialog_drawing(ContingOneLine *self, ContingDrawing *drawing)
+{
+	ContingOneLinePrivate *priv;
+
+	GtkWidget *window, *label;
+	char buf[256];
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_transient_for(GTK_WINDOW(window),
+			GTK_WINDOW(gtk_widget_get_toplevel(priv->widget)));
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ON_PARENT);
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+
+	sprintf(buf, "%p\t%s", drawing, g_type_name(G_OBJECT_TYPE(drawing)));
+	gtk_window_set_title(GTK_WINDOW(window), buf);
+	label = gtk_label_new(buf);
+
+	gtk_container_add(GTK_CONTAINER(window), label);
+
+	gtk_widget_show_all(window);
+}
+
+void
+conting_one_line_edit(ContingOneLine *self, ContingDrawing *drawing)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	assert(g_slist_find(priv->drawings, drawing));
+
+	conting_one_line_dialog_drawing(self, drawing);
+}
 
 void
 conting_one_line_clear(ContingOneLine *self)
@@ -938,6 +983,10 @@ conting_one_line_instance_init(GTypeInstance *self,
 
     priv->placing_drawing = NULL;
     priv->drawings = NULL;
+
+	priv->file_data = CONTING_DATA(g_object_new(CONTING_TYPE_DATA, NULL));
+	assert(priv->file_data);
+	conting_data_load_file(priv->file_data, "/home/gcms/pnd/ieee14cdf.txt");
 }
 
 GType

@@ -60,10 +60,10 @@ gint
 conting_file_int(const gchar *line,
 		guint start, guint end);
 
-bus_data_t *
-conting_file_bus_data(const gchar *line);
+void
+conting_file_bus_data(bus_data_t *self, const gchar *line);
 
-branch_data_t *
-conting_file_branch_data(const gchar *line);
+void
+conting_file_branch_data(branch_data_t *self, const gchar *line);
 
 #endif /* CONTING_FILE_H */

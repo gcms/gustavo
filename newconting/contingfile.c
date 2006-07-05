@@ -15,6 +15,7 @@ conting_file_string(const gchar *line,
 	result = malloc((end - start + 2) * sizeof(gchar));
 	assert(result);
 	strncpy(result, line + start, end - start + 1);
+	result[end - start + 1] = 0;
 
 	return result;
 }
@@ -47,19 +48,14 @@ conting_file_int(const gchar *line,
 	return result;
 }
 
-bus_data_t *
-conting_file_bus_data(const gchar *line)
+void
+conting_file_bus_data(bus_data_t *self, const gchar *line)
 {
-	bus_data_t *self;
 	gchar *name;
-
-	self = malloc(sizeof(bus_data_t));
-	assert(self);
 
 	self->number = conting_file_int(line, 0, 3);
 
 	name = conting_file_string(line, 5, 16);
-	printf("\"%s\"\n", name);
 	strcpy(self->name, name);
 	free(name);
 
@@ -79,18 +75,11 @@ conting_file_bus_data(const gchar *line)
 	self->shunt_conductance = conting_file_float(line, 106, 113);
 	self->shunt_susceptance = conting_file_float(line, 114, 121);
 	self->remote_ctrld_bus_number = conting_file_int(line, 123, 126);
-
-	return self;
 }
 
-branch_data_t *
-conting_file_branch_data(const gchar *line)
+void
+conting_file_branch_data(branch_data_t *self, const gchar *line)
 {
-	branch_data_t *self;
-
-	self = malloc(sizeof(branch_data_t));
-	assert(self);
-
 	self->tap_bus_number = conting_file_int(line, 0, 3);
 	self->z_bus_number = conting_file_int(line, 5, 8);
 	self->load_flow_area = conting_file_int(line, 10, 11);
@@ -112,6 +101,4 @@ conting_file_branch_data(const gchar *line)
 	self->step_size = conting_file_float(line, 105, 110);
 	self->min_voltage = conting_file_float(line, 112, 118);
 	self->max_voltage = conting_file_float(line, 119, 125);
-
-	return self;
 }

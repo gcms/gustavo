@@ -258,6 +258,7 @@ conting_bus_event(ContingDrawing *self,
 				}
 			}
 			break;
+		case GDK_2BUTTON_PRESS:
 		case GDK_BUTTON_RELEASE:
 			if (priv->dragging) {
 				priv->dragging = FALSE;

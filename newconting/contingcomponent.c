@@ -292,6 +292,9 @@ conting_component_event(ContingDrawing *self,
 
     g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 
+	if (CONTING_DRAWING_CLASS(parent_class)->event(self, event))
+		return TRUE;
+
     comp = CONTING_COMPONENT(self);
 
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
