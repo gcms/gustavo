@@ -12,7 +12,72 @@ typedef struct ContingDataPrivate_ ContingDataPrivate;
 struct ContingDataPrivate_ {
 	GList *bus_data;
 	GList *branch_data;
+
+	GHashTable *drawing_data;
+	GHashTable *data_drawing;
 };
+
+GList *
+conting_data_get_unassoc(ContingData *self)
+{
+	ContingDataPrivate *priv;
+	GList *n, *result;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	result = NULL;
+	for (n = priv->bus_data; n != NULL; n = g_list_next(n)) {
+		if (!g_hash_table_lookup(priv->data_drawing, n->data)) {
+			result = g_list_append(result, n->data);
+		}
+	}
+
+	return result;
+}
+
+data_t *
+conting_data_get(ContingData *self, ContingDrawing *drawing)
+{
+	ContingDataPrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	return g_hash_table_lookup(priv->drawing_data, drawing);
+}
+
+void
+conting_data_assoc(ContingData *self, ContingDrawing *drawing, data_t *data)
+{
+	ContingDataPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	g_hash_table_insert(priv->drawing_data, drawing, data);
+	g_hash_table_insert(priv->data_drawing, data, drawing);
+}
+
+void
+conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
+{
+	ContingDataPrivate *priv;
+	data_t *data;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	data = g_hash_table_lookup(priv->drawing_data, drawing);
+	if (data) {
+		g_hash_table_remove(priv->drawing_data, drawing);
+		g_hash_table_remove(priv->data_drawing, data);
+	}
+}
 
 void
 conting_data_load_file(ContingData *self, const char *filename)
@@ -61,7 +126,7 @@ conting_data_load_file(ContingData *self, const char *filename)
 	}
 }
 
-GList *
+const GList *
 conting_data_get_bus(ContingData *self)
 {
 	ContingDataPrivate *priv;
@@ -73,7 +138,7 @@ conting_data_get_bus(ContingData *self)
 	return priv->bus_data;
 }
 
-GList *
+const GList *
 conting_data_get_branch(ContingData *self)
 {
 	ContingDataPrivate *priv;
@@ -89,13 +154,23 @@ static void
 conting_data_finalize(GObject *self)
 {
 	ContingDataPrivate *priv;
+	GList *n;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
+	for (n = priv->bus_data; n != NULL; n = g_list_next(n)) {
+		g_free(n->data);
+	}
 	g_list_free(priv->bus_data);
+	for (n = priv->branch_data; n != NULL; n = g_list_next(n)) {
+		g_free(n->data);
+	}
 	g_list_free(priv->branch_data);
+
+	g_hash_table_destroy(priv->data_drawing);
+	g_hash_table_destroy(priv->drawing_data);
 
 	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
@@ -111,6 +186,9 @@ conting_data_instance_init(GTypeInstance *self, gpointer g_class)
 
 	priv->bus_data = NULL;
 	priv->branch_data = NULL;
+
+	priv->data_drawing = g_hash_table_new(NULL, NULL);
+	priv->drawing_data = g_hash_table_new(NULL, NULL);
 }
 
 static void
