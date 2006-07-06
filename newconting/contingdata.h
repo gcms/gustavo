@@ -51,10 +51,23 @@ conting_data_get_type(void);
 void
 conting_data_load_file(ContingData *self, const gchar *filename);
 
-GList *
+const GList *
 conting_data_get_bus(ContingData *self);
-GList *
+const GList *
 conting_data_get_branch(ContingData *self);
+
+
+GList *
+conting_data_get_unassoc(ContingData *self);
+
+data_t *
+conting_data_get(ContingData *self, ContingDrawing *drawing);
+
+void
+conting_data_assoc(ContingData *self, ContingDrawing *drawing, data_t *data);
+
+void
+conting_data_unassoc(ContingData *self, ContingDrawing *drawing);
 
 G_END_DECLS
 
