@@ -21,6 +21,10 @@ save_menu_activate(GtkMenuItem *menuitem,
             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
             GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
             NULL);
+	gtk_file_chooser_set_action(GTK_FILE_CHOOSER(save),
+			GTK_FILE_CHOOSER_ACTION_SAVE);
+	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(save),
+			TRUE);
 
     if (gtk_dialog_run(GTK_DIALOG(save)) == GTK_RESPONSE_ACCEPT) {
         char *filename;
@@ -45,6 +49,8 @@ open_menu_activate(GtkMenuItem *menuitem,
             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
             NULL);
+	gtk_file_chooser_set_action(GTK_FILE_CHOOSER(open),
+			GTK_FILE_CHOOSER_ACTION_OPEN);
 
     if (gtk_dialog_run(GTK_DIALOG(open)) == GTK_RESPONSE_ACCEPT) {
         char *filename;
