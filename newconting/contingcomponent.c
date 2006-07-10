@@ -508,7 +508,7 @@ conting_bus_load_drawing(xmlNodePtr node, gpointer user_data)
 
     result = g_hash_table_lookup(id_drawing,
             GUINT_TO_POINTER(strtoul(id, NULL, 10)));
-    assert(result);
+    assert(result && CONTING_IS_DRAWING(result));
 
     xmlFree(id);
 
@@ -529,6 +529,17 @@ conting_bus_load_point(xmlNodePtr node, gpointer user_data)
 
     return p;
 }
+
+static void
+conting_component_conn_foreach(gpointer key, gpointer value,
+		gpointer user_data)
+{
+	g_return_if_fail(key != NULL && CONTING_IS_DRAWING(key));
+
+	g_signal_connect(G_OBJECT(key), "delete",
+			G_CALLBACK(conting_component_link_deleted_stub), user_data);
+}
+
 static void
 conting_component_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
                             GHashTable *id_drawing)
@@ -589,6 +600,7 @@ conting_component_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
 	}
 
     comp->placed = TRUE;
+	g_hash_table_foreach(comp->points, conting_component_conn_foreach, self);
 
 	CONTING_DRAWING_CLASS(parent_class)->place_xml(self,
 			drawing_node, id_drawing);
