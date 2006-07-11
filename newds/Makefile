@@ -4,12 +4,14 @@ LIBS=
 
 all: build
 
-build: stack.o bst.o red_black.o list.o
+build: stack.o bst.o red_black.o list.o iterator.o base.o
 
 buildtest: stack_test.o bst_test.o base_test.o red_black_test.o list_test.o
 
 runtest: buildtest stack_test_run bst_test_run base_test_run red_black_test_run list_test_run
 
+iterator.o: iterator.c iterator.h
+	$(CC) $(CFLAGS) -c iterator.c -o iterator.o
 
 list.o: list.c list.h
 	$(CC) $(CFLAGS) -c list.c -o list.o
@@ -17,8 +19,8 @@ list.o: list.c list.h
 list_test.o: list_test.c list.c
 	$(CC) $(CFLAGS) -c list_test.c -o list_test.o
 
-list_test: list_test.o list.o base.o
-	$(CC) $(CFLAGS) list_test.o list.o base.o -o list_test
+list_test: list_test.o list.o base.o iterator.o
+	$(CC) $(CFLAGS) list_test.o list.o base.o iterator.o -o list_test
 
 list_test_run: list_test
 	./list_test
@@ -80,6 +82,7 @@ clean:
 	rm -f bst.o
 	rm -f bst_test.o
 	rm -f bst_test
+	rm -f iterator.o
 	rm -f base.o
 	rm -f base_test.o
 	rm -f base_test

@@ -2,6 +2,7 @@
 #define LIST_H
 
 #include "base.h"
+#include "iterator.h"
 
 typedef struct list_ list_t;
 
@@ -21,7 +22,12 @@ void *list_get(list_t *list, int index);
 void *list_first(list_t *list);
 void *list_last(list_t *list);
 
+iterator_t *list_iterator(list_t *list);
+
+void list_iterate(list_t *list, iterate_func_t itr, void *user_data);
+
 int list_size(list_t *list);
+#define list_empty(l) (list_size((l)) == 0)
 
 void list_clear(list_t *list);
 
