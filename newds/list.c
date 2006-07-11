@@ -229,3 +229,63 @@ list_size(list_t *self)
 {
     return self->n_elems;
 }
+
+void
+list_iterate(list_t *self, iterate_func_t itr, void *user_data)
+{
+    list_node_t *n;
+
+    for (n = self->head.next; n != &self->head; n = n->next) {
+        itr(n->data, user_data);
+    }
+}
+
+
+typedef struct {
+    iterator_t parent;
+    list_t *list;
+    list_node_t *node;
+    int index;
+} list_iterator_t;
+
+static boolean list_iterator_has_more(iterator_t *self);
+static void *list_iterator_get(iterator_t *self);
+static void list_iterator_next(iterator_t *self);
+
+iterator_t *
+list_iterator(list_t *self) {
+    list_iterator_t *itr = malloc(sizeof(list_iterator_t));
+
+    itr->parent.has_more = list_iterator_has_more;
+    itr->parent.get = list_iterator_get;
+    itr->parent.next = list_iterator_next;
+    itr->parent.delete = NULL;
+
+    itr->list = self;
+    itr->node = self->head.next;
+    itr->index = 0;
+
+    return (iterator_t *) itr;   
+}
+
+static boolean
+list_iterator_has_more(iterator_t *self) {
+    list_iterator_t *itr = (list_iterator_t *) self;
+
+    return itr->node != &itr->list->head;
+}
+
+static void *
+list_iterator_get(iterator_t *self) {
+    list_iterator_t *itr = (list_iterator_t *) self;
+
+    return itr->node->data;
+}
+
+static void
+list_iterator_next(iterator_t *self) {
+    list_iterator_t *itr = (list_iterator_t *) self;
+
+    itr->node = itr->node->next;
+    itr->index++;
+}

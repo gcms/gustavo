@@ -11,6 +11,7 @@ string_cmp(const void *a, const void *b)
 int main(int argc, char *argv[])
 {
     list_t *list;
+    iterator_t *itr;
 
     list = list_new_full(string_cmp, NULL);
 
@@ -31,6 +32,17 @@ int main(int argc, char *argv[])
     assert(list_remove(list, list_first(list)));
 
     assert(list_size(list) == 1);
+
+    itr = list_iterator(list);
+
+    assert(strcmp(iterator_get(itr), "hello") == 0);
+
+    iterator_next(itr);
+    assert(!iterator_has_more(itr));
+
+    iterator_delete(itr);
+
+    list_delete(list);
 
     return 0;
 }
