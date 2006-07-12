@@ -1,0 +1,186 @@
+30/03/2006
+- verificar site do http://www.edsa.com/ (apresentacao em flash)
+- pegar demo do neplan http://www.neplan.ch/ (para windows)
+- get free demo http://www.energyco.com/
+
+31/03/2006
+- verificar novos artigos baixados hoje (checar data do arquivo)
+- tentar instalar neplan (já foi baixado) ou outro software para ter idéia
+- tentar usar um programa de projeto de "power systems"
+
+03/04/2006
+- olhar artigos sobre projeto de GUIs baixados
+- ler artigos impressos
+
+04/04/2006
+- ler "Visualizations for Power System Contingency Analysis Data"
+- ler "An Object Based Graphical User Interface for Power Systems"
+- iniciar definição de modelo de representação
+
+06/04/2006
+- considerar GtkDrawingArea e GnomeCanvas
+
+12/04/2006
+- FIXME:
+  main: contingconnection.c:154: conting_connection_move_impl: Assertion `priv->placed == (!(0))' failed.
+- Separar conceitos de conexao e ramos, se necessario.
+- Adicionar novo componente para verificar a corretude da hierarquia/interface
+  definida
+- Mudar conting_component_connect() para retornar um ponto a ser adicionado
+  ao ponto passado pelo parametro
+
+17/04/2006
+- possibilitar selecao e edicao de linhas (talvez separar line de line string)
+- consertar a rotacao, retornar a posicao correta dos novos pontos, das
+  conexoes diretas (considerar posicao relativa do elemento)
+- possibilitar redimensionamento
+
+18/04/2006
+- fix resizing (doesn't resize to the left/top, doesn't work with rotating)
+- change moving, currently the position of the mouse is used as the position
+  of the drawing, a better approach would be to know the offset from the mouse
+  to the position of the drawing and then add this offset to the moving
+  position
+
+26/04/2006
+- entender funcionamento dos affines na biblioteca libart
+- comecar implementacao do ContingOneLine usando GnomeCanvas
+
+28/04/2006
+- implementar usando GnomeCanvas? Ou utilizar exemplo do GnomeCanva para criar
+  nova implementacao?
+
+05/05/2006
+- evoluir gradativamente a interface, usando coordenadas real world, canvas
+  e internal
+- usar affines?
+
+08/05/2006
+- colocar alguma coisa q passe os sinais para os items, porem apenas se eles
+  answer() no ponto do evento
+
+10/05/2006
+- checar pq key-press-event nao esta funcionando
+
+11/05/2006
+- limpar o codigo
+- implementar funcoes mais avancadas
+- tentar generalizar/especializar classes
+- seria necessario um evento para quando um evento ocorresse e um item
+  estivesse "grabbed", alguma forma de indicar os outros items que o item
+  tentou interagir com eles?
+
+15/05/2006
+- revisar esquema de affines, mt confuso do jeito atual:
+  existe um affine em um objeto ContingDrawing, e tambem nos objetos
+  ContingLine e ContingComponent
+  
+  No caso de ContingLine o affine usado para movimentacao durante o
+  posicionamento eh eliminado em seguida.
+  Solucao? world = local, ou seja, affine = identity
+
+  No caso de ContingComponent o affine interno (rotate) deve ser aplicado antes
+  para transformacoes local -> world. Para transformacoes world -> local,
+  ambos affines sao invertidos e rotate eh aplicado depois.
+  Solucao? esquema de multiplos affines, definicao da ordem de aplicacao,
+  o inverso seria obtido aplicando os inversos na ordem inversa
+  (funciona para todos casos?)
+
+16/05/2006
+- implementar um meio de manter alinhados pontos a nivel de canvas points. esse
+  problema surgiu com a necessidade de alinhar pontos durante o posicionamento
+  de linhas, elas ficam alinhadas a nivel global, porem nao a nivel de
+  canvas.
+- revisar redimensionamento (checar por pontos ligados, redimensionamento ao
+  posicionar?)
+- interface em ContingOneLine para troca de cursores?
+- selecionamento de multiplos items (ContingGroup?)
+
+19/05/2006
+- Mudanca do affine de ContingLine pra identity, nao significa que deve
+  ser deixado de aplicar o affine, qualquer mudanca nao precisara alteracoes se
+  os affines continuarem sendo aplicados. Checar isso!
+
+22/05/2006
+- Criar uma hierarquia, contendo um toplevel ContingGroup, passar algumas
+  funcoes de ContingOneLine para ContingGroup
+
+23/05/2006
+- Problema: quando formam um grupo, selecionando linhas e componentes, um
+  componente move, uma linha move, porem o componente avisa para linha que
+  se moveu, essa move novamente... 
+- Talvez tornar affine() um metodo, de forma que ContingLine possa saber
+  quando estah recebendo um affine, podendo entao chamar
+  conting_line_link_moved() para atualizar-se.
+
+25/05/2006
+- encontrar uma alternativa ao metodo de aplicacao dos affines atualmente.
+  Principal problema com metodo atual: aplicacao de grids, os pontos precisam
+  ser melhor alinhados.
+  -> Affines serem aplicados alterando as coordenadas internas, ao inves de
+     armazenar os affines?
+  -> Algum metodo de usar as coordenadas de canvas para melhorar as coordenadas
+     internas?
+  -> As coordenadas de canvas variam de acordo com o zoom, portanto pode ser
+     necessario alinhar durante o draw()?
+  -> Separar os tipos de affine? (rotation, translation, flipping, ...)
+
+29/05/2006
+- "problemas": falta de grids, alinhamento (grids?), remocao de pontos nas
+  linhas, movimentacao de pontos conectados a componentes
+- focar agora em adicionar novos componentes
+
+31/05/2006
+- generalizar/especializar ContingDrawing, ContingComponent, ContingLine,
+  ContingBus e ContingTrans2
+- criar uma interface completa inicial
+- remover interface de contingoneline.c
+- ajustar zoom para redimensionar DrawingArea
+
+01/06/2006
+- adicionar delete para ContingGroup, melhorar codigo de 
+  ContingGroup/ContingOneLine (muito misturado)
+- arrumar icones para Bus, Line e Trans2
+- adicionar menus
+- Salvar e Abrir arquivos de circuito (definir formato do arquivo)
+
+09/06/2006
+- recebi o email do kroon, mencionou o uso de XML para serializacao e
+  transformacoes usando o cairo, mencionou que o cairo jah detecta os limites
+
+13/06/2006
+- Como abrir o arquivo XML e carregar um novo ContingOneLine do arquivo?
+- Criar o Save e Open dialog
+
+16/06/2006
+- Reescrever codigo para escrita em XML
+- Generalizar escrita para permitir varios formatos alem de XML, talvez usando
+uma interface
+
+20/06/2006
+- Criar novos componentes
+- Reescrever codigo para serializacao
+- Comecar a implementar a visualizacao de contingencias
+
+21/06/2006
+- Separar get_bounds(), deve ser usado apenas para obter os bounds do bloco,
+  utilizado para detectar acoes.
+  O outro bounds seria get_update_bounds(), usado para atualizar a tela.
+  Talvez mudar tudo isso e usar um get_bounds() (ArtDRect) para atualizar e o
+  cairo para detectar acoes, o cairo vc pode ter outras formas de "bounds"
+  alem da retangular
+- Descobrir como desenhar translucidamente
+- Descobrir como colocar um tipo de tooltips
+
+03/07/2006
+- Redimensionar ContingBus. Melhorar ContingGroup. Simular ENTER/LEAVE
+- Generalizar dragging de forma a dar feedback para o ContingOneLine
+- Descobrir um jeito melhor de gerenciar dados do arquivo com o diagrama
+- Representacao grafica para selecionar associacao entre diagrama e arquivo
+  de dados
+
+12/07/2006
+- Mudar a estrutura de dados data_t
+- Criar visualizador de atributos
+- Manipular ramos/transformadores
+- Permitir nao selecionar nenhum bus
