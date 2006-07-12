@@ -4,6 +4,7 @@
 #include "contingxml.h"
 #include "continggroup.h"
 #include "contingdata.h"
+#include "continginfodialog.h"
 #include <assert.h>
 #include <math.h>
 
@@ -46,26 +47,31 @@ conting_one_line_dialog_drawing(ContingOneLine *self, ContingDrawing *drawing)
 {
 	ContingOneLinePrivate *priv;
 
-	GtkWidget *window, *label;
+	GtkWidget *window /*, *label */;
+	/*
 	char buf[256];
+	*/
 
 	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
 	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
-
+/*
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_transient_for(GTK_WINDOW(window),
-			GTK_WINDOW(gtk_widget_get_toplevel(priv->widget)));
 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
 	sprintf(buf, "%p\t%s", drawing, g_type_name(G_OBJECT_TYPE(drawing)));
 	gtk_window_set_title(GTK_WINDOW(window), buf);
 	label = gtk_label_new(buf);
 
 	gtk_container_add(GTK_CONTAINER(window), label);
+	*/
+
+	window = conting_info_dialog_new(priv->file_data, drawing);
+	gtk_window_set_transient_for(GTK_WINDOW(window),
+			GTK_WINDOW(gtk_widget_get_toplevel(priv->widget)));
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ON_PARENT);
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
 	gtk_widget_show_all(window);
 }
