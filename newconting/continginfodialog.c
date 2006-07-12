@@ -229,6 +229,9 @@ conting_info_dialog_response_cb(GtkDialog *self, gint response_id,
 
 	priv = CONTING_INFO_DIALOG_GET_PRIVATE(self);
 
+	if (!CONTING_IS_BUS(priv->drawing))
+		return;
+
     if (response_id == GTK_RESPONSE_CANCEL) {
 		conting_data_assoc(priv->data, priv->drawing, priv->prev_assoc);
 	}
