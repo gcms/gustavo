@@ -58,6 +58,12 @@ conting_data_assoc(ContingData *self, ContingDrawing *drawing, data_t *data)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
+	/* FIXME: inneficient, but who cares? */
+	conting_data_unassoc(self, drawing);
+
+	if (data == NULL)
+		return;
+
 	g_hash_table_insert(priv->drawing_data, drawing, data);
 	g_hash_table_insert(priv->data_drawing, data, drawing);
 }
