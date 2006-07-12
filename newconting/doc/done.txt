@@ -1,0 +1,164 @@
+31/03/2006
+- nada de especial no site do http://www.edsa.com/
+- baixado o demo do neplan, mas não instalado devido a restrições de usuário
+- link quebrado em http://www.energyco.com/
+
+03/04/2006
+- leitura de contingencia.c fcarga.c e entrada.c (este ultimo, detalhadamente)
+- leitura de Graphical Interaction and Visualization for the Analysis...
+- verificados arquivos e organizados em subdiretorios
+- artigos sobre projeto de GUIs para Power System
+
+04/04/2006
+- leitura de "Envisioning Power System Data ..."
+- uso do PET - EDUCATIONAL TOOLBOX for Power System Analysis, interessante
+para notar o "network designer"
+- formatos de armazenamento de power system (CDF, PTI, PECO)
+
+05/04/2006
+- leitura de "An Object based Environment..."
+
+06/04/2006
+- instalacao de pacotes/configuracao do ambiente
+
+07/04/2006
+- versao inicial, oneline.c adicionar barras
+
+11/04/2006
+- suporte a ramos
+
+12/04/2006
+- selecao e movimentacao de componentes, barras subclasses de componentes,
+ligacao de ramos e componentes
+
+17/04/2006
+- adicionado transformador de 2 entradas
+- modificado conting_connection_move() para retornar um ponto de deslocamento
+- adicionado rotacao (precaria)
+
+18/04/2006
+- adicionado selecao de conexoes
+- adicionado movimento de pontos de conexoes
+- adicionado algum suporte para delecao de componentes
+
+18/04/2006
+- adicionado redimensionamento
+
+24/04/2006
+- estudo do GnomeCanvas como alternativa a ContingOneLine
+
+25/04/2006
+- estudo do GnomeCanvas
+
+26/04/2006
+- estudo do GnomeCanvas, estagio final, estruturando novo "framework"
+
+11/05/2006
+- implementado rotacao, translacao de maneira generica. espero que outras
+  transformacoes possam ser implementadas de maneira similar. quando um objeto
+  e modificado seus affines sao mudados, e ele emite um sinal "changed"
+  informando sobre sua mudanca. objetos que conectaram o sinal devem usar
+  as funcoes disponiveis pelo objeto para obterem informacoes.
+
+15/05/2006
+- alguma limpeza do codigo, contingoneline mais organizado, criado
+  conting_one_line_send_event() pra remover "clutter"
+
+16/05/2006
+- criacao de objetos (placing), agora ao inves de fazer um affine absolute
+  passa a responsabilidade para o objeto, atraves da chamada de event(),
+  o objeto deve checar se esta sendo posicionado, ou se jah esta totalmente
+  posicionado, e decidir o que fazer
+- esta ultima alteracao permitiu implementar durante o posicionamento
+     SHIFT quando posicionando linhas
+     CONTROL para adicionar pontos as linhas (placed)
+     ROTACAO em componentes
+
+17/05/2006
+- selection box
+- ContingLine usa identify como affine
+
+22/05/2006
+- pequena mudanca no redimensionamento de ContingComponent
+- ContingGroup, not working though
+
+23/05/2006
+- resolvido problema de linhas se movendo. agora a linha checa se ela faz
+  parte do mesmo grupo que emitiu o sinal, caso afirmativo ela nao se move.
+- a linha tambem conecta para saber quando ela mesmo se moveu, atualizando os
+  nos ligados a barras q nao estao se movendo
+
+25/05/2006
+- adicionado o metodo finalize() as classes ContingLine e ContingComponent,
+  que agora liberam a memoria alocada durante a inicializacao
+- removido gtk_widget_queue_draw() de conting_one_line_delete(), o uso de
+  conting_one_line_update() nao dava certo por causa de um erro na funcao
+  conting_one_line_world_to_window(). Isso fazia com que quando uma linha fosse
+  deletada indiretamente (sua barra conectada foi deletada) ela nao apagasse
+  da tela. Tambem removido de widget_motion_notify_event(), nao foi necessario
+  substituicao, pois com a adicao de conting_one_line_send_event() durante
+  o posicionamento jah havia resolvido esse problema.
+- alinhamento usando shift durante posicionamento de linhas OK, mesmo com
+  barras rotacionadas. alteracao no metodo conting_component_link() resolveu
+  o problema.
+
+31/05/2006
+- Trans2 working...
+- Adicao de teste para alinhar linhas durante drawing de ContingLine deu
+  boms resultados, (talvez mudar a constante)
+
+08/06/2006
+- Estudo de XML, DTDs, XML Schema, ...
+- libxml
+
+09/06/2006
+- Alguns testes com libxml, usando trees e xmlwriter
+- ContingBus eh escrito em XML
+
+13/06/2006
+- ContingBus, ContingLine e ContingTrans2 podem ser salvos em XML
+
+14/06/2006
+- Abrindo ContingBus/ContingLine
+
+16/06/2006
+- Abrindo todos tipos
+- Algumas coisas generalizadas em ContingComponent (p0, p1, rotate)
+
+19/06/2006
+- Mudancas em component_link(), salvando/abrindo ok novamente
+- Estudo do cairo como alternativa ao libart.
+  -> cairo parece ser melhor como alternativa para renderizacao, mas quanto
+     a substituicao do libart nao parece tao vantajoso
+
+20/06/2006
+- Revisao de metodos de representacao de contingencias
+
+21/06/2006
+- Teste desenhando linhas entre componentes, as linhas podem ser utilizadas
+  para representar uma dependencia  entre uma determinada contingencia e os
+  componentes afetados por esta contingencia. As linhas podem ser setas
+  pontilhadas. Os componentes podem ser coloridos para demonstrar o nivel
+  de excessao do limite, ou entao feitos translucidos.
+
+26/06/2006
+- Renderizacao usando cairo
+- Separacao de get_bounds() de get_update_bounds()
+
+30/06/2006
+- Carga de linhas de barras e ramos do formato CDF
+- Testes com GTK_WINDOW_POPUP para criar tooltips
+
+03/07/2006
+- criado ContingData para armazenar dados carregados do arquivo
+- Popup window mostrada quando double click nos componentes
+  -> pequena correcao foi necessaria nos componentes em geral
+- metodo conting_drawing_set_data adicionado, mas provavelmente serah removido
+
+10/07/2006
+- estudo do codigo de GtkFileChooserDialog, GtkFileChooser.
+  ContingBusChooser seria semelhante.
+
+12/07/2006
+- Associacao entre file data e one-line data
+- Representacao escolhida, associa apenas barras, e depois faz validacao.
