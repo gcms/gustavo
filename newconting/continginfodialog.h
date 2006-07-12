@@ -23,15 +23,20 @@ typedef struct ContingInfoDialogClass_ ContingInfoDialogClass;
 #include <gtk/gtk.h>
 
 struct ContingInfoDialog_ {
-    GtkWidget parent;  
+    GtkDialog parent;  
 };
 
 struct ContingInfoDialogClass_ {
-    GtkWidgetClass parent;
+    GtkDialogClass parent;
 };
 
 GType
 conting_info_dialog_get_type(void);
+
+#include "contingdata.h"
+
+GtkWidget *
+conting_info_dialog_new(ContingData *data, ContingDrawing *drawing);
 
 G_END_DECLS
 
