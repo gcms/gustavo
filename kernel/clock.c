@@ -1,6 +1,7 @@
 #include <system.h>
 #include <stdio.h>
 #include <idt.h>
+#include <assert.h>
 
 static void
 clock_setup(int hz)
@@ -18,6 +19,8 @@ clock_handler(stack_frame_t *r)
 {
     static int tick = 0;
     static int time = 0;
+
+    assert(r->irq_num == 0);
 
     tick = (tick + 1) % 100;
 
