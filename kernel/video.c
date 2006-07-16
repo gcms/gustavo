@@ -61,8 +61,11 @@ putch(unsigned char c)
 
     switch (c) {
         case '\b':
-            if (csr_x > 0)
+            if (csr_x > 0) {
                 csr_x--;
+                where = video + (csr_y * 80 + csr_x);
+                *where = BLANK();
+            }
             break;
         case '\t':
             csr_x = (csr_x + 8) & ~(8 - 1);
