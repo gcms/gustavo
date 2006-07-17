@@ -3,8 +3,8 @@
 
 typedef struct {
     unsigned long edi, esi, ebp, esp, ebx, edx, ecx, eax;
-#define irq_num err_code
-    unsigned long int_no, err_code;
+#define irq_num code
+    unsigned long int_no, code;
     unsigned long eip, cs, eflags, useresp, ss;
 } stack_frame_t;
 
