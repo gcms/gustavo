@@ -3,6 +3,7 @@
 #include <gdt.h>
 #include <idt.h>
 #include <clock.h>
+#include <keyboard.h>
 
 void cmain(void)
 {
@@ -13,6 +14,7 @@ void cmain(void)
     idt_init();
     
     clock_init();
+    keyboard_init();
 
     puts("Hello!\n");
 

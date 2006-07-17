@@ -13,24 +13,37 @@ clock_setup(int hz)
     outportb(0x40, divisor >> 8);
 }
 
+
+static unsigned int tick = 0;
+static unsigned int time = 0;
+
+unsigned int
+clock_get_time(void)
+{
+    return time;
+}
+
 #include <video.h>
 static int
 clock_handler(stack_frame_t *r)
 {
-    static int tick = 0;
-    static int time = 0;
-
     assert(r->irq_num == 0);
 
-    tick = (tick + 1) % 100;
+    tick++;
 
-    if (tick == 0) {
+    if ((tick % 100) == 0) {
         time++;
-        cls();
-        printf("%d\n", time);
     }
 
     return 0;
+}
+
+void
+clock_wait(unsigned int wait_ticks)
+{
+    wait_ticks += tick;
+
+    while (tick < wait_ticks);
 }
 
 void

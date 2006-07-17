@@ -227,7 +227,7 @@ fault_handler(stack_frame_t *frame)
 
     /*
     printf("INT_NO = %d\tERR_CODE = %d\n",
-            frame->int_no, frame->err_code);
+            frame->int_no, frame->code);
             */
 
     handler = idt_handler_table[frame->int_no];
