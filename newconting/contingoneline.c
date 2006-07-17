@@ -992,7 +992,7 @@ conting_one_line_instance_init(GTypeInstance *self,
 
 	priv->file_data = CONTING_DATA(g_object_new(CONTING_TYPE_DATA, NULL));
 	assert(priv->file_data);
-	conting_data_load_file(priv->file_data, "/home/gcms/pnd/ieee14cdf.txt");
+	conting_data_load_file(priv->file_data, "data/ieee14cdf.txt");
 }
 
 GType

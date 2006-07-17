@@ -291,14 +291,6 @@ conting_drawing_is_selected(ContingDrawing *self)
     return priv->selected;
 }
 
-gboolean
-conting_drawing_set_data(ContingDrawing *self, data_t *data)
-{
-	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
-
-	return CONTING_DRAWING_GET_CLASS(self)->set_data(self, data);
-}
-
 void
 conting_drawing_delete(ContingDrawing *self)
 {
@@ -559,8 +551,6 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class->place_xml = conting_drawing_place_xml_impl;
 
 	drawing_class->get_center = conting_drawing_get_center_impl;
-
-	drawing_class->set_data = NULL;
 
     move_signal_id = g_signal_newv(
             "move",

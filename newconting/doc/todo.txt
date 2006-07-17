@@ -184,3 +184,7 @@ uma interface
 - Criar visualizador de atributos
 - Manipular ramos/transformadores
 - Permitir nao selecionar nenhum bus
+
+17/07/2006
+- Criar funcoes em ContingDrawing/ContingBus que permitam obter as ligacoes
+  existentes
