@@ -70,6 +70,12 @@ conting_data_assoc(ContingData *self, ContingDrawing *drawing, data_t *data);
 void
 conting_data_unassoc(ContingData *self, ContingDrawing *drawing);
 
+void
+conting_data_set_data_attr(data_t *data, const gchar *attr, ...);
+
+void
+conting_data_get_data_attr(data_t *data, const gchar *attr, ...);
+
 G_END_DECLS
 
 #endif /* CONTING_DATA_H */

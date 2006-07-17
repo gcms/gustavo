@@ -162,3 +162,6 @@ ligacao de ramos e componentes
 12/07/2006
 - Associacao entre file data e one-line data
 - Representacao escolhida, associa apenas barras, e depois faz validacao.
+
+17/07/2006
+- Adicao de atributos a data_t

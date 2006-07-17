@@ -82,16 +82,29 @@ tree_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell,
 		GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer user_data)
 {
 	data_t *data;
+	const gchar *busname;
 
 	gtk_tree_model_get(tree_model, iter,
 			0, &data,
 			-1);
 
-	assert(data == NULL || data->type == BUS);
+	if (data == NULL) {
+		g_object_set(G_OBJECT(cell),
+				"text", "(None)",
+				NULL);
+		return;
+	}
+
+	assert(data->type == BUS);
 
 	g_return_if_fail(cell != NULL && GTK_IS_CELL_RENDERER_TEXT(cell));
+
+	conting_data_get_data_attr(data,
+			"name", &busname,
+			NULL);
+
 	g_object_set(G_OBJECT(cell),
-			"text", data ? data->data.bus.name : "(None)",
+			"text", busname,
 			NULL);
 	
 }

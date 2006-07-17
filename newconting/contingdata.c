@@ -85,7 +85,47 @@ conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
 	}
 }
 
-static void
+void
+conting_data_get_data_attr(data_t *data, const gchar *attr, ...)
+{
+	va_list ap;
+	GValue *value;
+	gpointer *pointer;
+
+	va_start(ap, attr);
+
+	while (attr) {
+		pointer = va_arg(ap, gpointer);
+
+		value = g_hash_table_lookup(data->attrs, attr);
+		if (value == NULL) {
+			pointer = NULL;
+			continue;
+		}
+
+		switch (G_VALUE_TYPE(value)) {
+			case G_TYPE_INT:
+				*((gint *) pointer) = g_value_get_int(value);
+				break;
+			case G_TYPE_STRING:
+				*((const gchar **) pointer) = g_value_get_string(value);
+				break;
+			case G_TYPE_DOUBLE:
+				*((gdouble *) pointer) = g_value_get_double(value);
+				break;
+			case G_TYPE_POINTER:
+			default:
+				*pointer = g_value_get_pointer(value);
+				break;
+		}
+
+		attr = va_arg(ap, const gchar *);
+	}
+
+	va_end(ap);
+}
+
+void
 conting_data_set_data_attr(data_t *data, const gchar *attr, ...)
 {
 	GType type;
