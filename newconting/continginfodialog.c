@@ -25,6 +25,9 @@ struct ContingInfoDialogPrivate_ {
 	GtkWidget *bus_info;
 };
 static void
+conting_info_dialog_create_info(ContingInfoDialog *self);
+
+static void
 conting_info_dialog_get_property(GObject *self,
                              guint prop_id,
                              GValue *value,
@@ -84,11 +87,11 @@ tree_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell,
 			0, &data,
 			-1);
 
-	assert(data->type == BUS);
+	assert(data == NULL || data->type == BUS);
 
 	g_return_if_fail(cell != NULL && GTK_IS_CELL_RENDERER_TEXT(cell));
 	g_object_set(G_OBJECT(cell),
-			"text", data->data.bus.name,
+			"text", data ? data->data.bus.name : "(None)",
 			NULL);
 	
 }
@@ -109,7 +112,74 @@ tree_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
     	gtk_tree_model_get (model, &iter, 0, &data, -1);
 
 		conting_data_assoc(priv->data, priv->drawing, data);
+
+		if (data == NULL)
+			return;
+
+		conting_info_dialog_create_info(self);
 	}
+
+}
+static void
+attrs_foreach(gpointer key, gpointer value, gpointer vbox)
+{
+	GtkWidget *label;
+	char buf[256], result[256];
+
+	switch (G_VALUE_TYPE(value)) {
+		case G_TYPE_INT:
+			sprintf(buf, "%d", g_value_get_int(value));
+			break;
+		case G_TYPE_DOUBLE:
+			sprintf(buf, "%lf", g_value_get_double(value));
+			break;
+		case G_TYPE_STRING:
+			sprintf(buf, "%s", g_value_get_string(value));
+			break;
+		case G_TYPE_POINTER:
+		default:
+			sprintf(buf, "%p", g_value_get_pointer(value));
+			break;
+	}
+
+	sprintf(result, "<u>%s</u> = <b>%s</b>", (gchar *) key, buf);
+
+	label = gtk_label_new(NULL);
+	gtk_label_set_markup(GTK_LABEL(label), result);
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 1);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 4);
+}
+
+static void
+conting_info_dialog_create_info(ContingInfoDialog *self)
+{
+	ContingInfoDialogPrivate *priv;
+	GtkWidget *vbox;
+	GtkWidget *child;
+	data_t *data;
+
+	g_return_if_fail(self != NULL && CONTING_IS_INFO_DIALOG(self));
+
+	priv = CONTING_INFO_DIALOG_GET_PRIVATE(self);
+
+	vbox = gtk_vbox_new(FALSE, 0);
+
+	data = conting_data_get(priv->data, priv->drawing);
+
+	if (data) {
+		g_hash_table_foreach(data->attrs, attrs_foreach, vbox);
+	}
+
+	gtk_widget_show_all(vbox);
+
+	child = gtk_bin_get_child(GTK_BIN(priv->bus_info));
+
+	if (child)
+		gtk_container_remove(GTK_CONTAINER(priv->bus_info), child);
+
+	gtk_container_add(GTK_CONTAINER(priv->bus_info), vbox);
 }
 
 static void
@@ -132,6 +202,11 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 
 	/* filling store */
 	store = gtk_list_store_new(1, G_TYPE_POINTER);
+
+	gtk_list_store_append(store, &iter);
+	gtk_list_store_set(store, &iter,
+			0, NULL,
+			-1);
 
 	for (n = conting_data_get_unassoc(priv->data); n; n = g_list_next(n)) {
 		data_t *data = n->data;
@@ -173,6 +248,7 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 
 	/* handling selection */
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(priv->bus_view));
+	gtk_tree_selection_unselect_all(select);
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 	g_signal_connect(G_OBJECT(select), "changed",
 			G_CALLBACK(tree_selection_changed_cb), self);
@@ -187,13 +263,16 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 			TRUE, TRUE, 0);
 
 
+
 DRAWING_INFO:
-	priv->bus_info = gtk_label_new(NULL);
-	sprintf(buf, "<u>%s</u>", g_type_name(G_OBJECT_TYPE(priv->drawing)));
-	gtk_label_set_markup(GTK_LABEL(priv->bus_info), buf);
+	priv->bus_info = gtk_frame_new("Attributes");
+	conting_info_dialog_create_info(self);
+
 	gtk_box_pack_start(GTK_BOX(hbox), priv->bus_info,
 			TRUE, TRUE, 0);
 
+
+	gtk_widget_show_all(hbox);
 	
 	gtk_widget_pop_composite_child();
 }

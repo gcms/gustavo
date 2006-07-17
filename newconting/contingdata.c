@@ -85,8 +85,44 @@ conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
 	}
 }
 
+static void
+conting_data_set_data_attr(data_t *data, const gchar *attr, ...)
+{
+	GType type;
+	GValue *value;
+	va_list ap;
+
+	va_start(ap, attr);
+
+	while (attr) {
+		type = va_arg(ap, GType);
+		value = g_new(GValue, 1);
+		g_value_init(value, type);
+
+		switch (type) {
+			case G_TYPE_INT:
+				g_value_set_int(value, va_arg(ap, gint));
+				break;
+			case G_TYPE_DOUBLE:
+			    g_value_set_double(value, va_arg(ap, gdouble));
+				break;
+			case G_TYPE_STRING:
+				g_value_set_string(value, va_arg(ap, const gchar *));
+				break;
+			default:
+				g_value_set_pointer(value, va_arg(ap, gpointer));
+				break;
+		}
+		g_hash_table_insert(data->attrs, g_strdup(attr), value);
+
+		attr = va_arg(ap, const gchar *);
+	}
+
+	va_end(ap);
+}
+
 void
-conting_data_load_file(ContingData *self, const char *filename)
+conting_data_load_file(ContingData *self, const gchar *filename)
 {
 	ContingDataPrivate *priv;
 	FILE *fp;
@@ -105,6 +141,8 @@ conting_data_load_file(ContingData *self, const char *filename)
 		if (strncmp(buf, "BUS", 3) == 0) {
 			while (fgets(buf, 256, fp)) {
 				data_t *data = g_new(data_t, 1);
+				data->attrs = g_hash_table_new_full(g_str_hash, g_str_equal,
+						g_free, g_free);
 				if (strncmp(buf, "-999", 4) == 0)
 					break;
 
@@ -113,11 +151,20 @@ conting_data_load_file(ContingData *self, const char *filename)
 
 				conting_file_bus_data(&data->data.bus, buf);
 
+				conting_data_set_data_attr(data,
+						"name", G_TYPE_STRING, data->data.bus.name,
+						"number", G_TYPE_INT, data->data.bus.number,
+						"final_voltage",
+						G_TYPE_DOUBLE, data->data.bus.final_voltage,
+						NULL);
+
 				priv->bus_data = g_list_append(priv->bus_data, data);
 			}
 		} else if (strncmp(buf, "BRANCH", 6) == 0) {
 			while (fgets(buf, 256, fp)) {
 				data_t *data = g_new(data_t, 1);
+				data->attrs = g_hash_table_new_full(g_str_hash, g_str_equal,
+						g_free, g_free);
 				if (strncmp(buf, "-999", 4) == 0)
 					break;
 
@@ -125,6 +172,11 @@ conting_data_load_file(ContingData *self, const char *filename)
 				data->used = NULL;
 
 				conting_file_branch_data(&data->data.branch, buf);
+
+				conting_data_set_data_attr(data,
+						"tap_bus_number",
+						G_TYPE_INT, data->data.branch.tap_bus_number,
+						NULL);
 
 				priv->branch_data = g_list_append(priv->branch_data, data);
 			}

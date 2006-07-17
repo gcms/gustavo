@@ -73,7 +73,7 @@ conting_one_line_dialog_drawing(ContingOneLine *self, ContingDrawing *drawing)
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
-	gtk_widget_show_all(window);
+	gtk_widget_show(window);
 }
 
 void

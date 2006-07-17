@@ -33,6 +33,7 @@ struct data_ {
 		bus_data_t bus;
 		branch_data_t branch;
 	} data;
+	GHashTable *attrs;
 };
 
 typedef struct ContingData_ ContingData;
