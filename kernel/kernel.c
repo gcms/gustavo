@@ -1,28 +1,31 @@
 #include <system.h>
+
 #include <video.h>
+
 #include <gdt.h>
 #include <idt.h>
+#include <paging.h>
+
 #include <clock.h>
 #include <keyboard.h>
 
-void cmain(void)
+#include <assert.h>
+
+multiboot_info_t multiboot_info;
+
+void cmain(multiboot_info_t *info)
 {
-    int i;
+    multiboot_info = *info;
 
     video_init();
     gdt_init();
     idt_init();
-    
+    paging_init();
+
     clock_init();
     keyboard_init();
 
     puts("Hello!\n");
-
-    for (i = 0; i < 24; i++) {
-        printf("hello %d\n", i);
-    }    
-
-    puts("\nasdf\n");
 
     while (1);
 }

@@ -493,3 +493,9 @@ pic_init:
     outb    %al, $(PIC2 + 1)
 
     ret
+
+.global halt_impl
+halt_impl:
+    hlt
+halt_loop:
+    jmp halt_loop

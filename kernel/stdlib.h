@@ -27,6 +27,13 @@ typedef uint8_t byte_t;
 typedef uint16_t word_t;
 typedef uint32_t dword_t;
 
+typedef int bool;
+#define FALSE (0)
+#define TRUE (!FALSE)
+
+#define CHECK_FLAG(flags,bit)	((flags) & (1 << (bit)))
+#define ALIGN(x, a) (((x) % (a)) ? ((x) + (a)) - ((x) % (a)) : (x))
+
 void *
 memcpy(void *dst, const void *src, size_t len);
 
