@@ -1,9 +1,11 @@
 #include <system.h>
 #include <video.h>
 
+extern void halt_impl(void);
+
 void
 halt(void)
 {
     printf("Halted.");
-    while (1);
+    halt_impl();
 }
