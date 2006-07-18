@@ -499,3 +499,28 @@ halt_impl:
     hlt
 halt_loop:
     jmp halt_loop
+
+.global set_page_dir
+set_page_dir:
+    pushl %ebp
+    movl %esp, %ebp
+
+    movl 8(%ebp), %eax
+    andl $0xFFFFF000, %eax
+    
+    mov %cr3, %ebx
+    or %ebx, %eax
+    mov %eax, %cr3
+
+    popl %ebp
+    
+    ret
+
+.global enable_paging
+enable_paging:
+    mov %cr0, %eax
+    or  $0x80000000, %eax
+    
+    mov %eax, %cr0
+
+    ret

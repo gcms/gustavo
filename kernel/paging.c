@@ -38,8 +38,6 @@ static unsigned long memory_num_frame;
 /* Physical address of a bitmap that determines if a frame is free or used. */
 static phys_addr_t bitmap_free;
 
-static phys_addr_t valid_bitmap;
-
 /* Size of the bitmaps in bytes.
  * bitmap_size = ALIGN(memory_num_frame, 8) / 8; */
 static unsigned long bitmap_size;
@@ -47,6 +45,10 @@ static unsigned long bitmap_size;
 /* Size of the bitmaps in frames.
  * bitmap_num_frame = ALIGN(bitmap_size, 4096) / 4096; */
 static unsigned long bitmap_num_frame;
+
+
+extern void set_page_dir(page_dir_t page_dir);
+extern void enable_paging(void);
 
 
 #define MBI multiboot_info
@@ -198,10 +200,8 @@ bitmap_init(void)
     bitmap_size = ALIGN(memory_num_frame, 8) / 8;
     bitmap_num_frame = ALIGN(bitmap_size, 4096) / 4096;
 
-    valid_bitmap = frame_alloc_internal(bitmap_num_frame);
     bitmap_free = frame_alloc_internal(bitmap_num_frame);
 
-    assert(valid_bitmap);
     assert(bitmap_free);
 
     memset((void *) bitmap_free, 0, bitmap_num_frame * 4096);
@@ -235,39 +235,122 @@ frame_free(page_frame_t frame)
 }
 
 
+static page_dir_t kpage_dir;
+#define PAGE_DIR_ENTRY_ADDR(e)   ((page_tbl_entry_t *) (e & 0xFFFFF000))
+#define PAGE_TBL_ENTRY_ADDR(e)   ((page_t) (e & 0xFFFFF000))
+
+static page_dir_entry_t *
+get_dir_entry(page_dir_t page_dir, unsigned int entry_idx)
+{
+    page_dir_entry_t *entry;
+
+    assert(entry_idx >= 0 && entry_idx < 1024);
+
+    entry = page_dir + entry_idx;
+
+    if (!(*entry & PRESENT_MASK)) {
+        *entry = frame_alloc();
+        printf("allocating entry 0x%x\n", *entry);
+
+        assert((*entry & 0xFFFFF000) == *entry);
+
+        memset((void *) *entry, 0, 4096);
+
+        *entry |= (PRESENT_MASK | RW_MASK);
+    }
+
+
+    return entry;
+}
+
+static page_tbl_entry_t *
+get_tbl_entry(page_tbl_t page_tbl, unsigned int entry_idx)
+{
+    page_tbl_entry_t *entry;
+
+    assert(entry_idx >= 0 && entry_idx < 1024);
+
+    entry = page_tbl + entry_idx;
+
+    if (!(*entry & PRESENT_MASK)) {
+        *entry = frame_alloc();
+
+        assert((*entry & 0xFFFFF000) == *entry);
+
+        memset((void *) *entry, 0, 4096);
+
+        *entry |= (PRESENT_MASK | RW_MASK);
+    }
+
+
+    return entry;
+}
+
+static void
+page_frame_map(page_dir_t page_dir,
+        page_t page, page_frame_t frame)
+{
+    page_dir_entry_t *dir_entry;
+    page_tbl_entry_t *tbl_entry;
+
+    assert((page & 0xFFFFF000) == page);
+    assert((frame & 0xFFFFF000) == frame);
+
+    dir_entry = get_dir_entry(page_dir, ((page >> 22) & 0x3FF));
+    tbl_entry = PAGE_DIR_ENTRY_ADDR(*dir_entry) + ((page >> 12) & 0x3FF);
+
+    *tbl_entry |= (frame & 0xFFFFF000) | PRESENT_MASK | RW_MASK;
+}
+
+static void
+page_set_flags(page_dir_t page_dir, page_t page, unsigned long flags)
+{
+    page_dir_entry_t *dir_entry;
+    page_tbl_entry_t *tbl_entry;
+
+    assert((page & 0xFFFFF000) == page);
+
+    dir_entry = page_dir + ((page >> 22) & 0x3FF);
+    tbl_entry = PAGE_DIR_ENTRY_ADDR(*dir_entry) + ((page >> 12) & 0x3FF);
+
+    assert(*tbl_entry & PRESENT_MASK);
+    *tbl_entry |= (flags & 0xFFF);
+}
+
+static void
+map_pages(void)
+{
+    phys_addr_t addr;
+
+    kpage_dir = (page_dir_t) frame_alloc();
+
+    assert(kpage_dir);
+
+    memset((void *) kpage_dir, 0, 4096);
+
+    for (addr = 0; addr < ALIGN(KEND, 4096); addr += 4096) {
+        page_frame_map(kpage_dir, addr, addr);
+    }
+
+    for (addr = 0; addr < ALIGN(KSTART, 4096); addr += 4096) {
+        page_set_flags(kpage_dir, addr, PCD_MASK);
+    }
+
+    set_page_dir(kpage_dir);
+    enable_paging();
+}
+
 void
 paging_init(void)
 {
-    unsigned int i, j;
-    page_frame_t f;
-
     printf("KSTART = 0x%x, KEND = 0x%x\n", KSTART, KEND);
 
     frame_free_list_init();
 
     bitmap_init();
 
-    for (f = frame_free_list; f != 0; f = FRAME_RUN_NEXT(f)) {
-        printf("FRAME_RUN start = 0x%x,\tnum_pages = %d\n",
-                f, FRAME_RUN_SIZE(f));
-    }
-
-    printf("0x%x\n", memory_size);
-    printf("0x%x\n", 0x10c000 + 32500 * 4096);
-
-    printf("\n\n");
-    for (i = bitmap_free; i < bitmap_free + ALIGN(memory_num_frame, 8) / 8; i++) {
-        printf("%d\t", i - bitmap_free);
-        unsigned char *val = (unsigned char *) i;
-        for (j = 0; j < 8; j++) {
-            printf("%d", (*val & (1 << j)) ? 1 : 0);
-        }
-
-        if (i - bitmap_free == 0x21)
-            break;
-        printf("\n");
-    }
-
+    map_pages();
+/*
     printf("\nbyte %d\tbit %d\n",
             (frame_free_list >> 12) / 8, (frame_free_list >> 12) % 8);
 
@@ -275,4 +358,7 @@ paging_init(void)
     frame_free(frame_alloc());
     printf("frame_alloc() = 0x%x\n", frame_alloc());
     printf("frame_alloc() = 0x%x\n", frame_alloc());
+
+    printf("bitmap_num_frame = %d\n", bitmap_num_frame);
+    */
 }
