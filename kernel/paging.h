@@ -3,9 +3,12 @@
 
 typedef unsigned long phys_addr_t;
 
-typedef unsigned long pagedir_entry_t;
-typedef unsigned long pagetbl_entry_t;
+typedef unsigned long page_dir_entry_t;
+typedef page_dir_entry_t *page_dir_t;
+typedef unsigned long page_tbl_entry_t;
+typedef page_tbl_entry_t *page_tbl_t;
 
+typedef phys_addr_t page_t;
 typedef phys_addr_t page_frame_t;
 
 void
