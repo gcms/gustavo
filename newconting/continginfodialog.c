@@ -19,7 +19,7 @@ typedef struct ContingInfoDialogPrivate_ ContingInfoDialogPrivate;
 struct ContingInfoDialogPrivate_ {
     ContingData *data;
     ContingDrawing *drawing;
-	data_t *prev_assoc;
+	ContingItemData *prev_assoc;
 
 	GtkWidget *bus_view;
 	GtkWidget *bus_info;
@@ -81,7 +81,8 @@ static void
 tree_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell,
 		GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer user_data)
 {
-	data_t *data;
+	ContingItemData *data;
+	ContingItemType item_type;
 	const gchar *busname;
 
 	gtk_tree_model_get(tree_model, iter,
@@ -95,11 +96,15 @@ tree_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell,
 		return;
 	}
 
-	assert(data->type == BUS);
+	g_object_get(G_OBJECT(data),
+			"type", &item_type,
+			NULL);
+
+	assert(item_type == CONTING_ITEM_TYPE_BUS);
 
 	g_return_if_fail(cell != NULL && GTK_IS_CELL_RENDERER_TEXT(cell));
 
-	conting_data_get_data_attr(data,
+	conting_item_data_get_attr(data,
 			"name", &busname,
 			NULL);
 
@@ -113,7 +118,7 @@ tree_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-    data_t *data;
+    ContingItemData *data;
 	ContingInfoDialog *self = user_data;
 	ContingInfoDialogPrivate *priv;
 
@@ -126,15 +131,12 @@ tree_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 
 		conting_data_assoc(priv->data, priv->drawing, data);
 
-		if (data == NULL)
-			return;
-
 		conting_info_dialog_create_info(self);
 	}
 
 }
 static void
-attrs_foreach(gpointer key, gpointer value, gpointer vbox)
+attrs_foreach(const gchar *key, const GValue *value, gpointer vbox)
 {
 	GtkWidget *label;
 	char buf[256], result[256];
@@ -171,7 +173,7 @@ conting_info_dialog_create_info(ContingInfoDialog *self)
 	ContingInfoDialogPrivate *priv;
 	GtkWidget *vbox;
 	GtkWidget *child;
-	data_t *data;
+	ContingItemData *data;
 
 	g_return_if_fail(self != NULL && CONTING_IS_INFO_DIALOG(self));
 
@@ -182,7 +184,7 @@ conting_info_dialog_create_info(ContingInfoDialog *self)
 	data = conting_data_get(priv->data, priv->drawing);
 
 	if (data) {
-		g_hash_table_foreach(data->attrs, attrs_foreach, vbox);
+		conting_item_data_attr_foreach(data, attrs_foreach, vbox);
 	}
 
 	gtk_widget_show_all(vbox);
@@ -203,7 +205,7 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 	gchar buf[256];
 
 	GtkListStore *store;
-	GtkTreeIter iter;
+	GtkTreeIter iter, select_iter;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *select;
@@ -221,10 +223,23 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 			0, NULL,
 			-1);
 
-	for (n = conting_data_get_unassoc(priv->data); n; n = g_list_next(n)) {
-		data_t *data = n->data;
+	select_iter = iter;
+	if (priv->prev_assoc) {
+		gtk_list_store_append(store, &select_iter);
+		gtk_list_store_set(store, &select_iter,
+				0, priv->prev_assoc,
+				-1);
+	}
 
-		if (data->type != BUS) {
+	for (n = conting_data_get_unassoc(priv->data); n; n = g_list_next(n)) {
+		ContingItemData *data = n->data;
+		ContingItemType item_type;
+
+		g_object_get(G_OBJECT(data),
+				"type", &item_type,
+				NULL);
+
+		if (item_type != CONTING_ITEM_TYPE_BUS) {
 			continue;
 		}
 
@@ -263,6 +278,7 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(priv->bus_view));
 	gtk_tree_selection_unselect_all(select);
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	gtk_tree_selection_select_iter(select, &select_iter);
 	g_signal_connect(G_OBJECT(select), "changed",
 			G_CALLBACK(tree_selection_changed_cb), self);
 

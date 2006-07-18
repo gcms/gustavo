@@ -19,23 +19,6 @@ G_BEGIN_DECLS
 
 #include "contingfile.h"
 
-#define BUS 0
-#define BRANCH 1
-
-
-typedef struct data_ data_t;
-
-#include "contingdrawing.h"
-struct data_ {
-	gint type;
-	ContingDrawing *used;
-	union {
-		bus_data_t bus;
-		branch_data_t branch;
-	} data;
-	GHashTable *attrs;
-};
-
 typedef struct ContingData_ ContingData;
 struct ContingData_ {
     GObject parent;
@@ -57,24 +40,21 @@ conting_data_get_bus(ContingData *self);
 const GList *
 conting_data_get_branch(ContingData *self);
 
+#include "contingdrawing.h"
+#include "contingitemdata.h"
 
 GList *
 conting_data_get_unassoc(ContingData *self);
 
-data_t *
+ContingItemData *
 conting_data_get(ContingData *self, ContingDrawing *drawing);
 
 void
-conting_data_assoc(ContingData *self, ContingDrawing *drawing, data_t *data);
+conting_data_assoc(ContingData *self,
+		ContingDrawing *drawing, ContingItemData *data);
 
 void
 conting_data_unassoc(ContingData *self, ContingDrawing *drawing);
-
-void
-conting_data_set_data_attr(data_t *data, const gchar *attr, ...);
-
-void
-conting_data_get_data_attr(data_t *data, const gchar *attr, ...);
 
 G_END_DECLS
 

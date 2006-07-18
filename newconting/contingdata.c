@@ -37,7 +37,7 @@ conting_data_get_unassoc(ContingData *self)
 	return result;
 }
 
-data_t *
+ContingItemData *
 conting_data_get(ContingData *self, ContingDrawing *drawing)
 {
 	ContingDataPrivate *priv;
@@ -50,7 +50,8 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 }
 
 void
-conting_data_assoc(ContingData *self, ContingDrawing *drawing, data_t *data)
+conting_data_assoc(ContingData *self,
+		ContingDrawing *drawing, ContingItemData *data)
 {
 	ContingDataPrivate *priv;
 
@@ -72,7 +73,7 @@ void
 conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
 {
 	ContingDataPrivate *priv;
-	data_t *data;
+	ContingItemData *data;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
@@ -83,82 +84,6 @@ conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
 		g_hash_table_remove(priv->drawing_data, drawing);
 		g_hash_table_remove(priv->data_drawing, data);
 	}
-}
-
-void
-conting_data_get_data_attr(data_t *data, const gchar *attr, ...)
-{
-	va_list ap;
-	GValue *value;
-	gpointer *pointer;
-
-	va_start(ap, attr);
-
-	while (attr) {
-		pointer = va_arg(ap, gpointer);
-
-		value = g_hash_table_lookup(data->attrs, attr);
-		if (value == NULL) {
-			pointer = NULL;
-			continue;
-		}
-
-		switch (G_VALUE_TYPE(value)) {
-			case G_TYPE_INT:
-				*((gint *) pointer) = g_value_get_int(value);
-				break;
-			case G_TYPE_STRING:
-				*((const gchar **) pointer) = g_value_get_string(value);
-				break;
-			case G_TYPE_DOUBLE:
-				*((gdouble *) pointer) = g_value_get_double(value);
-				break;
-			case G_TYPE_POINTER:
-			default:
-				*pointer = g_value_get_pointer(value);
-				break;
-		}
-
-		attr = va_arg(ap, const gchar *);
-	}
-
-	va_end(ap);
-}
-
-void
-conting_data_set_data_attr(data_t *data, const gchar *attr, ...)
-{
-	GType type;
-	GValue *value;
-	va_list ap;
-
-	va_start(ap, attr);
-
-	while (attr) {
-		type = va_arg(ap, GType);
-		value = g_new(GValue, 1);
-		g_value_init(value, type);
-
-		switch (type) {
-			case G_TYPE_INT:
-				g_value_set_int(value, va_arg(ap, gint));
-				break;
-			case G_TYPE_DOUBLE:
-			    g_value_set_double(value, va_arg(ap, gdouble));
-				break;
-			case G_TYPE_STRING:
-				g_value_set_string(value, va_arg(ap, const gchar *));
-				break;
-			default:
-				g_value_set_pointer(value, va_arg(ap, gpointer));
-				break;
-		}
-		g_hash_table_insert(data->attrs, g_strdup(attr), value);
-
-		attr = va_arg(ap, const gchar *);
-	}
-
-	va_end(ap);
 }
 
 void
@@ -180,42 +105,43 @@ conting_data_load_file(ContingData *self, const gchar *filename)
 	while (fgets(buf, 256, fp)) {
 		if (strncmp(buf, "BUS", 3) == 0) {
 			while (fgets(buf, 256, fp)) {
-				data_t *data = g_new(data_t, 1);
-				data->attrs = g_hash_table_new_full(g_str_hash, g_str_equal,
-						g_free, g_free);
+				ContingItemData *data;
+				bus_data_t bus_data;
+
 				if (strncmp(buf, "-999", 4) == 0)
 					break;
 
-				data->type = BUS;
-				data->used = NULL;
+			   	data = CONTING_ITEM_DATA(g_object_new(CONTING_TYPE_ITEM_DATA,
+							"type", CONTING_ITEM_TYPE_BUS,
+							NULL));
 
-				conting_file_bus_data(&data->data.bus, buf);
+				conting_file_bus_data(&bus_data, buf);
 
-				conting_data_set_data_attr(data,
-						"name", G_TYPE_STRING, data->data.bus.name,
-						"number", G_TYPE_INT, data->data.bus.number,
-						"final_voltage",
-						G_TYPE_DOUBLE, data->data.bus.final_voltage,
+				conting_item_data_set_attr(data,
+						"name", G_TYPE_STRING, bus_data.name,
+						"number", G_TYPE_INT, bus_data.number,
+						"final_voltage", G_TYPE_DOUBLE, bus_data.final_voltage,
 						NULL);
 
 				priv->bus_data = g_list_append(priv->bus_data, data);
 			}
 		} else if (strncmp(buf, "BRANCH", 6) == 0) {
 			while (fgets(buf, 256, fp)) {
-				data_t *data = g_new(data_t, 1);
-				data->attrs = g_hash_table_new_full(g_str_hash, g_str_equal,
-						g_free, g_free);
+				ContingItemData *data;
+				branch_data_t branch_data;
+
 				if (strncmp(buf, "-999", 4) == 0)
 					break;
 
-				data->type = BRANCH;
-				data->used = NULL;
+			   	data = CONTING_ITEM_DATA(g_object_new(CONTING_TYPE_ITEM_DATA,
+							"type", CONTING_ITEM_TYPE_BRANCH,
+							NULL));
 
-				conting_file_branch_data(&data->data.branch, buf);
+				conting_file_branch_data(&branch_data, buf);
 
-				conting_data_set_data_attr(data,
+				conting_item_data_set_attr(data,
 						"tap_bus_number",
-						G_TYPE_INT, data->data.branch.tap_bus_number,
+						G_TYPE_INT, branch_data.tap_bus_number,
 						NULL);
 
 				priv->branch_data = g_list_append(priv->branch_data, data);
