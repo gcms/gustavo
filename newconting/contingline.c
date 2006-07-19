@@ -150,6 +150,26 @@ conting_line_draw(ContingDrawing *self,
 
 	cairo_destroy(cr);
 }
+void
+conting_line_get_links(ContingLine *self,
+		ContingComponent **comp0, ContingComponent **comp1)
+{
+	ContingLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	assert(conting_drawing_is_placed(CONTING_DRAWING(self)));
+
+	if (comp0)
+		*comp0 = priv->comp0;
+
+	if (comp1)
+		*comp1 = priv->comp1;
+
+	assert(priv->comp0 && priv->comp1);
+}
 
 static void
 conting_line_get_bounds(ContingDrawing *self,
