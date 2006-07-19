@@ -209,7 +209,7 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *select;
-	GList *n;
+	GList *n, *unassoc;
 
 	g_return_if_fail(self != NULL && CONTING_IS_INFO_DIALOG(self));
 
@@ -231,7 +231,8 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 				-1);
 	}
 
-	for (n = conting_data_get_unassoc(priv->data); n; n = g_list_next(n)) {
+	unassoc = conting_data_get_unassoc(priv->data);
+	for (n = unassoc; n != NULL; n = g_list_next(n)) {
 		ContingItemData *data = n->data;
 		ContingItemType item_type;
 
@@ -248,6 +249,8 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 				0, data,
 				-1);
 	}
+
+	g_list_free(unassoc);
 
 
 	sprintf(buf, "%p %s Information",
