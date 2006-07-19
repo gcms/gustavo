@@ -157,6 +157,10 @@ conting_file_read_branch(const char *line)
 	conting_file_branch_data(&branch_data, line);
 
 	/* Set attributes */
+	conting_item_data_set_attr(CONTING_ITEM_DATA(item_data),
+			"tap bus number", G_TYPE_INT, branch_data.tap_bus_number,
+			"z bus number", G_TYPE_INT, branch_data.z_bus_number,
+			NULL);
 
 	return CONTING_ITEM_DATA(item_data);
 }
