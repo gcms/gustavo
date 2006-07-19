@@ -524,3 +524,12 @@ enable_paging:
     mov %eax, %cr0
 
     ret
+
+.global disable_paging
+disable_paging:
+    mov %cr0, %eax
+    and $0x7FFFFFFF, %eax
+
+    mov %eax, %cr0
+
+    ret

@@ -49,6 +49,7 @@ static unsigned long bitmap_num_frame;
 
 extern void set_page_dir(page_dir_t page_dir);
 extern void enable_paging(void);
+extern void disable_paging(void);
 
 
 #define MBI multiboot_info
@@ -350,7 +351,9 @@ paging_init(void)
     bitmap_init();
 
     map_pages();
-/*
+
+    disable_paging();
+
     printf("\nbyte %d\tbit %d\n",
             (frame_free_list >> 12) / 8, (frame_free_list >> 12) % 8);
 
@@ -360,5 +363,6 @@ paging_init(void)
     printf("frame_alloc() = 0x%x\n", frame_alloc());
 
     printf("bitmap_num_frame = %d\n", bitmap_num_frame);
-    */
+
+    enable_paging();
 }
