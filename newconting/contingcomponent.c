@@ -103,6 +103,7 @@ conting_component_draw(ContingDrawing *self,
 		gdk_gc_set_line_attributes(show_gc, 3, GDK_LINE_ON_OFF_DASH,
 				GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
 
+
 		for (n = comp->links; n != NULL; n = g_list_next(n)) {
 			ArtPoint dst, src;
 
@@ -534,7 +535,13 @@ static void
 conting_component_conn_foreach(gpointer key, gpointer value,
 		gpointer user_data)
 {
+	ContingComponent *comp;
+
 	g_return_if_fail(key != NULL && CONTING_IS_DRAWING(key));
+
+	comp = CONTING_COMPONENT(user_data);
+
+	comp->links = g_list_append(comp->links, key);
 
 	g_signal_connect(G_OBJECT(key), "delete",
 			G_CALLBACK(conting_component_link_deleted_stub), user_data);
