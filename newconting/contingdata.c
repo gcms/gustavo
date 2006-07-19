@@ -10,8 +10,7 @@ static gpointer parent_class = NULL;
 
 typedef struct ContingDataPrivate_ ContingDataPrivate;
 struct ContingDataPrivate_ {
-	GList *bus_data;
-	GList *branch_data;
+	GList *item_data;
 
 	GHashTable *drawing_data;
 	GHashTable *data_drawing;
@@ -28,7 +27,7 @@ conting_data_get_unassoc(ContingData *self)
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
 	result = NULL;
-	for (n = priv->bus_data; n != NULL; n = g_list_next(n)) {
+	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		if (!g_hash_table_lookup(priv->data_drawing, n->data)) {
 			result = g_list_append(result, n->data);
 		}
@@ -86,92 +85,47 @@ conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
 	}
 }
 
+static void
+conting_data_clear(ContingData *self);
+
 void
 conting_data_load_file(ContingData *self, const gchar *filename)
 {
 	ContingDataPrivate *priv;
-	FILE *fp;
-	char buf[256];
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	fp = fopen(filename, "r");
+	if (priv->item_data)
+		conting_data_clear(self);
 
-	if (fp == NULL)
-		return;
+	assert(priv->item_data == NULL);
 
-	while (fgets(buf, 256, fp)) {
-		if (strncmp(buf, "BUS", 3) == 0) {
-			while (fgets(buf, 256, fp)) {
-				ContingItemData *data;
-				bus_data_t bus_data;
+	priv->item_data = conting_file_get_item_data(filename);
+}
 
-				if (strncmp(buf, "-999", 4) == 0)
-					break;
+static void
+conting_data_clear(ContingData *self)
+{
+	ContingDataPrivate *priv;
+	GList *n;
 
-			   	data = CONTING_ITEM_DATA(g_object_new(CONTING_TYPE_ITEM_DATA,
-							"type", CONTING_ITEM_TYPE_BUS,
-							NULL));
+	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
-				conting_file_bus_data(&bus_data, buf);
+	priv = CONTING_DATA_GET_PRIVATE(self);
 
-				conting_item_data_set_attr(data,
-						"name", G_TYPE_STRING, bus_data.name,
-						"number", G_TYPE_INT, bus_data.number,
-						"final_voltage", G_TYPE_DOUBLE, bus_data.final_voltage,
-						NULL);
+	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+		ContingDrawing *drawing = g_hash_table_lookup(priv->data_drawing,
+				n->data);
 
-				priv->bus_data = g_list_append(priv->bus_data, data);
-			}
-		} else if (strncmp(buf, "BRANCH", 6) == 0) {
-			while (fgets(buf, 256, fp)) {
-				ContingItemData *data;
-				branch_data_t branch_data;
+		g_hash_table_steal(priv->drawing_data, drawing);
+		g_hash_table_steal(priv->data_drawing, n->data);
 
-				if (strncmp(buf, "-999", 4) == 0)
-					break;
-
-			   	data = CONTING_ITEM_DATA(g_object_new(CONTING_TYPE_ITEM_DATA,
-							"type", CONTING_ITEM_TYPE_BRANCH,
-							NULL));
-
-				conting_file_branch_data(&branch_data, buf);
-
-				conting_item_data_set_attr(data,
-						"tap_bus_number",
-						G_TYPE_INT, branch_data.tap_bus_number,
-						NULL);
-
-				priv->branch_data = g_list_append(priv->branch_data, data);
-			}
-		}
+		g_object_unref(n->data);
 	}
-}
-
-const GList *
-conting_data_get_bus(ContingData *self)
-{
-	ContingDataPrivate *priv;
-
-	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
-
-	priv = CONTING_DATA_GET_PRIVATE(self);
-
-	return priv->bus_data;
-}
-
-const GList *
-conting_data_get_branch(ContingData *self)
-{
-	ContingDataPrivate *priv;
-
-	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
-
-	priv = CONTING_DATA_GET_PRIVATE(self);
-
-	return priv->branch_data;
+	g_list_free(priv->item_data);
+	priv->item_data = NULL;
 }
 
 static void
@@ -184,14 +138,10 @@ conting_data_finalize(GObject *self)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	for (n = priv->bus_data; n != NULL; n = g_list_next(n)) {
-		g_free(n->data);
+	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+		g_object_unref(n->data);
 	}
-	g_list_free(priv->bus_data);
-	for (n = priv->branch_data; n != NULL; n = g_list_next(n)) {
-		g_free(n->data);
-	}
-	g_list_free(priv->branch_data);
+	g_list_free(priv->item_data);
 
 	g_hash_table_destroy(priv->data_drawing);
 	g_hash_table_destroy(priv->drawing_data);
@@ -208,8 +158,7 @@ conting_data_instance_init(GTypeInstance *self, gpointer g_class)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	priv->bus_data = NULL;
-	priv->branch_data = NULL;
+	priv->item_data = NULL;
 
 	priv->data_drawing = g_hash_table_new(NULL, NULL);
 	priv->drawing_data = g_hash_table_new(NULL, NULL);

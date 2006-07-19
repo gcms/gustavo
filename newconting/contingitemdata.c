@@ -1,6 +1,8 @@
 #include "contingitemdata.h"
 #include <string.h>
 
+static gpointer parent_class = NULL;
+
 enum {
 	CONTING_ITEM_DATA_PROP_0,
 	CONTING_ITEM_DATA_PROP_TYPE
@@ -12,7 +14,7 @@ enum {
 typedef struct ContingItemDataPrivate_ ContingItemDataPrivate;
 struct ContingItemDataPrivate_ {
 	ContingItemType type;
-	GHashTable *attrs;
+	GTree *attrs;
 };
 
 void
@@ -52,7 +54,7 @@ conting_item_data_set_attr(ContingItemData *self,
 				break;
 		}
 
-		g_hash_table_insert(priv->attrs, g_strdup(attr), value);
+		g_tree_insert(priv->attrs, g_strdup(attr), value);
 
 		attr = va_arg(ap, const gchar *);
 	}
@@ -78,7 +80,7 @@ conting_item_data_get_attr(ContingItemData *self,
 	while (attr) {
 		pointer = va_arg(ap, gpointer *);
 
-		value = g_hash_table_lookup(priv->attrs, attr);
+		value = g_tree_lookup(priv->attrs, attr);
 
 		if (value == NULL) {
 			*pointer = NULL;
@@ -107,14 +109,16 @@ conting_item_data_get_attr(ContingItemData *self,
 }
 
 
-static void
-hash_table_foreach(gpointer key, gpointer value, gpointer user_data)
+static gboolean
+tree_traverse(gpointer key, gpointer value, gpointer user_data)
 {
 	gpointer *parameters = user_data;
 	ContingItemDataAttrFunc func = parameters[0];
 	gpointer data = parameters[1];
 
 	func(key, value, data);
+
+	return FALSE;
 }
 
 void
@@ -131,7 +135,7 @@ conting_item_data_attr_foreach(ContingItemData *self,
 	parameters[0] = func;
 	parameters[1] = user_data;
 
-	g_hash_table_foreach(priv->attrs, hash_table_foreach, parameters);
+	g_tree_traverse(priv->attrs, tree_traverse, G_IN_ORDER, parameters);
 }
 
 static void
@@ -178,6 +182,12 @@ conting_item_data_set_property(GObject *self,
     }
 }
 
+static gint
+key_compare_string(gconstpointer a, gconstpointer b, gpointer user_data)
+{
+	return strcmp(a, b);
+}
+
 static void
 conting_item_data_instance_init(GTypeInstance *self, gpointer g_class)
 {
@@ -187,8 +197,22 @@ conting_item_data_instance_init(GTypeInstance *self, gpointer g_class)
 
 	priv = CONTING_ITEM_DATA_GET_PRIVATE(self);
 	
-	priv->attrs = g_hash_table_new_full(g_str_hash, g_str_equal,
+	priv->attrs = g_tree_new_full(key_compare_string, NULL,
 			g_free, g_free);
+}
+
+static void
+conting_item_data_finalize(GObject *self)
+{
+	ContingItemDataPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ITEM_DATA(self));
+
+	priv = CONTING_ITEM_DATA_GET_PRIVATE(self);
+
+	g_tree_destroy(priv->attrs);
+	
+	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
 static void
@@ -199,6 +223,7 @@ conting_item_data_class_init(gpointer g_class, gpointer class_data)
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->set_property = conting_item_data_set_property;
 	gobject_class->get_property = conting_item_data_get_property;
+	gobject_class->finalize = conting_item_data_finalize;
 
 	g_object_class_install_property(gobject_class,
 			CONTING_ITEM_DATA_PROP_TYPE,
@@ -211,6 +236,7 @@ conting_item_data_class_init(gpointer g_class, gpointer class_data)
 							  |G_PARAM_CONSTRUCT_ONLY));
 			
 	g_type_class_add_private(g_class, sizeof(ContingItemDataPrivate));
+	parent_class = g_type_class_peek_parent(g_class);
 }
 
 GType

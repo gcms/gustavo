@@ -35,11 +35,6 @@ conting_data_get_type(void);
 void
 conting_data_load_file(ContingData *self, const gchar *filename);
 
-const GList *
-conting_data_get_bus(ContingData *self);
-const GList *
-conting_data_get_branch(ContingData *self);
-
 #include "contingdrawing.h"
 #include "contingitemdata.h"
 

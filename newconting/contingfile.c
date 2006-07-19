@@ -1,4 +1,5 @@
 #include "contingfile.h"
+#include "contingitemdata.h"
 
 #include <glib.h>
 #include <stdlib.h>
@@ -101,4 +102,103 @@ conting_file_branch_data(branch_data_t *self, const gchar *line)
 	self->step_size = conting_file_float(line, 105, 110);
 	self->min_voltage = conting_file_float(line, 112, 118);
 	self->max_voltage = conting_file_float(line, 119, 125);
+}
+
+static ContingItemData *
+conting_file_read_bus(const char *line)
+{
+	GObject *item_data;
+	bus_data_t bus_data;
+
+	item_data = g_object_new(CONTING_TYPE_ITEM_DATA,
+			"type", CONTING_ITEM_TYPE_BUS,
+			NULL);
+
+	assert(item_data);
+
+	conting_file_bus_data(&bus_data, line);
+
+	conting_item_data_set_attr(CONTING_ITEM_DATA(item_data),
+			"number", G_TYPE_INT, bus_data.number,
+			"name", G_TYPE_STRING, bus_data.name,
+			"load flow area", G_TYPE_INT, bus_data.load_flow_area,
+			"loss zone", G_TYPE_INT, bus_data.loss_zone,
+			"type", G_TYPE_INT, bus_data.type,
+			"final voltage", G_TYPE_DOUBLE, bus_data.final_voltage,
+			"final angle", G_TYPE_DOUBLE, bus_data.final_angle,
+			"load mw", G_TYPE_DOUBLE, bus_data.load_mw,
+			"load mvar", G_TYPE_DOUBLE, bus_data.load_mvar,
+			"gen mw", G_TYPE_DOUBLE, bus_data.gen_mw,
+			"gen mvar", G_TYPE_DOUBLE, bus_data.gen_mvar,
+			"base kv", G_TYPE_DOUBLE, bus_data.base_kv,
+			"desired voltage", G_TYPE_DOUBLE, bus_data.desired_voltage,
+			"max mvar", G_TYPE_DOUBLE, bus_data.max_mvar,
+			"min mvar", G_TYPE_DOUBLE, bus_data.min_mvar,
+			"shunt conductance", G_TYPE_DOUBLE, bus_data.shunt_conductance,
+			"shunt susceptance", G_TYPE_DOUBLE, bus_data.shunt_susceptance,
+			"remote ctrld bus number", G_TYPE_INT,
+			bus_data.remote_ctrld_bus_number,
+			NULL);
+
+	return CONTING_ITEM_DATA(item_data);
+}
+
+static ContingItemData *
+conting_file_read_branch(const char *line)
+{
+	GObject *item_data;
+
+	branch_data_t branch_data;
+
+	item_data = g_object_new(CONTING_TYPE_ITEM_DATA,
+			"type", CONTING_ITEM_TYPE_BRANCH,
+			NULL);
+
+	conting_file_branch_data(&branch_data, line);
+
+	/* Set attributes */
+
+	return CONTING_ITEM_DATA(item_data);
+}
+
+GList *
+conting_file_get_item_data(const char *filename)
+{
+	FILE *fp;
+	char buf[256];
+	GList *item_data_list;
+	ContingItemData *item_data;
+
+	item_data_list = NULL;
+
+	fp = fopen(filename, "r");
+
+	if (fp == NULL)
+		return NULL;
+
+	while (fgets(buf, 256, fp)) {
+		if (strncmp(buf, "BUS", 3) == 0) {
+			while (fgets(buf, 256, fp)) {
+
+				if (strncmp(buf, "-999", 4) == 0)
+					break;
+
+				item_data = conting_file_read_bus(buf);
+				assert(item_data);
+				item_data_list = g_list_append(item_data_list, item_data);
+			}
+		} else if (strncmp(buf, "BRANCH", 6) == 0) {
+			while (fgets(buf, 256, fp)) {
+
+				if (strncmp(buf, "-999", 4) == 0)
+					break;
+
+				item_data = conting_file_read_branch(buf);
+				assert(item_data);
+				item_data_list = g_list_append(item_data_list, item_data);
+			}
+		}
+	}
+
+	return item_data_list;
 }
