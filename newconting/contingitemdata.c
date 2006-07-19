@@ -214,6 +214,17 @@ conting_item_data_finalize(GObject *self)
 	
 	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
+ContingItemType
+conting_item_data_get_item_type(ContingItemData *self)
+{
+	ContingItemType type;
+
+	g_object_get(self,
+			"type", &type,
+			NULL);
+
+	return type;
+}
 
 static void
 conting_item_data_class_init(gpointer g_class, gpointer class_data)

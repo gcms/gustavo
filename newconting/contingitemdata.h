@@ -50,6 +50,8 @@ typedef void (*ContingItemDataAttrFunc)(const gchar *name, const GValue *value,
 void conting_item_data_attr_foreach(ContingItemData *self,
 		ContingItemDataAttrFunc func, gpointer user_data);
 
+ContingItemType conting_item_data_get_item_type(ContingItemData *self);
+
 G_END_DECLS
 
 #endif /* CONTING_ITEM_DATA_H */

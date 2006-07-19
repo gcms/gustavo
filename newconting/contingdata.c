@@ -1,4 +1,6 @@
 #include "contingdata.h"
+#include "contingbus.h"
+#include "contingline.h"
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -45,6 +47,53 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
+	if (CONTING_IS_LINE(drawing)) {
+		ContingComponent *comp0, *comp1;
+
+		conting_line_get_links(CONTING_LINE(drawing), &comp0, &comp1);
+
+		if (CONTING_IS_BUS(comp0) && CONTING_IS_BUS(comp1)) {
+			ContingItemData *dcomp0, *dcomp1;
+
+			dcomp0 = conting_data_get(self, CONTING_DRAWING(comp0));
+			dcomp1 = conting_data_get(self, CONTING_DRAWING(comp1));
+
+			if (dcomp0 && dcomp1) {
+				gint ncomp0, ncomp1;
+				GList *n;
+
+				conting_item_data_get_attr(dcomp0,
+						"number", &ncomp0,
+						NULL);
+
+				conting_item_data_get_attr(dcomp1,
+						"number", &ncomp1,
+						NULL);
+
+				for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+					ContingItemData *branch;
+					gint tap, z;
+
+					branch = n->data;
+					if (conting_item_data_get_item_type(branch)
+							!= CONTING_ITEM_TYPE_BRANCH) {
+						continue;
+					}
+
+					conting_item_data_get_attr(branch,
+							"tap bus number", &tap,
+							"z bus number", &z,
+							NULL);
+
+					if ((tap == ncomp0 && z == ncomp1)
+							|| (tap == ncomp1 && z == ncomp0))
+						return branch;
+				}
+
+			}
+		}
+	}
+
 	return g_hash_table_lookup(priv->drawing_data, drawing);
 }
 
@@ -57,6 +106,10 @@ conting_data_assoc(ContingData *self,
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	assert(!CONTING_IS_BUS(self)
+			|| (CONTING_IS_BUS(self)
+				&& conting_item_data_get_item_type(data) == CONTING_ITEM_TYPE_BUS));
 
 	/* FIXME: inneficient, but who cares? */
 	conting_data_unassoc(self, drawing);

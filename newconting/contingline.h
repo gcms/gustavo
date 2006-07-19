@@ -28,6 +28,9 @@ struct ContingLineClass_ {
 };
 
 GType conting_line_get_type(void);
+#include "contingcomponent.h"
+void conting_line_get_links(ContingLine *self,
+		ContingComponent **comp0, ContingComponent **comp1);
 
 G_END_DECLS
 
