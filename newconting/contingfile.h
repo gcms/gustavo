@@ -66,4 +66,7 @@ conting_file_bus_data(bus_data_t *self, const gchar *line);
 void
 conting_file_branch_data(branch_data_t *self, const gchar *line);
 
+GList *
+conting_file_get_item_data(const char *filename);
+
 #endif /* CONTING_FILE_H */
