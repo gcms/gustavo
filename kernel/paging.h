@@ -2,6 +2,7 @@
 #define __PAGING_H__
 
 typedef unsigned long phys_addr_t;
+typedef unsigned long virt_addr_t;
 
 typedef unsigned long page_dir_entry_t;
 typedef page_dir_entry_t *page_dir_t;
