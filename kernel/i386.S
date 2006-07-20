@@ -519,7 +519,7 @@ set_page_dir:
 .global enable_paging
 enable_paging:
     mov %cr0, %eax
-    or  $0x80000000, %eax
+    or  $(1 << 31), %eax
     
     mov %eax, %cr0
 
@@ -528,8 +528,20 @@ enable_paging:
 .global disable_paging
 disable_paging:
     mov %cr0, %eax
-    and $0x7FFFFFFF, %eax
+    and $~(1 << 31), %eax
 
     mov %eax, %cr0
 
+    ret
+
+.global get_cr2
+get_cr2:
+    mov %cr2, %eax
+    ret
+
+.global pg_enabled
+pg_enabled:
+    mov %cr0, %eax
+    andl $(1 << 31), %eax
+    shr $31, %eax
     ret
