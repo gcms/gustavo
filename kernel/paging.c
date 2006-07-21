@@ -32,9 +32,8 @@
  * to their correspondent frames. These frames won't be paged out during
  * the kernel execution.
  *
- * We also map the bitmap frames, so that when looking for free frames we don't
- * have to disable paging. The bitmap_free variable is then assigned to the
- * virtual address.
+ * We also map the bitmap frames, so that we can access them on paged address
+ * space. The bitmap_free variable is then assigned to a virtual address.
  *
  * After the mapping we're ready to jump into paging. We do this
  * by calling the set_page_dir() with the kernel page directory as a parameter
@@ -351,9 +350,7 @@ page_frame_map(page_dir_t page_dir, unsigned long map_idx,
             page_frame_map(page_dir, map_idx,
                     PAGE_MAP_DIR_ADDR(map_idx, dir_idx),
                     new_frame);
-            printf("BEFORE MEMSET!");
             memset((void *) PAGE_MAP_DIR_ADDR(map_idx, dir_idx), 0, 4096);
-            printf("AFTER MEMSET!");
         } else {
             memset((void *) new_frame, 0, 4096);
             page_dir[dir_idx] = new_frame | PRESENT_MASK | RW_MASK;
@@ -387,10 +384,16 @@ page_set_flags(page_dir_t page_dir, page_t page, unsigned long flags)
     *tbl_entry |= (flags & 0xFFF);
 }
 
+/* Stores the kernel break. What we call the break is the top
+ * of the address space and will be used to grow it by allocating
+ * pages and mapping to it. */
 static phys_addr_t kbrk;
 
-static phys_addr_t
-get_kbrk(void)
+/* minimun break value */
+static phys_addr_t minkbrk;
+
+virt_addr_t
+page_kbrk(void)
 {
     return kbrk;
 }
@@ -436,28 +439,35 @@ map_pages(void)
     printf("kbrk = 0x%x\n", kbrk);
 
     /* Map bitmaps */
-    new_bitmap = kbrk;
+    new_bitmap = kbrk;  /* Virtual address, will be assigned to bitmap_free */
     for (addr = bitmap_free; addr < bitmap_free + bitmap_num_frame * 4096;
             addr += 4096) {
         page_frame_map(kpage_dir_phys, 0, next_kbrk(), addr);
     }
 
+
+    /* Find the first non present directory entry.
+     * It will be used to store the page map, as described above.
+     * @see{page_map_idx} */
     for (i = 0; i < 1024; i++) {
         if (!(kpage_dir_phys[i] & PRESENT_MASK))
             break;
     }
 
+    /* index of the page map in the page directory */
     page_map_idx = i;
     assert(page_map_idx < 1024);
 
+    /* map the page_map_idx entry in the page directory to the
+     * page directory address */
     kpage_dir_phys[page_map_idx] = (page_dir_entry_t) kpage_dir_phys;
     kpage_dir_phys[page_map_idx] |= PRESENT_MASK | RW_MASK;
 
+    
+    /* maps the page directory entries which area present, to their
+     * corresponding entries in the page map. */
     for (i = 0; i < 1024; i++) {
         if (kpage_dir_phys[i] & PRESENT_MASK) {
-            printf("associng 0x%x to 0x%x\n",
-                    PAGE_MAP_DIR_ADDR(page_map_idx, i),
-                    PAGE_DIR_ENTRY_ADDR(kpage_dir_phys[i]));
             page_frame_map(kpage_dir_phys, 0,
                     (page_t) PAGE_MAP_DIR_ADDR(page_map_idx, i),
                     (page_frame_t) PAGE_DIR_ENTRY_ADDR(kpage_dir_phys[i]));
@@ -465,10 +475,13 @@ map_pages(void)
     }
 
 
+    /* Increase the break */
     assert(((page_map_idx + 1) << 22) >= kbrk);
     kbrk = (page_map_idx + 1) << 22;
+    minkbrk = kbrk;
 
 
+    /* Receives its virtual address before enabling paging */
     bitmap_free = new_bitmap;
 
     /* Set the page dir */
@@ -517,23 +530,21 @@ page_frame_umap(page_dir_t page_dir, unsigned long map_idx,
 
     *page_tbl &= ~PRESENT_MASK;
 
-    bitmap_set_free((page_frame_t) PAGE_DIR_ENTRY_ADDR(*page_tbl), TRUE);
+    frame_free((page_frame_t) PAGE_DIR_ENTRY_ADDR(*page_tbl));
 }
 
-static phys_addr_t
+static virt_addr_t
 page_neg_sbrk(int n_pages)
 {
     phys_addr_t old_kbrk = kbrk;
 
-    if (get_kbrk() + n_pages * 4096 < ALIGN(KEND, 4096)) {
-        n_pages = (ALIGN(KEND, 4096) - get_kbrk()) / 4096;
+    if (page_kbrk() + n_pages * 4096 < minkbrk) {
+        n_pages = (minkbrk - page_kbrk()) / 4096;
     }
-
-    printf("n_pages = %d\n", n_pages);
 
     while (n_pages++ < 0) {
         kbrk -= 4096;
-        assert(kbrk >= ALIGN(KEND, 4096));
+        assert(kbrk >= minkbrk);
 
         page_frame_umap(kpage_dir, page_map_idx, kbrk);
     }
@@ -541,8 +552,8 @@ page_neg_sbrk(int n_pages)
     return old_kbrk;
 }
 
-static phys_addr_t
-page_sbrk(int n_pages)
+virt_addr_t
+page_skbrk(int n_pages)
 {
     page_frame_t frame;
     phys_addr_t old_kbrk = kbrk;
@@ -559,7 +570,7 @@ page_sbrk(int n_pages)
     while (n_pages-- > 0) {
         frame = frame_alloc();
         assert(frame);
-
+/*
         printf("calling page_frame_map()\n");
         printf("%d 0x%x\n", 0, kpage_dir[0]);
         printf("%d 0x%x\n", 1, kpage_dir[1]);
@@ -569,6 +580,7 @@ page_sbrk(int n_pages)
 
         printf("pg_enabled? %s\n", pg_enabled() ? "YES" : "NO");
         printf("page_map_idx = %d\n", page_map_idx);
+        */
         page_frame_map(kpage_dir, page_map_idx, next_kbrk(), frame);
     }
     
@@ -592,6 +604,8 @@ page_fault_handler(stack_frame_t *frame)
     return 0;
 }
 
+extern void *sbrk(int len);
+
 void
 paging_init(void)
 {
@@ -613,18 +627,54 @@ paging_init(void)
     idt_install_handler(14, page_fault_handler);
 
     enable_paging();
-    
+    /*
     printf("frame_free_num = %d\n", frame_free_num);
-    data = (unsigned long *) page_sbrk(1);
-    printf("0x%x\n", data);
+    data = (unsigned long *) sbrk(4);
+    printf("data = 0x%x\n", data);
     *data = 10;
     puts("SBRKED/ACCESSED");
 
     printf("start 0x%x\tend 0x%x\n",
             (page_map_idx << 22), (page_map_idx + 1) << 22);
     printf("frame_free_num = %d\tbrk = 0x%x\n", frame_free_num, kbrk);
-    page_sbrk(-1);
+    printf("sbrk(-4) = 0x%x\n", sbrk(-4));
     printf("frame_free_num = %d\tbrk = 0x%x\n", frame_free_num, kbrk);
+    */
+
+    data = kmalloc(sizeof(unsigned long) * (1024 + 1));
+
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    data[3] = 4;
+    data[1024] = 4;
+
+    printf("data = 0x%x\n", data);
+
+    kfree(data);
+
+    data = kmalloc(sizeof(unsigned long) * 12);
+
+    printf("%d\n", data[0]);
+    printf("data = 0x%x\n", data);
+
+    kfree(data);
+
+    data = kmalloc(100);
+    printf("data = 0x%x\n", data);
+    data[0] = kmalloc(124);
+    printf("data[0] = 0x%x\n", data[0]);
+    data[1] = kmalloc(12);
+    printf("data[1] = 0x%x\n", data[1]);
+
+    printf("sbrk(0) = 0x%x\n", sbrk(0));
+    kfree(data[0]);
+    kfree(data[1]);
+    kfree(data);
+
+
+    printf("sbrk(0) = 0x%x\tFREED\n", sbrk(0));
+
 
     printf("\nbyte %d\tbit %d\n",
             (frame_free_list >> 12) / 8, (frame_free_list >> 12) % 8);
