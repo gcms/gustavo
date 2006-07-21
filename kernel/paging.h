@@ -12,6 +12,9 @@ typedef page_tbl_entry_t *page_tbl_t;
 typedef phys_addr_t page_t;
 typedef phys_addr_t page_frame_t;
 
+virt_addr_t page_kbrk(void);
+virt_addr_t page_skbrk(int n_pages);
+
 void
 paging_init(void);
 

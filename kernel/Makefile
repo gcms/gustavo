@@ -5,8 +5,8 @@ LDFLAGS=-T link.ld
 
 all: kernel.elf
 
-kernel.elf: kernel.o system.o boot.o i386.o stdlib.o stdio.o assert.o video.o idt.o paging.o clock.o keyboard.o
-	$(LD) $(LDFLAGS) kernel.o system.o boot.o i386.o stdlib.o stdio.o assert.o video.o idt.o paging.o clock.o keyboard.o -o kernel.elf
+kernel.elf: kernel.o system.o boot.o i386.o stdlib.o stdio.o assert.o video.o idt.o paging.o kmalloc.o clock.o keyboard.o
+	$(LD) $(LDFLAGS) kernel.o system.o boot.o i386.o stdlib.o stdio.o assert.o video.o idt.o paging.o kmalloc.o clock.o keyboard.o -o kernel.elf
 
 clean:
 	rm -f kernel.o
