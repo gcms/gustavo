@@ -282,11 +282,12 @@ conting_one_line_update(ContingOneLine *self,
             bounds->x1, bounds->y1,
             &win_bounds.x1, &win_bounds.y1);
 
-
+/*
     g_print("update1: (%lf, %lf); (%lf, %lf)\n",
 			bounds->x0, bounds->y0, bounds->x1, bounds->y1);
     g_print("update2: (%lf, %lf); (%lf, %lf)\n",
             win_bounds.x0, win_bounds.y0, win_bounds.x1, win_bounds.y1);
+			*/
 
     gtk_widget_queue_draw_area(priv->widget,
             (gint) win_bounds.x0, (gint) win_bounds.y0,
@@ -392,6 +393,9 @@ conting_one_line_delete_drawing(ContingOneLine *self,
 		priv->placing_drawing = NULL;
 		priv->state = CONTING_ONE_LINE_NONE;
 	} else {
+		if (drawing == priv->current_drawing) {
+			priv->current_drawing = NULL;
+		}
 	    priv->drawings = g_slist_remove(priv->drawings, drawing);
 	}
 
