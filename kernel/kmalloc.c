@@ -111,7 +111,9 @@ kmalloc(size_t len)
     }
 
     run = sbrk(RUN_HEADER_SIZE + len);
-    assert(run);
+    if (run == NULL)
+        return NULL;
+
     RUN_SIZE(run) = len;
     RUN_FREE(run) = FALSE;
     RUN_MAGIC(run) = MAGIC;
@@ -127,6 +129,7 @@ kmalloc(size_t len)
 
 #define RUN_FROM_DATA(d)    ((void *) ((unsigned long) (d) - RUN_HEADER_SIZE))
 
+/* TODO: provide a way to merge near runs */
 void
 kfree(void *data)
 {
