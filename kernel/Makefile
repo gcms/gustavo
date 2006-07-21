@@ -19,6 +19,7 @@ clean:
 	rm -f video.o
 	rm -f idt.o
 	rm -f paging.o
+	rm -f kmalloc.o
 	rm -f keyboard.o
 	rm -f clock.o
 	rm -f kernel.elf
