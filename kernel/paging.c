@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include <process.h>
+
 /* The following strategy is used:
  *
  * First we obtain a list of frame runs, a frame run, is a sequence of
@@ -110,7 +112,9 @@ static unsigned long frame_free_num;
  * an address space of 4 MB, which is exactly the same we need to store all our
  * page tables. So the page tables are mapped into the address space of
  * an entry in the page directory. */
-static unsigned int page_map_idx;
+/* static unsigned int page_map_idx; */
+
+process_t  kernel_proc;
 
 
 #define MBI multiboot_info
@@ -311,7 +315,8 @@ bitmap_init(void)
 }
 
 
-#define kpage_dir ((page_dir_t) PAGE_MAP_DIR_ADDR(page_map_idx, page_map_idx))
+#define kpage_dir ((page_dir_t) PAGE_MAP_DIR_ADDR(kernel_proc.page_map_idx, \
+            kernel_proc.page_map_idx))
 
 #define PAGE_DIR_ENTRY_ADDR(e)   \
     ((page_tbl_entry_t *) (((phys_addr_t) e) & 0xFFFFF000))
@@ -387,25 +392,15 @@ page_set_flags(page_dir_t page_dir, page_t page, unsigned long flags)
 /* Stores the kernel break. What we call the break is the top
  * of the address space and will be used to grow it by allocating
  * pages and mapping to it. */
-static phys_addr_t kbrk;
+/* static phys_addr_t kbrk; */
 
 /* minimun break value */
-static phys_addr_t minkbrk;
+/* static phys_addr_t minkbrk; */
 
 virt_addr_t
 page_kbrk(void)
 {
-    return kbrk;
-}
-
-static phys_addr_t
-next_kbrk(void)
-{
-    phys_addr_t result = kbrk;
-
-    kbrk += 4096;
-
-    return result;
+    return kernel_proc.brk;
 }
 
 
@@ -414,8 +409,9 @@ map_pages(void)
 {
     phys_addr_t addr;
     phys_addr_t new_bitmap;
+    virt_addr_t brk;
     
-    unsigned int i;
+    unsigned int i, page_map_idx;
     page_dir_t kpage_dir_phys;
 
     kpage_dir_phys = (page_dir_t) frame_alloc();
@@ -435,14 +431,15 @@ map_pages(void)
         page_set_flags(kpage_dir_phys, addr, PCD_MASK);
     }
 
-    kbrk = ALIGN(KEND, 4096);
-    printf("kbrk = 0x%x\n", kbrk);
+    brk = ALIGN(KEND, 4096);
+    printf("kbrk = 0x%x\n", brk);
 
     /* Map bitmaps */
-    new_bitmap = kbrk;  /* Virtual address, will be assigned to bitmap_free */
+    new_bitmap = brk;  /* Virtual address, will be assigned to bitmap_free */
     for (addr = bitmap_free; addr < bitmap_free + bitmap_num_frame * 4096;
             addr += 4096) {
-        page_frame_map(kpage_dir_phys, 0, next_kbrk(), addr);
+        page_frame_map(kpage_dir_phys, 0, brk, addr);
+        brk += 4096;
     }
 
 
@@ -474,11 +471,23 @@ map_pages(void)
         }
     }
 
+    /* Assert the break */
+    assert(((page_map_idx + 1) << 22) >= brk);
 
-    /* Increase the break */
-    assert(((page_map_idx + 1) << 22) >= kbrk);
-    kbrk = (page_map_idx + 1) << 22;
-    minkbrk = kbrk;
+
+    /* Set kernel proc values */
+    kernel_proc.page_dir = (phys_addr_t) kpage_dir_phys;
+    kernel_proc.page_map_idx = page_map_idx;
+
+
+    /* First entry after page_map_idx up to 64 entries */
+    kernel_proc.heap_first = (page_map_idx + 1) << 22;
+    kernel_proc.heap_last = ((page_map_idx + 1 + 64) << 22) - 1;
+    kernel_proc.brk = kernel_proc.heap_first;
+
+    for (i = 0; i < 64; i++) {
+        assert(!(kpage_dir_phys[page_map_idx + 1 + i] & PRESENT_MASK));
+    }
 
 
     /* Receives its virtual address before enabling paging */
@@ -536,17 +545,18 @@ page_frame_umap(page_dir_t page_dir, unsigned long map_idx,
 static virt_addr_t
 page_neg_sbrk(int n_pages)
 {
-    phys_addr_t old_kbrk = kbrk;
+    virt_addr_t old_kbrk = kernel_proc.brk;
 
-    if (page_kbrk() + n_pages * 4096 < minkbrk) {
-        n_pages = (minkbrk - page_kbrk()) / 4096;
+    if (kernel_proc.brk + n_pages * 4096 < kernel_proc.heap_first) {
+        n_pages = (kernel_proc.heap_first - kernel_proc.brk) / 4096;
     }
 
     while (n_pages++ < 0) {
-        kbrk -= 4096;
-        assert(kbrk >= minkbrk);
+        kernel_proc.brk -= 4096;
+        assert(kernel_proc.brk >= kernel_proc.heap_first);
 
-        page_frame_umap(kpage_dir, page_map_idx, kbrk);
+        page_frame_umap(kpage_dir,
+                kernel_proc.page_map_idx, kernel_proc.brk);
     }
 
     return old_kbrk;
@@ -556,7 +566,10 @@ virt_addr_t
 page_skbrk(int n_pages)
 {
     page_frame_t frame;
-    phys_addr_t old_kbrk = kbrk;
+    phys_addr_t old_kbrk = kernel_proc.brk;
+
+    assert(kernel_proc.brk + n_pages * 4096 >= kernel_proc.heap_first
+            && kernel_proc.brk + n_pages * 4096 <= kernel_proc.heap_last);
 
     if (n_pages <= 0) {
         return page_neg_sbrk(n_pages);
@@ -581,7 +594,9 @@ page_skbrk(int n_pages)
         printf("pg_enabled? %s\n", pg_enabled() ? "YES" : "NO");
         printf("page_map_idx = %d\n", page_map_idx);
         */
-        page_frame_map(kpage_dir, page_map_idx, next_kbrk(), frame);
+        page_frame_map(kpage_dir, kernel_proc.page_map_idx,
+                kernel_proc.brk, frame);
+        kernel_proc.brk += 4096;
     }
     
 
@@ -605,6 +620,8 @@ page_fault_handler(stack_frame_t *frame)
 }
 
 extern void *sbrk(int len);
+extern void *kmalloc(size_t len);
+extern void kfree(void *data);
 
 void
 paging_init(void)
@@ -662,14 +679,14 @@ paging_init(void)
 
     data = kmalloc(100);
     printf("data = 0x%x\n", data);
-    data[0] = kmalloc(124);
+    data[0] = (unsigned long) kmalloc(124);
     printf("data[0] = 0x%x\n", data[0]);
-    data[1] = kmalloc(12);
+    data[1] = (unsigned long) kmalloc(12);
     printf("data[1] = 0x%x\n", data[1]);
 
     printf("sbrk(0) = 0x%x\n", sbrk(0));
-    kfree(data[0]);
-    kfree(data[1]);
+    kfree((void *) data[0]);
+    kfree((void *) data[1]);
     kfree(data);
 
 
