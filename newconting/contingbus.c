@@ -186,13 +186,38 @@ conting_bus_event(ContingDrawing *self,
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	return TRUE;
-
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y,
 			&p.x, &p.y);
 
 	switch (event->type) {
+		case GDK_ENTER_NOTIFY:
+			{
+				ContingData *data;
+				ContingItemData *item_data;
+				const gchar *bus_name;
+
+				g_object_get(G_OBJECT(conting_drawing_get_one_line(self)),
+						"data", &data,
+						NULL);
+
+				item_data = conting_data_get(data, self);
+
+				if (item_data == NULL)
+					return TRUE;
+
+				conting_item_data_get_attr(item_data,
+						"name", &bus_name,
+						NULL);
+
+				g_print("%s\n", bus_name);
+
+				return TRUE;
+			}
+			break;
+		case GDK_LEAVE_NOTIFY:
+			g_print("BUS LEAVE\n");
+			break;
 		case GDK_MOTION_NOTIFY:
 			/*
 			if (priv->dragging && priv->start_resize != NULL) {

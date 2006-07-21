@@ -308,11 +308,11 @@ conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 	switch (event->type) {
 		case GDK_ENTER_NOTIFY:
 			g_print("%p ENTER\n", self);
-			return TRUE;
+			return FALSE;
 			break;
 		case GDK_LEAVE_NOTIFY:
 			g_print("%p LEAVE\n", self);
-			return TRUE;
+			return FALSE;
 			break;
 		case GDK_BUTTON_PRESS:
 			conting_drawing_set_selected(self, TRUE);
