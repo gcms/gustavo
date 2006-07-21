@@ -755,10 +755,6 @@ conting_line_event_place(ContingDrawing *self,
 			    */
 			}
 			break;
-		case GDK_KEY_PRESS:
-			if (event->key.keyval == GDK_Escape) {
-				conting_drawing_delete(self);
-			}
 
 		default:
 			break;
@@ -797,7 +793,6 @@ conting_line_event(ContingDrawing *self,
 
 	switch (event->type) {
 		case GDK_BUTTON_PRESS:
-			conting_drawing_set_selected(self, TRUE);
 			conting_drawing_update(self);
 
 
@@ -835,11 +830,6 @@ conting_line_event(ContingDrawing *self,
 				} else {
 					*(priv->dragging_point) = pi;
 				}
-			}
-			break;
-		case GDK_KEY_PRESS:
-			if (event->key.keyval == GDK_Delete) {
-				conting_drawing_delete(self);
 			}
 			break;
 		default:

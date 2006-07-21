@@ -29,6 +29,9 @@ struct ContingComponent_ {
 	GHashTable *points;
 	GList *links;
 
+	ArtPoint dragging_point;
+	gboolean dragging;
+
 	gboolean show;
 };
 

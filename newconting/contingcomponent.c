@@ -303,6 +303,13 @@ conting_component_event(ContingDrawing *self,
 			&p.x, &p.y);
 
     switch (event->type) {
+		case GDK_BUTTON_PRESS:
+			conting_drawing_grab(self);
+			comp->dragging_point = p;
+			comp->dragging = TRUE;
+
+			return TRUE;
+			break;
 		case GDK_MOTION_NOTIFY:
 			if (!comp->placed) {
 				gdouble affine[6];
@@ -311,7 +318,25 @@ conting_component_event(ContingDrawing *self,
 				conting_drawing_affine_absolute(self, affine);
 
 				return TRUE;
+			} else if (comp->placed && comp->dragging) {
+                gdouble affine[6];
+                art_affine_translate(affine,
+                        p.x - comp->dragging_point.x,
+                        p.y - comp->dragging_point.y);
+                conting_drawing_affine(self, affine);
+                g_signal_emit_by_name(self, "move");
+                comp->dragging_point = p;
+
+				return TRUE;
 			}
+			break;
+		case GDK_2BUTTON_PRESS:
+		case GDK_BUTTON_RELEASE:
+			if (comp->dragging) {
+                comp->dragging = FALSE;
+                conting_drawing_ungrab(self);
+            }
+			return TRUE;
 			break;
         case GDK_KEY_PRESS:
             if (event->key.keyval == GDK_r) {
@@ -333,18 +358,6 @@ conting_component_event(ContingDrawing *self,
 
 			if (event->key.keyval == GDK_s) {
 				comp->show = TRUE;
-
-				return TRUE;
-			}
-
-			if (event->key.keyval == GDK_Escape && !comp->placed) {
-				conting_drawing_delete(self);
-
-				return TRUE;
-			}
-
-			if (event->key.keyval == GDK_Delete) {
-				conting_drawing_delete(self);
 
 				return TRUE;
 			}
@@ -422,6 +435,11 @@ conting_component_delete(ContingDrawing *self)
 	}
 
 	g_signal_emit_by_name(self, "delete");
+
+	if (comp->dragging) {
+		comp->dragging = FALSE;
+		conting_drawing_ungrab(self);
+	}
 
 	if (CONTING_DRAWING_CLASS(parent_class)->delete)
 		CONTING_DRAWING_CLASS(parent_class)->delete(self);
@@ -643,6 +661,8 @@ conting_component_instance_init(GTypeInstance *self, gpointer g_class)
 
 	comp->points = g_hash_table_new_full(NULL, NULL, NULL, g_free);
 	comp->links = NULL;
+
+	comp->dragging = FALSE;
 }
 
 static void
