@@ -10,7 +10,8 @@
 
 enum {
 	CONTING_ONE_LINE_PROP_0,
-	CONTING_ONE_LINE_PROP_PPU
+	CONTING_ONE_LINE_PROP_PPU,
+	CONTING_ONE_LINE_PROP_DATA
 };
 
 typedef enum {
@@ -40,6 +41,8 @@ struct ContingOneLinePrivate_ {
 	ArtDRect selection_box;
 
 	ContingData *file_data;
+
+	ContingDrawing *current_drawing;
 };
 
 static void
@@ -464,6 +467,9 @@ conting_one_line_get_property(GObject *self,
 		case CONTING_ONE_LINE_PROP_PPU:
 			g_value_set_double(value, priv->ppu);
 			break;
+		case CONTING_ONE_LINE_PROP_DATA:
+			g_value_set_object(value, priv->file_data);
+			break;
 		default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -486,6 +492,8 @@ conting_one_line_set_property(GObject *self,
 			priv->ppu = g_value_get_double(value);
 			conting_one_line_update(CONTING_ONE_LINE(self), NULL);
 			break;
+		case CONTING_ONE_LINE_PROP_DATA:
+			priv->file_data = g_value_get_object(value);
 		default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -524,15 +532,46 @@ widget_motion_notify_event(GtkWidget *widget,
         case CONTING_ONE_LINE_NONE:
 			{
 				GSList *n;
+				gboolean leave = TRUE;
+				ContingDrawing *entered = NULL;
+
 	            for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
     	        	if (conting_drawing_answer(CONTING_DRAWING(n->data),
 								world_x, world_y)) {
+						if (n->data == priv->current_drawing) {
+							leave = FALSE;
+						}
+						if (entered == NULL) {
+							entered = n->data;
+						}
+
 						if (conting_one_line_send_event(
 								CONTING_ONE_LINE(user_data),
 								CONTING_DRAWING(n->data), (GdkEvent *) event))
 							break;
 					}
 				}
+
+				if (leave) {
+					if (priv->current_drawing) {
+						GdkEvent *levent = gdk_event_copy((GdkEvent *) event);
+						levent->type = GDK_LEAVE_NOTIFY;
+						conting_one_line_send_event(CONTING_ONE_LINE(user_data),
+								priv->current_drawing, (GdkEvent *) levent);
+						priv->current_drawing = NULL;
+					}
+
+					if (entered) {
+						GdkEvent *eevent = gdk_event_copy((GdkEvent *) event);
+						assert(priv->current_drawing != entered);
+						eevent->type = GDK_ENTER_NOTIFY;
+						conting_one_line_send_event(
+								CONTING_ONE_LINE(user_data),
+								entered, (GdkEvent *) eevent);
+						priv->current_drawing = entered;
+					}
+				}
+
 			}
        	    break;
         case CONTING_ONE_LINE_CREATED:
@@ -969,6 +1008,14 @@ conting_one_line_class_init(gpointer g_class,
 							 1,		/* 100% zoom, default value */
 							 G_PARAM_READABLE | G_PARAM_WRITABLE));
 
+	g_object_class_install_property(G_OBJECT_CLASS(g_class),
+			CONTING_ONE_LINE_PROP_DATA,
+			g_param_spec_object("data",
+								"ContingData object",
+								"Data file associated",
+								CONTING_TYPE_DATA,
+								G_PARAM_READABLE | G_PARAM_WRITABLE));
+
     g_type_class_add_private(g_class, sizeof(ContingOneLinePrivate));
 
 }
@@ -993,6 +1040,8 @@ conting_one_line_instance_init(GTypeInstance *self,
 	priv->file_data = CONTING_DATA(g_object_new(CONTING_TYPE_DATA, NULL));
 	assert(priv->file_data);
 	conting_data_load_file(priv->file_data, "data/ieee14cdf.txt");
+
+	priv->current_drawing = NULL;
 }
 
 GType
