@@ -61,8 +61,9 @@ conting_bus_draw(ContingDrawing *self,
 	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
 			pw1.x, pw1.y, &pw1.x, &pw1.y);
 
-
+/*
 	g_print("drawing: (%lf, %lf); (%lf, %lf)\n", pw0.x, pw0.y, pw1.x, pw1.y);
+	*/
 	
 	rect.x = (gint) (pw0.x < pw1.x ? pw0.x : pw1.x);
 	rect.y = (gint) (pw0.y < pw1.y ? pw0.y : pw1.y);
