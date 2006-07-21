@@ -299,17 +299,49 @@ conting_drawing_delete(ContingDrawing *self)
     CONTING_DRAWING_GET_CLASS(self)->delete(self);
 }
 
+#include <gdk/gdkkeysyms.h>
 static gboolean
 conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 {
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
-	if (!conting_drawing_is_placed(self))
-		return FALSE;
+	switch (event->type) {
+		case GDK_ENTER_NOTIFY:
+			g_print("%p ENTER\n", self);
+			return TRUE;
+			break;
+		case GDK_LEAVE_NOTIFY:
+			g_print("%p LEAVE\n", self);
+			return TRUE;
+			break;
+		case GDK_BUTTON_PRESS:
+			conting_drawing_set_selected(self, TRUE);
 
-	if (event->type == GDK_2BUTTON_PRESS) {
-		conting_one_line_edit(conting_drawing_get_one_line(self), self);
-		return FALSE;
+			return FALSE;
+
+			break;
+		case GDK_2BUTTON_PRESS:
+			if (conting_drawing_is_placed(self)) {
+				conting_one_line_edit(conting_drawing_get_one_line(self),
+						self);
+			}
+			return FALSE;
+		case GDK_KEY_PRESS:
+			if (event->key.keyval == GDK_Escape
+					&& !conting_drawing_is_placed(self)) {
+				conting_drawing_delete(self);
+				return TRUE;
+			}
+
+			if (event->key.keyval == GDK_Delete) {
+				conting_drawing_delete(self);
+
+				return TRUE;
+			}
+
+			break;
+		default:
+			break;
 	}
 
 	return FALSE;

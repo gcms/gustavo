@@ -169,69 +169,9 @@ static void conting_trans2_delete(ContingDrawing *self)
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
 
-    if (priv->dragging) {
-        priv->dragging = FALSE;
-        conting_drawing_ungrab(self);
-    }
-
 	priv->link0 = priv->link1 = NULL;
 
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
-}
-#include <gdk/gdkkeysyms.h>
-static gboolean
-conting_trans2_event(ContingDrawing *self,
-                     GdkEvent *event)
-{
-    ContingTrans2Private *priv;
-    ArtPoint p;
-
-    g_return_val_if_fail(self != NULL && CONTING_IS_TRANS2(self), FALSE);
-
-    if (CONTING_DRAWING_CLASS(parent_class)->event(self, event))
-        return TRUE;
-
-    priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-    conting_one_line_window_to_world(conting_drawing_get_one_line(self),
-            event->button.x, event->button.y,
-            &p.x, &p.y);
-
-    switch (event->type) {
-        case GDK_BUTTON_PRESS:
-            conting_drawing_set_selected(self, TRUE);
-            conting_drawing_grab(self);
-            priv->dragging_point = p;
-            priv->dragging = TRUE;
-            break;
-        case GDK_MOTION_NOTIFY:
-            if (priv->dragging) {
-                gdouble affine[6];
-                art_affine_translate(affine,
-                        p.x - priv->dragging_point.x,
-                        p.y - priv->dragging_point.y);
-                conting_drawing_affine(self, affine);
-                g_signal_emit_by_name(self, "move");
-                priv->dragging_point = p;
-            }
-            break;
-		case GDK_2BUTTON_PRESS:
-        case GDK_BUTTON_RELEASE:
-            if (priv->dragging) {
-                priv->dragging = FALSE;
-                conting_drawing_ungrab(self);
-            }
-            break;
-        case GDK_KEY_PRESS:
-            if (event->key.keyval == GDK_Delete) {
-                conting_drawing_delete(self);
-            }
-            break;
-        default:
-            return FALSE;
-    }
-
-    return TRUE;
 }
 
 
@@ -413,7 +353,6 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_trans2_draw;
-    drawing_class->event = conting_trans2_event;
     drawing_class->delete = conting_trans2_delete;
 	drawing_class->xml_node = conting_trans2_xml_node;
 	drawing_class->place_xml = conting_trans2_place_xml;

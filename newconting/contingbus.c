@@ -132,11 +132,6 @@ static void conting_bus_delete(ContingDrawing *self)
 
 	priv = CONTING_BUS_GET_PRIVATE(self);
 
-	if (priv->dragging) {
-		priv->dragging = FALSE;
-		conting_drawing_ungrab(self);
-	}
-
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
 
@@ -191,17 +186,13 @@ conting_bus_event(ContingDrawing *self,
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
+	return TRUE;
+
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y,
 			&p.x, &p.y);
 
 	switch (event->type) {
-		case GDK_BUTTON_PRESS:
-			conting_drawing_set_selected(self, TRUE);
-			conting_drawing_grab(self);
-			priv->dragging_point = p;
-			priv->dragging = TRUE;
-			break;
 		case GDK_MOTION_NOTIFY:
 			/*
 			if (priv->dragging && priv->start_resize != NULL) {
@@ -236,7 +227,7 @@ conting_bus_event(ContingDrawing *self,
 				}
 
 				conting_drawing_update(self);
-			} else */ if (priv->dragging) {
+			} else if (priv->dragging) {
 				gdouble affine[6];
 				art_affine_translate(affine,
 						p.x - priv->dragging_point.x,
@@ -257,19 +248,17 @@ conting_bus_event(ContingDrawing *self,
 					priv->start_resize = NULL;
 				}
 			}
+			*/
 			break;
 		case GDK_2BUTTON_PRESS:
 		case GDK_BUTTON_RELEASE:
+			/*
 			if (priv->dragging) {
 				priv->dragging = FALSE;
 				priv->start_resize = NULL;
 				conting_drawing_ungrab(self);
 			}
-			break;
-		case GDK_KEY_PRESS:
-			if (event->key.keyval == GDK_Delete) {
-				conting_drawing_delete(self);
-			}
+			*/
 			break;
 		default:
 			return FALSE;
