@@ -12,8 +12,16 @@ typedef page_tbl_entry_t *page_tbl_t;
 typedef phys_addr_t page_t;
 typedef phys_addr_t page_frame_t;
 
-virt_addr_t page_kbrk(void);
-virt_addr_t page_skbrk(int n_pages);
+
+#ifndef __PROCESS_H__
+#include <process.h>
+
+extern process_t kernel_proc;
+
+virt_addr_t page_sbrk(process_t *proc, int n_pages);
+#define page_skbrk(n) page_sbrk(&kernel_proc, (n))
+#endif
+
 
 void
 paging_init(void);
