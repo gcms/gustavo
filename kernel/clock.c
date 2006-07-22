@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <idt.h>
 #include <assert.h>
+#include <clock.h>
 
 static void
 clock_setup(int hz)
@@ -50,5 +51,5 @@ void
 clock_init(void)
 {
     irq_install_handler(0, clock_handler);
-    clock_setup(100);   
+    clock_setup(TICK_FREQ);
 }

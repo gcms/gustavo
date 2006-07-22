@@ -1,8 +1,6 @@
 #ifndef __PROCESS_H__
 #define __PROCESS_H__
 
-#include <paging.h>
-
 typedef struct {
     phys_addr_t page_dir;
 
@@ -15,6 +13,6 @@ typedef struct {
     virt_addr_t brk;        /* break. heap_first <= brk <= heap_last */
 } process_t;
 
-extern process_t *current_proc;
+extern process_t *cur_proc;
 
 #endif /* __PROCESS_H__ */

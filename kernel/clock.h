@@ -1,6 +1,9 @@
 #ifndef __CLOCK_H__
 #define __CLOCK_H__
 
+/* tick frequency in hertz */
+#define TICK_FREQ   100
+
 void
 clock_init(void);
 

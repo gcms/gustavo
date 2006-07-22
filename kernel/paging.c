@@ -99,6 +99,8 @@ extern void disable_paging(void);
 /* Is paging enabled? */
 extern bool pg_enabled(void);
 
+extern void invlpg(page_t page);
+
 /* Number of currently free frames. */
 static unsigned long frame_free_num;
 
@@ -315,6 +317,9 @@ bitmap_init(void)
 }
 
 
+#define PAGE_DIR(p) ((page_dir_t) \
+        PAGE_MAP_DIR_ADDR(((process_t *) (p))->page_map_idx, \
+        ((process_t *) (p))->page_map_idx))
 #define kpage_dir ((page_dir_t) PAGE_MAP_DIR_ADDR(kernel_proc.page_map_idx, \
             kernel_proc.page_map_idx))
 
@@ -397,11 +402,13 @@ page_set_flags(page_dir_t page_dir, page_t page, unsigned long flags)
 /* minimun break value */
 /* static phys_addr_t minkbrk; */
 
+/*
 virt_addr_t
 page_kbrk(void)
 {
     return kernel_proc.brk;
 }
+*/
 
 
 static void
@@ -496,7 +503,7 @@ map_pages(void)
     /* Set the page dir */
     set_page_dir(kpage_dir_phys);
 }
-
+/*
 static page_frame_t
 get_page_frame(page_dir_t page_dir, page_t page)
 {
@@ -516,6 +523,7 @@ get_page_frame(page_dir_t page_dir, page_t page)
 
     return (page_frame_t) PAGE_DIR_ENTRY_ADDR(*tbl_entry);
 }
+*/
 
 static void
 page_frame_umap(page_dir_t page_dir, unsigned long map_idx,
@@ -543,62 +551,39 @@ page_frame_umap(page_dir_t page_dir, unsigned long map_idx,
 }
 
 static virt_addr_t
-page_neg_sbrk(int n_pages)
+page_sbrk_neg(process_t *proc, int n_pages)
 {
-    virt_addr_t old_kbrk = kernel_proc.brk;
+    virt_addr_t old_kbrk = proc->brk;
 
-    if (kernel_proc.brk + n_pages * 4096 < kernel_proc.heap_first) {
-        n_pages = (kernel_proc.heap_first - kernel_proc.brk) / 4096;
+    if (proc->brk + n_pages * 4096 < proc->heap_first) {
+        n_pages = (proc->heap_first - proc->brk) / 4096;
     }
 
     while (n_pages++ < 0) {
-        kernel_proc.brk -= 4096;
-        assert(kernel_proc.brk >= kernel_proc.heap_first);
+        proc->brk -= 4096;
+        assert(proc->brk >= proc->heap_first);
 
-        page_frame_umap(kpage_dir,
-                kernel_proc.page_map_idx, kernel_proc.brk);
+        page_frame_umap(PAGE_DIR(proc),
+                proc->page_map_idx, proc->brk);
     }
 
     return old_kbrk;
 }
 
 virt_addr_t
-page_skbrk(int n_pages)
+page_sbrk(process_t *proc, int n_pages)
 {
-    page_frame_t frame;
-    phys_addr_t old_kbrk = kernel_proc.brk;
+    phys_addr_t old_kbrk = proc->brk;
 
-    assert(kernel_proc.brk + n_pages * 4096 >= kernel_proc.heap_first
-            && kernel_proc.brk + n_pages * 4096 <= kernel_proc.heap_last);
+    assert(proc->brk + n_pages * 4096 >= proc->heap_first
+            && proc->brk + n_pages * 4096 <= proc->heap_last);
 
     if (n_pages <= 0) {
-        return page_neg_sbrk(n_pages);
+        return page_sbrk_neg(proc, n_pages);
     }
 
-    if (frame_free_num < n_pages)
-        return 0;
+    proc->brk += (n_pages * 4096);
 
-
-
-    while (n_pages-- > 0) {
-        frame = frame_alloc();
-        assert(frame);
-/*
-        printf("calling page_frame_map()\n");
-        printf("%d 0x%x\n", 0, kpage_dir[0]);
-        printf("%d 0x%x\n", 1, kpage_dir[1]);
-        printf("%d 0x%x\n", 2, kpage_dir[2]);
-        printf("0x%x\n", PAGE_DIR_ENTRY_ADDR(kpage_dir[page_map_idx]));
-        printf("0x%x\n", kpage_dir);
-
-        printf("pg_enabled? %s\n", pg_enabled() ? "YES" : "NO");
-        printf("page_map_idx = %d\n", page_map_idx);
-        */
-        page_frame_map(kpage_dir, kernel_proc.page_map_idx,
-                kernel_proc.brk, frame);
-        kernel_proc.brk += 4096;
-    }
-    
 
     return old_kbrk;
 }
@@ -608,13 +593,34 @@ page_skbrk(int n_pages)
 extern phys_addr_t get_cr2(void);
 
 static int
-page_fault_handler(stack_frame_t *frame)
+page_fault_handler(stack_frame_t *sframe)
 {
     phys_addr_t cr2 = get_cr2();
+    page_t page;
 
-    printf("PAGE FAULT: 0x%x 0x%x\n", frame->code, cr2);
+    page = cr2 & 0xFFFFF000;
 
-    halt();
+    assert(cur_proc);
+
+
+    if (page >= cur_proc->heap_first
+            && page < cur_proc->brk
+            && !(sframe->code & PRESENT_MASK)) {
+        page_frame_t frame;
+
+        frame = frame_alloc();
+        printf("frame_alloc() = 0x%x\n", frame);
+        assert(frame);
+        
+        page_frame_map(PAGE_DIR(cur_proc), cur_proc->page_map_idx,
+                page, frame);
+
+        invlpg(page);
+    } else {
+        printf("PAGE FAULT: 0x%x 0x%x\n", sframe->code, cr2);
+
+        halt();
+    }
 
     return 0;
 }
@@ -640,6 +646,8 @@ paging_init(void)
 
     printf("kpage_dir = 0x%x\n", kpage_dir);
     printf("asdfadsff = 0x%x\n", (1 << 22) + (1 << 12));
+
+    cur_proc = &kernel_proc;
 
     idt_install_handler(14, page_fault_handler);
 

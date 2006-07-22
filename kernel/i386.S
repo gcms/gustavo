@@ -545,3 +545,13 @@ pg_enabled:
     andl $(1 << 31), %eax
     shr $31, %eax
     ret
+
+.global invlpg
+invlpg:
+    pushl %ebp
+    movl %esp, %ebp
+    
+    invlpg 8(%ebp)
+
+    popl %ebp
+    ret

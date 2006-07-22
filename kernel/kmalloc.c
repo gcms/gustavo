@@ -36,7 +36,7 @@ sbrk(int len)
         return NULL;
     }
 
-    if (len < (int) (page_kbrk() - cur_brk)) {
+    if (len < (int) (page_skbrk(0) - cur_brk)) {
         result = (void *) cur_brk;
         cur_brk += len;
         check_brks();
