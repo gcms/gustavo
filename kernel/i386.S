@@ -43,7 +43,7 @@ gdt_end:
 idtr:
 .word IDT_SIZE
 idtr_base:
-.long 0
+.long idt
 
 .bss
 .global idt
@@ -54,9 +54,6 @@ idt:
 .text
 .global idt_load
 idt_load:
-    lea idt, %eax
-    mov %eax, idtr_base
-
     lidt idtr
     sti
     ret

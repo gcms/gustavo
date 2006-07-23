@@ -57,8 +57,11 @@
 #define PCD_MASK     (1 << 4)
 #define ACCESS_MASK  (1 << 5)
 #define PS_MASK      (1 << 6)
-#define PAT_MASK     (1 << 6)
-#define G_MASK       (1 << 7)
+#define PAT_MASK     (1 << 7)
+#define GLOBAL_MASK  (1 << 8)
+#define AVAIL1_MASK  (1 << 9)
+#define AVAIL2_MASK  (1 << 10)
+#define AVAIL3_MASK  (1 << 10)
 
 
 #define FRAME_RUN_SIZE(f)   (*((unsigned long *) f))
