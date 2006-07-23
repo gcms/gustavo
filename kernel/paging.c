@@ -377,6 +377,9 @@ page_frame_map(page_dir_t page_dir, unsigned long map_idx,
     }
     
     page_tbl[(page >> 12) & 0x3FF] = frame | PRESENT_MASK | RW_MASK;
+
+    if (map_idx)
+        invlpg(page);
 }
 
 static void
@@ -410,6 +413,8 @@ page_kbrk(void)
 }
 */
 
+extern void change_stack(void);
+extern phys_addr_t get_stack(void);
 
 static void
 map_pages(void)
@@ -437,6 +442,18 @@ map_pages(void)
     for (addr = 0; addr < ALIGN(KSTART, 4096); addr += 4096) {
         page_set_flags(kpage_dir_phys, addr, PCD_MASK);
     }
+
+    printf("stack = 0x%x\n", get_stack());
+    /* Mapping the stack */
+    for (addr = 0; addr < STACK_SIZE; addr += 4096) {
+        page_frame_map(kpage_dir_phys, 0,
+                0xFFFFF000 - STACK_SIZE + 4096 + addr,
+                get_stack() + addr);
+    }
+
+    /* Should I umap the stack addresses within the kernel range after
+     * turning paging on? */
+
 
     brk = ALIGN(KEND, 4096);
     printf("kbrk = 0x%x\n", brk);
@@ -548,6 +565,9 @@ page_frame_umap(page_dir_t page_dir, unsigned long map_idx,
     *page_tbl &= ~PRESENT_MASK;
 
     frame_free((page_frame_t) PAGE_DIR_ENTRY_ADDR(*page_tbl));
+
+    if (map_idx)
+        invlpg(page);
 }
 
 static virt_addr_t
@@ -614,8 +634,6 @@ page_fault_handler(stack_frame_t *sframe)
         
         page_frame_map(PAGE_DIR(cur_proc), cur_proc->page_map_idx,
                 page, frame);
-
-        invlpg(page);
     } else {
         printf("PAGE FAULT: 0x%x 0x%x\n", sframe->code, cr2);
 
@@ -652,6 +670,8 @@ paging_init(void)
     idt_install_handler(14, page_fault_handler);
 
     enable_paging();
+    change_stack();
+
     /*
     printf("frame_free_num = %d\n", frame_free_num);
     data = (unsigned long *) sbrk(4);
@@ -696,7 +716,7 @@ paging_init(void)
     kfree((void *) data[0]);
     kfree((void *) data[1]);
     kfree(data);
-
+/*
 
     printf("sbrk(0) = 0x%x\tFREED\n", sbrk(0));
 
@@ -715,5 +735,5 @@ paging_init(void)
 
     printf("bitmap_free[0] = 0x%x\n", ((unsigned char *) bitmap_free)[0x300 / 8]);
     printf("bitmap_free[0] = 0x%x\n", ((unsigned char *) bitmap_free)[0x300 / 8]);
-
+*/
 }

@@ -36,5 +36,24 @@ stublet:
 call_halt:
     call halt
 
-    .align 4
-    .comm	stack, STACK_SIZE
+
+.global get_stack
+get_stack:
+    movl $stack, %eax
+    ret
+
+.global change_stack
+change_stack:
+    movl %esp, %eax
+    movl $stack, %ebx
+
+    subl %ebx, %eax
+    addl $(0xFFFFF000 - STACK_SIZE + 4096), %eax
+    movl %eax, %esp
+
+    ret
+
+.bss
+.align 4096
+stack:
+.space STACK_SIZE

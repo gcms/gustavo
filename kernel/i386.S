@@ -45,11 +45,13 @@ idtr:
 idtr_base:
 .long 0
 
-
+.bss
 .global idt
 .align 8
-.comm idt, IDT_SIZE
+idt:
+.space IDT_SIZE
 
+.text
 .global idt_load
 idt_load:
     lea idt, %eax
@@ -168,14 +170,6 @@ isr14:
     jmp isr_stub
 
 
-.globl isr15
-isr15:
-    pushl   $0
-
-    pushl   $15
-    jmp isr_stub
-
-
 .globl isr16
 isr16:
     pushl   $0
@@ -205,102 +199,6 @@ isr19:
     pushl   $0
 
     pushl   $19
-    jmp isr_stub
-
-
-.globl isr20
-isr20:
-    pushl   $0
-
-    pushl   $20
-    jmp isr_stub
-
-
-.globl isr21
-isr21:
-    pushl   $0
-
-    pushl   $21
-    jmp isr_stub
-
-
-.globl isr22
-isr22:
-    pushl   $0
-
-    pushl   $22
-    jmp isr_stub
-
-
-.globl isr23
-isr23:
-    pushl   $0
-
-    pushl   $23
-    jmp isr_stub
-
-
-.globl isr24
-isr24:
-    pushl   $0
-
-    pushl   $24
-    jmp isr_stub
-
-
-.globl isr25
-isr25:
-    pushl   $0
-
-    pushl   $25
-    jmp isr_stub
-
-
-.globl isr26
-isr26:
-    pushl   $0
-
-    pushl   $26
-    jmp isr_stub
-
-
-.globl isr27
-isr27:
-    pushl   $0
-
-    pushl   $27
-    jmp isr_stub
-
-
-.globl isr28
-isr28:
-    pushl   $0
-
-    pushl   $28
-    jmp isr_stub
-
-
-.globl isr29
-isr29:
-    pushl   $0
-
-    pushl   $29
-    jmp isr_stub
-
-
-.globl isr30
-isr30:
-    pushl   $0
-
-    pushl   $30
-    jmp isr_stub
-
-
-.globl isr31
-isr31:
-    pushl   $0
-
-    pushl   $31
     jmp isr_stub
 
 
@@ -555,3 +453,4 @@ invlpg:
 
     popl %ebp
     ret
+
