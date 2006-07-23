@@ -115,11 +115,14 @@ isr_init(void)
 	idt_entry_set(12, (unsigned long) isr12, 0x8, 0x8E);
 	idt_entry_set(13, (unsigned long) isr13, 0x8, 0x8E);
 	idt_entry_set(14, (unsigned long) isr14, 0x8, 0x8E);
+/*
 	idt_entry_set(15, (unsigned long) isr14, 0x8, 0x8E);
+*/
 	idt_entry_set(16, (unsigned long) isr16, 0x8, 0x8E);
 	idt_entry_set(17, (unsigned long) isr17, 0x8, 0x8E);
 	idt_entry_set(18, (unsigned long) isr18, 0x8, 0x8E);
 	idt_entry_set(19, (unsigned long) isr18, 0x8, 0x8E);
+/*
 	idt_entry_set(20, (unsigned long) isr18, 0x8, 0x8E);
 	idt_entry_set(21, (unsigned long) isr18, 0x8, 0x8E);
 	idt_entry_set(22, (unsigned long) isr18, 0x8, 0x8E);
@@ -132,6 +135,7 @@ isr_init(void)
 	idt_entry_set(29, (unsigned long) isr18, 0x8, 0x8E);
 	idt_entry_set(30, (unsigned long) isr18, 0x8, 0x8E);
 	idt_entry_set(31, (unsigned long) isr18, 0x8, 0x8E);
+*/
 }
 
 
