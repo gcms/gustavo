@@ -45,6 +45,7 @@ idtr:
 idtr_base:
 .long idt
 
+/* As the GDT this one should also be aligned on a 8 byte boundary */
 .bss
 .global idt
 .align 8
