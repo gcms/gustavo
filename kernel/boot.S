@@ -42,6 +42,8 @@ get_stack:
     movl $stack, %eax
     ret
 
+/* Changes the value of ESP.
+ * OBS: is it a good approach? */
 .global change_stack
 change_stack:
     movl %esp, %eax
@@ -53,6 +55,8 @@ change_stack:
 
     ret
 
+/* We align the stack on a page boundary, so that when we enable
+ * paging it can be easily mapped */
 .bss
 .align 4096
 stack:
