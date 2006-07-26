@@ -49,12 +49,14 @@ check_status(void)
      *  DRQ shall be cleared
      *  ERR shall be cleared
      */
-    assert((status & BSY_MASK) || (status & DRQ_MASK));
-    assert(status & DRDY_MASK);
+
     assert(!(status & DF_MASK));
     assert(!(status & ERR_MASK));
+    assert((status & BSY_MASK) || (status & DRQ_MASK));
+    assert(status & DRDY_MASK);
 
 }
+
 
 static void
 hd_wait_busy(void)
@@ -117,9 +119,7 @@ hd_read_sector(unsigned long sector, void *data)
     hd_set_sector(sector, 1);
 
     outportb(COMMAND0 + COMMAND, 0x20);
-
     check_status();
-
 
     /* Waits the DRQ flag to be set. */
     hd_wait_ready();
@@ -144,7 +144,6 @@ hd_write_sector(unsigned long sector, void *data)
     hd_set_sector(sector, 1);
     
     outportb(COMMAND0 + COMMAND, 0x30);
-
     check_status();
 
     hd_wait_ready();
