@@ -8,7 +8,7 @@
 
 #include <clock.h>
 #include <keyboard.h>
-
+#include <prompt.h>
 #include <kmalloc.h>
 #include <ata.h>
 
@@ -29,6 +29,8 @@ void cmain(multiboot_info_t *info)
 
     clock_init();
     keyboard_init();
+
+    prompt_init();
 
     data = kmalloc(512);
     hd_read_sector(0, data);
