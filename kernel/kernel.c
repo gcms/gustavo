@@ -28,21 +28,17 @@ void cmain(multiboot_info_t *info)
     paging_init();
 
     clock_init();
+    ata_init();
     keyboard_init();
 
     prompt_init();
 
-    data = kmalloc(512);
-    hd_read_sector(0, data);
-    printf("dev0 0x%x\n", data[0]);
-
-    data[0] = 0;
-
-    hd_set_device(1);
-    hd_read_sector(0, data);
-    printf("dev1 0x%x\n", data[0]);
-    
     puts("Hello!\n");
+
+    data = kmalloc(512);
+
+    ata_read_sector(PRIMARY, MASTER, 0, data);
+    printf("data[0] = 0x%x\n", data[0]);
 
     while (1);
 }
