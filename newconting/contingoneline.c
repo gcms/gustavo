@@ -43,6 +43,7 @@ struct ContingOneLinePrivate_ {
 	ContingData *file_data;
 
 	ContingDrawing *current_drawing;
+	ContingDrawing *entered_drawing;
 };
 
 static void
@@ -542,7 +543,7 @@ widget_motion_notify_event(GtkWidget *widget,
 	            for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
     	        	if (conting_drawing_answer(CONTING_DRAWING(n->data),
 								world_x, world_y)) {
-						if (n->data == priv->current_drawing) {
+						if (n->data == priv->entered_drawing) {
 							leave = FALSE;
 						}
 						if (entered == NULL) {
@@ -557,22 +558,22 @@ widget_motion_notify_event(GtkWidget *widget,
 				}
 
 				if (leave) {
-					if (priv->current_drawing) {
+					if (priv->entered_drawing) {
 						GdkEvent *levent = gdk_event_copy((GdkEvent *) event);
 						levent->type = GDK_LEAVE_NOTIFY;
 						conting_one_line_send_event(CONTING_ONE_LINE(user_data),
-								priv->current_drawing, (GdkEvent *) levent);
-						priv->current_drawing = NULL;
+								priv->entered_drawing, (GdkEvent *) levent);
+						priv->entered_drawing = NULL;
 					}
 
 					if (entered) {
 						GdkEvent *eevent = gdk_event_copy((GdkEvent *) event);
-						assert(priv->current_drawing != entered);
+						assert(priv->entered_drawing != entered);
 						eevent->type = GDK_ENTER_NOTIFY;
 						conting_one_line_send_event(
 								CONTING_ONE_LINE(user_data),
 								entered, (GdkEvent *) eevent);
-						priv->current_drawing = entered;
+						priv->entered_drawing = entered;
 					}
 				}
 
@@ -1046,6 +1047,7 @@ conting_one_line_instance_init(GTypeInstance *self,
 	conting_data_load_file(priv->file_data, "data/ieee14cdf.txt");
 
 	priv->current_drawing = NULL;
+	priv->entered_drawing = NULL;
 }
 
 GType

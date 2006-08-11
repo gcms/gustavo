@@ -2,7 +2,9 @@
 #include "continggroup.h"
 #include "contingutil.h"
 #include "contingxml.h"
+
 #include <string.h>
+#include <assert.h>
 #include <math.h>
 
 static gint move_signal_id = 0;
@@ -28,6 +30,9 @@ struct ContingDrawingPrivate_ {
     gdouble affine[6];
 
     gboolean selected;
+
+	guint show_tick;
+	GtkWidget *window;
 };
 
 void
@@ -299,18 +304,104 @@ conting_drawing_delete(ContingDrawing *self)
     CONTING_DRAWING_GET_CLASS(self)->delete(self);
 }
 
+static gboolean
+window_exposed(GtkWidget *widget, GdkEventExpose *event,
+		gpointer user_data)
+{
+	gdk_draw_rectangle(widget->window, widget->style->black_gc, FALSE, 0, 0,
+			widget->allocation.width - 1, widget->allocation.height -1);
+
+	return FALSE;
+}
+
+/** HINTS */
+GtkWidget *
+conting_drawing_create_window(ContingDrawing *self)
+{
+	GtkWidget *window, *label;
+	GdkColor color;
+	char buff[256];
+	gint x, y;
+
+	gdk_color_parse("beige", &color);
+
+	window = gtk_window_new(GTK_WINDOW_POPUP);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+	gtk_widget_modify_bg(window, GTK_STATE_NORMAL, &color);
+	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
+	g_signal_connect_after(G_OBJECT(window), "expose-event",
+			G_CALLBACK(window_exposed), NULL);
+
+	sprintf(buff, "%s, (%p)", g_type_name(G_OBJECT_TYPE(self)), self);
+	
+	label = gtk_label_new(buff);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+
+	gtk_container_add(GTK_CONTAINER(window), label);
+
+	gdk_display_get_pointer(gdk_display_get_default(), NULL, &x, &y, NULL);
+	gtk_window_move(GTK_WINDOW(window), x, y);
+
+	return window;
+}
+
+static gboolean
+show_hint(gpointer user_data)
+{
+	gpointer *params;
+	ContingDrawing *self;
+	ContingDrawingPrivate *priv;
+	guint tick;
+
+	params = user_data;
+	self = params[0];
+	tick = (guint) params[1];
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+
+	priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+	if (tick == priv->show_tick) {
+		priv->window = conting_drawing_create_window(self);
+		gtk_widget_show_all(priv->window);
+	}
+
+	g_free(params);
+
+	return FALSE;
+}
+
+
 #include <gdk/gdkkeysyms.h>
 static gboolean
 conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 {
+	ContingDrawingPrivate *priv;
+	gpointer *params;
+
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
+
+	priv = CONTING_DRAWING_GET_PRIVATE(self);
 
 	switch (event->type) {
 		case GDK_ENTER_NOTIFY:
+			priv->show_tick++;
+
+			/* Each call must have each own params, such that
+			 * we can't use a static array */
+			params = g_new(gpointer, 2);
+			params[0] = self; params[1] = (gpointer) priv->show_tick;
+			g_timeout_add_full(G_PRIORITY_DEFAULT, 1000, show_hint, params,
+					NULL);
 			g_print("%p ENTER\n", self);
 			return FALSE;
 			break;
 		case GDK_LEAVE_NOTIFY:
+			priv->show_tick++;
+			if (priv->window) {
+				gtk_widget_destroy(priv->window);
+				priv->window = NULL;
+			}
 			g_print("%p LEAVE\n", self);
 			return FALSE;
 			break;
@@ -528,6 +619,9 @@ conting_drawing_instance_init(GTypeInstance *self,
     priv->group = NULL;
 
     priv->id = conting_drawing_get_id();
+
+	priv->show_tick = 0;
+	priv->window = NULL;
 }
 
 static void
