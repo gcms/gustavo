@@ -304,6 +304,11 @@ conting_drawing_delete(ContingDrawing *self)
     CONTING_DRAWING_GET_CLASS(self)->delete(self);
 }
 
+
+/* TODO: improve it.
+ * Create a new widget class, which contains an area to place a label, and
+ * an hbox to place items. See termometer_test.c for an example */
+/** TOOLTIP LIKE WINDOW */
 static gboolean
 window_exposed(GtkWidget *widget, GdkEventExpose *event,
 		gpointer user_data)
@@ -314,7 +319,6 @@ window_exposed(GtkWidget *widget, GdkEventExpose *event,
 	return FALSE;
 }
 
-/** HINTS */
 GtkWidget *
 conting_drawing_create_window(ContingDrawing *self)
 {

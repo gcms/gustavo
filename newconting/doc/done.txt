@@ -165,3 +165,16 @@ ligacao de ramos e componentes
 
 17/07/2006
 - Adicao de atributos a data_t
+
+25/07/2006
+- Substituicao total de data_t por ContingItemData
+  -> ContingItemData pode ter varios atributos associados
+- Listas para associar ContingBus ao seus dados
+- Associacao automatica de ContingLines, uma vez definido os ContingBuses
+
+28/07/2006
+- Widget ContingTermometer completado
+- contingtermometer_test.c -> Exemplo de uso
+
+12/08/2006
+- Adicionado tooltips em ContingDrawing

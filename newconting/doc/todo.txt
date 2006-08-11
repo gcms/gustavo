@@ -188,3 +188,7 @@ uma interface
 17/07/2006
 - Criar funcoes em ContingDrawing/ContingBus que permitam obter as ligacoes
   existentes
+
+07/08/2006
+- Revisao do funcionamento de redes de potencia. Tentar entender os atributos
+  dos arquivos de dados
