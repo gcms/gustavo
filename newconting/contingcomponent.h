@@ -1,9 +1,8 @@
 #ifndef CONTING_COMPONENT_H
 #define CONTING_COMPONENT_H
 
-#include "contingdrawing.h"
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_COMPONENT        (conting_component_get_type())
 #define CONTING_COMPONENT(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -18,6 +17,12 @@ G_BEGIN_DECLS
             CONTING_TYPE_COMPONENT, ContingComponentClass))
 
 typedef struct ContingComponent_ ContingComponent;
+typedef struct ContingComponentClass_ ContingComponentClass;
+
+#ifndef CONTING_DRAWING_H
+#include "contingdrawing.h"
+#endif
+
 struct ContingComponent_ {
     ContingDrawing parent;
     /* protected */
@@ -35,7 +40,6 @@ struct ContingComponent_ {
 	gboolean show;
 };
 
-typedef struct ContingComponentClass_ ContingComponentClass;
 struct ContingComponentClass_ {
     ContingDrawingClass parent;
 
@@ -77,6 +81,7 @@ void conting_component_disconnect_link(ContingComponent *self,
 void conting_component_connect_link(ContingComponent *self,
 		                        ContingDrawing *link, ArtPoint *p);
 
-G_END_DECLS
+
+
 
 #endif /* CONTING_COMPONENT_H */

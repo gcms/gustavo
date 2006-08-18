@@ -3,7 +3,7 @@
 
 #include <glib-object.h>
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_INFO_DIALOG            (conting_info_dialog_get_type())
 #define CONTING_INFO_DIALOG(o)              (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -38,6 +38,6 @@ conting_info_dialog_get_type(void);
 GtkWidget *
 conting_info_dialog_new(ContingData *data, ContingDrawing *drawing);
 
-G_END_DECLS
+
 
 #endif /* CONTING_INFO_DIALOG_H */

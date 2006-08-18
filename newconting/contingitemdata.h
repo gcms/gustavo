@@ -3,7 +3,7 @@
 
 #include <glib-object.h>
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_ITEM_DATA        (conting_item_data_get_type())
 #define CONTING_ITEM_DATA(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -52,6 +52,6 @@ void conting_item_data_attr_foreach(ContingItemData *self,
 
 ContingItemType conting_item_data_get_item_type(ContingItemData *self);
 
-G_END_DECLS
+
 
 #endif /* CONTING_ITEM_DATA_H */

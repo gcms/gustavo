@@ -71,6 +71,11 @@ conting_one_line_dialog_drawing(ContingOneLine *self, ContingDrawing *drawing)
 	gtk_container_add(GTK_CONTAINER(window), label);
 	*/
 
+	/* TODO: Generate an event indicating that the pointer moved outside the
+	 * range of the contingoneline. This should signal an leave event
+	 * of the current entered_drawing and an enter after the closing of the
+	 * window */
+
 	window = conting_info_dialog_new(priv->file_data, drawing);
 	gtk_window_set_transient_for(GTK_WINDOW(window),
 			GTK_WINDOW(gtk_widget_get_toplevel(priv->widget)));
@@ -396,6 +401,8 @@ conting_one_line_delete_drawing(ContingOneLine *self,
 	} else {
 		if (drawing == priv->current_drawing) {
 			priv->current_drawing = NULL;
+		} else if (drawing == priv->entered_drawing) {
+			priv->entered_drawing = NULL;
 		}
 	    priv->drawings = g_slist_remove(priv->drawings, drawing);
 	}

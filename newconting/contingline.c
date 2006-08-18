@@ -1,5 +1,5 @@
-#include "contingline.h"
 #include "contingcomponent.h"
+#include "contingline.h"
 #include "contingutil.h"
 #include "contingxml.h"
 #include <string.h>
@@ -169,6 +169,45 @@ conting_line_get_links(ContingLine *self,
 		*comp1 = priv->comp1;
 
 	assert(priv->comp0 && priv->comp1);
+}
+
+void
+conting_line_get_buses(ContingLine *self,
+		ContingComponent **comp0, ContingComponent **comp1)
+{
+	ContingLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	assert(conting_drawing_is_placed(CONTING_DRAWING(self)));
+	assert(priv->comp0 && priv->comp1);
+
+	conting_drawing_get_bus(CONTING_DRAWING(priv->comp0),
+			CONTING_DRAWING(self), comp0);
+	conting_drawing_get_bus(CONTING_DRAWING(priv->comp1),
+			CONTING_DRAWING(self), comp1);
+}
+
+static void
+conting_line_get_bus(ContingDrawing *self, ContingDrawing *linked,
+		ContingComponent **comp)
+{
+	ContingLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	if (comp == NULL)
+		return;
+
+	if (linked == CONTING_DRAWING(priv->comp0)) {
+		conting_drawing_get_bus(CONTING_DRAWING(priv->comp1), self, comp);
+	} else if (linked == CONTING_DRAWING(priv->comp1)) {
+		conting_drawing_get_bus(CONTING_DRAWING(priv->comp0), self, comp);
+	}
 }
 
 static void
@@ -917,6 +956,7 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->place_xml = conting_line_place_xml;
 
 	drawing_class->get_center = conting_line_get_center;
+	drawing_class->get_bus = conting_line_get_bus;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;

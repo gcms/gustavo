@@ -1,3 +1,7 @@
+#ifndef CONTING_COMPONENT_H
+#include "contingcomponent.h"
+#endif
+
 #ifndef CONTING_DRAWING_H
 #define CONTING_DRAWING_H
 
@@ -7,7 +11,7 @@
 #include <libxml/tree.h>
 
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_DRAWING        (conting_drawing_get_type())
 #define CONTING_DRAWING(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -22,15 +26,16 @@ G_BEGIN_DECLS
             CONTING_TYPE_DRAWING, ContingDrawingClass))
 
 typedef struct ContingDrawing_ ContingDrawing;
-struct ContingDrawing_ {
-    GObject parent;
-};
+typedef struct ContingDrawingClass_ ContingDrawingClass;
 
 #ifndef CONTING_DATA_H
 #include "contingdata.h"
 #endif
 
-typedef struct ContingDrawingClass_ ContingDrawingClass;
+struct ContingDrawing_ {
+    GObject parent;
+};
+
 struct ContingDrawingClass_ {
     GObjectClass parent;
 
@@ -59,6 +64,9 @@ struct ContingDrawingClass_ {
 
 	void (*get_center)(ContingDrawing *self,
 		               ArtPoint *pw_dst, const ArtPoint *pw_src);
+
+	void (*get_bus)(ContingDrawing *self, ContingDrawing *linked,
+			ContingComponent **comp);
 
 };
 
@@ -105,7 +113,10 @@ void conting_drawing_place_xml(ContingDrawing *self, xmlNodePtr node,
 void conting_drawing_get_center(ContingDrawing *self,
 		                        ArtPoint *pw_dst, const ArtPoint *pw_src);
 
+void conting_drawing_get_bus(ContingDrawing *self, ContingDrawing *linked,
+		ContingComponent **comp);
 
-G_END_DECLS
+
+
 
 #endif /* CONTING_DRAWING_H */

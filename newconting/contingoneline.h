@@ -4,7 +4,7 @@
 #include <gtk/gtk.h>
 #include <gtk/gtkenums.h>
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_ONE_LINE			(conting_one_line_get_type())
 #define CONTING_ONE_LINE(o)				(G_TYPE_CHECK_INSTANCE_CAST((o), \
@@ -31,7 +31,7 @@ struct ContingOneLineClass_ {
 	GObjectClass parent;
 };
 
-G_END_DECLS
+
 
 GType conting_one_line_get_type(void);
 void conting_one_line_window_to_world(ContingOneLine *self,
