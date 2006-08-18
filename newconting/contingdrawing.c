@@ -588,8 +588,10 @@ conting_drawing_delete_impl(ContingDrawing *self)
 
     priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-	priv->params[0] = NULL;
-	conting_drawing_cancel_hint(self);
+	if (conting_drawing_is_placed(self)) {
+		priv->params[0] = NULL;
+		conting_drawing_cancel_hint(self);
+	}
 
     conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
             self);

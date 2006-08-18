@@ -38,6 +38,48 @@ conting_data_get_unassoc(ContingData *self)
 	return result;
 }
 
+static ContingItemData *
+conting_data_get_branch(ContingData *self,
+		ContingItemData *bus0, ContingItemData *bus1)
+{
+	ContingDataPrivate *priv;
+	GList *n;
+	gint n0, n1;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	assert(conting_item_data_get_item_type(bus0) == CONTING_ITEM_TYPE_BUS);
+	assert(conting_item_data_get_item_type(bus1) == CONTING_ITEM_TYPE_BUS);
+
+	conting_item_data_get_attr(bus0,
+			"number", &n0,
+			NULL);
+	conting_item_data_get_attr(bus1,
+			"number", &n1,
+			NULL);
+
+	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+		ContingItemData *item = n->data;
+		gint z, tap;
+
+		if (conting_item_data_get_item_type(item) != CONTING_ITEM_TYPE_BRANCH)
+			continue;
+
+		conting_item_data_get_attr(item,
+				"tap bus number", &tap,
+				"z bus number", &z,
+				NULL);
+
+		if ((n0 == tap && n1 == z) || (n0 == z && n1 == tap))
+			return item;
+	}
+
+	return NULL;
+}
+
+
 ContingItemData *
 conting_data_get(ContingData *self, ContingDrawing *drawing)
 {
@@ -50,46 +92,18 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 	if (CONTING_IS_LINE(drawing)) {
 		ContingComponent *comp0, *comp1;
 
-		conting_line_get_links(CONTING_LINE(drawing), &comp0, &comp1);
+		conting_line_get_buses(CONTING_LINE(drawing), &comp0, &comp1);
 
-		if (CONTING_IS_BUS(comp0) && CONTING_IS_BUS(comp1)) {
+		assert((comp0 == NULL || CONTING_IS_BUS(comp0))
+				&& (comp1 == NULL || CONTING_IS_BUS(comp1)));
+		if (comp0 && comp1) {
 			ContingItemData *dcomp0, *dcomp1;
 
 			dcomp0 = conting_data_get(self, CONTING_DRAWING(comp0));
 			dcomp1 = conting_data_get(self, CONTING_DRAWING(comp1));
 
 			if (dcomp0 && dcomp1) {
-				gint ncomp0, ncomp1;
-				GList *n;
-
-				conting_item_data_get_attr(dcomp0,
-						"number", &ncomp0,
-						NULL);
-
-				conting_item_data_get_attr(dcomp1,
-						"number", &ncomp1,
-						NULL);
-
-				for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
-					ContingItemData *branch;
-					gint tap, z;
-
-					branch = n->data;
-					if (conting_item_data_get_item_type(branch)
-							!= CONTING_ITEM_TYPE_BRANCH) {
-						continue;
-					}
-
-					conting_item_data_get_attr(branch,
-							"tap bus number", &tap,
-							"z bus number", &z,
-							NULL);
-
-					if ((tap == ncomp0 && z == ncomp1)
-							|| (tap == ncomp1 && z == ncomp0))
-						return branch;
-				}
-
+				return conting_data_get_branch(self, dcomp0, dcomp1);
 			}
 		}
 	}
