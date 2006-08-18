@@ -408,13 +408,23 @@ conting_component_disconnect_link(ContingComponent *comp,
 }
 
 static void
+conting_component_link_deleted_impl(ContingComponent *comp,
+									ContingDrawing *link)
+{
+	g_return_if_fail(comp != NULL && CONTING_IS_COMPONENT(comp));
+	g_return_if_fail(link != NULL && CONTING_IS_DRAWING(link));
+
+	conting_component_disconnect_link(comp, link);
+}
+
+static void
 conting_component_link_deleted(ContingComponent *comp,
 		                       ContingDrawing *link)
 {
 	g_return_if_fail(comp != NULL && CONTING_IS_COMPONENT(comp));
 	g_return_if_fail(link != NULL && CONTING_IS_DRAWING(link));
 
-	conting_component_disconnect_link(comp, link);
+	CONTING_COMPONENT_GET_CLASS(comp)->link_deleted(comp, link);
 }
 
 static void
@@ -693,7 +703,7 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = NULL;
     component_class->get_link_point = conting_component_get_link_point_impl;
-    component_class->link_deleted = conting_component_link_deleted;
+    component_class->link_deleted = conting_component_link_deleted_impl;
 
     parent_class = g_type_class_peek_parent(g_class);
 }
