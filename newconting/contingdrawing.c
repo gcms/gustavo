@@ -3,6 +3,8 @@
 #include "contingutil.h"
 #include "contingxml.h"
 
+#include "contingline.h"
+
 #include <string.h>
 #include <assert.h>
 #include <math.h>
@@ -33,6 +35,7 @@ struct ContingDrawingPrivate_ {
 
 	guint show_tick;
 	GtkWidget *window;
+	gpointer *params;
 };
 
 void
@@ -42,6 +45,15 @@ conting_drawing_get_center(ContingDrawing *self,
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
 	CONTING_DRAWING_GET_CLASS(self)->get_center(self, pw_dst, pw_src);
+}
+
+void
+conting_drawing_get_bus(ContingDrawing *self, ContingDrawing *linked,
+		ContingComponent **comp)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->get_bus(self, linked, comp);
 }
 static void
 conting_drawing_get_center_impl(ContingDrawing *self,
@@ -296,6 +308,10 @@ conting_drawing_is_selected(ContingDrawing *self)
     return priv->selected;
 }
 
+static void conting_drawing_setup_hint(ContingDrawing *self);
+static void conting_drawing_cancel_hint(ContingDrawing *self);
+
+
 void
 conting_drawing_delete(ContingDrawing *self)
 {
@@ -361,6 +377,10 @@ show_hint(gpointer user_data)
 	self = params[0];
 	tick = (guint) params[1];
 
+	/** An "evil" hack? Detects if the drawing was deleted */
+	if (params[0] == NULL)
+		goto show_hint_end;
+
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
 	priv = CONTING_DRAWING_GET_PRIVATE(self);
@@ -370,9 +390,46 @@ show_hint(gpointer user_data)
 		gtk_widget_show_all(priv->window);
 	}
 
+show_hint_end:
 	g_free(params);
 
 	return FALSE;
+}
+
+static void
+conting_drawing_setup_hint(ContingDrawing *self)
+{
+	ContingDrawingPrivate *priv;
+	gpointer *params;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+	priv->show_tick++;
+
+	/* Each call must have each own params, such that
+	 * we can't use a static array */
+	
+	priv->params = params = g_new(gpointer, 2);
+	params[0] = self; params[1] = (gpointer) priv->show_tick;
+	g_timeout_add_full(G_PRIORITY_DEFAULT, 1000, show_hint, params, NULL);
+}
+
+static void
+conting_drawing_cancel_hint(ContingDrawing *self)
+{
+	ContingDrawingPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+	priv->show_tick++;
+	if (priv->window) {
+		gtk_widget_destroy(priv->window);
+		priv->window = NULL;
+	}
 }
 
 
@@ -381,7 +438,6 @@ static gboolean
 conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 {
 	ContingDrawingPrivate *priv;
-	gpointer *params;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
@@ -389,23 +445,12 @@ conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 
 	switch (event->type) {
 		case GDK_ENTER_NOTIFY:
-			priv->show_tick++;
-
-			/* Each call must have each own params, such that
-			 * we can't use a static array */
-			params = g_new(gpointer, 2);
-			params[0] = self; params[1] = (gpointer) priv->show_tick;
-			g_timeout_add_full(G_PRIORITY_DEFAULT, 1000, show_hint, params,
-					NULL);
+			conting_drawing_setup_hint(self);
 			g_print("%p ENTER\n", self);
 			return FALSE;
 			break;
 		case GDK_LEAVE_NOTIFY:
-			priv->show_tick++;
-			if (priv->window) {
-				gtk_widget_destroy(priv->window);
-				priv->window = NULL;
-			}
+			conting_drawing_cancel_hint(self);
 			g_print("%p LEAVE\n", self);
 			return FALSE;
 			break;
@@ -417,6 +462,12 @@ conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 			break;
 		case GDK_2BUTTON_PRESS:
 			if (conting_drawing_is_placed(self)) {
+				ContingComponent *comp0, *comp1;
+
+				if (CONTING_IS_LINE(self)) {
+					conting_line_get_buses(CONTING_LINE(self), &comp0, &comp1);
+					g_print("comp0 = %pcomp1 = %p\n", comp0, comp1);
+				}
 				conting_one_line_edit(conting_drawing_get_one_line(self),
 						self);
 			}
@@ -536,6 +587,9 @@ conting_drawing_delete_impl(ContingDrawing *self)
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
     priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+	priv->params[0] = NULL;
+	conting_drawing_cancel_hint(self);
 
     conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
             self);
@@ -681,6 +735,7 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class->place_xml = conting_drawing_place_xml_impl;
 
 	drawing_class->get_center = conting_drawing_get_center_impl;
+	drawing_class->get_bus = NULL;
 
     move_signal_id = g_signal_newv(
             "move",

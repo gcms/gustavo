@@ -3,7 +3,7 @@
 
 #include "contingdrawing.h"
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_LINE        (conting_line_get_type())
 #define CONTING_LINE(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -31,7 +31,9 @@ GType conting_line_get_type(void);
 #include "contingcomponent.h"
 void conting_line_get_links(ContingLine *self,
 		ContingComponent **comp0, ContingComponent **comp1);
+void conting_line_get_buses(ContingLine *self,
+		ContingComponent **comp0, ContingComponent **comp1);
 
-G_END_DECLS
+
 
 #endif /* CONTING_LINE_H */

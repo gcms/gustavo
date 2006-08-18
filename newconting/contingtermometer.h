@@ -3,7 +3,7 @@
 
 #include <gtk/gtk.h>
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_TERMOMETER (conting_termometer_get_type())
 #define CONTING_TERMOMETER(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -38,7 +38,7 @@ gdouble conting_termometer_get_value(ContingTermometer *self);
 
 
 
-G_END_DECLS
+
 
 #endif /* __CONTING_TERMOMETER_H__ */
 

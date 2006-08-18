@@ -1,9 +1,8 @@
 #ifndef CONTING_BUS_H
 #define CONTING_BUS_H
 
-#include "contingcomponent.h"
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_BUS        (conting_bus_get_type())
 #define CONTING_BUS(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -18,17 +17,21 @@ G_BEGIN_DECLS
             CONTING_TYPE_BUS, ContingBusClass))
 
 typedef struct ContingBus_ ContingBus;
+typedef struct ContingBusClass_ ContingBusClass;
+
+
+#include "contingcomponent.h"
+
 struct ContingBus_ {
     ContingComponent parent;
 };
 
-typedef struct ContingBusClass_ ContingBusClass;
 struct ContingBusClass_ {
     ContingComponentClass parent;
 };
 
 GType conting_bus_get_type(void);
 
-G_END_DECLS
+
 
 #endif /* CONTING_BUS_H */

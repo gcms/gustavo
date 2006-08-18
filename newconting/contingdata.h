@@ -3,7 +3,7 @@
 
 #include <glib-object.h>
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_DATA        (conting_data_get_type())
 #define CONTING_DATA(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -51,6 +51,6 @@ conting_data_assoc(ContingData *self,
 void
 conting_data_unassoc(ContingData *self, ContingDrawing *drawing);
 
-G_END_DECLS
+
 
 #endif /* CONTING_DATA_H */

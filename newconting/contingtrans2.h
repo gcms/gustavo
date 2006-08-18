@@ -3,7 +3,7 @@
 
 #include "contingcomponent.h"
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_TRANS2        (conting_trans2_get_type())
 #define CONTING_TRANS2(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -30,6 +30,6 @@ struct ContingTrans2Class_ {
 GType conting_trans2_get_type(void);
 
 
-G_END_DECLS
+
 
 #endif /* CONTING_TRANS2_H */

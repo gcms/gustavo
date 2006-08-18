@@ -3,7 +3,7 @@
 
 #include "contingdrawing.h"
 
-G_BEGIN_DECLS
+
 
 #define CONTING_TYPE_GROUP        (conting_group_get_type())
 #define CONTING_GROUP(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -34,6 +34,6 @@ void conting_group_ungrab(ContingGroup *group, ContingDrawing *drawing);
 gboolean conting_group_contains(ContingGroup *group, ContingDrawing *drawing);
 GSList *conting_group_get_children(ContingGroup *group);
 
-G_END_DECLS
+
 
 #endif /* CONTING_GROUP_H */
