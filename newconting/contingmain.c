@@ -7,6 +7,7 @@
 #include "contingline.h"
 #include "contingtrans2.h"
 #include "continggen.h"
+#include "contingload.h"
 
 static ContingOneLine *oneline;
 
@@ -246,11 +247,15 @@ int main(int argc, char *argv[]) {
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_TRANS2);
-    toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_OPEN);
 	toolbutton = gtk_tool_button_new(
 			gtk_image_new_from_file("images/gen.png"), "Generator");
 	g_signal_connect(G_OBJECT(toolbutton), "clicked",
 			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_GEN);
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/load.png"), "Load");
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_LOAD);
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
 
     handle = gtk_handle_box_new();
