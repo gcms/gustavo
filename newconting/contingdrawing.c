@@ -410,6 +410,9 @@ conting_drawing_setup_hint(ContingDrawing *self)
 
 	/* Each call must have each own params, such that
 	 * we can't use a static array */
+
+	if (priv->params)
+		return;
 	
 	priv->params = params = g_new(gpointer, 2);
 	params[0] = self; params[1] = (gpointer) priv->show_tick;
@@ -429,6 +432,11 @@ conting_drawing_cancel_hint(ContingDrawing *self)
 	if (priv->window) {
 		gtk_widget_destroy(priv->window);
 		priv->window = NULL;
+	}
+
+	if (priv->params) {
+		priv->params[0] = NULL;
+		priv->params = NULL;
 	}
 }
 
@@ -589,7 +597,6 @@ conting_drawing_delete_impl(ContingDrawing *self)
     priv = CONTING_DRAWING_GET_PRIVATE(self);
 
 	if (conting_drawing_is_placed(self)) {
-		priv->params[0] = NULL;
 		conting_drawing_cancel_hint(self);
 	}
 

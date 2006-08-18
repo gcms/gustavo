@@ -214,6 +214,7 @@ conting_trans2_link(ContingComponent *self,
 
 	if (g_list_find(comp->links, drawing))
 		return FALSE;
+	g_print("didn't find!\n");
 
     pi.x = world_x;
     pi.y = world_y;
@@ -228,6 +229,8 @@ conting_trans2_link(ContingComponent *self,
             || pi.x < comp->p0.x || pi.x > comp->p1.x) {
         return FALSE;
     }
+	g_print("within bounds!\n");
+	g_print("link0 = %p\tlink1 = %p\n", priv->link0, priv->link1);
 
     if (fabs(pi.y - comp->p0.y) < fabs(pi.y - comp->p1.y)
 			&& priv->link0 == NULL) {
