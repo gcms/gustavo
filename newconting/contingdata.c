@@ -1,6 +1,9 @@
 #include "contingdata.h"
 #include "contingbus.h"
 #include "contingline.h"
+#include "continggen.h"
+#include "contingload.h"
+#include "contingtrans2.h"
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -105,6 +108,25 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 			if (dcomp0 && dcomp1) {
 				return conting_data_get_branch(self, dcomp0, dcomp1);
 			}
+		}
+	} else if (CONTING_IS_GEN(drawing) || CONTING_IS_LOAD(drawing)) {
+		ContingComponent *bus;
+		ContingDrawing *linked;
+
+		linked = CONTING_COMPONENT(drawing)->links ?
+			CONTING_COMPONENT(drawing)->links->data : NULL;
+
+		conting_drawing_get_bus(linked, drawing, &bus);
+
+		if (bus != NULL) {
+			return g_hash_table_lookup(priv->drawing_data,
+					CONTING_DRAWING(bus));
+		}
+	} else if (CONTING_IS_TRANS2(drawing)) {
+		GList *n;
+
+		for (n = CONTING_COMPONENT(drawing)->links; n; n = g_list_next(n)) {
+			return conting_data_get(self, CONTING_DRAWING(n->data));
 		}
 	}
 

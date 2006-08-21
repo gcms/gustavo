@@ -192,3 +192,8 @@ uma interface
 07/08/2006
 - Revisao do funcionamento de redes de potencia. Tentar entender os atributos
   dos arquivos de dados
+
+22/08/2006
+- Olhar GraphViz como ferramenta para layout automatico de barras
+- Estudar um design bom para associar elementos graficos a dados carregados
+  do arquivo
