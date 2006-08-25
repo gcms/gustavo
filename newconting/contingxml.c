@@ -102,6 +102,7 @@ xmlNodePtr conting_util_list_node(const char *name,
 	xmlNewProp(node, BAD_CAST "type", BAD_CAST "list");
 	xmlNewProp(node, BAD_CAST "name", name);
 
+	g_print("g_list_next()\n");
 	for (n = list; n != NULL; n = g_list_next(n)) {
 		xmlAddChild(node, serialize(n->data, user_data));
 	}
@@ -187,6 +188,7 @@ void conting_util_load_list(xmlNodePtr list_node, GList **list,
         if (xmlStrEqual(node->name, BAD_CAST "text"))
             continue;
 
+		g_print("g_list_append()\n");
         *list = g_list_append(*list, func(node, user_data));
     }
 }

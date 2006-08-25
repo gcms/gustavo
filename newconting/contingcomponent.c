@@ -104,6 +104,7 @@ conting_component_draw(ContingDrawing *self,
 				GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
 
 
+		g_print("g_list_next()\n");
 		for (n = comp->links; n != NULL; n = g_list_next(n)) {
 			ArtPoint dst, src;
 
@@ -149,6 +150,7 @@ conting_component_connect_link(ContingComponent *comp,
 	new_point = g_new(ArtPoint, 1);
 	*new_point = *p;
 
+	g_print("g_list_append()\n");
 	comp->links = g_list_append(comp->links, link);
 	g_hash_table_insert(comp->points, link, new_point);
 

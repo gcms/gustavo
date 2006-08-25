@@ -310,6 +310,7 @@ conting_bus_link(ContingComponent *self,
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
+	g_print("g_list_find()\n");
 	if (g_list_find(comp->links, drawing))
 		return FALSE;
 

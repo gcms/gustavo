@@ -33,7 +33,8 @@ GType
 conting_data_get_type(void);
 
 void
-conting_data_load_file(ContingData *self, const gchar *filename);
+conting_data_load_file(ContingData *self, ContingFile *file,
+	   	const gchar *filename);
 
 #include "contingdrawing.h"
 #include "contingitemdata.h"
@@ -50,6 +51,12 @@ conting_data_assoc(ContingData *self,
 
 void
 conting_data_unassoc(ContingData *self, ContingDrawing *drawing);
+
+gboolean
+conting_data_is_loaded(ContingData *self);
+
+void
+conting_data_clear(ContingData *self);
 
 
 
