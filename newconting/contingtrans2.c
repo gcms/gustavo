@@ -212,6 +212,7 @@ conting_trans2_link(ContingComponent *self,
     priv = CONTING_TRANS2_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
+	g_print("g_list_find()\n");
 	if (g_list_find(comp->links, drawing))
 		return FALSE;
 	g_print("didn't find!\n");

@@ -13,7 +13,7 @@ conting_file_string(const gchar *line,
 {
 	gchar *result;
 
-	result = malloc((end - start + 2) * sizeof(gchar));
+	result = g_malloc((end - start + 2) * sizeof(gchar));
 	assert(result);
 	strncpy(result, line + start, end - start + 1);
 	result[end - start + 1] = 0;
@@ -30,7 +30,7 @@ conting_file_float(const gchar *line,
 
 	sscanf(string, "%lf", &result);
 
-	free(string);
+	g_free(string);
 
 	return result;
 }
@@ -44,11 +44,45 @@ conting_file_int(const gchar *line,
 
 	sscanf(string, "%d", &result);
 
-	free(string);
+	g_free(string);
 
 	return result;
 }
 
+GType
+conting_file_get_type(void)
+{
+	static GType type = 0;
+
+	if (type == 0) {
+		static const GTypeInfo info = {
+			sizeof(ContingFileClass),
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			0,
+			0,
+			NULL
+		};
+
+		type = g_type_register_static(G_TYPE_INTERFACE, "ContingFile",
+				&info, 0);
+	}
+
+	return type;
+}
+
+GList *
+conting_file_get_item_data(ContingFile *self, const gchar *filename)
+{
+	g_return_val_if_fail(self != NULL && CONTING_IS_FILE(self), NULL);
+
+	return CONTING_FILE_GET_CLASS(self)->get_item_data(self, filename);
+}
+
+/*
 void
 conting_file_bus_data(bus_data_t *self, const gchar *line)
 {
@@ -58,7 +92,7 @@ conting_file_bus_data(bus_data_t *self, const gchar *line)
 
 	name = conting_file_string(line, 5, 16);
 	strcpy(self->name, name);
-	free(name);
+	g_free(name);
 
 	self->load_flow_area = conting_file_int(line, 18, 19);
 	self->loss_zone = conting_file_int(line, 20, 22);
@@ -155,8 +189,9 @@ conting_file_read_branch(const char *line)
 			NULL);
 
 	conting_file_branch_data(&branch_data, line);
-
+*/
 	/* Set attributes */
+	/*
 	conting_item_data_set_attr(CONTING_ITEM_DATA(item_data),
 			"tap bus number", G_TYPE_INT, branch_data.tap_bus_number,
 			"z bus number", G_TYPE_INT, branch_data.z_bus_number,
@@ -227,3 +262,4 @@ conting_file_get_item_data(const char *filename)
 
 	return item_data_list;
 }
+*/

@@ -44,6 +44,40 @@ open_menu_activate(GtkMenuItem *menuitem,
                    gpointer user_data)  
 {
     GtkWidget *open;
+	GtkFileFilter *filter;
+
+	filter = gtk_file_filter_new();
+	gtk_file_filter_add_pattern(filter, "*.xml");
+
+    open = gtk_file_chooser_dialog_new("Open One Line Diagram",
+            GTK_WINDOW(user_data),
+            GTK_FILE_CHOOSER_ACTION_OPEN,
+            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+            GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+            NULL);
+	gtk_file_chooser_set_action(GTK_FILE_CHOOSER(open),
+			GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(open),
+			filter);
+
+    if (gtk_dialog_run(GTK_DIALOG(open)) == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open));
+        conting_one_line_open(oneline, filename);
+        g_free(filename);
+    }
+
+	g_object_unref(filter);
+    gtk_widget_destroy(open);
+}
+
+static void
+load_menu_activate(GtkMenuItem *menuitem,
+                   gpointer user_data)  
+{
+    GtkWidget *open;
+
 
     open = gtk_file_chooser_dialog_new("Open One Line Diagram",
             GTK_WINDOW(user_data),
@@ -58,7 +92,7 @@ open_menu_activate(GtkMenuItem *menuitem,
         char *filename;
 
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open));
-        conting_one_line_open(oneline, filename);
+        conting_one_line_load_data(oneline, filename);
         g_free(filename);
     }
 
@@ -203,22 +237,32 @@ int main(int argc, char *argv[]) {
 
 
 	menubar = gtk_menu_bar_new();
-	menu = gtk_menu_item_new_with_label("Arquivo");
+	menu = gtk_menu_item_new_with_mnemonic("_Arquivo");
 	gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu);
 	submenu = gtk_menu_new();
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
 	menu = submenu;
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
+	gtk_label_set_text_with_mnemonic(GTK_LABEL(GTK_BIN(submenu)->child),
+			"_Abrir diagrama");
     g_signal_connect(G_OBJECT(submenu), "activate",
             G_CALLBACK(open_menu_activate), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
 	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE, NULL);
+	gtk_label_set_text_with_mnemonic(GTK_LABEL(GTK_BIN(submenu)->child),
+			"_Salvar diagrama");
     g_signal_connect(G_OBJECT(submenu), "activate",
             G_CALLBACK(save_menu_activate), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu),
 			gtk_separator_menu_item_new());
-	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_CLOSE, NULL);
+	submenu = gtk_image_menu_item_new_with_mnemonic("_Carregar dados");
+	g_signal_connect(G_OBJECT(submenu), "activate",
+			G_CALLBACK(load_menu_activate), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu),
+			gtk_separator_menu_item_new());
+	submenu = gtk_image_menu_item_new_from_stock(GTK_STOCK_QUIT, NULL);
     g_signal_connect(G_OBJECT(submenu), "activate",
             G_CALLBACK(close_menu_activate), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);

@@ -115,6 +115,21 @@ conting_one_line_clear(ContingOneLine *self)
 }
 
 void
+conting_one_line_load_data(ContingOneLine *self, const char *filename)
+{
+	ContingOneLinePrivate *priv;
+	ContingFile *file;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	file = conting_file_cdf_new();
+	conting_data_load_file(priv->file_data, file, filename);
+	g_object_unref(file);
+}
+
+void
 conting_one_line_open(ContingOneLine *self, const char *filename)
 {
     ContingOneLinePrivate *priv;
@@ -1051,7 +1066,6 @@ conting_one_line_instance_init(GTypeInstance *self,
 
 	priv->file_data = CONTING_DATA(g_object_new(CONTING_TYPE_DATA, NULL));
 	assert(priv->file_data);
-	conting_data_load_file(priv->file_data, "data/ieee14cdf.txt");
 
 	priv->current_drawing = NULL;
 	priv->entered_drawing = NULL;

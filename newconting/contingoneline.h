@@ -56,6 +56,7 @@ void conting_one_line_create(ContingOneLine *self, ContingDrawing *drawing);
 
 void conting_one_line_save(ContingOneLine *self, const char *filename);
 
+void conting_one_line_load_data(ContingOneLine *self, const char *filename);
 void conting_one_line_open(ContingOneLine *self, const char *filename);
 
 void conting_one_line_edit(ContingOneLine *self, ContingDrawing *drawing);

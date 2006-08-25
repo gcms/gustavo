@@ -232,6 +232,7 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 	}
 
 	unassoc = conting_data_get_unassoc(priv->data);
+	g_print("g_list_next)\n");
 	for (n = unassoc; n != NULL; n = g_list_next(n)) {
 		ContingItemData *data = n->data;
 		ContingItemType item_type;
@@ -250,6 +251,7 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 				-1);
 	}
 
+	g_print("g_list_free()\n");
 	g_list_free(unassoc);
 
 

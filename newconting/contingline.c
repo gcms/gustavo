@@ -96,6 +96,7 @@ conting_line_draw(ContingDrawing *self,
 				*/
 	}
 
+	g_print("g_list_next()\n");
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		pw1 = *((ArtPoint *) n->data);
 		art_affine_point(&pw1, &pw1, affine);
@@ -235,6 +236,7 @@ conting_line_get_bounds(ContingDrawing *self,
 	bounds->x0 = bounds->x1 = pw.x;
 	bounds->y0 = bounds->y1 = pw.y;
 
+	g_print("g_list_next()\n");
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		art_affine_point(&pw, (ArtPoint *) n->data, affine);
 
@@ -281,10 +283,12 @@ conting_line_finalize(GObject *self)
 
 	priv = CONTING_LINE_GET_PRIVATE(self);
 
+	g_print("g_list_next()\n");
 	for (n = priv->points; n != NULL; n = g_list_next(n)) {
 		g_free(n->data);
 	}
 
+	g_print("g_list_free()\n");
 	g_list_free(priv->points);
 
 	G_OBJECT_CLASS(parent_class)->finalize(self);
@@ -305,6 +309,7 @@ conting_line_get_center(ContingDrawing *self,
 	width = 0;
 
 	n = priv->points;
+	g_print("g_list_next()\n");
 	for (next = g_list_next(n); n && next; next = g_list_next(next)) {
 		ArtPoint p0, p1;
 		gdouble w, h;
@@ -323,6 +328,7 @@ conting_line_get_center(ContingDrawing *self,
 	width /= 2;
 
 	n = priv->points;
+	g_print("g_list_next()\n");
 	for (next = g_list_next(n); n && next; next = g_list_next(next)) {
 		ArtPoint p0, p1;
 		gdouble w, h, seg_w;
@@ -445,6 +451,7 @@ conting_line_add_point(ContingLine *self, gdouble ix, gdouble iy)
 	p->x = ix;
 	p->y = iy;
 
+	g_print("g_list_append()\n");
 	priv->points = g_list_append(priv->points, p);
 
 	priv->n_points++;
@@ -671,6 +678,7 @@ conting_line_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
         }
     }
 
+	g_print("g_list_next()\n");
     for (n = priv->points; n != NULL; n = g_list_next(n)) {
         ArtPoint *p = n->data;
         if (p->x == link0.x && p->y == link0.y) {
@@ -750,6 +758,7 @@ conting_line_event_place(ContingDrawing *self,
 				gdouble invert[6];
 				gdouble angle, s, c;
 
+				g_print("g_list_last()\n");
 				last_point = *((ArtPoint *) g_list_last(priv->points)->data);
 				art_affine_point(&last_point, &last_point, affine);
 
@@ -839,9 +848,12 @@ conting_line_event(ContingDrawing *self,
 				ArtPoint *new_p = g_new(ArtPoint, 1);
 				*new_p = pi;
 
+				g_print("g_list_insert_before()\n");
 				g_list_insert_before(priv->points, priv->last_answer, new_p);
 				
 			}
+
+			g_print("g_list_next()\n");
 			for (n = priv->points; n != NULL; n = g_list_next(n)) {
 				ArtPoint *p = n->data;
 
@@ -904,6 +916,7 @@ conting_line_answer(ContingDrawing *self,
 			pi.x, pi.y);
 
 	p0 = priv->points->data;
+	g_print("g_list_next()\n");
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		gdouble dx, dy;
 		gdouble m, d;

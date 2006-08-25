@@ -463,6 +463,7 @@ conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 			return FALSE;
 			break;
 		case GDK_BUTTON_PRESS:
+			conting_drawing_cancel_hint(self);
 			conting_drawing_set_selected(self, TRUE);
 
 			return FALSE;

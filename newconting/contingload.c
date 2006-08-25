@@ -165,7 +165,11 @@ conting_load_link(ContingComponent *self,
     priv = CONTING_LOAD_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
+	g_print("g_list_find()\n");
 	if (g_list_find(comp->links, drawing))
+		return FALSE;
+
+	if (priv->link0)
 		return FALSE;
 
     pi.x = world_x;

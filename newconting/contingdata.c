@@ -19,6 +19,8 @@ struct ContingDataPrivate_ {
 
 	GHashTable *drawing_data;
 	GHashTable *data_drawing;
+
+	gboolean loaded;
 };
 
 GList *
@@ -32,8 +34,10 @@ conting_data_get_unassoc(ContingData *self)
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
 	result = NULL;
+	g_print("g_list_next()\n");
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		if (!g_hash_table_lookup(priv->data_drawing, n->data)) {
+			g_print("g_list_append()\n");
 			result = g_list_append(result, n->data);
 		}
 	}
@@ -63,6 +67,7 @@ conting_data_get_branch(ContingData *self,
 			"number", &n1,
 			NULL);
 
+	g_print("g_list_next()\n");
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		ContingItemData *item = n->data;
 		gint z, tap;
@@ -116,15 +121,18 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 		linked = CONTING_COMPONENT(drawing)->links ?
 			CONTING_COMPONENT(drawing)->links->data : NULL;
 
-		conting_drawing_get_bus(linked, drawing, &bus);
+		if (linked != NULL) {
+			conting_drawing_get_bus(linked, drawing, &bus);
 
-		if (bus != NULL) {
-			return g_hash_table_lookup(priv->drawing_data,
-					CONTING_DRAWING(bus));
+			if (bus != NULL) {
+				return g_hash_table_lookup(priv->drawing_data,
+						CONTING_DRAWING(bus));
+			}
 		}
 	} else if (CONTING_IS_TRANS2(drawing)) {
 		GList *n;
 
+		g_print("g_list_next()\n");
 		for (n = CONTING_COMPONENT(drawing)->links; n; n = g_list_next(n)) {
 			return conting_data_get(self, CONTING_DRAWING(n->data));
 		}
@@ -155,6 +163,9 @@ conting_data_assoc(ContingData *self,
 
 	g_hash_table_insert(priv->drawing_data, drawing, data);
 	g_hash_table_insert(priv->data_drawing, data, drawing);
+
+	g_signal_connect_swapped(G_OBJECT(drawing), "delete",
+			G_CALLBACK(conting_data_unassoc), self);
 }
 
 void
@@ -174,11 +185,12 @@ conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
 	}
 }
 
-static void
+void
 conting_data_clear(ContingData *self);
 
 void
-conting_data_load_file(ContingData *self, const gchar *filename)
+conting_data_load_file(ContingData *self, ContingFile *file,
+		const gchar *filename)
 {
 	ContingDataPrivate *priv;
 
@@ -191,10 +203,24 @@ conting_data_load_file(ContingData *self, const gchar *filename)
 
 	assert(priv->item_data == NULL);
 
-	priv->item_data = conting_file_get_item_data(filename);
+	priv->item_data = conting_file_get_item_data(file, filename);
+
+	priv->loaded = TRUE;
 }
 
-static void
+gboolean
+conting_data_is_loaded(ContingData *self)
+{
+	ContingDataPrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), FALSE);
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	return priv->loaded;
+}
+
+void
 conting_data_clear(ContingData *self)
 {
 	ContingDataPrivate *priv;
@@ -204,6 +230,7 @@ conting_data_clear(ContingData *self)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
+	g_print("g_list_next()\n");
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		ContingDrawing *drawing = g_hash_table_lookup(priv->data_drawing,
 				n->data);
@@ -213,8 +240,12 @@ conting_data_clear(ContingData *self)
 
 		g_object_unref(n->data);
 	}
+
+	g_print("g_list_free()\n");
 	g_list_free(priv->item_data);
 	priv->item_data = NULL;
+
+	priv->loaded = FALSE;
 }
 
 static void
@@ -227,9 +258,11 @@ conting_data_finalize(GObject *self)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
+	g_print("g_list_next()\n");
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		g_object_unref(n->data);
 	}
+	g_print("g_list_free()\n");
 	g_list_free(priv->item_data);
 
 	g_hash_table_destroy(priv->data_drawing);
