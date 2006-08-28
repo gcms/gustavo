@@ -85,6 +85,7 @@ conting_bus_draw(ContingDrawing *self,
 	cairo_fill(cr);
 	cairo_stroke(cr);
 	
+	/*
 	{
 		const gchar *name;
 		ContingData *data;
@@ -117,6 +118,7 @@ conting_bus_draw(ContingDrawing *self,
 		
 	}
 end_block:
+*/
 
 	cairo_destroy(cr);
 
