@@ -263,3 +263,21 @@ conting_file_get_item_data(const char *filename)
 	return item_data_list;
 }
 */
+
+gboolean
+conting_file_follows(GType type, const gchar *filename)
+{
+	gpointer g_class;
+	ContingFileClass *file_class;
+
+	g_class = g_type_class_ref(type);
+
+	g_return_val_if_fail(g_class != NULL, FALSE);
+
+	file_class = g_type_interface_peek(g_class, CONTING_TYPE_FILE);
+
+	if (file_class == NULL)
+		return FALSE;
+
+	return file_class->follows(filename);
+}

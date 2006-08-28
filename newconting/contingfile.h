@@ -36,6 +36,7 @@ struct ContingFileClass_ {
 	GTypeInterface parent;
 
 	GList *(*get_item_data)(ContingFile *self, const gchar *filename);
+	gboolean (*follows)(const gchar *filename);
 };
 
 GType
@@ -43,5 +44,8 @@ conting_file_get_type(void);
 
 GList *
 conting_file_get_item_data(ContingFile *self, const gchar *filename);
+
+gboolean
+conting_file_follows(GType type, const gchar *filename);
 
 #endif /* CONTING_FILE_H */
