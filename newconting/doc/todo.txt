@@ -197,3 +197,9 @@ uma interface
 - Olhar GraphViz como ferramenta para layout automatico de barras
 - Estudar um design bom para associar elementos graficos a dados carregados
   do arquivo
+
+29/08/2006
+- Finalizando modo de edicao. O que falta:
+  -> Transformador de 3 enrolamentos
+  -> Verificacao da consistencia da rede
+  -> Serializacao de ContingData
