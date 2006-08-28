@@ -116,6 +116,8 @@ conting_file_cdf_get_item_data(ContingFile *self, const gchar *filename)
 		}
 	}
 
+	fclose(fp);
+
 	return item_data_list;
 }
 
