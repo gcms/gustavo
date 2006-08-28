@@ -84,6 +84,39 @@ conting_bus_draw(ContingDrawing *self,
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_fill(cr);
 	cairo_stroke(cr);
+	
+	{
+		const gchar *name;
+		ContingData *data;
+		ContingItemData *item_data;
+
+		g_object_get(conting_drawing_get_one_line(self),
+				"data", &data,
+				NULL);
+
+		if (data == NULL)
+			goto end_block;
+
+		item_data = conting_data_get(data, self);
+
+		if (item_data == NULL)
+			goto end_block;
+
+		conting_item_data_get_attr(item_data,
+				"name", &name,
+				NULL);
+
+		cairo_set_font_size(cr, 8);
+		cairo_move_to(cr, rect.x, rect.y - 2.0);
+		cairo_select_font_face(cr, "Arial",
+				CAIRO_FONT_SLANT_NORMAL,
+				CAIRO_FONT_WEIGHT_BOLD);
+		cairo_set_source_rgb(cr, 0, 0, 0);
+		cairo_show_text(cr, name);
+		cairo_stroke(cr);
+		
+	}
+end_block:
 
 	cairo_destroy(cr);
 
