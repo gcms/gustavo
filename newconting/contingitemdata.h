@@ -34,6 +34,13 @@ typedef enum {
 	CONTING_ITEM_TYPE_BRANCH
 } ContingItemType;
 
+typedef enum {
+	CONTING_BUS_TYPE_UNREG_PQ,
+	CONTING_BUS_TYPE_PQ,
+	CONTING_BYS_TYPE_GEN_PV,
+	CONTING_BUS_TYPE_SLACK
+} ContingBusType;
+
 GType conting_item_type_get_type(void);
 
 GType conting_item_data_get_type(void);

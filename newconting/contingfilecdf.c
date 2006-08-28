@@ -5,6 +5,34 @@
 #include <stdio.h>
 #include <string.h>
 
+#define is_digit(c)		(((c) >= '0' && (c) <= '9') || (c) == ' ')
+
+static gboolean
+conting_file_cdf_follows(const gchar *filename)
+{
+	FILE *fp;
+	gchar buf[256];
+	gboolean result = TRUE;
+
+	if ((fp = fopen(filename, "r")) == NULL)
+		return FALSE;
+
+	if (fgets(buf, 256, fp) == NULL) {
+		result = FALSE;
+		goto follows_end;
+	}
+
+	result = is_digit(buf[1]) && is_digit(buf[2]) && buf[3] == '/'
+		&& is_digit(buf[4]) && is_digit(buf[5]) && buf[6] == '/';
+
+
+follows_end:
+	fclose(fp);
+	
+	return result;
+}
+
+
 static ContingItemData *
 conting_file_cdf_read_bus(const char *line)
 {
@@ -56,7 +84,6 @@ conting_file_cdf_get_item_data(ContingFile *self, const gchar *filename)
 	GList *item_data_list;
 	ContingItemData *item_data;
 
-	g_print("get item data\n");
 	g_return_val_if_fail(self != NULL && CONTING_IS_FILE_CDF(self), NULL);
 
 
@@ -64,7 +91,6 @@ conting_file_cdf_get_item_data(ContingFile *self, const gchar *filename)
 
 	fp = fopen(filename, "r");
 	
-	printf("fp = %p\n", fp);
 	if (fp == NULL)
 		return NULL;
 
@@ -75,7 +101,6 @@ conting_file_cdf_get_item_data(ContingFile *self, const gchar *filename)
 					break;
 
 				item_data = conting_file_cdf_read_bus(buf);
-				printf("item_data = %p\n", item_data);
 				if (item_data)
 					item_data_list = g_list_append(item_data_list, item_data);
 			}
@@ -99,10 +124,9 @@ conting_file_cdf_file_init(gpointer g_iface, gpointer iface_data)
 {
 	ContingFileClass *file_class;
 
-	g_print("BEFORE");
 	file_class = g_iface;
 	file_class->get_item_data = conting_file_cdf_get_item_data;
-	g_print("AFTER");
+	file_class->follows = conting_file_cdf_follows;
 }
 
 static void

@@ -5,6 +5,10 @@
 #include "continggroup.h"
 #include "contingdata.h"
 #include "continginfodialog.h"
+
+#include "contingfilecdf.h"
+#include "contingfilepeco.h"
+
 #include <assert.h>
 #include <math.h>
 
@@ -124,7 +128,18 @@ conting_one_line_load_data(ContingOneLine *self, const char *filename)
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
-	file = conting_file_cdf_new();
+	conting_data_clear(priv->file_data);
+
+	if (conting_file_follows(CONTING_TYPE_FILE_CDF, filename)) {
+		file = conting_file_cdf_new();
+	} else if (conting_file_follows(CONTING_TYPE_FILE_PECO, filename)) {
+		g_print("PECO\n");
+		file = conting_file_peco_new();
+	} else {
+		g_print("NONE\n");
+		return;
+	}
+
 	conting_data_load_file(priv->file_data, file, filename);
 	g_object_unref(file);
 }
