@@ -3,9 +3,9 @@ CFLAGS=-Wall -g -mms-bitfields -IU:/GTK/include/gtk-2.0 -IU:/GTK/lib/gtk-2.0/inc
 LIBS=U:/GTK/lib/*.a U:/GTK/bin/*.dll -lm
 
 all: build
-	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o -o main.exe
+	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o -o main
 
-build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o
+build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o
 
 contingutil.o: contingutil.c
 	$(CC) $(CFLAGS) -c contingutil.c -o contingutil.o
@@ -55,7 +55,11 @@ clean:
 	rm -f contingmain.o
 	rm -f contingxml.o
 	rm -f contingfile.o
+	rm -f contingfilecdf.o
+	rm -f contingfilepeco.o
 	rm -f contingdata.o
 	rm -f contingitemdata.o
 	rm -f continginfodialog.o
-	rm -f main.exe
+	rm -f continggen.o
+	rm -f contingload.o
+	rm -f main
