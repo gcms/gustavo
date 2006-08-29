@@ -3,9 +3,9 @@ CFLAGS=-Wall -g `pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --cflags`
 LIBS=`pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --libs` -lm
 
 all: build
-	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o -o main
+	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o -o main
 
-build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o
+build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o
 
 contingutil.o: contingutil.c
 	$(CC) $(CFLAGS) -c contingutil.c -o contingutil.o
@@ -51,6 +51,7 @@ clean:
 	rm -f contingutil.o
 	rm -f continggroup.o
 	rm -f contingtrans2.o
+	rm -f contingtrans3.o
 	rm -f contingbus.o
 	rm -f contingmain.o
 	rm -f contingxml.o
@@ -62,4 +63,5 @@ clean:
 	rm -f continginfodialog.o
 	rm -f continggen.o
 	rm -f contingload.o
+	rm -f contingbusbase.o
 	rm -f main

@@ -20,14 +20,14 @@ typedef struct ContingBus_ ContingBus;
 typedef struct ContingBusClass_ ContingBusClass;
 
 
-#include "contingcomponent.h"
+#include "contingbusbase.h"
 
 struct ContingBus_ {
-    ContingComponent parent;
+    ContingBusBase parent;
 };
 
 struct ContingBusClass_ {
-    ContingComponentClass parent;
+    ContingBusBaseClass parent;
 };
 
 GType conting_bus_get_type(void);

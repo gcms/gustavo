@@ -264,7 +264,7 @@ conting_info_dialog_create_widgets(ContingInfoDialog *self)
 	hbox = gtk_hbox_new(TRUE, TRUE);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(self)->vbox), hbox);
 
-	if (!CONTING_IS_BUS(priv->drawing)) {
+	if (!CONTING_IS_BUS_BASE(priv->drawing)) {
 		goto DRAWING_INFO;
 	}
 

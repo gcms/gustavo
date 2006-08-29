@@ -428,7 +428,7 @@ GType conting_bus_get_type(void) {
             NULL
         };
 
-        type = g_type_register_static(CONTING_TYPE_COMPONENT,
+        type = g_type_register_static(CONTING_TYPE_BUS_BASE,
                 "ContingBus",
                 &type_info, 0);
     }

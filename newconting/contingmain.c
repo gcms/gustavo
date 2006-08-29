@@ -6,6 +6,7 @@
 #include "contingbus.h"
 #include "contingline.h"
 #include "contingtrans2.h"
+#include "contingtrans3.h"
 #include "continggen.h"
 #include "contingload.h"
 
@@ -291,6 +292,11 @@ int main(int argc, char *argv[]) {
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_TRANS2);
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/trans3.png"), "Trans3");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_TRANS3);
 	toolbutton = gtk_tool_button_new(
 			gtk_image_new_from_file("images/gen.png"), "Generator");
 	g_signal_connect(G_OBJECT(toolbutton), "clicked",

@@ -102,8 +102,8 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 
 		conting_line_get_buses(CONTING_LINE(drawing), &comp0, &comp1);
 
-		assert((comp0 == NULL || CONTING_IS_BUS(comp0))
-				&& (comp1 == NULL || CONTING_IS_BUS(comp1)));
+		assert((comp0 == NULL || CONTING_IS_BUS_BASE(comp0))
+				&& (comp1 == NULL || CONTING_IS_BUS_BASE(comp1)));
 		if (comp0 && comp1) {
 			ContingItemData *dcomp0, *dcomp1;
 
