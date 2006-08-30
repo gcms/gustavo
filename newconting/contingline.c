@@ -2,12 +2,14 @@
 #include "contingline.h"
 #include "contingutil.h"
 #include "contingxml.h"
+#include "contingserializable.h"
 #include <string.h>
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
 static gpointer parent_class = NULL;
+static gpointer parent_iface = NULL;
 
 #define CONTING_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_LINE, ContingLinePrivate))
@@ -609,7 +611,7 @@ conting_line_load_point(xmlNodePtr point_node, gpointer user_data)
 }
 
 static void
-conting_line_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
+conting_line_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
         GHashTable *id_drawing)
 {
     ContingLinePrivate *priv;
@@ -691,17 +693,18 @@ conting_line_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
     priv->placing = FALSE;
     priv->placed = TRUE;
 
-    CONTING_DRAWING_CLASS(parent_class)->place_xml(self, drawing_node,
+    ((ContingSerializableClass *) parent_iface)->read(self, drawing_node,
             id_drawing);
 }
 
-static xmlNodePtr
-conting_line_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
+static void
+conting_line_xml_node(ContingSerializable *self, xmlNodePtr drawing_node,
+		xmlNodePtr *result)
 {
 	ContingLinePrivate *priv;
 	xmlNodePtr class_node;
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), NULL);
+	g_return_if_fail(self != NULL && CONTING_IS_SERIALIZABLE(self));
 
 	priv = CONTING_LINE_GET_PRIVATE(self);
 
@@ -723,7 +726,8 @@ conting_line_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
 
 	xmlAddChild(drawing_node, class_node);
 
-	return CONTING_DRAWING_CLASS(parent_class)->xml_node(self, drawing_node);
+	((ContingSerializableClass *) parent_iface)->write(self, drawing_node,
+													   result);
 }
 
 #include <gdk/gdkkeysyms.h>
@@ -950,8 +954,22 @@ conting_line_answer(ContingDrawing *self,
 	return FALSE;
 }
 
+static void
+conting_line_serializable_init(gpointer g_iface, gpointer iface_data)
+{
+	ContingSerializableClass *serial_class;
 
-static void conting_line_class_init(gpointer g_class, gpointer class_data) {
+	serial_class = g_iface;
+	serial_class->write = conting_line_xml_node;
+	serial_class->read = conting_line_place_xml;
+
+	g_print("serial_class = %p\n", serial_class);
+
+	parent_iface = g_type_interface_peek_parent(g_iface);
+}
+
+static void
+conting_line_class_init(gpointer g_class, gpointer class_data) {
     ContingDrawingClass *drawing_class;
 	GObjectClass *gobject_class;
 
@@ -964,9 +982,6 @@ static void conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->answer = conting_line_answer;
 	drawing_class->event = conting_line_event;
 	drawing_class->delete = conting_line_delete;
-
-	drawing_class->xml_node = conting_line_xml_node;
-	drawing_class->place_xml = conting_line_place_xml;
 
 	drawing_class->get_center = conting_line_get_center;
 	drawing_class->get_bus = conting_line_get_bus;
@@ -999,6 +1014,17 @@ GType conting_line_get_type(void) {
         type = g_type_register_static(CONTING_TYPE_DRAWING,
                 "ContingLine",
                 &type_info, 0);
+	
+		static const GInterfaceInfo serial_info = {
+			conting_line_serializable_init,
+			NULL,
+			NULL	
+		};
+
+		g_type_add_interface_static(type,
+				CONTING_TYPE_SERIALIZABLE,
+				&serial_info);
+
     }
 
     return type;

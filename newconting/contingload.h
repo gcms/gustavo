@@ -1,7 +1,7 @@
 #ifndef CONTING_LOAD_H
 #define CONTING_LOAD_H
 
-#include "contingcomponent.h"
+#include "contingsymbol.h"
 
 
 
@@ -19,12 +19,12 @@
 
 typedef struct ContingLoad_ ContingLoad;
 struct ContingLoad_ {
-    ContingComponent parent;
+    ContingSymbol parent;
 };
 
 typedef struct ContingLoadClass_ ContingLoadClass;
 struct ContingLoadClass_ {
-    ContingComponentClass parent;
+    ContingSymbolClass parent;
 };
 
 GType conting_load_get_type(void);

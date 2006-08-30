@@ -9,6 +9,8 @@
 #include "contingfilecdf.h"
 #include "contingfilepeco.h"
 
+#include "contingserializable.h"
+
 #include <assert.h>
 #include <math.h>
 
@@ -205,7 +207,8 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
         printf("drawing %lu = %p\n", strtoul(id, NULL, 10), drawing);
         
         
-        conting_drawing_place_xml(drawing, drawing_node, id_drawing);
+        conting_serializable_read(CONTING_SERIALIZABLE(drawing),
+				drawing_node, id_drawing);
         priv->drawings = g_slist_append(priv->drawings, drawing);
 
         xmlFree(id);
@@ -248,7 +251,8 @@ conting_one_line_save(ContingOneLine *self, const char *filename)
         xmlNewProp(drawing_node, BAD_CAST "id", BAD_CAST buff);
 		xmlNewProp(drawing_node, BAD_CAST "class",
 				BAD_CAST G_OBJECT_TYPE_NAME(n->data));
-        conting_drawing_xml_node(CONTING_DRAWING(n->data), drawing_node);
+        conting_serializable_write(CONTING_SERIALIZABLE(n->data), drawing_node,
+				NULL);
         xmlAddChild(root_node, drawing_node);
     }
 

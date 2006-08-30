@@ -1,8 +1,11 @@
 #include "contingtrans3.h"
 #include "contingutil.h"
 #include "contingxml.h"
+#include "contingserializable.h"
+
 #include <string.h>
 #include <math.h>
+#include <assert.h>
 
 #define CONTING_TRANS3_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_TRANS3, ContingTrans3Private))
@@ -11,6 +14,7 @@
 #define SIZE ((TOLERANCE * 2) - 1)
 
 static gpointer parent_class = NULL;
+static gpointer parent_iface = NULL;
 
 typedef struct ContingTrans3Private_ ContingTrans3Private;
 struct ContingTrans3Private_ {
@@ -286,15 +290,16 @@ conting_trans3_link(ContingComponent *self,
     return TRUE;
 }
 
-static xmlNodePtr
-conting_trans3_xml_node(ContingDrawing *self,
-		                xmlNodePtr drawing_node)
+static void
+conting_trans3_xml_node(ContingSerializable *self,
+		                xmlNodePtr drawing_node,
+						xmlNodePtr *result)
 {
 	ContingTrans3Private *priv;
     ContingComponent *comp;
 	xmlNodePtr class_node;
 
-	g_return_val_if_fail(self != NULL && CONTING_IS_TRANS3(self), NULL);
+	g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
 
 	priv = CONTING_TRANS3_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
@@ -315,10 +320,10 @@ conting_trans3_xml_node(ContingDrawing *self,
 
 	xmlAddChild(drawing_node, class_node);
 
-	return CONTING_DRAWING_CLASS(parent_class)->xml_node(self, drawing_node);
+	((ContingSerializableClass *) parent_iface)->write(self, drawing_node, result);
 }
 static void
-conting_trans3_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
+conting_trans3_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
                          GHashTable *id_drawing)
 {
     ContingTrans3Private *priv;
@@ -379,8 +384,8 @@ conting_trans3_place_xml(ContingDrawing *self, xmlNodePtr drawing_node,
     priv->placed = TRUE;
     */
 
-    CONTING_DRAWING_CLASS(parent_class)->place_xml(self,
-            drawing_node, id_drawing);
+    ((ContingSerializableClass *) parent_iface)->read(self,
+			drawing_node, id_drawing);
 
 }
 
@@ -398,6 +403,18 @@ conting_trans3_get_bus(ContingDrawing *self, ContingDrawing *linked,
 }
 
 static void
+conting_trans3_serializable_init(gpointer g_iface, gpointer iface_data)
+{
+	ContingSerializableClass *serial_class;
+
+	serial_class = g_iface;
+	serial_class->write = conting_trans3_xml_node;
+	serial_class->read = conting_trans3_place_xml;
+
+	parent_iface = g_type_interface_peek_parent(g_iface);
+}
+
+static void
 conting_trans3_class_init(gpointer g_class, gpointer class_data)
 {
     ContingDrawingClass *drawing_class;
@@ -407,8 +424,6 @@ conting_trans3_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_trans3_draw;
     drawing_class->delete = conting_trans3_delete;
-	drawing_class->xml_node = conting_trans3_xml_node;
-	drawing_class->place_xml = conting_trans3_place_xml;
 
 	drawing_class->get_bus = conting_trans3_get_bus;
 
@@ -444,6 +459,17 @@ GType conting_trans3_get_type(void) {
         type = g_type_register_static(CONTING_TYPE_BUS_BASE,
                 "ContingTrans3",
                 &type_info, 0);
+
+		static const GInterfaceInfo serial_info = {
+			conting_trans3_serializable_init,
+			NULL,
+			NULL	
+		};
+
+		g_type_add_interface_static(type,
+				CONTING_TYPE_SERIALIZABLE,
+				&serial_info);
+
     }
 
     return type;
