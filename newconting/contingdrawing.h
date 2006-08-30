@@ -8,7 +8,6 @@
 #include <glib-object.h>
 #include <gdk/gdk.h>
 #include <libart_lgpl/libart.h>
-#include <libxml/tree.h>
 
 
 
@@ -58,10 +57,6 @@ struct ContingDrawingClass_ {
 
     gboolean (*event)(ContingDrawing *self, GdkEvent *event);
 
-    xmlNodePtr (*xml_node)(ContingDrawing *self, xmlNodePtr drawing_node);
-    void (*place_xml)(ContingDrawing *self, xmlNodePtr drawing_node,
-            GHashTable *id_drawing);
-
 	void (*get_center)(ContingDrawing *self,
 		               ArtPoint *pw_dst, const ArtPoint *pw_src);
 
@@ -105,10 +100,6 @@ void conting_drawing_update(ContingDrawing *self);
 void conting_drawing_set_selected(ContingDrawing *self, gboolean selected);
 gboolean conting_drawing_is_selected(ContingDrawing *self);
 void conting_drawing_delete(ContingDrawing *self);
-xmlNodePtr conting_drawing_xml_node(ContingDrawing *self,
-        xmlNodePtr drawing_node);
-void conting_drawing_place_xml(ContingDrawing *self, xmlNodePtr node,
-                               GHashTable *id_drawing);
 
 void conting_drawing_get_center(ContingDrawing *self,
 		                        ArtPoint *pw_dst, const ArtPoint *pw_src);

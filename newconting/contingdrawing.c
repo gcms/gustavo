@@ -2,6 +2,7 @@
 #include "continggroup.h"
 #include "contingutil.h"
 #include "contingxml.h"
+#include "contingserializable.h"
 
 #include "contingline.h"
 
@@ -502,25 +503,9 @@ conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 	return FALSE;
 }
 
-xmlNodePtr
-conting_drawing_xml_node(ContingDrawing *self, xmlNodePtr drawing_node)
-{
-    g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), NULL);
-
-    return CONTING_DRAWING_GET_CLASS(self)->xml_node(self, drawing_node);
-}
-void
-conting_drawing_place_xml(ContingDrawing *self, xmlNodePtr node,
-                          GHashTable *id_drawing)
-{
-    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
-
-    CONTING_DRAWING_GET_CLASS(self)->place_xml(self, node, id_drawing);
-}
-
 static void
-conting_drawing_place_xml_impl(ContingDrawing *self, xmlNodePtr drawing_node,
-                               GHashTable *id_drawing)
+conting_drawing_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
+                          GHashTable *id_drawing)
 {
     ContingDrawingPrivate *priv;
     xmlChar *id;
@@ -567,14 +552,14 @@ conting_drawing_place_xml_impl(ContingDrawing *self, xmlNodePtr drawing_node,
     
 }
 
-static xmlNodePtr
-conting_drawing_xml_node_impl(ContingDrawing *self,
-                              xmlNodePtr drawing_node)
+static void
+conting_drawing_xml_node(ContingSerializable *self, xmlNodePtr drawing_node,
+    	 				 xmlNodePtr *result)
 {
     ContingDrawingPrivate *priv;
     xmlNodePtr class_node;
 
-    g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), NULL);
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
     priv = CONTING_DRAWING_GET_PRIVATE(self);
 
@@ -584,8 +569,6 @@ conting_drawing_xml_node_impl(ContingDrawing *self,
     xmlAddChild(class_node, conting_util_affine_node("affine", priv->affine));
 
     xmlAddChild(drawing_node, class_node);
-
-    return class_node;
 }
 
 static void
@@ -741,9 +724,6 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class->get_i2w_affine = conting_drawing_get_i2w_affine_impl;
     drawing_class->get_w2i_affine = conting_drawing_get_w2i_affine_impl;
 
-    drawing_class->xml_node = conting_drawing_xml_node_impl;
-    drawing_class->place_xml = conting_drawing_place_xml_impl;
-
 	drawing_class->get_center = conting_drawing_get_center_impl;
 	drawing_class->get_bus = NULL;
 
@@ -774,6 +754,20 @@ conting_drawing_class_init(gpointer g_class,
     g_type_class_add_private(g_class, sizeof(ContingDrawingPrivate));
 }
 
+static void
+conting_drawing_serializable_init(gpointer g_iface, gpointer iface_data)
+{
+	ContingSerializableClass *serial_class;
+
+	serial_class = g_iface;
+	serial_class->read = conting_drawing_place_xml;
+	serial_class->write = conting_drawing_xml_node;
+	
+	g_print("serial_class = %p\n", serial_class);
+	g_print("serial_class->read = %p\n", serial_class->read);
+	g_print("serial_class->write = %p\n", serial_class->write);
+}
+
 GType
 conting_drawing_get_type(void)
 {
@@ -793,8 +787,19 @@ conting_drawing_get_type(void)
             NULL
         };
 
-        type = g_type_register_static(G_TYPE_OBJECT, "ContingDrawing",
+		static const GInterfaceInfo serial_info = {
+			conting_drawing_serializable_init,
+			NULL,
+			NULL	
+		};
+
+        type = g_type_register_static(G_TYPE_OBJECT,
+				"ContingDrawing",
                 &type_info, 0);
+
+		g_type_add_interface_static(type,
+				CONTING_TYPE_SERIALIZABLE,
+				&serial_info);
     }
 
     return type;

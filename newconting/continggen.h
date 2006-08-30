@@ -1,7 +1,7 @@
 #ifndef CONTING_GEN_H
 #define CONTING_GEN_H
 
-#include "contingcomponent.h"
+#include "contingsymbol.h"
 
 
 
@@ -19,12 +19,12 @@
 
 typedef struct ContingGen_ ContingGen;
 struct ContingGen_ {
-    ContingComponent parent;
+    ContingSymbol parent;
 };
 
 typedef struct ContingGenClass_ ContingGenClass;
 struct ContingGenClass_ {
-    ContingComponentClass parent;
+    ContingSymbolClass parent;
 };
 
 GType conting_gen_get_type(void);
