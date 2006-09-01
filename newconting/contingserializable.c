@@ -34,9 +34,10 @@ conting_serializable_read(ContingSerializable *self, xmlNodePtr node,
 	CONTING_SERIALIZABLE_GET_CLASS(self)->read(self, node, id_drawing);
 }
 void
-conting_serializable_write(ContingSerializable *self, xmlNodePtr *node)
+conting_serializable_write(ContingSerializable *self, xmlNodePtr drawing_node,
+		xmlNodePtr *result)
 {
 	g_return_if_fail(self != NULL && CONTING_IS_SERIALIZABLE(self));
 
-	CONTING_SERIALIZABLE_GET_CLASS(self)->write(self, node);
+	CONTING_SERIALIZABLE_GET_CLASS(self)->write(self, drawing_node, result);
 }
