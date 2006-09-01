@@ -4,6 +4,7 @@
 #include "continggen.h"
 #include "contingload.h"
 #include "contingtrans2.h"
+#include "contingserializable.h"
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -287,6 +288,44 @@ conting_data_instance_init(GTypeInstance *self, gpointer g_class)
 }
 
 static void
+conting_data_read(ContingSerializable *self, xmlNodePtr node,
+		GHashTable *id_drawing)
+{
+}
+
+static void
+conting_data_write(ContingSerializable *self, xmlNodePtr node,
+		xmlNodePtr *result)
+{
+	ContingDataPrivate *priv;
+	xmlNodePtr class_node;
+	GList *n;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
+
+	class_node = xmlNewNode(NULL, BAD_CAST "data");
+	xmlNewProp(class_node, BAD_CAST "class",
+			BAD_CAST g_type_name(G_OBJECT_TYPE(self)));
+
+	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+		conting_serializable_write(CONTING_SERIALIZABLE(n->data), class_node,
+				NULL);
+	}
+	
+	xmlAddChild(node, class_node);
+}
+
+static void
+conting_data_serializable_init(gpointer g_iface, gpointer iface_data)
+{
+	ContingSerializableClass *serial_class;
+
+	serial_class = g_iface;
+	serial_class->read = conting_data_read;
+	serial_class->write = conting_data_write;
+}
+
+static void
 conting_data_class_init(gpointer g_class, gpointer class_data)
 {
 	GObjectClass *object_class;
@@ -316,9 +355,21 @@ GType conting_data_get_type(void) {
             NULL
         };
 
+		static const GInterfaceInfo serial_info = {
+			conting_data_serializable_init,
+			NULL,
+			NULL	
+		};
+
+
         type = g_type_register_static(G_TYPE_OBJECT,
                 "ContingData",
                 &type_info, 0);
+
+		g_type_add_interface_static(type,
+				CONTING_TYPE_SERIALIZABLE,
+				&serial_info);
+
     }
 
     return type;
