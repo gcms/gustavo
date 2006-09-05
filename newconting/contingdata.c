@@ -35,10 +35,8 @@ conting_data_get_unassoc(ContingData *self)
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
 	result = NULL;
-	g_print("g_list_next()\n");
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		if (!g_hash_table_lookup(priv->data_drawing, n->data)) {
-			g_print("g_list_append()\n");
 			result = g_list_append(result, n->data);
 		}
 	}
@@ -68,7 +66,6 @@ conting_data_get_branch(ContingData *self,
 			"number", &n1,
 			NULL);
 
-	g_print("g_list_next()\n");
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		ContingItemData *item = n->data;
 		gint z, tap;
@@ -133,7 +130,6 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 	} else if (CONTING_IS_TRANS2(drawing)) {
 		GList *n;
 
-		g_print("g_list_next()\n");
 		for (n = CONTING_COMPONENT(drawing)->links; n; n = g_list_next(n)) {
 			return conting_data_get(self, CONTING_DRAWING(n->data));
 		}
@@ -194,6 +190,7 @@ conting_data_load_file(ContingData *self, ContingFile *file,
 		const gchar *filename)
 {
 	ContingDataPrivate *priv;
+	GList *n;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
@@ -205,6 +202,9 @@ conting_data_load_file(ContingData *self, ContingFile *file,
 	assert(priv->item_data == NULL);
 
 	priv->item_data = conting_file_get_item_data(file, filename);
+	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+		assert(CONTING_IS_ITEM_DATA(n->data));
+	}
 
 	priv->loaded = TRUE;
 }
@@ -231,7 +231,6 @@ conting_data_clear(ContingData *self)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	g_print("g_list_next()\n");
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		ContingDrawing *drawing = g_hash_table_lookup(priv->data_drawing,
 				n->data);
@@ -242,7 +241,6 @@ conting_data_clear(ContingData *self)
 		g_object_unref(n->data);
 	}
 
-	g_print("g_list_free()\n");
 	g_list_free(priv->item_data);
 	priv->item_data = NULL;
 
@@ -259,11 +257,9 @@ conting_data_finalize(GObject *self)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	g_print("g_list_next()\n");
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		g_object_unref(n->data);
 	}
-	g_print("g_list_free()\n");
 	g_list_free(priv->item_data);
 
 	g_hash_table_destroy(priv->data_drawing);
@@ -291,6 +287,55 @@ static void
 conting_data_read(ContingSerializable *self, xmlNodePtr node,
 		GHashTable *id_drawing)
 {
+	ContingDataPrivate *priv;
+	xmlNodePtr item_node;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	conting_data_clear(CONTING_DATA(self));
+
+	for (item_node = node->children; item_node; item_node = item_node->next) {
+		GObject *obj;
+		GType type;
+		gchar *str;
+		ContingDrawing *drawing;
+
+		if (!xmlStrEqual(item_node->name, BAD_CAST "class"))
+			continue;
+
+		str = xmlGetProp(item_node, BAD_CAST "name");
+
+		if (str == NULL)
+			continue;
+		type = g_type_from_name(str);
+		xmlFree(str);
+
+		obj = g_object_new(type, NULL);
+
+		if (!CONTING_IS_ITEM_DATA(obj)) {
+			g_object_unref(obj);
+			continue;
+		}
+
+		str = xmlGetProp(item_node, BAD_CAST "drawing");
+		if (str) {
+			drawing = g_hash_table_lookup(id_drawing,
+					GUINT_TO_POINTER(strtoul(str, NULL, 10)));
+
+			if (drawing) {
+				conting_data_assoc(CONTING_DATA(self), drawing,
+						CONTING_ITEM_DATA(obj));
+			}
+		}
+		xmlFree(str);
+		
+		conting_serializable_read(CONTING_SERIALIZABLE(obj), item_node,
+				id_drawing);
+
+		priv->item_data = g_list_append(priv->item_data, obj);
+	}
 }
 
 static void
@@ -303,13 +348,32 @@ conting_data_write(ContingSerializable *self, xmlNodePtr node,
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
 	class_node = xmlNewNode(NULL, BAD_CAST "data");
 	xmlNewProp(class_node, BAD_CAST "class",
 			BAD_CAST g_type_name(G_OBJECT_TYPE(self)));
 
+
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+		xmlNodePtr item_node;
+		ContingDrawing *drawing;
+
 		conting_serializable_write(CONTING_SERIALIZABLE(n->data), class_node,
-				NULL);
+				&item_node);
+
+		drawing = g_hash_table_lookup(priv->data_drawing, n->data);
+		if (drawing != NULL) {
+			gchar buff[256];
+			gint id;
+
+			g_object_get(G_OBJECT(drawing),
+					"id", &id,
+					NULL);
+			sprintf(buff, "%d", id);
+			xmlNewProp(item_node, BAD_CAST "drawing",
+					BAD_CAST buff);
+		}
 	}
 	
 	xmlAddChild(node, class_node);
@@ -336,6 +400,8 @@ conting_data_class_init(gpointer g_class, gpointer class_data)
 	g_type_class_add_private(g_class, sizeof(ContingDataPrivate));
 
     parent_class = g_type_class_peek_parent(g_class);
+
+	g_type_class_ref(CONTING_TYPE_ITEM_DATA);
 }
 
 GType conting_data_get_type(void) {
@@ -360,7 +426,6 @@ GType conting_data_get_type(void) {
 			NULL,
 			NULL	
 		};
-
 
         type = g_type_register_static(G_TYPE_OBJECT,
                 "ContingData",

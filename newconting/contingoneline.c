@@ -143,6 +143,7 @@ conting_one_line_load_data(ContingOneLine *self, const char *filename)
 	}
 
 	conting_data_load_file(priv->file_data, file, filename);
+	g_print("UNREF\n");
 	g_object_unref(file);
 }
 
@@ -198,8 +199,9 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
         xmlChar *id;
         ContingDrawing *drawing;
 
-        if (!xmlStrEqual(drawing_node->name, BAD_CAST "drawing"))
+        if (!xmlStrEqual(drawing_node->name, BAD_CAST "drawing")) {
             continue;
+		}
 
         id = xmlGetProp(drawing_node, BAD_CAST "id");
         drawing = g_hash_table_lookup(id_drawing,
@@ -213,6 +215,15 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
 
         xmlFree(id);
     }
+
+    for (drawing_node = oneline->children; drawing_node;
+            drawing_node = drawing_node->next) {
+		if (!xmlStrEqual(drawing_node->name, BAD_CAST "data"))
+			continue;
+
+		conting_serializable_read(CONTING_SERIALIZABLE(priv->file_data),
+				drawing_node, id_drawing);
+	}
 
     g_hash_table_destroy(id_drawing);
 
@@ -255,6 +266,9 @@ conting_one_line_save(ContingOneLine *self, const char *filename)
 				NULL);
         xmlAddChild(root_node, drawing_node);
     }
+
+	conting_serializable_write(CONTING_SERIALIZABLE(priv->file_data),
+			root_node, NULL);
 
     xmlSaveFormatFileEnc(filename, doc, "UTF-8", 1);
     xmlFreeDoc(doc);
@@ -445,6 +459,7 @@ conting_one_line_delete_drawing(ContingOneLine *self,
 			drawing, g_type_name(G_OBJECT_TYPE(drawing)),
 			bounds.x0, bounds.y0, bounds.x1, bounds.y1);
 
+	g_print("UNREF\n");
     g_object_unref(drawing);
 
 	conting_one_line_update(self, &bounds);
@@ -989,6 +1004,7 @@ conting_one_line_create(ContingOneLine *self,
 				 * Can use conting_one_line_send_event()? */
 				ArtDRect bounds;
 				conting_drawing_get_bounds(priv->placing_drawing, &bounds);
+	g_print("UNREF\n");
 				g_object_unref(priv->placing_drawing);
 				priv->placing_drawing = NULL;
 				conting_one_line_update(self, &bounds);

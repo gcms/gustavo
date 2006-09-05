@@ -52,7 +52,6 @@ conting_symbol_link(ContingComponent *self,
     symb = CONTING_SYMBOL(self);
     comp = CONTING_COMPONENT(self);
 
-	g_print("g_list_find()\n");
 	if (g_list_find(comp->links, drawing))
 		return FALSE;
 

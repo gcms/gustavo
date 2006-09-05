@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -g `pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --cflags`
+CFLAGS=-Wall -fbounds-checking -g `pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --cflags`
 LIBS=`pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --libs` -lm
 
 all: build
