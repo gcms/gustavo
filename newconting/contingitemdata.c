@@ -1,5 +1,9 @@
 #include "contingitemdata.h"
+#include "contingserializable.h"
+#include "contingxml.h"
+#include "contingdata.h"
 #include <string.h>
+#include <assert.h>
 
 static gpointer parent_class = NULL;
 
@@ -14,7 +18,7 @@ enum {
 typedef struct ContingItemDataPrivate_ ContingItemDataPrivate;
 struct ContingItemDataPrivate_ {
 	ContingItemType type;
-	GTree *attrs;
+	GTree *attrs;	/* <const gchar *><GValue *> */
 };
 
 void
@@ -135,7 +139,7 @@ conting_item_data_attr_foreach(ContingItemData *self,
 	parameters[0] = func;
 	parameters[1] = user_data;
 
-	g_tree_traverse(priv->attrs, tree_traverse, G_IN_ORDER, parameters);
+	g_tree_foreach(priv->attrs, tree_traverse, parameters);
 }
 
 static void
@@ -227,6 +231,139 @@ conting_item_data_get_item_type(ContingItemData *self)
 }
 
 static void
+conting_item_data_read(ContingSerializable *self, xmlNodePtr node,
+		GHashTable *id_drawing)
+{
+	ContingItemDataPrivate *priv;
+	GEnumValue *enum_value;
+	gchar *str;
+	xmlNodePtr attr_node;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ITEM_DATA(self));
+
+	priv = CONTING_ITEM_DATA_GET_PRIVATE(self);
+
+	str = xmlGetProp(node, BAD_CAST "type");
+	assert(str);
+
+	enum_value = g_enum_get_value_by_name(
+			g_type_class_peek(CONTING_TYPE_ITEM_TYPE), str);
+	priv->type = enum_value->value;
+
+	for (attr_node = node->children; attr_node; attr_node = attr_node->next) {
+		gchar *name;
+		GType type;
+		gchar *value;
+
+		if (!xmlStrEqual(attr_node->name, BAD_CAST "attribute"))
+			continue;
+
+		name = xmlGetProp(attr_node, BAD_CAST "name");
+		
+		str = xmlGetProp(attr_node, BAD_CAST "type");
+		type = g_type_from_name(str);
+		xmlFree(str);
+
+		value = xmlNodeListGetString(attr_node->doc, attr_node->children,
+				TRUE);
+
+		switch (type) {
+			case G_TYPE_INT:
+				conting_item_data_set_attr(CONTING_ITEM_DATA(self),
+						name, type, atoi(value), NULL);
+				break;
+			case G_TYPE_DOUBLE:
+				conting_item_data_set_attr(CONTING_ITEM_DATA(self),
+						name, type, strtod(value, NULL), NULL);
+				break;
+			case G_TYPE_STRING:
+				conting_item_data_set_attr(CONTING_ITEM_DATA(self),
+						name, type, value, NULL);
+				break;
+			case G_TYPE_POINTER:
+			default:
+				break;
+		}
+
+		xmlFree(name);
+		xmlFree(value);
+	}
+}
+
+static gboolean
+tree_traverse_xml(gpointer key, gpointer value, gpointer user_data)
+{
+	xmlNodePtr attr_node;
+	xmlNodePtr class_node = user_data;
+	const GValue *gvalue = value;
+	const gchar *name = key;
+	gchar buff[256];
+
+	attr_node = xmlNewNode(NULL, BAD_CAST "attribute");
+	xmlNewProp(attr_node, BAD_CAST "name",
+			BAD_CAST name);
+	xmlNewProp(attr_node, BAD_CAST "type",
+			BAD_CAST g_type_name(G_VALUE_TYPE(gvalue)));
+
+	switch (G_VALUE_TYPE(gvalue)) {
+		case G_TYPE_INT:
+			sprintf(buff, "%d", g_value_get_int(gvalue));
+			break;
+		case G_TYPE_DOUBLE:
+			sprintf(buff, "%lf", g_value_get_double(gvalue));
+			break;
+		case G_TYPE_STRING:
+			sprintf(buff, "%s", g_value_get_string(gvalue));
+			break;
+		case G_TYPE_POINTER:
+		default:
+			break;
+	}
+
+	xmlAddChild(attr_node, xmlNewText(BAD_CAST buff));
+	xmlAddChild(class_node, attr_node);
+
+	return FALSE;
+}
+	
+static void
+conting_item_data_write(ContingSerializable *self, xmlNodePtr node,
+		xmlNodePtr *result)
+{
+	ContingItemDataPrivate *priv;
+	xmlNodePtr class_node;
+	GEnumValue *enum_val;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ITEM_DATA(self));
+
+	priv = CONTING_ITEM_DATA_GET_PRIVATE(self);
+
+	class_node = xmlNewNode(NULL, BAD_CAST "class");
+	xmlNewProp(class_node, BAD_CAST "name",
+			BAD_CAST g_type_name(G_OBJECT_TYPE(self)));
+	enum_val = g_enum_get_value(g_type_class_peek(CONTING_TYPE_ITEM_TYPE),
+			priv->type);
+	xmlNewProp(class_node, BAD_CAST "type",
+			BAD_CAST enum_val->value_name);
+
+	g_tree_foreach(priv->attrs, tree_traverse_xml, class_node);
+	
+	xmlAddChild(node, class_node);
+
+	*result = class_node;
+}
+
+static void
+conting_item_data_serializable_init(gpointer g_iface, gpointer iface_data)
+{
+	ContingSerializableClass *serial_class;
+
+	serial_class = g_iface;
+	serial_class->read = conting_item_data_read;
+	serial_class->write = conting_item_data_write;
+}
+
+static void
 conting_item_data_class_init(gpointer g_class, gpointer class_data)
 {
 	GObjectClass *gobject_class;
@@ -272,6 +409,17 @@ conting_item_data_get_type(void)
 		type = g_type_register_static(G_TYPE_OBJECT,
 				"ContingItemData",
 				&type_info, 0);
+
+		
+		static const GInterfaceInfo serial_info = {
+			conting_item_data_serializable_init,
+			NULL,
+			NULL	
+		};
+
+		g_type_add_interface_static(type,
+				CONTING_TYPE_SERIALIZABLE,
+				&serial_info);
 	}
 
 	return type;

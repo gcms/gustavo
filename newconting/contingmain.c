@@ -30,7 +30,7 @@ save_menu_activate(GtkMenuItem *menuitem,
 			TRUE);
 
     if (gtk_dialog_run(GTK_DIALOG(save)) == GTK_RESPONSE_ACCEPT) {
-        char *filename;
+        gchar *filename;
 
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(save));
         conting_one_line_save(oneline, filename);
@@ -62,14 +62,14 @@ open_menu_activate(GtkMenuItem *menuitem,
 			filter);
 
     if (gtk_dialog_run(GTK_DIALOG(open)) == GTK_RESPONSE_ACCEPT) {
-        char *filename;
+        gchar *filename;
 
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open));
         conting_one_line_open(oneline, filename);
         g_free(filename);
     }
 
-	g_object_unref(filter);
+	g_print("UNREF\n");
     gtk_widget_destroy(open);
 }
 
@@ -90,7 +90,7 @@ load_menu_activate(GtkMenuItem *menuitem,
 			GTK_FILE_CHOOSER_ACTION_OPEN);
 
     if (gtk_dialog_run(GTK_DIALOG(open)) == GTK_RESPONSE_ACCEPT) {
-        char *filename;
+        gchar *filename;
 
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open));
         conting_one_line_load_data(oneline, filename);
