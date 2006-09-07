@@ -1,0 +1,16 @@
+O pacote em questão provê a facilidade de comunicação entre dois processos
+utilizando um protocolo de Requisição/Resposta que roda sobre um socket TCP.
+Este serviço pode ser extendido para utilizar outros protocolos.
+
+No modelo atual, um processo que deseja oferecer objetos para serem acessados
+remotamente deve criar um ObjectManager e registrar esses objetos.
+
+Um exemplo pode ser encontrado em br.ufg.inf.sd2006.example.ServerMain, além
+disso também deve ser criado um SDServer que representa uma conexão a partir
+da qual esses objetos podem ser acessados.
+
+Um processo interessado em acessar objetos existentes em outros processos, deve
+fazê-lo através de um ObjectReference que consiste em um identificador de
+objeto, o endereço da máquina em que o processo se encontra e o número da porta
+utilizada pela conexão deste processo. Um exemplo desta utilização encontra-se
+em br.ufg.inf.sd2006.example.ClientMain
