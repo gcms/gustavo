@@ -661,6 +661,45 @@ conting_component_finalize(GObject *self)
     G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
+static gboolean
+conting_component_find_link_pred(ContingDrawing *self, gpointer user_data)
+{
+	gpointer *params = user_data;
+	ContingDrawingPredicate pred = params[2];
+
+	if (params[1] == self)
+		return FALSE;
+
+	return pred(self, params[0]);
+}
+
+static void
+conting_component_find_link(ContingDrawing *self, ContingDrawingPredicate pred,
+		gpointer user_data) {
+	ContingComponent *comp;
+	gpointer params[3];
+	GList *n;
+
+	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+
+	comp = CONTING_COMPONENT(self);
+
+	if (!pred(self, user_data))
+		return;
+
+	params[0] = user_data;
+	params[1] = self;
+	params[2] = pred;
+
+	for (n = comp->links; n != NULL; n = g_list_next(n)) {
+		ContingDrawing *drawing = n->data;
+		if (pred(drawing, user_data)) {
+			conting_drawing_find_link(drawing,
+					conting_component_find_link_pred, params);
+		}
+	}
+}
+
 static void
 conting_component_instance_init(GTypeInstance *self, gpointer g_class)
 {
@@ -714,6 +753,8 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
     drawing_class->get_w2i_affine = conting_component_get_w2i_affine;
     drawing_class->event = conting_component_event;
     drawing_class->delete = conting_component_delete;
+
+	drawing_class->find_link = conting_component_find_link;
 
 
     component_class = CONTING_COMPONENT_CLASS(g_class);

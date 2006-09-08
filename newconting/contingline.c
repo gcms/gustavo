@@ -1,5 +1,6 @@
 #include "contingcomponent.h"
 #include "contingline.h"
+#include "contingbusbase.h"
 #include "contingutil.h"
 #include "contingxml.h"
 #include "contingserializable.h"
@@ -173,11 +174,39 @@ conting_line_get_links(ContingLine *self,
 	assert(priv->comp0 && priv->comp1);
 }
 
+static gboolean
+find_link_pred(ContingDrawing *self, gpointer user_data)
+{
+	gpointer *params = user_data;
+	ContingDrawingPredicate pred = params[1];
+
+	if (params[2] == self)
+		return FALSE;
+	
+	return pred(self, params[0]);
+}
+
+
+static gboolean
+conting_line_get_bus_pred(ContingDrawing *drawing, gpointer user_data)
+{
+	ContingDrawing **bus = user_data;
+
+	if (*bus == NULL && CONTING_IS_BUS_BASE(drawing)) {
+		*bus = drawing;
+
+		return FALSE;
+	}
+
+	return *bus == NULL;
+}
+
 void
 conting_line_get_buses(ContingLine *self,
-		ContingComponent **comp0, ContingComponent **comp1)
+		ContingBusBase **comp0, ContingBusBase **comp1)
 {
 	ContingLinePrivate *priv;
+	gpointer params[3];
 
 	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
 
@@ -186,29 +215,47 @@ conting_line_get_buses(ContingLine *self,
 	assert(conting_drawing_is_placed(CONTING_DRAWING(self)));
 	assert(priv->comp0 && priv->comp1);
 
-	conting_drawing_get_bus(CONTING_DRAWING(priv->comp0),
-			CONTING_DRAWING(self), comp0);
-	conting_drawing_get_bus(CONTING_DRAWING(priv->comp1),
-			CONTING_DRAWING(self), comp1);
+	*comp0 = *comp1 = NULL;
+
+	params[1] = conting_line_get_bus_pred;
+	params[2] = self;
+
+	params[0] = comp0;
+	conting_drawing_find_link(CONTING_DRAWING(priv->comp0),
+			find_link_pred, params);
+
+	params[0] = comp1;
+	conting_drawing_find_link(CONTING_DRAWING(priv->comp1),
+			find_link_pred, params);
+	g_print("comp0 = %p\tcomp1 = %p\n", *comp0, *comp1);
 }
 
 static void
-conting_line_get_bus(ContingDrawing *self, ContingDrawing *linked,
-		ContingComponent **comp)
+conting_line_find_link(ContingDrawing *self, ContingDrawingPredicate pred,
+		gpointer user_data)
 {
 	ContingLinePrivate *priv;
+	gpointer params[3];
 
 	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
 
 	priv = CONTING_LINE_GET_PRIVATE(self);
 
-	if (comp == NULL)
+	if (!pred(self, user_data))
 		return;
 
-	if (linked == CONTING_DRAWING(priv->comp0)) {
-		conting_drawing_get_bus(CONTING_DRAWING(priv->comp1), self, comp);
-	} else if (linked == CONTING_DRAWING(priv->comp1)) {
-		conting_drawing_get_bus(CONTING_DRAWING(priv->comp0), self, comp);
+	params[0] = user_data;
+	params[1] = pred;
+	params[2] = self;
+	
+	if (priv->comp0 && pred(CONTING_DRAWING(priv->comp0), user_data)) {
+		conting_drawing_find_link(CONTING_DRAWING(priv->comp0),
+				find_link_pred, params);
+	}
+	
+	if (priv->comp1 && pred(CONTING_DRAWING(priv->comp1), user_data)) {
+		conting_drawing_find_link(CONTING_DRAWING(priv->comp1),
+				find_link_pred, params);
 	}
 }
 
@@ -972,7 +1019,7 @@ conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->delete = conting_line_delete;
 
 	drawing_class->get_center = conting_line_get_center;
-	drawing_class->get_bus = conting_line_get_bus;
+	drawing_class->find_link = conting_line_find_link;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;

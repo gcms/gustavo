@@ -169,19 +169,6 @@ conting_symbol_read(ContingSerializable *self, xmlNodePtr drawing_node,
 
 }
 
-static void
-conting_symbol_get_bus(ContingDrawing *self, ContingDrawing *linked,
-		ContingComponent **comp)
-{
-	ContingSymbol *symb;
-
-	g_return_if_fail(self != NULL && CONTING_IS_SYMBOL(self));
-
-	symb = CONTING_SYMBOL(self);
-
-	*comp = NULL;
-}
-
 
 static void
 conting_symbol_instance_init(GTypeInstance *self, gpointer g_class)
@@ -215,7 +202,6 @@ conting_symbol_class_init(gpointer g_class, gpointer class_data)
 
 	drawing_class = CONTING_DRAWING_CLASS(g_class);
 	drawing_class->delete = conting_symbol_delete;
-	drawing_class->get_bus = conting_symbol_get_bus;
 
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->link_deleted = conting_symbol_link_deleted;

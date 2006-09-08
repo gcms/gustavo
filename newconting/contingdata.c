@@ -66,6 +66,8 @@ conting_data_get_branch(ContingData *self,
 			"number", &n1,
 			NULL);
 
+	g_print("find link from \"%d\" to \"%d\"\n", n0, n1);
+
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		ContingItemData *item = n->data;
 		gint z, tap;
@@ -78,13 +80,32 @@ conting_data_get_branch(ContingData *self,
 				"z bus number", &z,
 				NULL);
 
-		if ((n0 == tap && n1 == z) || (n0 == z && n1 == tap))
+		g_print("branch between \"%d\" and \"%d\"\n", tap, z);
+
+		if ((n0 == tap && n1 == z) || (n0 == z && n1 == tap)) {
+			g_print("FOUNd\n");
 			return item;
+		}
 	}
+
+	g_print("NULL\n");
 
 	return NULL;
 }
 
+static gboolean
+conting_data_is_bus_pred(ContingDrawing *drawing, gpointer user_data)
+{
+	ContingDrawing **bus = user_data;
+
+	if (*bus == NULL && CONTING_IS_BUS_BASE(drawing)) {
+		*bus = drawing;
+
+		return FALSE;
+	}
+
+	return *bus == NULL;
+}
 
 ContingItemData *
 conting_data_get(ContingData *self, ContingDrawing *drawing)
@@ -96,7 +117,7 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
 	if (CONTING_IS_LINE(drawing)) {
-		ContingComponent *comp0, *comp1;
+		ContingBusBase *comp0, *comp1;
 
 		conting_line_get_buses(CONTING_LINE(drawing), &comp0, &comp1);
 
@@ -107,6 +128,8 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 
 			dcomp0 = conting_data_get(self, CONTING_DRAWING(comp0));
 			dcomp1 = conting_data_get(self, CONTING_DRAWING(comp1));
+
+			g_print("dcomp0 = %p\tdcomp1 = %p\n", dcomp0, dcomp1);
 
 			if (dcomp0 && dcomp1) {
 				return conting_data_get_branch(self, dcomp0, dcomp1);
@@ -120,7 +143,8 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 			CONTING_COMPONENT(drawing)->links->data : NULL;
 
 		if (linked != NULL) {
-			conting_drawing_get_bus(linked, drawing, &bus);
+			bus = NULL;
+			conting_drawing_find_link(linked, conting_data_is_bus_pred, &bus);
 
 			if (bus != NULL) {
 				return g_hash_table_lookup(priv->drawing_data,
