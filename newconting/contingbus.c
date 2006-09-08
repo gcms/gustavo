@@ -378,14 +378,6 @@ conting_bus_link(ContingComponent *self,
 }
 
 static void
-conting_bus_get_bus(ContingDrawing *self, ContingDrawing *linked,
-		ContingComponent **comp)
-{
-	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
-
-	*comp = CONTING_COMPONENT(self);
-}
-static void
 conting_bus_class_init(gpointer g_class, gpointer class_data)
 {
     ContingDrawingClass *drawing_class;
@@ -396,8 +388,6 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
     drawing_class->draw = conting_bus_draw;
 	drawing_class->event = conting_bus_event;
 	drawing_class->delete = conting_bus_delete;
-
-	drawing_class->get_bus = conting_bus_get_bus;
 
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->link = conting_bus_link;

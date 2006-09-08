@@ -389,19 +389,6 @@ conting_trans3_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
 }
 
 static void
-conting_trans3_get_bus(ContingDrawing *self, ContingDrawing *linked,
-		ContingComponent **comp)
-{
-	ContingTrans3Private *priv;
-
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
-
-	priv = CONTING_TRANS3_GET_PRIVATE(self);
-
-	*comp = CONTING_COMPONENT(self);
-}
-
-static void
 conting_trans3_serializable_init(gpointer g_iface, gpointer iface_data)
 {
 	ContingSerializableClass *serial_class;
@@ -423,8 +410,6 @@ conting_trans3_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_trans3_draw;
     drawing_class->delete = conting_trans3_delete;
-
-	drawing_class->get_bus = conting_trans3_get_bus;
 
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = conting_trans3_link;

@@ -31,8 +31,10 @@ GType conting_line_get_type(void);
 #include "contingcomponent.h"
 void conting_line_get_links(ContingLine *self,
 		ContingComponent **comp0, ContingComponent **comp1);
+
+#include "contingbusbase.h"
 void conting_line_get_buses(ContingLine *self,
-		ContingComponent **comp0, ContingComponent **comp1);
+		ContingBusBase **comp0, ContingBusBase **comp1);
 
 
 

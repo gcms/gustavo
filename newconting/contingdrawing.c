@@ -48,14 +48,6 @@ conting_drawing_get_center(ContingDrawing *self,
 	CONTING_DRAWING_GET_CLASS(self)->get_center(self, pw_dst, pw_src);
 }
 
-void
-conting_drawing_get_bus(ContingDrawing *self, ContingDrawing *linked,
-		ContingComponent **comp)
-{
-	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
-
-	CONTING_DRAWING_GET_CLASS(self)->get_bus(self, linked, comp);
-}
 static void
 conting_drawing_get_center_impl(ContingDrawing *self,
                                 ArtPoint *pw_dst, const ArtPoint *pw_src)
@@ -472,12 +464,6 @@ conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 			break;
 		case GDK_2BUTTON_PRESS:
 			if (conting_drawing_is_placed(self)) {
-				ContingComponent *comp0, *comp1;
-
-				if (CONTING_IS_LINE(self)) {
-					conting_line_get_buses(CONTING_LINE(self), &comp0, &comp1);
-					g_print("comp0 = %pcomp1 = %p\n", comp0, comp1);
-				}
 				conting_one_line_edit(conting_drawing_get_one_line(self),
 						self);
 			}
@@ -501,6 +487,15 @@ conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 	}
 
 	return FALSE;
+}
+
+void
+conting_drawing_find_link(ContingDrawing *self, ContingDrawingPredicate pred,
+		gpointer user_data)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->find_link(self, pred, user_data);
 }
 
 static void
@@ -725,7 +720,6 @@ conting_drawing_class_init(gpointer g_class,
     drawing_class->get_w2i_affine = conting_drawing_get_w2i_affine_impl;
 
 	drawing_class->get_center = conting_drawing_get_center_impl;
-	drawing_class->get_bus = NULL;
 
     move_signal_id = g_signal_newv(
             "move",

@@ -35,6 +35,9 @@ struct ContingDrawing_ {
     GObject parent;
 };
 
+typedef gboolean (*ContingDrawingPredicate)(ContingDrawing *drawing,
+		gpointer user_data);
+
 struct ContingDrawingClass_ {
     GObjectClass parent;
 
@@ -54,15 +57,15 @@ struct ContingDrawingClass_ {
     void (*get_w2i_affine)(ContingDrawing *self, gdouble affine[6]);
 
     void (*delete)(ContingDrawing *self);
-
     gboolean (*event)(ContingDrawing *self, GdkEvent *event);
 
 	void (*get_center)(ContingDrawing *self,
 		               ArtPoint *pw_dst, const ArtPoint *pw_src);
 
-	void (*get_bus)(ContingDrawing *self, ContingDrawing *linked,
-			ContingComponent **comp);
 
+	void (*find_link)(ContingDrawing *self,
+			ContingDrawingPredicate pred,
+			gpointer user_data);
 };
 
 GType conting_drawing_get_type(void);
@@ -104,10 +107,8 @@ void conting_drawing_delete(ContingDrawing *self);
 void conting_drawing_get_center(ContingDrawing *self,
 		                        ArtPoint *pw_dst, const ArtPoint *pw_src);
 
-void conting_drawing_get_bus(ContingDrawing *self, ContingDrawing *linked,
-		ContingComponent **comp);
-
-
+void conting_drawing_find_link(ContingDrawing *self,
+		ContingDrawingPredicate pred, gpointer user_data);
 
 
 #endif /* CONTING_DRAWING_H */

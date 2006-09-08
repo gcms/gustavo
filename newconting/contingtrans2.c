@@ -353,23 +353,6 @@ conting_trans2_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
 }
 
 static void
-conting_trans2_get_bus(ContingDrawing *self, ContingDrawing *linked,
-		ContingComponent **comp)
-{
-	ContingTrans2Private *priv;
-
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
-
-	priv = CONTING_TRANS2_GET_PRIVATE(self);
-
-	if (linked == CONTING_DRAWING(priv->link0)) {
-		conting_drawing_get_bus(priv->link1, self, comp);
-	} else if (linked == CONTING_DRAWING(priv->link1)) {
-		conting_drawing_get_bus(priv->link0, self, comp);
-	}
-}
-
-static void
 conting_trans2_serializable_init(gpointer g_iface, gpointer iface_data)
 {
 	ContingSerializableClass *serial_class;
@@ -392,9 +375,6 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
     drawing_class->draw = conting_trans2_draw;
     drawing_class->delete = conting_trans2_delete;
 	
-
-	drawing_class->get_bus = conting_trans2_get_bus;
-
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = conting_trans2_link;
     component_class->link_deleted = conting_trans2_link_deleted;
