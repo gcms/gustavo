@@ -59,5 +59,21 @@ void
 conting_data_clear(ContingData *self);
 
 
+typedef struct {
+	ContingDrawing *drawing;
+	gchar *message;
+} ContingError;
+
+
+ContingError *
+conting_error_new(ContingDrawing *drawing, const gchar *format, ...);
+
+void
+conting_error_free(ContingError *err);
+
+gboolean
+conting_data_check(ContingData *self, GList **error_list);
+
+
 
 #endif /* CONTING_DATA_H */
