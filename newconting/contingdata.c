@@ -247,6 +247,59 @@ conting_data_clear(ContingData *self)
 	priv->loaded = FALSE;
 }
 
+ContingError *
+conting_error_new(ContingDrawing *drawing, const gchar *format, ...)
+{
+	ContingError *err = g_new(ContingError, 1);
+
+	va_list ap;
+
+	va_start(ap, format);
+
+	err->drawing = drawing;
+	err->message = g_strdup_vprintf(format, ap);
+
+	va_end(ap);
+
+	return err;
+}
+
+void
+conting_error_free(ContingError *err)
+{
+	g_free(err->message);
+	g_free(err);
+}
+
+gboolean
+conting_data_check(ContingData *self, GList **error_list)
+{
+	ContingDataPrivate *priv;
+	GList *n;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), FALSE);
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+		ContingItemData *item_data = n->data;
+		ContingDrawing *drawing = g_hash_table_lookup(priv->data_drawing,
+				item_data);
+
+		if (conting_item_data_get_item_type(item_data)
+				== CONTING_ITEM_TYPE_BUS && drawing == NULL) {
+			if (error_list) {
+				*error_list = g_list_append(*error_list,
+						conting_error_new(drawing, "Bus not assoced"));
+			} else {
+				return FALSE;
+			}
+		}
+	}
+
+	return *error_list == NULL;
+}
+
 static void
 conting_data_finalize(GObject *self)
 {

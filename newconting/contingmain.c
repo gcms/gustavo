@@ -12,6 +12,31 @@
 
 static ContingOneLine *oneline;
 
+
+static void
+check_clicked(GtkMenuItem *menuitem,
+		gpointer user_data)
+{
+	ContingData *data;
+	GList *errors, *n;
+
+	g_object_get(oneline,
+			"data", &data,
+			NULL);
+
+	errors = NULL;
+	conting_data_check(data, &errors);
+
+	for (n = errors; n != NULL; n = g_list_next(n)) {
+		ContingError *err = n->data;
+
+		g_print("%s\n", err->message);
+	}
+
+	g_list_foreach(errors, (GFunc) conting_error_free, NULL);
+	g_list_free(errors);
+}
+
 static void
 save_menu_activate(GtkMenuItem *menuitem,
                    gpointer user_data)  
@@ -307,6 +332,11 @@ int main(int argc, char *argv[]) {
 	g_signal_connect(G_OBJECT(toolbutton), "clicked",
 			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_LOAD);
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+	toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_APPLY);
+	gtk_tool_button_set_label(GTK_TOOL_BUTTON(toolbutton), "Check");
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(check_clicked), NULL);
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
 
     handle = gtk_handle_box_new();
     gtk_container_add(GTK_CONTAINER(handle), toolbar);
