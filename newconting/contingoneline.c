@@ -433,8 +433,8 @@ conting_one_line_world_to_window(ContingOneLine *self,
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
-	art_affine_translate(affine, world_x - priv->scrolling_area.x0,
-			world_y - priv->scrolling_area.y0);
+	art_affine_translate(affine, -priv->scrolling_area.x0,
+			-priv->scrolling_area.y0);
 	art_affine_scale(affine, priv->ppu, priv->ppu);
 
 	p.x = world_x;
