@@ -392,16 +392,32 @@ conting_one_line_window_to_world(ContingOneLine *self,
                                  gdouble *world_x, gdouble *world_y)
 {
     ContingOneLinePrivate *priv;
+	ArtPoint p;
+	gdouble affine[6];
 
     g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+	
+	art_affine_translate(affine,
+			priv->scrolling_area.x0, priv->scrolling_area.y0);
+	art_affine_scale(affine, 1.0 / priv->ppu, 1.0 / priv->ppu);
+
+	p.x = win_x;
+	p.y = win_y;
+	art_affine_point(&p, &p, affine);
 
     if (world_x)
-        *world_x = priv->scrolling_area.x0 + (win_x / priv->ppu);
+		*world_x = p.x;
+/* 
+ * *world_x = priv->scrolling_area.x0 + (win_x / priv->ppu);
+ */
 
     if (world_y)
-        *world_y = priv->scrolling_area.y0 + (win_y / priv->ppu);
+		*world_y = p.y;
+/*
+ *      *world_y = priv->scrolling_area.y0 + (win_y / priv->ppu);
+ */
 }
 
 void
@@ -410,16 +426,33 @@ conting_one_line_world_to_window(ContingOneLine *self,
                                  gdouble *win_x, gdouble *win_y)
 {
     ContingOneLinePrivate *priv;
+	gdouble affine[6];
+	ArtPoint p;
 
     g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+	art_affine_translate(affine, world_x - priv->scrolling_area.x0,
+			world_y - priv->scrolling_area.y0);
+	art_affine_scale(affine, priv->ppu, priv->ppu);
+
+	p.x = world_x;
+	p.y = world_y;
+
+	art_affine_point(&p, &p, affine);
+
     if (win_x)
-        *win_x = (world_x - priv->scrolling_area.x0) * priv->ppu;
+		*win_x = p.x;
+/*      
+ *      *win_x = (world_x - priv->scrolling_area.x0) * priv->ppu;
+ */
 
     if (win_y)
-        *win_y = (world_y - priv->scrolling_area.y0) * priv->ppu;
+		*win_y = p.y;
+/*      
+ *      *win_y = (world_y - priv->scrolling_area.y0) * priv->ppu;
+ */
 }
 void
 conting_one_line_delete_drawing(ContingOneLine *self,
