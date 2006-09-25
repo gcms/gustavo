@@ -7,7 +7,7 @@
 static gpointer parent_class = NULL;
 
 static void
-conting_gen_draw_cairo(ContingDrawing *self, cairo_t *cr)
+conting_gen_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingSymbol *symb;
     ContingComponent *comp;
@@ -50,19 +50,8 @@ conting_gen_draw_cairo(ContingDrawing *self, cairo_t *cr)
 			(gdouble) rect.width / 8.0, M_PI, 2 * M_PI);
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
-}
-static void
-conting_gen_draw(ContingDrawing *self,
-                    GdkDrawable *drawable,
-                    const GdkRectangle *drawing_rect)
-{
-	cairo_t *cr;
 
-	cr = get_cr(self, drawable);
-	conting_gen_draw_cairo(self, cr);
-	cairo_destroy(cr);
-
-	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
+	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
 }
 
 

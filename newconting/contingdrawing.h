@@ -10,6 +10,7 @@
 #include <libart_lgpl/libart.h>
 
 
+#define CONTING_DRAWING_TOLERANCE 2
 
 
 #define CONTING_TYPE_DRAWING        (conting_drawing_get_type())
@@ -38,11 +39,15 @@ struct ContingDrawing_ {
 typedef gboolean (*ContingDrawingPredicate)(ContingDrawing *drawing,
 		gpointer user_data);
 
+typedef void (*ContingDrawingBoxDrawer)(ContingDrawing *drawing,
+		gdouble world_x, gdouble world_y);
+
 struct ContingDrawingClass_ {
     GObjectClass parent;
 
-    void (*draw)(ContingDrawing *self, GdkDrawable *drawable,
-            const GdkRectangle *drawing_rect);
+    void (*draw)(ContingDrawing *self, cairo_t *cr);
+	void (*draw_selection)(ContingDrawing *self,
+			ContingDrawingBoxDrawer drawer);
 
     void (*place)(ContingDrawing *self);
     gboolean (*is_placed)(ContingDrawing *self);
@@ -70,8 +75,7 @@ struct ContingDrawingClass_ {
 
 GType conting_drawing_get_type(void);
 
-void conting_drawing_draw(ContingDrawing *self,
-        GdkDrawable *drawable, const GdkRectangle *drawing_rect);
+void conting_drawing_draw(ContingDrawing *self, cairo_t *cr);
 
 #include "contingoneline.h"
 #include "continggroup.h"

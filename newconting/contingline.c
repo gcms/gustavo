@@ -15,7 +15,7 @@ static gpointer parent_iface = NULL;
 #define CONTING_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_LINE, ContingLinePrivate))
 
-#define TOLERANCE 3
+#define TOLERANCE CONTING_DRAWING_TOLERANCE
 #define SIZE ((TOLERANCE * 2) - 1)
 
 typedef struct ContingLinePrivate_ ContingLinePrivate;
@@ -36,7 +36,25 @@ struct ContingLinePrivate_ {
 };
 
 static void
-conting_line_draw_cr(ContingDrawing *self, cairo_t *cr)
+conting_line_draw_selection(ContingDrawing *self,
+		ContingDrawingBoxDrawer drawer)
+{
+    ContingLinePrivate *priv;
+	GList *n;
+	
+    g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+    priv = CONTING_LINE_GET_PRIVATE(self);
+
+	for (n = priv->points; n != NULL; n = g_list_next(n)) {
+		ArtPoint *p = n->data;
+		drawer(self, p->x, p->y);
+	}
+
+}
+
+static void
+conting_line_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingLinePrivate *priv;
 	GList *n;
@@ -58,16 +76,6 @@ conting_line_draw_cr(ContingDrawing *self, cairo_t *cr)
 	cairo_set_line_width(cr, width);
 
 	pw0 = priv->points->data;
-	if (conting_drawing_is_selected(self)) {
-		cairo_move_to(cr, pw0->x - TOLERANCE, pw0->y - TOLERANCE);
-		cairo_line_to(cr, pw0->x - TOLERANCE + SIZE, pw0->y - TOLERANCE);
-		cairo_line_to(cr, pw0->x - TOLERANCE + SIZE, pw0->y - TOLERANCE + SIZE);
-		cairo_line_to(cr, pw0->x - TOLERANCE, pw0->y - TOLERANCE + SIZE);
-		cairo_line_to(cr, pw0->x - TOLERANCE, pw0->y - TOLERANCE);
-		cairo_set_source_rgb(cr, 0, 0, 0);
-		cairo_fill(cr);
-		cairo_stroke(cr);
-	}
 
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		pw1 = n->data;
@@ -78,18 +86,6 @@ conting_line_draw_cr(ContingDrawing *self, cairo_t *cr)
 		cairo_move_to(cr, pw0->x, pw0->y);
 		cairo_line_to(cr, pw1->x, pw1->y);
 		cairo_stroke(cr);
-
-		if (conting_drawing_is_selected(self)) {
-			cairo_move_to(cr, pw1->x - TOLERANCE, pw1->y - TOLERANCE);
-			cairo_line_to(cr, pw1->x - TOLERANCE + SIZE, pw1->y - TOLERANCE);
-			cairo_line_to(cr, pw1->x - TOLERANCE + SIZE,
-					pw1->y - TOLERANCE + SIZE);
-			cairo_line_to(cr, pw1->x - TOLERANCE, pw1->y - TOLERANCE + SIZE);
-			cairo_line_to(cr, pw1->x - TOLERANCE, pw1->y - TOLERANCE);
-			cairo_set_source_rgb(cr, 0, 0, 0);
-			cairo_fill(cr);
-			cairo_stroke(cr);
-		}
 
 
 		pw0 = pw1;
@@ -103,16 +99,6 @@ conting_line_draw_cr(ContingDrawing *self, cairo_t *cr)
 		cairo_stroke(cr);
 	}
 }
-static void
-conting_line_draw(ContingDrawing *self,
-                  GdkDrawable *drawable,
-                  const GdkRectangle *drawing_rect)
-{
-	cairo_t *cr = get_cr(self, drawable);
-	conting_line_draw_cr(self, cr);
-	cairo_destroy(cr);
-}
-
 
 void
 conting_line_get_links(ContingLine *self,
@@ -971,6 +957,7 @@ conting_line_class_init(gpointer g_class, gpointer class_data) {
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_line_draw;
+    drawing_class->draw_selection = conting_line_draw_selection;
 	drawing_class->get_bounds = conting_line_get_bounds;
 	drawing_class->get_update_bounds = conting_line_get_bounds;
 	drawing_class->place = conting_line_place;

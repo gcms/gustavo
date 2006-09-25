@@ -62,4 +62,6 @@ void conting_one_line_load_data(ContingOneLine *self, const char *filename);
 void conting_one_line_open(ContingOneLine *self, const char *filename);
 
 void conting_one_line_edit(ContingOneLine *self, ContingDrawing *drawing);
+
+cairo_t * conting_drawing_get_cairo(ContingDrawing *drawing);
 #endif /* CONTING_ONE_LINE_H */

@@ -26,11 +26,10 @@ struct ContingTrans2Private_ {
 };
 
 static void
-conting_trans2_draw_cairo(ContingDrawing *self, cairo_t *cr)
+conting_trans2_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingTrans2Private *priv;
     ContingComponent *comp;
-    gdouble affine[6];
     ArtPoint pw0, pw1;
     GdkRectangle rect;
 
@@ -38,8 +37,6 @@ conting_trans2_draw_cairo(ContingDrawing *self, cairo_t *cr)
 
     priv = CONTING_TRANS2_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
-
-    conting_drawing_get_i2w_affine(self, affine);
 
     pw0 = comp->p0;
     pw1 = comp->p1;
@@ -75,18 +72,8 @@ conting_trans2_draw_cairo(ContingDrawing *self, cairo_t *cr)
 			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
-}
 
-static void
-conting_trans2_draw(ContingDrawing *self,
-                    GdkDrawable *drawable,
-                    const GdkRectangle *drawing_rect)
-{
-	cairo_t *cr = get_cr(self, drawable);
-	conting_trans2_draw_cairo(self, cr);
-	cairo_destroy(cr);
-
-	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
+	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
 }
 
 

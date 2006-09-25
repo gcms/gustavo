@@ -23,9 +23,7 @@ struct ContingGroupPrivate_ {
 };
 
 static void
-conting_group_draw(ContingDrawing *self,
-                  GdkDrawable *drawable,
-                  const GdkRectangle *drawing_rect)
+conting_group_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingGroupPrivate *priv;
 	GSList *n;
@@ -36,11 +34,13 @@ conting_group_draw(ContingDrawing *self,
 
 	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 		ContingDrawing *drawing = n->data;
+		cairo_t *ch_cr = conting_drawing_get_cairo(drawing);
 
 		conting_drawing_set_selected(drawing,
 				conting_drawing_is_selected(self));
 
-		conting_drawing_draw(drawing, drawable, drawing_rect);
+		conting_drawing_draw(drawing, ch_cr);
+		cairo_destroy(ch_cr);
 	}
 }
 static void
