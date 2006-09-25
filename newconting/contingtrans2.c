@@ -26,29 +26,13 @@ struct ContingTrans2Private_ {
 };
 
 static void
-conting_trans2_draw(ContingDrawing *self,
-                    GdkDrawable *drawable,
-                    const GdkRectangle *drawing_rect)
+conting_trans2_draw_cairo(ContingDrawing *self, cairo_t *cr)
 {
     ContingTrans2Private *priv;
     ContingComponent *comp;
     gdouble affine[6];
     ArtPoint pw0, pw1;
     GdkRectangle rect;
-	cairo_t *cr;
-/*
-    static GdkGC *gc = NULL;
-    if (gc == NULL) {
-        static GdkColor color;
-        gdk_color_parse("black", &color);
-        gc = gdk_gc_new(drawable);
-        gdk_gc_set_foreground(gc, &color);
-        gdk_gc_set_background(gc, &color);
-        gdk_gc_set_rgb_fg_color(gc, &color);
-        gdk_gc_set_rgb_bg_color(gc, &color);
-        gdk_gc_set_fill(gc, GDK_SOLID);
-    }
-	*/
 
     g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
 
@@ -61,19 +45,11 @@ conting_trans2_draw(ContingDrawing *self,
     pw1 = comp->p1;
     pw1.y = pw1.y - (pw1.y - pw0.y) / 3;
 
-    art_affine_point(&pw0, &pw0, affine);
-    art_affine_point(&pw1, &pw1, affine);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw0.x, pw0.y, &pw0.x, &pw0.y);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw1.x, pw1.y, &pw1.x, &pw1.y);
-
     rect.x = (pw0.x < pw1.x ? pw0.x : pw1.x);
     rect.y = (pw0.y < pw1.y ? pw0.y : pw1.y);
     rect.width = fabs(pw1.x - pw0.x);
     rect.height = fabs(pw1.y - pw0.y);
 
-	cr = gdk_cairo_create(drawable);
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 
 	cairo_arc(cr,
@@ -82,21 +58,10 @@ conting_trans2_draw(ContingDrawing *self,
 			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
-	/*
-    gdk_draw_arc(drawable, gc, FALSE,
-            rect.x, rect.y, rect.width, rect.height, 0, 360 * 64);
-			*/
 
     pw0 = comp->p0;
     pw1 = comp->p1;
     pw0.y = pw0.y + (pw1.y - pw0.y) / 3;
-
-    art_affine_point(&pw0, &pw0, affine);
-    art_affine_point(&pw1, &pw1, affine);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw0.x, pw0.y, &pw0.x, &pw0.y);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw1.x, pw1.y, &pw1.x, &pw1.y);
 
     rect.x = (pw0.x < pw1.x ? pw0.x : pw1.x);
     rect.y = (pw0.y < pw1.y ? pw0.y : pw1.y);
@@ -110,23 +75,20 @@ conting_trans2_draw(ContingDrawing *self,
 			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
+}
 
+static void
+conting_trans2_draw(ContingDrawing *self,
+                    GdkDrawable *drawable,
+                    const GdkRectangle *drawing_rect)
+{
+	cairo_t *cr = get_cr(self, drawable);
+	conting_trans2_draw_cairo(self, cr);
 	cairo_destroy(cr);
-/*
-    gdk_draw_arc(drawable, gc, FALSE,
-            rect.x, rect.y, rect.width, rect.height, 0, 360 * 64);
-			*/
-
-
-    art_affine_point(&pw0, &comp->p0, affine);
-    art_affine_point(&pw1, &comp->p1, affine);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw0.x, pw0.y, &pw0.x, &pw0.y);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw1.x, pw1.y, &pw1.x, &pw1.y);
 
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
 }
+
 
 static void
 conting_trans2_finalize(GObject *self)

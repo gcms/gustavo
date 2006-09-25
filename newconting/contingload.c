@@ -6,24 +6,16 @@
 
 static gpointer parent_class = NULL;
 
+
 static void
-conting_load_draw(ContingDrawing *self,
-                    GdkDrawable *drawable,
-                    const GdkRectangle *drawing_rect)
+conting_load_draw_cairo(ContingDrawing *self, cairo_t *cr)
 {
     ContingComponent *comp;
-	
-    gdouble affine[6];
-
     ArtPoint pw0, pw1, pw2;
-
-	cairo_t *cr;
 
     g_return_if_fail(self != NULL && CONTING_IS_LOAD(self));
 
     comp = CONTING_COMPONENT(self);
-
-    conting_drawing_get_i2w_affine(self, affine);
 
     pw0 = comp->p0;
     pw1 = comp->p1;
@@ -37,18 +29,6 @@ conting_load_draw(ContingDrawing *self,
 	pw2.x = comp->p0.x;
 	pw2.y = comp->p0.y + (comp->p1.y - comp->p0.y) / 2.0;
 
-    art_affine_point(&pw0, &pw0, affine);
-    art_affine_point(&pw1, &pw1, affine);
-    art_affine_point(&pw2, &pw2, affine);
-
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw0.x, pw0.y, &pw0.x, &pw0.y);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw1.x, pw1.y, &pw1.x, &pw1.y);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw2.x, pw2.y, &pw2.x, &pw2.y);
-
-	cr = gdk_cairo_create(drawable);
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 
 	cairo_move_to(cr, pw0.x, pw0.y);
@@ -58,6 +38,18 @@ conting_load_draw(ContingDrawing *self,
 	cairo_fill_preserve(cr);
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
+}
+
+static void
+conting_load_draw(ContingDrawing *self,
+                    GdkDrawable *drawable,
+                    const GdkRectangle *drawing_rect)
+{
+	cairo_t *cr;
+
+	cr = get_cr(self, drawable);
+	conting_load_draw_cairo(self, cr);
+	cairo_destroy(cr);
 
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
 }

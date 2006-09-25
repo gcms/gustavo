@@ -454,6 +454,21 @@ conting_one_line_world_to_window(ContingOneLine *self,
  *      *win_y = (world_y - priv->scrolling_area.y0) * priv->ppu;
  */
 }
+
+void
+conting_one_line_world_to_window_affine(ContingOneLine *self,
+		gdouble affine[6])
+{
+    ContingOneLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	art_affine_translate(affine, -priv->scrolling_area.x0,
+			-priv->scrolling_area.y0);
+	art_affine_scale(affine, priv->ppu, priv->ppu);
+}
 void
 conting_one_line_delete_drawing(ContingOneLine *self,
                                 ContingDrawing *drawing)
