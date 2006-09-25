@@ -36,99 +36,59 @@ struct ContingLinePrivate_ {
 };
 
 static void
-conting_line_draw(ContingDrawing *self,
-                  GdkDrawable *drawable,
-                  const GdkRectangle *drawing_rect)
+conting_line_draw_cr(ContingDrawing *self, cairo_t *cr)
 {
     ContingLinePrivate *priv;
-	gdouble affine[6];
 	GList *n;
-	ArtPoint pw0, pw1;
+	ArtPoint *pw0, *pw1;
 	gdouble width;
-	cairo_t *cr;
-/*
-    static GdkGC *gc = NULL;
-    if (gc == NULL) {
-        static GdkColor color;
-        gdk_color_parse("black", &color);
-        gc = gdk_gc_new(drawable);
-        gdk_gc_set_foreground(gc, &color);
-        gdk_gc_set_background(gc, &color);
-		gdk_gc_set_rgb_fg_color(gc, &color);
-		gdk_gc_set_rgb_bg_color(gc, &color);
-		gdk_gc_set_fill(gc, GDK_SOLID);
-    }
-	*/
-	g_object_get(conting_drawing_get_one_line(self),
-			"ppu", &width,
-			NULL);
-	/*
-	gdk_gc_set_line_attributes(gc, (gint) width, GDK_LINE_SOLID,
-			GDK_CAP_NOT_LAST,
-			GDK_JOIN_MITER);
-			*/
-
+	
     g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
 
     priv = CONTING_LINE_GET_PRIVATE(self);
 
-	conting_drawing_get_i2w_affine(self, affine);
+	g_object_get(conting_drawing_get_one_line(self),
+			"ppu", &width,
+			NULL);
 
 	if (!priv->placing && !priv->placed)
 		return;
-	cr = gdk_cairo_create(drawable);
+	
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 	cairo_set_line_width(cr, width);
 
-	pw0 = *((ArtPoint *) priv->points->data);
-	art_affine_point(&pw0, &pw0, affine);
-	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-			pw0.x, pw0.y, &pw0.x, &pw0.y);
+	pw0 = priv->points->data;
 	if (conting_drawing_is_selected(self)) {
-		cairo_move_to(cr, pw0.x - TOLERANCE, pw0.y - TOLERANCE);
-		cairo_line_to(cr, pw0.x - TOLERANCE + SIZE, pw0.y - TOLERANCE);
-		cairo_line_to(cr, pw0.x - TOLERANCE + SIZE, pw0.y - TOLERANCE + SIZE);
-		cairo_line_to(cr, pw0.x - TOLERANCE, pw0.y - TOLERANCE + SIZE);
-		cairo_line_to(cr, pw0.x - TOLERANCE, pw0.y - TOLERANCE);
+		cairo_move_to(cr, pw0->x - TOLERANCE, pw0->y - TOLERANCE);
+		cairo_line_to(cr, pw0->x - TOLERANCE + SIZE, pw0->y - TOLERANCE);
+		cairo_line_to(cr, pw0->x - TOLERANCE + SIZE, pw0->y - TOLERANCE + SIZE);
+		cairo_line_to(cr, pw0->x - TOLERANCE, pw0->y - TOLERANCE + SIZE);
+		cairo_line_to(cr, pw0->x - TOLERANCE, pw0->y - TOLERANCE);
 		cairo_set_source_rgb(cr, 0, 0, 0);
 		cairo_fill(cr);
 		cairo_stroke(cr);
-		/*
-		gdk_draw_rectangle(drawable, gc, TRUE,
-				pw0.x - TOLERANCE, pw0.y - TOLERANCE, SIZE, SIZE);
-				*/
 	}
 
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
-		pw1 = *((ArtPoint *) n->data);
-		art_affine_point(&pw1, &pw1, affine);
-		conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-				pw1.x, pw1.y, &pw1.x, &pw1.y);
+		pw1 = n->data;
 
 		g_print("drawing: (%lf, %lf); (%lf, %lf)\n",
-				pw0.x, pw0.y, pw1.x, pw1.y);
-		cairo_move_to(cr, pw0.x, pw0.y);
-		cairo_line_to(cr, pw1.x, pw1.y);
+				pw0->x, pw0->y, pw1->x, pw1->y);
+
+		cairo_move_to(cr, pw0->x, pw0->y);
+		cairo_line_to(cr, pw1->x, pw1->y);
 		cairo_stroke(cr);
-		/*
-		gdk_draw_line(drawable, gc,
-				(gint) pw0.x, (gint) pw0.y,
-				(gint) pw1.x, (gint) pw1.y);
-				*/
+
 		if (conting_drawing_is_selected(self)) {
-			cairo_move_to(cr, pw1.x - TOLERANCE, pw1.y - TOLERANCE);
-			cairo_line_to(cr, pw1.x - TOLERANCE + SIZE, pw1.y - TOLERANCE);
-			cairo_line_to(cr, pw1.x - TOLERANCE + SIZE,
-					pw1.y - TOLERANCE + SIZE);
-			cairo_line_to(cr, pw1.x - TOLERANCE, pw1.y - TOLERANCE + SIZE);
-			cairo_line_to(cr, pw1.x - TOLERANCE, pw1.y - TOLERANCE);
+			cairo_move_to(cr, pw1->x - TOLERANCE, pw1->y - TOLERANCE);
+			cairo_line_to(cr, pw1->x - TOLERANCE + SIZE, pw1->y - TOLERANCE);
+			cairo_line_to(cr, pw1->x - TOLERANCE + SIZE,
+					pw1->y - TOLERANCE + SIZE);
+			cairo_line_to(cr, pw1->x - TOLERANCE, pw1->y - TOLERANCE + SIZE);
+			cairo_line_to(cr, pw1->x - TOLERANCE, pw1->y - TOLERANCE);
 			cairo_set_source_rgb(cr, 0, 0, 0);
 			cairo_fill(cr);
 			cairo_stroke(cr);
-			/*
-			gdk_draw_rectangle(drawable, gc, TRUE,
-					pw1.x - TOLERANCE, pw1.y - TOLERANCE, SIZE, SIZE);
-					*/
 		}
 
 
@@ -136,23 +96,24 @@ conting_line_draw(ContingDrawing *self,
 	}
 
 	if (priv->placing) {
-		pw1 = priv->placing_point;
-		art_affine_point(&pw1, &pw1, affine);
-		conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-				pw1.x, pw1.y, &pw1.x, &pw1.y);
+		pw1 = &priv->placing_point;
 
-		cairo_move_to(cr, pw0.x, pw0.y);
-		cairo_line_to(cr, pw1.x, pw1.y);
+		cairo_move_to(cr, pw0->x, pw0->y);
+		cairo_line_to(cr, pw1->x, pw1->y);
 		cairo_stroke(cr);
-		/*
-		gdk_draw_line(drawable, gc,
-				(gint) pw0.x, (gint) pw0.y,
-				(gint) pw1.x, (gint) pw1.y);
-				*/
 	}
-
+}
+static void
+conting_line_draw(ContingDrawing *self,
+                  GdkDrawable *drawable,
+                  const GdkRectangle *drawing_rect)
+{
+	cairo_t *cr = get_cr(self, drawable);
+	conting_line_draw_cr(self, cr);
 	cairo_destroy(cr);
 }
+
+
 void
 conting_line_get_links(ContingLine *self,
 		ContingComponent **comp0, ContingComponent **comp1)

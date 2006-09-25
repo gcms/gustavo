@@ -21,6 +21,28 @@ struct ContingBusPrivate_ {
 	ArtPoint *start_resize;
 };
 
+
+cairo_t *
+get_cr(ContingDrawing *self, GdkDrawable *drawable)
+{
+	cairo_t *cr;
+	ContingOneLine *oneline;
+	gdouble affine[6];
+
+	cr = gdk_cairo_create(drawable);
+
+	g_object_get(self, "one-line", &oneline, NULL);
+	conting_one_line_world_to_window_affine(oneline, affine);
+	cairo_transform(cr, (cairo_matrix_t *) affine);
+
+	conting_drawing_get_i2w_affine(self, affine);
+	cairo_transform(cr, (cairo_matrix_t *) affine);
+	
+	return cr;
+
+}
+
+
 static void
 conting_bus_draw(ContingDrawing *self,
                   GdkDrawable *drawable,
@@ -28,59 +50,22 @@ conting_bus_draw(ContingDrawing *self,
 {
     ContingBusPrivate *priv;
     ContingComponent *comp;
-	gdouble affine[6];
-    ArtPoint pw0, pw1;
-	GdkRectangle rect;
 	cairo_t *cr;
-/*
-    static GdkGC *gc = NULL;
-    if (gc == NULL) {
-        static GdkColor color;
-        gdk_color_parse("black", &color);
-        gc = gdk_gc_new(drawable);
-        gdk_gc_set_foreground(gc, &color);
-        gdk_gc_set_background(gc, &color);
-		gdk_gc_set_rgb_fg_color(gc, &color);
-		gdk_gc_set_rgb_bg_color(gc, &color);
-		gdk_gc_set_fill(gc, GDK_SOLID);
-    }
-	*/
 
     g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	conting_drawing_get_i2w_affine(self, affine);
-
-    art_affine_point(&pw0, &comp->p0, affine);
-    art_affine_point(&pw1, &comp->p1, affine);
-
-	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-			pw0.x, pw0.y, &pw0.x, &pw0.y);
-	conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-			pw1.x, pw1.y, &pw1.x, &pw1.y);
-
-/*
-	g_print("drawing: (%lf, %lf); (%lf, %lf)\n", pw0.x, pw0.y, pw1.x, pw1.y);
-	*/
-	
-	rect.x = (gint) (pw0.x < pw1.x ? pw0.x : pw1.x);
-	rect.y = (gint) (pw0.y < pw1.y ? pw0.y : pw1.y);
-	rect.width = (gint) fabs(pw0.x - pw1.x);
-	rect.height = (gint) fabs(pw0.y - pw1.y);
-/*
-	gdk_draw_rectangle(drawable, gc, TRUE,
-			rect.x, rect.y, rect.width, rect.height);
-			*/
-	cr = gdk_cairo_create(drawable);
+	cr = get_cr(self, drawable);
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 	
-	cairo_move_to(cr, rect.x, rect.y);
-	cairo_line_to(cr, rect.x + rect.width, rect.y);
-	cairo_line_to(cr, rect.x + rect.width, rect.y + rect.height);
-	cairo_line_to(cr, rect.x, rect.y + rect.height);
-	cairo_line_to(cr, rect.x, rect.y);
+	cairo_move_to(cr, comp->p0.x, comp->p0.y);
+	cairo_line_to(cr, comp->p1.x, comp->p0.y);
+	cairo_line_to(cr, comp->p1.x, comp->p1.y);
+	cairo_line_to(cr, comp->p0.x, comp->p1.y);
+	cairo_line_to(cr, comp->p0.x, comp->p0.y);
+
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_fill(cr);
 	cairo_stroke(cr);

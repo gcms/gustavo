@@ -40,6 +40,8 @@ void conting_one_line_window_to_world(ContingOneLine *self,
 void conting_one_line_world_to_window(ContingOneLine *self,
 		                         gdouble world_x, gdouble world_y,
 								 gdouble *win_x, gdouble *win_y);
+void conting_one_line_world_to_window_affine(ContingOneLine *self,
+		gdouble affine[6]);
 void conting_one_line_grab(ContingOneLine *self,
 		              ContingDrawing *grabbed_drawing);
 void conting_one_line_ungrab(ContingOneLine *self,

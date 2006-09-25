@@ -7,44 +7,27 @@
 static gpointer parent_class = NULL;
 
 static void
-conting_gen_draw(ContingDrawing *self,
-                    GdkDrawable *drawable,
-                    const GdkRectangle *drawing_rect)
+conting_gen_draw_cairo(ContingDrawing *self, cairo_t *cr)
 {
     ContingSymbol *symb;
     ContingComponent *comp;
-	
-    gdouble affine[6];
 
     ArtPoint pw0, pw1;
     GdkRectangle rect;
-
-	cairo_t *cr;
 
     g_return_if_fail(self != NULL && CONTING_IS_GEN(self));
 
     symb = CONTING_SYMBOL(self);
     comp = CONTING_COMPONENT(self);
 
-    conting_drawing_get_i2w_affine(self, affine);
-
     pw0 = comp->p0;
     pw1 = comp->p1;
-
-    art_affine_point(&pw0, &pw0, affine);
-    art_affine_point(&pw1, &pw1, affine);
-
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw0.x, pw0.y, &pw0.x, &pw0.y);
-    conting_one_line_world_to_window(conting_drawing_get_one_line(self),
-            pw1.x, pw1.y, &pw1.x, &pw1.y);
 
     rect.x = (pw0.x < pw1.x ? pw0.x : pw1.x);
     rect.y = (pw0.y < pw1.y ? pw0.y : pw1.y);
     rect.width = fabs(pw1.x - pw0.x);
     rect.height = fabs(pw1.y - pw0.y);
 
-	cr = gdk_cairo_create(drawable);
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 
 	cairo_arc(cr,
@@ -67,9 +50,21 @@ conting_gen_draw(ContingDrawing *self,
 			(gdouble) rect.width / 8.0, M_PI, 2 * M_PI);
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
+}
+static void
+conting_gen_draw(ContingDrawing *self,
+                    GdkDrawable *drawable,
+                    const GdkRectangle *drawing_rect)
+{
+	cairo_t *cr;
+
+	cr = get_cr(self, drawable);
+	conting_gen_draw_cairo(self, cr);
+	cairo_destroy(cr);
 
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
 }
+
 
 static void
 conting_gen_instance_init(GTypeInstance *self,
