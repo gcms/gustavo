@@ -22,12 +22,11 @@ struct ContingTrans3Private_ {
 };
 
 static void
-conting_trans3_draw_cairo(ContingDrawing *self, cairo_t *cr)
+conting_trans3_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingTrans3Private *priv;
     ContingComponent *comp;
     ArtPoint pw0, pw1;
-    GdkRectangle rect;
 
     g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
 
@@ -74,18 +73,8 @@ conting_trans3_draw_cairo(ContingDrawing *self, cairo_t *cr)
 			(pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
-}
 
-static void
-conting_trans3_draw(ContingDrawing *self,
-                    GdkDrawable *drawable,
-                    const GdkRectangle *drawing_rect)
-{
-	cairo_t *cr = get_cr(self, drawable);
-	conting_trans3_draw_cairo(self, cr);
-	cairo_destroy(cr);
-
-	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
+	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
 }
 
 static void

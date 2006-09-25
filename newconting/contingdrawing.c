@@ -62,14 +62,38 @@ conting_drawing_get_center_impl(ContingDrawing *self,
 	pw_dst->y = bounds.y0 + fabs(bounds.y0 - bounds.y1) / 2;
 }
 
+#define TOLERANCE CONTING_DRAWING_TOLERANCE
 void
-conting_drawing_draw(ContingDrawing *self,
-                     GdkDrawable *drawable,
-                     const GdkRectangle *drawing_rect)
+conting_drawing_draw_box(ContingDrawing *self,
+		gdouble x, gdouble y)
+{
+	cairo_t *cr = conting_drawing_get_cairo(self);
+
+	cairo_move_to(cr, x - TOLERANCE, y - TOLERANCE);
+	cairo_line_to(cr, x - TOLERANCE, y + TOLERANCE);
+	cairo_line_to(cr, x + TOLERANCE, y + TOLERANCE);
+	cairo_line_to(cr, x + TOLERANCE, y - TOLERANCE);
+	cairo_line_to(cr, x - TOLERANCE, y - TOLERANCE);
+
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_fill(cr);
+	cairo_stroke(cr);
+
+	cairo_destroy(cr);
+}
+
+void
+conting_drawing_draw(ContingDrawing *self, cairo_t *cr)
 {
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-    CONTING_DRAWING_GET_CLASS(self)->draw(self, drawable, drawing_rect);
+    CONTING_DRAWING_GET_CLASS(self)->draw(self, cr);
+
+	if (conting_drawing_is_selected(self)) {
+		if (CONTING_DRAWING_GET_CLASS(self)->draw_selection)
+			CONTING_DRAWING_GET_CLASS(self)->draw_selection(self,
+					conting_drawing_draw_box);
+	}
 }
 
 ContingOneLine *
@@ -708,6 +732,7 @@ conting_drawing_class_init(gpointer g_class,
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = NULL;
+	drawing_class->draw_selection = NULL;
     drawing_class->get_bounds = NULL;
     drawing_class->get_update_bounds = NULL;
     drawing_class->place = NULL;

@@ -8,7 +8,7 @@ static gpointer parent_class = NULL;
 
 
 static void
-conting_load_draw_cairo(ContingDrawing *self, cairo_t *cr)
+conting_load_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingComponent *comp;
     ArtPoint pw0, pw1, pw2;
@@ -38,20 +38,8 @@ conting_load_draw_cairo(ContingDrawing *self, cairo_t *cr)
 	cairo_fill_preserve(cr);
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
-}
 
-static void
-conting_load_draw(ContingDrawing *self,
-                    GdkDrawable *drawable,
-                    const GdkRectangle *drawing_rect)
-{
-	cairo_t *cr;
-
-	cr = get_cr(self, drawable);
-	conting_load_draw_cairo(self, cr);
-	cairo_destroy(cr);
-
-	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
+	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
 }
 static void
 conting_load_instance_init(GTypeInstance *self,
@@ -63,10 +51,10 @@ conting_load_instance_init(GTypeInstance *self,
 
     comp = CONTING_COMPONENT(self);
 
-    comp->p0.x = -2;
-    comp->p0.y = -2;
-    comp->p1.x = 2;
-    comp->p1.y = 2;
+    comp->p0.x = -3;
+    comp->p0.y = -3;
+    comp->p1.x = 3;
+    comp->p1.y = 3;
 }
 
 static void

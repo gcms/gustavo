@@ -22,42 +22,19 @@ struct ContingBusPrivate_ {
 };
 
 
-cairo_t *
-get_cr(ContingDrawing *self, GdkDrawable *drawable)
-{
-	cairo_t *cr;
-	ContingOneLine *oneline;
-	gdouble affine[6];
-
-	cr = gdk_cairo_create(drawable);
-
-	g_object_get(self, "one-line", &oneline, NULL);
-	conting_one_line_world_to_window_affine(oneline, affine);
-	cairo_transform(cr, (cairo_matrix_t *) affine);
-
-	conting_drawing_get_i2w_affine(self, affine);
-	cairo_transform(cr, (cairo_matrix_t *) affine);
-	
-	return cr;
-
-}
 
 
 static void
-conting_bus_draw(ContingDrawing *self,
-                  GdkDrawable *drawable,
-                  const GdkRectangle *drawing_rect)
+conting_bus_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingBusPrivate *priv;
     ContingComponent *comp;
-	cairo_t *cr;
 
     g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
 
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	cr = get_cr(self, drawable);
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 	
 	cairo_move_to(cr, comp->p0.x, comp->p0.y);
@@ -105,9 +82,8 @@ conting_bus_draw(ContingDrawing *self,
 end_block:
 */
 
-	cairo_destroy(cr);
 
-	CONTING_DRAWING_CLASS(parent_class)->draw(self, drawable, drawing_rect);
+	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
 }
 static void
 conting_bus_finalize(GObject *self)

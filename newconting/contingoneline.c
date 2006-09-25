@@ -52,6 +52,36 @@ struct ContingOneLinePrivate_ {
 	ContingDrawing *entered_drawing;
 };
 
+cairo_t *
+conting_drawing_get_cairo(ContingDrawing *drawing)
+{
+	cairo_t *cr;
+	ContingOneLine *oneline;
+	ContingOneLinePrivate *priv;
+	gdouble affine[6];
+
+	g_return_val_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing),
+			NULL);
+
+	g_object_get(drawing, "one-line", &oneline, NULL);
+
+	g_return_val_if_fail(oneline != NULL && CONTING_IS_ONE_LINE(oneline),
+			NULL);
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(oneline);
+
+	cr = gdk_cairo_create(priv->widget->window);
+
+	conting_one_line_world_to_window_affine(oneline, affine);
+	cairo_transform(cr, (cairo_matrix_t *) affine);
+
+	conting_drawing_get_i2w_affine(drawing, affine);
+	cairo_transform(cr, (cairo_matrix_t *) affine);
+	
+	return cr;
+
+}
+
 static void
 conting_one_line_dialog_drawing(ContingOneLine *self, ContingDrawing *drawing)
 {
@@ -310,7 +340,7 @@ conting_one_line_answer(ContingOneLine *self,
 
     return list;
 }
-#define TOLERANCE 3
+#define TOLERANCE CONTING_DRAWING_TOLERANCE
 void
 conting_one_line_update(ContingOneLine *self,
                         ArtDRect *bounds)
@@ -327,7 +357,7 @@ conting_one_line_update(ContingOneLine *self,
 		return;
 	}
 
-	conting_util_expand_bounds(bounds, TOLERANCE);
+	conting_util_expand_bounds(bounds, TOLERANCE + 2);
 
     conting_one_line_world_to_window(self,
             bounds->x0, bounds->y0,
@@ -931,8 +961,12 @@ widget_expose_event(GtkWidget *widget,
             widget->allocation.width, widget->allocation.height);
 
     for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
-        conting_drawing_draw(CONTING_DRAWING(n->data),
-                priv->widget->window, &widget->allocation);
+		ContingDrawing *drawing = n->data;
+		cairo_t *cr = conting_drawing_get_cairo(drawing);
+
+        conting_drawing_draw(drawing, cr);
+
+		cairo_destroy(cr);
     }
 
     switch (priv->state) {
@@ -961,8 +995,13 @@ widget_expose_event(GtkWidget *widget,
         case CONTING_ONE_LINE_NONE:
             break;
         case CONTING_ONE_LINE_CREATED:
-            conting_drawing_draw(CONTING_DRAWING(priv->placing_drawing),
-                    priv->widget->window, &widget->allocation);
+			{
+				cairo_t *cr = conting_drawing_get_cairo(priv->placing_drawing);
+
+				conting_drawing_draw(priv->placing_drawing, cr);
+
+				cairo_destroy(cr);
+			}
             break;
 		default:
 			break;
