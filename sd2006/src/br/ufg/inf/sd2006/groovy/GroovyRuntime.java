@@ -1,10 +1,9 @@
 package br.ufg.inf.sd2006.groovy;
 
-import java.io.IOException;
+import groovy.util.Proxy;
+
 import java.net.UnknownHostException;
 
-import groovy.util.Proxy;
-import br.ufg.inf.sd2006.CommunicationException;
 import br.ufg.inf.sd2006.ObjectReference;
 import br.ufg.inf.sd2006.RemoteObject;
 
