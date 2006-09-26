@@ -13,15 +13,15 @@ public class SocketConnection implements ClientConnection, ServerConnection {
 
 	public Reply sendRequest(Request req) throws IOException {
 
-		System.out.println("sendRequest()");
+//		System.out.println("sendRequest()");
 		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
 		oos.writeObject(req);		
 		oos.flush();
-		System.out.println("Request written");
+//		System.out.println("Request written");
 
 		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-		System.out.println("reading reply");
+//		System.out.println("reading reply");
 		Reply r;
 		try {
 			r = (Reply) ois.readObject();
@@ -31,7 +31,7 @@ public class SocketConnection implements ClientConnection, ServerConnection {
 			return null;
 		}
 		
-		System.out.println("Reply read");
+//		System.out.println("Reply read");
 		
 		return r;
 	}
@@ -41,7 +41,7 @@ public class SocketConnection implements ClientConnection, ServerConnection {
 		
 		Request req;
 		try {
-			System.out.println("ois.readObject()");
+//			System.out.println("ois.readObject()");
 			req = (Request) ois.readObject();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

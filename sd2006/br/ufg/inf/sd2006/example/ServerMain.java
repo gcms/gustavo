@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufg.inf.sd2006.ConcreteBinder;
+import br.ufg.inf.sd2006.ObjectManager;
 import br.ufg.inf.sd2006.SDServer;
 
 public class ServerMain {
@@ -25,10 +27,13 @@ public class ServerMain {
 
 	public static void main(String[] args) throws IOException {
 		SDServer server = new SDServer(9000);
-		
-		server.getObjectManager().registerObject(new Lista());
-		server.getObjectManager().registerObject(new Somador());
-		
+
+		ObjectManager manager = server.getObjectManager();
+		ConcreteBinder binder = manager.getBinder();
+
+		binder.bind("lista", manager.registerObject(new Lista()));
+		binder.bind("somador", manager.registerObject(new Somador()));
+
 		server.run();
 	}
 }

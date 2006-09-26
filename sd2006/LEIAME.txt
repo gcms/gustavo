@@ -14,3 +14,12 @@ fazê-lo através de um ObjectReference que consiste em um identificador de
 objeto, o endereço da máquina em que o processo se encontra e o número da porta
 utilizada pela conexão deste processo. Um exemplo desta utilização encontra-se
 em br.ufg.inf.sd2006.example.ClientMain
+
+O objeto com identificar -1 em cada servidor é o binder, responsável por
+traduzir nomes em referencias de objeto. O objeto com identificador 0
+é responsável por listar os objetos registrados no servidor.
+
+Os programas ClientMain, ClientMain2 e ServerMain ilustram como utilizar a 
+arquitetura disponível.
+
+Gustavo Cipriano Mota Sousa <gustavomota@inf.ufg.br>
