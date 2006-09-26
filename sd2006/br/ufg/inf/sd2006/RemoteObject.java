@@ -13,7 +13,7 @@ public class RemoteObject {
 			throws IOException, ClassNotFoundException, CommunicationException {
 		Request request = new Request(objectReference, messageName, parameters);
 		
-		System.out.println("connecting to " + objectReference);
+//		System.out.println("connecting to " + objectReference);
 		Socket s = new Socket(objectReference.getInetAddress(), objectReference.getPort());
 		ClientConnection conn = new SocketConnection(s);
 
