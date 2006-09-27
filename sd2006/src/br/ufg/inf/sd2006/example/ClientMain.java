@@ -9,6 +9,7 @@ import br.ufg.inf.sd2006.ObjectReference;
 import br.ufg.inf.sd2006.RemoteObject;
 
 public class ClientMain {
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws IOException,
 			ClassNotFoundException, CommunicationException {
 		ObjectReference ref = new ObjectReference("localhost", 9000, 1);
@@ -25,8 +26,9 @@ public class ClientMain {
 		System.out.println(i);
 
 		obj = new RemoteObject(new ObjectReference("localhost", 9000, 0));
-		Set<ObjectReference> refs = (Set<ObjectReference>) obj.doOperation(
-				"listObjectReferences", new Object[] {});
+		Set<ObjectReference> doOperation = (Set<ObjectReference>) obj.doOperation(
+						"listObjectReferences", new Object[] {});
+		Set<ObjectReference> refs = doOperation;
 
 		System.out.println(refs);
 		for (ObjectReference r : refs) {
