@@ -292,11 +292,9 @@ conting_drawing_ungrab(ContingDrawing *self)
 void
 conting_drawing_update(ContingDrawing *self)
 {
-    ArtDRect bounds;
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-    conting_drawing_get_update_bounds(self, &bounds);
-    conting_one_line_update(conting_drawing_get_one_line(self), &bounds);
+    conting_one_line_update_drawing(conting_drawing_get_one_line(self), self);
 }
 void
 conting_drawing_set_selected(ContingDrawing *self,
@@ -822,4 +820,40 @@ conting_drawing_get_type(void)
     }
 
     return type;
+}
+gpointer
+conting_drawing_get_attr(ContingDrawing *self, const gchar *attr)
+{
+	ContingOneLine *oneline;
+	ContingData *data;
+	ContingItemData *item_data;
+	gpointer result;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), NULL);
+
+	g_object_get(self,
+			"one-line", &oneline,
+			NULL);
+
+	g_return_val_if_fail(oneline != NULL && CONTING_IS_ONE_LINE(oneline),
+			NULL);
+
+	g_object_get(oneline,
+			"data", &data,
+			NULL);
+
+	if (data == NULL)
+		return NULL;
+
+	item_data = conting_data_get(data, self);
+
+	if (item_data == NULL)
+		return NULL;
+	
+	result = NULL;
+	conting_item_data_get_attr(item_data,
+			attr, &result,
+			NULL);
+
+	return result;
 }

@@ -159,6 +159,11 @@ conting_line_get_buses(ContingLine *self,
 
 	priv = CONTING_LINE_GET_PRIVATE(self);
 
+	if (!conting_drawing_is_placed(CONTING_DRAWING(self))) {
+		*comp0 = *comp1 = NULL;
+		return;
+	}
+
 	assert(conting_drawing_is_placed(CONTING_DRAWING(self)));
 	assert(priv->comp0 && priv->comp1);
 
@@ -414,9 +419,9 @@ conting_line_link_moved(ContingComponent *comp,
 		assert(FALSE);
 	}
 
-	conting_one_line_update(
+	conting_one_line_update_drawing(
 			conting_drawing_get_one_line(CONTING_DRAWING(user_data)),
-			&bounds);
+			user_data);
 	conting_drawing_update(CONTING_DRAWING(user_data));
 }
 static void

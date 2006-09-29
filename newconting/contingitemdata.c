@@ -20,21 +20,17 @@ struct ContingItemDataPrivate_ {
 	ContingItemType type;
 	GTree *attrs;	/* <const gchar *><GValue *> */
 };
-
 void
-conting_item_data_set_attr(ContingItemData *self,
-		const gchar *attr, ...)
+conting_item_data_set_attr_valist(ContingItemData *self,
+		const gchar *attr, va_list ap)
 {
 	ContingItemDataPrivate *priv;
 	GType type;
 	GValue *value;
-	va_list ap;
 
 	g_return_if_fail(self != NULL && CONTING_IS_ITEM_DATA(self));
 
 	priv = CONTING_ITEM_DATA_GET_PRIVATE(self);
-
-	va_start(ap, attr);
 
 	while (attr) {
 		type = va_arg(ap, GType);
@@ -62,24 +58,31 @@ conting_item_data_set_attr(ContingItemData *self,
 
 		attr = va_arg(ap, const gchar *);
 	}
+}
+
+void
+conting_item_data_set_attr(ContingItemData *self,
+		const gchar *attr, ...)
+{
+	va_list ap;
+	va_start(ap, attr);
+
+	conting_item_data_set_attr_valist(self, attr, ap);
 
 	va_end(ap);
 }
 
 void
-conting_item_data_get_attr(ContingItemData *self,
-		const gchar *attr, ...)
+conting_item_data_get_attr_valist(ContingItemData *self,
+		const gchar *attr, va_list ap)
 {
 	ContingItemDataPrivate *priv;
 	GValue *value;
 	gpointer *pointer;
-	va_list ap;
 
 	g_return_if_fail(self != NULL && CONTING_IS_ITEM_DATA(self));
 
 	priv = CONTING_ITEM_DATA_GET_PRIVATE(self);
-
-	va_start(ap, attr);
 
 	while (attr) {
 		pointer = va_arg(ap, gpointer *);
@@ -108,6 +111,17 @@ conting_item_data_get_attr(ContingItemData *self,
 
 		attr = va_arg(ap, const gchar *);
 	}
+}
+
+void
+conting_item_data_get_attr(ContingItemData *self,
+		const gchar *attr, ...)
+{
+	va_list ap;
+	
+	va_start(ap, attr);
+	
+	conting_item_data_get_attr_valist(self, attr, ap);
 
 	va_end(ap);
 }
