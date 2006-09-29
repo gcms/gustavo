@@ -178,3 +178,6 @@ ligacao de ramos e componentes
 
 12/08/2006
 - Adicionado tooltips em ContingDrawing
+
+30/09/2006
+- Draw labels as operations
