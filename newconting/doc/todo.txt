@@ -203,3 +203,6 @@ uma interface
   -> Transformador de 3 enrolamentos
   -> Verificacao da consistencia da rede
   -> Serializacao de ContingData
+
+30/09/2006
+- Fix ContingGroup draw() method
