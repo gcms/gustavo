@@ -114,5 +114,7 @@ void conting_drawing_get_center(ContingDrawing *self,
 void conting_drawing_find_link(ContingDrawing *self,
 		ContingDrawingPredicate pred, gpointer user_data);
 
+gpointer conting_drawing_get_attr(ContingDrawing *self, const gchar *attr);
+
 
 #endif /* CONTING_DRAWING_H */

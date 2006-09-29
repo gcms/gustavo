@@ -9,6 +9,7 @@
 #include "contingfilecdf.h"
 #include "contingfilepeco.h"
 
+#include "contingdrawingoperation.h"
 #include "contingserializable.h"
 
 #include <assert.h>
@@ -50,7 +51,98 @@ struct ContingOneLinePrivate_ {
 
 	ContingDrawing *current_drawing;
 	ContingDrawing *entered_drawing;
+
+	GList *operations;
 };
+
+static void conting_one_line_update(ContingOneLine *self, ArtDRect *bounds);
+
+static const gchar *
+conting_drawing_return_attr(ContingDrawingOperation *opr,
+		ContingDrawing *drawing, gpointer user_data)
+{
+	const gchar *attr_name = user_data;
+
+	return conting_drawing_get_attr(drawing, attr_name);
+}
+
+
+static void
+conting_one_line_get_update_bounds(ContingOneLine *self,
+		ContingDrawing *drawing, ArtDRect *bounds)
+{
+	ContingOneLinePrivate *priv;
+	GList *n;
+	ArtDRect tmp_bounds;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+	
+	conting_drawing_get_update_bounds(drawing, bounds);
+
+	for (n = priv->operations; n != NULL; n = g_list_next(n)) {
+		ContingDrawingOperation *opr = n->data;
+
+		conting_drawing_operation_get_bounds(opr, drawing, &tmp_bounds);
+		conting_util_union_bounds(bounds, &tmp_bounds, bounds);
+	}
+}
+void
+conting_one_line_update_drawing(ContingOneLine *self, ContingDrawing *drawing)
+{
+	ArtDRect bounds;
+
+	conting_one_line_get_update_bounds(self, drawing, &bounds);
+
+	conting_one_line_update(self, &bounds);
+}
+
+static void
+conting_one_line_draw(ContingOneLine *self, ContingDrawing *drawing)
+{
+	ContingOneLinePrivate *priv;
+	cairo_t *cr;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	cr = conting_drawing_get_cairo(drawing);
+
+	conting_drawing_draw(drawing, cr);
+
+	cairo_destroy(cr);
+}
+
+cairo_t *
+conting_drawing_get_cairo_absolute(ContingDrawing *drawing)
+{
+	cairo_t *cr;
+	ContingOneLine *oneline;
+	ContingOneLinePrivate *priv;
+	gdouble affine[6];
+
+	g_return_val_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing),
+			NULL);
+
+	g_object_get(drawing, "one-line", &oneline, NULL);
+
+	g_return_val_if_fail(oneline != NULL && CONTING_IS_ONE_LINE(oneline),
+			NULL);
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(oneline);
+
+	cr = gdk_cairo_create(priv->widget->window);
+
+	conting_one_line_world_to_window_affine(oneline, affine);
+	cairo_transform(cr, (cairo_matrix_t *) affine);
+
+	return cr;
+
+}
 
 cairo_t *
 conting_drawing_get_cairo(ContingDrawing *drawing)
@@ -341,7 +433,7 @@ conting_one_line_answer(ContingOneLine *self,
     return list;
 }
 #define TOLERANCE CONTING_DRAWING_TOLERANCE
-void
+static void
 conting_one_line_update(ContingOneLine *self,
                         ArtDRect *bounds)
 {
@@ -553,7 +645,7 @@ conting_one_line_send_event(ContingOneLine *self,
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), FALSE);
 
-	conting_drawing_get_update_bounds(drawing, &bounds);
+	conting_one_line_get_update_bounds(self, drawing, &bounds);
 	result = conting_drawing_event(drawing, event);
 	conting_one_line_update(self, &bounds);
 	if (conting_one_line_contains(self, drawing)) {
@@ -951,6 +1043,7 @@ widget_expose_event(GtkWidget *widget,
                     gpointer user_data) {
     ContingOneLinePrivate *priv;
     GSList *n;
+	GList *opr_n;
 
     g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
             FALSE);
@@ -962,12 +1055,18 @@ widget_expose_event(GtkWidget *widget,
 
     for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 		ContingDrawing *drawing = n->data;
-		cairo_t *cr = conting_drawing_get_cairo(drawing);
 
-        conting_drawing_draw(drawing, cr);
+        conting_one_line_draw(user_data, drawing);
 
-		cairo_destroy(cr);
     }
+
+	for (opr_n = priv->operations; opr_n; opr_n = g_list_next(opr_n)) {
+		ContingDrawingOperation *opr = opr_n->data;
+
+		for (n = priv->drawings; n; n = g_slist_next(n)) {
+			conting_drawing_operation_draw(opr, n->data);
+		}
+	}
 
     switch (priv->state) {
 		case CONTING_ONE_LINE_SELECTING:
@@ -996,11 +1095,7 @@ widget_expose_event(GtkWidget *widget,
             break;
         case CONTING_ONE_LINE_CREATED:
 			{
-				cairo_t *cr = conting_drawing_get_cairo(priv->placing_drawing);
-
-				conting_drawing_draw(priv->placing_drawing, cr);
-
-				cairo_destroy(cr);
+				conting_one_line_draw(user_data, priv->placing_drawing);
 			}
             break;
 		default:
@@ -1191,6 +1286,18 @@ conting_one_line_instance_init(GTypeInstance *self,
 
 	priv->current_drawing = NULL;
 	priv->entered_drawing = NULL;
+
+	priv->operations = NULL;
+
+	{
+		ContingDrawingOperation *operation;
+		operation = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL, NULL);
+		g_object_set(operation,
+				"label-func", conting_drawing_return_attr,
+				"user-data", "name",
+				NULL);
+		priv->operations = g_list_append(priv->operations, operation);
+	}
 }
 
 GType

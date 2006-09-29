@@ -47,9 +47,13 @@ GType conting_item_data_get_type(void);
 
 void conting_item_data_set_attr(ContingItemData *self,
 		const gchar *first_attr, ...);
+void conting_item_data_set_attr_valist(ContingItemData *self,
+		const gchar *first_attr, va_list ap);
 
 void conting_item_data_get_attr(ContingItemData *self,
 		const gchar *first_attr, ...);
+void conting_item_data_get_attr_valist(ContingItemData *self,
+		const gchar *fist_attr, va_list ap);
 
 typedef void (*ContingItemDataAttrFunc)(const gchar *name, const GValue *value,
 		gpointer user_data);
