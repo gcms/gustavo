@@ -13,6 +13,14 @@
 static gint move_signal_id = 0;
 static gint delete_signal_id = 0;
 
+static gint mouse_signal_id = 0;
+
+static gint click_signal_id = 0;
+static gint double_click_signal_id = 0;
+
+static gint enter_signal_id = 0;
+static gint leave_signal_id = 0;
+
 enum {
     CONTING_DRAWING_PROP_0,
     CONTING_DRAWING_PROP_ONE_LINE,
