@@ -1,11 +1,11 @@
 CC=gcc
-CFLAGS=-Wall -g -mms-bitfields -IU:/GTK/include/gtk-2.0 -IU:/GTK/lib/gtk-2.0/include -IU:/GTK/include/atk-1.0 -IU:/GTK/include/cairo -IU:/GTK/include/pango-1.0 -IU:/GTK/include/glib-2.0 -IU:/GTK/lib/glib-2.0/include -IU:/GTK/include/libart-2.0  -IU:/GTK/include
-LIBS=U:/GTK/lib/*.a U:/GTK/bin/*.dll -lm
+CFLAGS=-Wall -g -mms-bitfields -ID:/GTK/include/gtk-2.0 -ID:/GTK/lib/gtk-2.0/include -ID:/GTK/include/atk-1.0 -ID:/GTK/include/cairo -ID:/GTK/include/pango-1.0 -ID:/GTK/include/glib-2.0 -ID:/GTK/lib/glib-2.0/include -ID:/GTK/include/libart-2.0  -ID:/GTK/include
+LIBS=D:/GTK/lib/*.a D:/GTK/bin/*.dll -lm
 
 all: build
-	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o -o main
+	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o -o main
 
-build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o
+build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o
 
 contingutil.o: contingutil.c
 	$(CC) $(CFLAGS) -c contingutil.c -o contingutil.o
@@ -51,6 +51,7 @@ clean:
 	rm -f contingutil.o
 	rm -f continggroup.o
 	rm -f contingtrans2.o
+	rm -f contingtrans3.o
 	rm -f contingbus.o
 	rm -f contingmain.o
 	rm -f contingxml.o
@@ -60,6 +61,9 @@ clean:
 	rm -f contingdata.o
 	rm -f contingitemdata.o
 	rm -f continginfodialog.o
+	rm -f contingsymbol.o
 	rm -f continggen.o
 	rm -f contingload.o
+	rm -f contingbusbase.o
+	rm -f contingserializable.o
 	rm -f main

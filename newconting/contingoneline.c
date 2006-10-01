@@ -5,6 +5,7 @@
 #include "continggroup.h"
 #include "contingdata.h"
 #include "continginfodialog.h"
+#include "contingbusbase.h"
 
 #include "contingfilecdf.h"
 #include "contingfilepeco.h"
@@ -62,6 +63,10 @@ conting_drawing_return_attr(ContingDrawingOperation *opr,
 		ContingDrawing *drawing, gpointer user_data)
 {
 	const gchar *attr_name = user_data;
+
+    if (!CONTING_IS_BUS_BASE(drawing)) {
+        return NULL;
+    }
 
 	return conting_drawing_get_attr(drawing, attr_name);
 }
