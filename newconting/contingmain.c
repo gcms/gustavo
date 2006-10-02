@@ -12,26 +12,103 @@
 
 static ContingOneLine *oneline;
 
+static GtkWidget *
+get_error_list(GList *errors)
+{
+    GtkWidget *tree;
+    GtkListStore *store;
+    GtkCellRenderer *renderer;
+    GtkTreeViewColumn *column;
+    GList *n;
+
+
+    store = gtk_list_store_new(2, G_TYPE_UINT, G_TYPE_STRING);
+
+    for (n = errors; n != NULL; n = g_list_next(n)) {
+        GtkTreeIter iter;
+        ContingError *error = n->data;
+        guint bus_number;
+
+        conting_item_data_get_attr(error->item_data,
+                "number", &bus_number,
+                NULL);
+
+        gtk_list_store_append(store, &iter);
+        gtk_list_store_set(store, &iter,
+                0, bus_number,
+                1, error->message,
+                -1);
+    }
+
+    tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+    g_object_unref(store);
+
+    renderer = gtk_cell_renderer_text_new();
+    
+    column = gtk_tree_view_column_new_with_attributes("Bus", renderer,
+            "text", 0,
+            NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+    
+    column = gtk_tree_view_column_new_with_attributes("Message", renderer,
+            "text", 1,
+            NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+    return tree;
+}
+
+static GtkWidget *
+get_ok_message(void)
+{
+    GtkWidget *message;
+
+    message = gtk_label_new("Checks done. No errors found.");
+
+    return message;
+}
+
+static void
+show_check_dialog(gboolean ok, GList *errors)
+{
+    GtkWidget *dialog, *child;
+    
+    const gchar *title;
+
+    title = ok ? "Checking complete..." : "Errors";
+    dialog = gtk_dialog_new_with_buttons(title, NULL, GTK_DIALOG_MODAL,
+            GTK_STOCK_OK, GTK_RESPONSE_OK,
+            NULL);
+
+    g_signal_connect_swapped (dialog,
+                             "response", 
+                             G_CALLBACK (gtk_widget_destroy),
+                             dialog);
+
+    child = ok ? get_ok_message() : get_error_list(errors);
+    
+    gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), child);
+ 
+    gtk_widget_show_all(dialog);
+}
+
 
 static void
 check_clicked(GtkMenuItem *menuitem,
 		gpointer user_data)
 {
 	ContingData *data;
-	GList *errors, *n;
+	GList *errors;
+    gboolean ok;
 
 	g_object_get(oneline,
 			"data", &data,
 			NULL);
 
 	errors = NULL;
-	conting_data_check(data, &errors);
+	ok = conting_data_check(data, &errors);
 
-	for (n = errors; n != NULL; n = g_list_next(n)) {
-		ContingError *err = n->data;
-
-		g_print("%s\n", err->message);
-	}
+    show_check_dialog(ok, errors);
 
 	g_list_foreach(errors, (GFunc) conting_error_free, NULL);
 	g_list_free(errors);

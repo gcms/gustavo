@@ -15,8 +15,12 @@ static gint delete_signal_id = 0;
 
 static gint mouse_signal_id = 0;
 
-static gint click_signal_id = 0;
-static gint double_click_signal_id = 0;
+static gint button_press = 0;
+static gint button_release = 0;
+static gint double_button_press = 0;
+
+static gint key_press = 0;
+static gint key_release = 0;
 
 static gint enter_signal_id = 0;
 static gint leave_signal_id = 0;

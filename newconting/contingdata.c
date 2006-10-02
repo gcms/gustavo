@@ -272,7 +272,8 @@ conting_data_clear(ContingData *self)
 }
 
 ContingError *
-conting_error_new(ContingDrawing *drawing, const gchar *format, ...)
+conting_error_new(ContingDrawing *drawing, ContingItemData *item_data,
+       const gchar *format, ...)
 {
 	ContingError *err = g_new(ContingError, 1);
 
@@ -280,6 +281,7 @@ conting_error_new(ContingDrawing *drawing, const gchar *format, ...)
 
 	va_start(ap, format);
 
+    err->item_data = item_data;
 	err->drawing = drawing;
 	err->message = g_strdup_vprintf(format, ap);
 
@@ -314,7 +316,8 @@ conting_data_check(ContingData *self, GList **error_list)
 				== CONTING_ITEM_TYPE_BUS && drawing == NULL) {
 			if (error_list) {
 				*error_list = g_list_append(*error_list,
-						conting_error_new(drawing, "Bus not assoced"));
+						conting_error_new(drawing, item_data,
+                            "Bus not assoced"));
 			} else {
 				return FALSE;
 			}

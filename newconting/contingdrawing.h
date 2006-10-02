@@ -116,5 +116,48 @@ void conting_drawing_find_link(ContingDrawing *self,
 
 gpointer conting_drawing_get_attr(ContingDrawing *self, const gchar *attr);
 
+typedef enum {
+    CONTING_DRAWING_NOTHING,
+    CONTING_DRAWING_MOTION_NOTIFY,
+    CONTING_DRAWING_BUTTON_PRESS,
+    CONTING_DRAWING_2BUTTON_PRESS,
+    CONTING_DRAWING_BUTTON_RELEASE,
+    CONTING_DRAWING_KEY_PRESS,
+    CONTING_DRAWING_KEY_RELEASE,
+    CONTING_DRAWING_ENTER,
+    CONTING_DRAWING_LEAVE
+} ContingDrawingEventType;
+
+typedef struct {
+    ContingDrawingEventType type;
+    gdouble x, y;
+} ContingDrawingEventMotion;
+
+typedef struct {
+    ContingDrawingEventType type;
+    gdouble x, y;
+    guint state;
+    guint button;
+} ContingDrawingEventButton;
+
+typedef struct {
+    ContingDrawingEventType type;
+    guint state;
+    guint keyval;
+} ContingDrawingEventKey;
+
+typedef struct {
+    ContingDrawingEventType type;
+    gdouble x, y;
+} ContingDrawingEventNotify;
+
+typedef union {
+    ContingDrawingEventType type;
+    ContingDrawingEventMotion motion;
+    ContingDrawingEventButton button;
+    ContingDrawingEventKey key;
+    ContingDrawingEventNotify notify;
+} ContingDrawingEvent;
+
 
 #endif /* CONTING_DRAWING_H */
