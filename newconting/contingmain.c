@@ -58,25 +58,12 @@ get_error_list(GList *errors)
     return tree;
 }
 
-static GtkWidget *
-get_ok_message(void)
-{
-    GtkWidget *message;
-
-    message = gtk_label_new("Checks done. No errors found.");
-
-    return message;
-}
-
 static void
-show_check_dialog(gboolean ok, GList *errors)
+show_error_dialog(GList *errors)
 {
     GtkWidget *dialog, *child;
     
-    const gchar *title;
-
-    title = ok ? "Checking complete..." : "Errors";
-    dialog = gtk_dialog_new_with_buttons(title, NULL, GTK_DIALOG_MODAL,
+    dialog = gtk_dialog_new_with_buttons("Errors", NULL, GTK_DIALOG_MODAL,
             GTK_STOCK_OK, GTK_RESPONSE_OK,
             NULL);
 
@@ -85,11 +72,26 @@ show_check_dialog(gboolean ok, GList *errors)
                              G_CALLBACK (gtk_widget_destroy),
                              dialog);
 
-    child = ok ? get_ok_message() : get_error_list(errors);
+    child = get_error_list(errors);
     
     gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox), child);
  
     gtk_widget_show_all(dialog);
+}
+
+static void
+show_ok_dialog(void)
+{
+    GtkWidget *dialog;
+
+    dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO,
+            GTK_BUTTONS_OK, "%s", "Checks Done. No errors found.");
+    g_signal_connect_swapped (dialog,
+                             "response", 
+                             G_CALLBACK (gtk_widget_destroy),
+                             dialog);
+
+    gtk_widget_show(dialog);
 }
 
 
@@ -108,7 +110,11 @@ check_clicked(GtkMenuItem *menuitem,
 	errors = NULL;
 	ok = conting_data_check(data, &errors);
 
-    show_check_dialog(ok, errors);
+    if (ok) {
+        show_ok_dialog();
+    } else {
+        show_error_dialog(errors);
+    }
 
 	g_list_foreach(errors, (GFunc) conting_error_free, NULL);
 	g_list_free(errors);

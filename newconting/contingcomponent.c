@@ -477,6 +477,7 @@ conting_bus_load_drawing(xmlNodePtr node, gpointer user_data)
     xmlChar *id;
     gpointer result;
 
+    g_print("%s\n", node->name);
     assert(xmlStrEqual(node->name, "drawing"));
 
     id = xmlGetProp(node, BAD_CAST "id");
@@ -530,6 +531,7 @@ conting_component_read(ContingSerializable *self, xmlNodePtr drawing_node,
 
     g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
+    assert(xmlStrEqual(drawing_node->name, "drawing"));
     /* Load p0, p1 */
     comp = CONTING_COMPONENT(self);
 
@@ -566,6 +568,7 @@ conting_component_read(ContingSerializable *self, xmlNodePtr drawing_node,
                     conting_util_load_affine(attr, comp->rotate);
                 } else if (xmlStrEqual(type, BAD_CAST "map")
                         && xmlStrEqual(name, BAD_CAST "points")) {
+                    g_print("loading links\n");
                     conting_util_load_hash(attr, comp->points,
                             conting_bus_load_drawing, conting_bus_load_point,
                             id_drawing);
@@ -579,6 +582,8 @@ conting_component_read(ContingSerializable *self, xmlNodePtr drawing_node,
         if (class_name)
             xmlFree(class_name);
     }
+
+    g_print("Component loaded!\n");
 
     comp->placed = TRUE;
     g_hash_table_foreach(comp->points, conting_component_conn_foreach, self);

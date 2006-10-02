@@ -38,43 +38,43 @@ conting_trans3_draw(ContingDrawing *self, cairo_t *cr)
     pw1.y = pw0.y + 2 * fabs(pw1.y - pw0.y) / 3.0;
     pw1.x = pw0.x + 2 * fabs(pw1.x - pw0.x) / 3.0;
 
-	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+    cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 
-	cairo_arc(cr,
-			pw0.x + (pw1.x - pw0.x) / 2.0,
-			pw0.y + (pw1.y - pw0.y) / 2.0,
-			(pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
-	cairo_set_source_rgb(cr, 0, 0, 0);
-	cairo_stroke(cr);
+    cairo_arc(cr,
+            pw0.x + (pw1.x - pw0.x) / 2.0,
+            pw0.y + (pw1.y - pw0.y) / 2.0,
+            (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_stroke(cr);
 
     pw0 = comp->p0;
     pw1 = comp->p1;
     pw0.x = pw0.x + (pw1.x - pw0.x) / 3.0;
-	pw1.y = pw1.y - (pw1.y - pw0.y) / 3.0;
+    pw1.y = pw1.y - (pw1.y - pw0.y) / 3.0;
 
-	cairo_arc(cr,
-			pw0.x + (pw1.x - pw0.x) / 2.0,
-			pw0.y + (pw1.y - pw0.y) / 2.0,
-			(pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
-	cairo_set_source_rgb(cr, 0, 0, 0);
-	cairo_stroke(cr);
+    cairo_arc(cr,
+            pw0.x + (pw1.x - pw0.x) / 2.0,
+            pw0.y + (pw1.y - pw0.y) / 2.0,
+            (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_stroke(cr);
 
-	/* Low winding */
-	
+    /* Low winding */
+    
     pw0 = comp->p0;
     pw1 = comp->p1;
     pw0.x = pw0.x + (pw1.x - pw0.x) / 6;
-	pw0.y = pw0.y + (pw1.y - pw0.y) / 3;
-	pw1.x = pw1.x - (pw1.x - pw0.x) / 6;
+    pw0.y = pw0.y + (pw1.y - pw0.y) / 3;
+    pw1.x = pw1.x - (pw1.x - pw0.x) / 6;
 
-	cairo_arc(cr,
-			pw0.x + (pw1.x - pw0.x) / 2.0,
-			pw0.y + (pw1.y - pw0.y) / 2.0,
-			(pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
-	cairo_set_source_rgb(cr, 0, 0, 0);
-	cairo_stroke(cr);
+    cairo_arc(cr,
+            pw0.x + (pw1.x - pw0.x) / 2.0,
+            pw0.y + (pw1.y - pw0.y) / 2.0,
+            (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_stroke(cr);
 
-	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
+    CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
 }
 
 static void
@@ -86,7 +86,7 @@ conting_trans3_finalize(GObject *self)
 
     priv = CONTING_TRANS3_GET_PRIVATE(self);
 
-	G_OBJECT_CLASS(parent_class)->finalize(self);
+    G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
 static void
@@ -118,9 +118,9 @@ static void conting_trans3_delete(ContingDrawing *self)
 
     priv = CONTING_TRANS3_GET_PRIVATE(self);
 
-	priv->link0 = priv->link1 = NULL;
+    priv->link0 = priv->link1 = NULL;
 
-	CONTING_DRAWING_CLASS(parent_class)->delete(self);
+    CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
 
 
@@ -135,17 +135,17 @@ conting_trans3_link_deleted(ContingComponent *comp,
     priv = CONTING_TRANS3_GET_PRIVATE(comp);
 
     g_print("link %p deleted from %p\n", drawing, comp);
-	if (drawing == priv->link0) {
-		priv->link0 = NULL;
-	} else if (drawing == priv->link1) {
-		priv->link1 = NULL;
-	} else if (drawing == priv->link2) {
-		priv->link2 = NULL;
-	} else {
-		return;
-	}
+    if (drawing == priv->link0) {
+        priv->link0 = NULL;
+    } else if (drawing == priv->link1) {
+        priv->link1 = NULL;
+    } else if (drawing == priv->link2) {
+        priv->link2 = NULL;
+    } else {
+        return;
+    }
 
-	CONTING_COMPONENT_CLASS(parent_class)->link_deleted(comp, drawing);
+    CONTING_COMPONENT_CLASS(parent_class)->link_deleted(comp, drawing);
 }
 
 static gboolean
@@ -163,9 +163,9 @@ conting_trans3_link(ContingComponent *self,
     priv = CONTING_TRANS3_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	if (g_list_find(comp->links, drawing))
-		return FALSE;
-	g_print("didn't find!\n");
+    if (g_list_find(comp->links, drawing))
+        return FALSE;
+    g_print("didn't find!\n");
 
     pi.x = world_x;
     pi.y = world_y;
@@ -180,68 +180,68 @@ conting_trans3_link(ContingComponent *self,
             || pi.x < comp->p0.x || pi.x > comp->p1.x) {
         return FALSE;
     }
-	g_print("within bounds!\n");
-	g_print("link0 = %p\tlink1 = %p\n", priv->link0, priv->link1);
+    g_print("within bounds!\n");
+    g_print("link0 = %p\tlink1 = %p\n", priv->link0, priv->link1);
 
     if (fabs(pi.y - comp->p0.y) < fabs(pi.y - comp->p1.y)) {
-		pi.y = comp->p0.y + (comp->p1.y - comp->p0.y) / 3.0;
-		if (fabs(pi.x - comp->p0.x) < fabs(pi.x - comp->p1.x)
-				&& priv->link0 == NULL) {
+        pi.y = comp->p0.y + (comp->p1.y - comp->p0.y) / 3.0;
+        if (fabs(pi.x - comp->p0.x) < fabs(pi.x - comp->p1.x)
+                && priv->link0 == NULL) {
 //        art_affine_translate(affine, comp->p0.x - pi.x, 0);
-	        pi.x = comp->p0.x;
-			priv->link0 = drawing;
-		} else if (priv->link1 == NULL) {
-	        pi.x = comp->p1.x;
-			priv->link1 = drawing;
-		}
+            pi.x = comp->p0.x;
+            priv->link0 = drawing;
+        } else if (priv->link1 == NULL) {
+            pi.x = comp->p1.x;
+            priv->link1 = drawing;
+        }
     } else if (priv->link2 == NULL) {
 //        art_affine_translate(affine, comp->p1.x - pi.x, 0);
         pi.y = comp->p1.y;
-		pi.x = comp->p0.x + (comp->p1.x - comp->p0.x) / 2.0;
-		priv->link1 = drawing;
+        pi.x = comp->p0.x + (comp->p1.x - comp->p0.x) / 2.0;
+        priv->link1 = drawing;
     } else {
-		return FALSE;
-	}
+        return FALSE;
+    }
 
-	/* pw is the paramter */
+    /* pw is the paramter */
     conting_drawing_i2w(CONTING_DRAWING(self), pw, &pi);
 
-	conting_component_connect_link(self, drawing, &pi);
+    conting_component_connect_link(self, drawing, &pi);
 
     return TRUE;
 }
 
 static void
 conting_trans3_xml_node(ContingSerializable *self,
-		                xmlNodePtr drawing_node,
-						xmlNodePtr *result)
+                        xmlNodePtr drawing_node,
+                        xmlNodePtr *result)
 {
-	ContingTrans3Private *priv;
+    ContingTrans3Private *priv;
     ContingComponent *comp;
-	xmlNodePtr class_node;
+    xmlNodePtr class_node;
 
-	g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
+    g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
 
-	priv = CONTING_TRANS3_GET_PRIVATE(self);
+    priv = CONTING_TRANS3_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	class_node = xmlNewNode(NULL, BAD_CAST "class");
-	xmlNewProp(class_node, BAD_CAST "name",
-			BAD_CAST g_type_name(CONTING_TYPE_TRANS3));
+    class_node = xmlNewNode(NULL, BAD_CAST "class");
+    xmlNewProp(class_node, BAD_CAST "name",
+            BAD_CAST g_type_name(CONTING_TYPE_TRANS3));
 
-	if (priv->link0)
-		xmlAddChild(class_node,
-				conting_util_drawing_node("link0", priv->link0));
-	if (priv->link1)
-		xmlAddChild(class_node,
-				conting_util_drawing_node("link1", priv->link1));
-	if (priv->link2)
-		xmlAddChild(class_node,
-				conting_util_drawing_node("link2", priv->link2));
+    if (priv->link0)
+        xmlAddChild(class_node,
+                conting_util_drawing_node("link0", priv->link0));
+    if (priv->link1)
+        xmlAddChild(class_node,
+                conting_util_drawing_node("link1", priv->link1));
+    if (priv->link2)
+        xmlAddChild(class_node,
+                conting_util_drawing_node("link2", priv->link2));
 
-	xmlAddChild(drawing_node, class_node);
+    xmlAddChild(drawing_node, class_node);
 
-	((ContingSerializableClass *) parent_iface)->write(self, drawing_node, result);
+    ((ContingSerializableClass *) parent_iface)->write(self, drawing_node, result);
 }
 static void
 conting_trans3_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
@@ -306,20 +306,20 @@ conting_trans3_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
     */
 
     ((ContingSerializableClass *) parent_iface)->read(self,
-			drawing_node, id_drawing);
+            drawing_node, id_drawing);
 
 }
 
 static void
 conting_trans3_serializable_init(gpointer g_iface, gpointer iface_data)
 {
-	ContingSerializableClass *serial_class;
+    ContingSerializableClass *serial_class;
 
-	serial_class = g_iface;
-	serial_class->write = conting_trans3_xml_node;
-	serial_class->read = conting_trans3_place_xml;
+    serial_class = g_iface;
+    serial_class->write = conting_trans3_xml_node;
+    serial_class->read = conting_trans3_place_xml;
 
-	parent_iface = g_type_interface_peek_parent(g_iface);
+    parent_iface = g_type_interface_peek_parent(g_iface);
 }
 
 static void
@@ -366,15 +366,15 @@ GType conting_trans3_get_type(void) {
                 "ContingTrans3",
                 &type_info, 0);
 
-		static const GInterfaceInfo serial_info = {
-			conting_trans3_serializable_init,
-			NULL,
-			NULL	
-		};
+        static const GInterfaceInfo serial_info = {
+            conting_trans3_serializable_init,
+            NULL,
+            NULL    
+        };
 
-		g_type_add_interface_static(type,
-				CONTING_TYPE_SERIALIZABLE,
-				&serial_info);
+        g_type_add_interface_static(type,
+                CONTING_TYPE_SERIALIZABLE,
+                &serial_info);
 
     }
 
