@@ -61,12 +61,14 @@ conting_data_clear(ContingData *self);
 
 typedef struct {
 	ContingDrawing *drawing;
+	ContingItemData *item_data;
 	gchar *message;
 } ContingError;
 
 
 ContingError *
-conting_error_new(ContingDrawing *drawing, const gchar *format, ...);
+conting_error_new(ContingDrawing *drawing, ContingItemData *item_data,
+		const gchar *format, ...);
 
 void
 conting_error_free(ContingError *err);
