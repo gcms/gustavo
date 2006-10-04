@@ -5,6 +5,7 @@
 #include "continggroup.h"
 #include "contingdata.h"
 #include "continginfodialog.h"
+#include "contingline.h"
 #include "contingbusbase.h"
 
 #include "contingfilecdf.h"
@@ -28,6 +29,7 @@ typedef enum {
     CONTING_ONE_LINE_GRABBING,
     CONTING_ONE_LINE_SELECTING
 } ContingOneLineState;
+
 
 #define CONTING_ONE_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_ONE_LINE, ContingOneLinePrivate))
@@ -54,6 +56,7 @@ struct ContingOneLinePrivate_ {
     ContingDrawing *entered_drawing;
 
     GList *operations;
+	ContingOneLineMode mode;
 };
 
 /* FRIEND METHOD */
@@ -61,6 +64,252 @@ void conting_one_line_update(ContingOneLine *self, ArtDRect *bounds);
 
 /* PRIVATE METHOD */
 static void conting_one_line_ungroup_all(ContingOneLine *self);
+
+/* SIGNAL CALLBACK */
+static void
+create_motion(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data);
+/* SIGNAL CALLBACK */
+static void
+create_button(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data);
+/* SIGNAL CALLBACK */
+static void
+create_key(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data);
+/* SIGNAL CALLBACK */
+static void
+edit_motion(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data);
+/* SIGNAL CALLBACK */
+static void
+edit_button(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data);
+/* SIGNAL CALLBACK */
+static void
+edit_key(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data);
+
+/* PRIVATE METHOD */
+static void
+conting_one_line_place(ContingOneLine *self, ContingDrawing *drawing)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	assert(priv->placing_drawing == drawing);
+	assert(conting_drawing_is_placed(drawing));
+	
+	g_signal_handlers_disconnect_by_func(drawing, create_motion, NULL);
+	g_signal_handlers_disconnect_by_func(drawing, create_button, NULL);
+	g_signal_handlers_disconnect_by_func(drawing, create_key, NULL);
+
+	priv->drawings = g_slist_append(priv->drawings, drawing);
+    priv->state = CONTING_ONE_LINE_NONE;
+    priv->placing_drawing = NULL;
+
+	g_signal_connect(G_OBJECT(drawing), "motion-event",
+			G_CALLBACK(edit_motion), NULL);
+	g_signal_connect(G_OBJECT(drawing), "button-event",
+			G_CALLBACK(edit_button), NULL);
+	g_signal_connect(G_OBJECT(drawing), "key-event",
+			G_CALLBACK(edit_key), NULL);
+}
+
+static void
+edit_enter(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	g_print("%p entered\n", drawing);
+}
+static void
+edit_left(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	g_print("%p left\n", drawing);
+}
+
+static void
+edit_button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	ArtPoint pi;
+	
+	conting_drawing_set_selected(drawing, TRUE);
+	
+	pi.x = event->button.x;
+	pi.y = event->button.y;
+
+	if (CONTING_IS_LINE(drawing) && (event->button.state & GDK_CONTROL_MASK)) {
+		conting_line_create_point(CONTING_LINE(drawing), &pi);
+	}
+	
+	conting_drawing_grab(drawing, &pi);
+}
+static void
+edit_2button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	conting_drawing_ungrab(drawing);
+	conting_one_line_edit(conting_drawing_get_one_line(drawing), drawing);
+}
+static void
+edit_button_release(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	conting_drawing_ungrab(drawing);
+}
+
+
+static void
+edit_button(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	switch (event->type) {
+		case CONTING_DRAWING_BUTTON_PRESS:
+			edit_button_press(drawing, event, user_data);
+			break;
+		case CONTING_DRAWING_2BUTTON_PRESS:
+			edit_2button_press(drawing, event, user_data);
+			break;
+		case CONTING_DRAWING_BUTTON_RELEASE:
+			edit_button_release(drawing, event, user_data);
+			break;
+		default:
+			break;
+	}
+}
+
+static void
+edit_motion(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	ArtPoint pi;
+	
+	pi.x = event->motion.x;
+	pi.y = event->motion.y;
+	conting_drawing_motion(drawing, &pi);
+}
+
+static void
+create_motion(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	ArtPoint pi;
+
+	pi.x = event->motion.x;
+	pi.y = event->motion.y;
+
+	if (CONTING_IS_LINE(drawing)) {
+		conting_line_set_shift_mask(CONTING_LINE(drawing),
+				event->motion.state & GDK_SHIFT_MASK);
+	}
+
+	conting_drawing_motion_place(drawing, &pi);
+
+	g_print("create_motion()\n");
+}
+
+#include <gdk/gdkkeysyms.h>
+static void
+create_key(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	switch (event->key.keyval) {
+		case GDK_Escape:
+			conting_drawing_delete(drawing);
+			break;
+		case GDK_r:
+			if (CONTING_IS_COMPONENT(drawing)) {
+				conting_component_rotate(CONTING_COMPONENT(drawing));
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+static void
+create_button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	ContingOneLine *self;
+
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	self = conting_drawing_get_one_line(drawing);
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	g_print("create_button()\n");
+    
+	conting_drawing_place(drawing);
+
+    if (conting_drawing_is_placed(drawing)) {
+		conting_one_line_place(self, drawing);
+	}
+}
+
+static void
+create_button(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	switch (event->type) {
+		case CONTING_DRAWING_BUTTON_PRESS:
+			create_button_press(drawing, event, user_data);
+			break;
+		default:
+			break;
+	}
+}
+
+static void
+edit_key(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	switch (event->key.keyval) {
+		case GDK_Delete:
+			conting_drawing_delete(drawing);
+			break;
+		case GDK_r:
+			if (CONTING_IS_COMPONENT(drawing)) {
+				conting_component_rotate(CONTING_COMPONENT(drawing));
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+/* PUBLIC METHOD */
+gboolean
+conting_one_line_set_mode(ContingOneLine *self, ContingOneLineMode mode)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), FALSE);
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	switch (mode) {
+		case CONTING_ONE_LINE_EDIT:
+			break;
+		case CONTING_ONE_LINE_VIEW:
+			if (!conting_data_check(priv->file_data, NULL))
+				return FALSE;
+			break;
+		default:
+			break;
+	}
+
+
+	priv->mode = mode;
+	return TRUE;
+}
 
 /* FRIEND METHOD */
 /* TODO: make a pool of cursors */
@@ -789,7 +1038,6 @@ conting_one_line_set_property(GObject *self,
     }
 }
 
-
 /* SIGNAL CALLBACK */
 static gboolean
 widget_motion_notify_event(GtkWidget *widget,
@@ -1019,6 +1267,10 @@ widget_button_press_event(GtkWidget *widget,
                 conting_drawing_affine_absolute(priv->placing_drawing,
                         translate);
 */
+
+				conting_one_line_send_event(user_data, priv->placing_drawing,
+						(GdkEvent *) event);
+				/*
                 conting_drawing_place(priv->placing_drawing);
 
                 if (conting_drawing_is_placed(priv->placing_drawing)) {
@@ -1027,6 +1279,7 @@ widget_button_press_event(GtkWidget *widget,
                     priv->state = CONTING_ONE_LINE_NONE;
                     priv->placing_drawing = NULL;
                 }
+				*/
             }
     }
 
@@ -1202,7 +1455,6 @@ widget_expose_event(GtkWidget *widget,
 }
 
 
-#include <gdk/gdkkeysyms.h>
 
 /* SIGNAL CALLBACK */
 static gboolean
@@ -1297,6 +1549,15 @@ conting_one_line_create(ContingOneLine *self,
         default:
             break;
     }
+
+	assert(priv->placing_drawing);
+
+	g_signal_connect(G_OBJECT(priv->placing_drawing), "motion-event",
+			G_CALLBACK(create_motion), NULL);
+	g_signal_connect(G_OBJECT(priv->placing_drawing), "button-event",
+			G_CALLBACK(create_button), NULL);
+	g_signal_connect(G_OBJECT(priv->placing_drawing), "key-event",
+			G_CALLBACK(create_key), NULL);
 }
 
 /* PUBLIC METHOD */
@@ -1389,6 +1650,8 @@ conting_one_line_instance_init(GTypeInstance *self,
 
     priv->current_drawing = NULL;
     priv->entered_drawing = NULL;
+
+	priv->mode = CONTING_ONE_LINE_EDIT;
 
     priv->operations = NULL;
 

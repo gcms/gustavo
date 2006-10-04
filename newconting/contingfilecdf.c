@@ -39,6 +39,8 @@ conting_file_cdf_read_bus(const char *line)
 	GObject *item_data;
 	gint number, type;
 	gchar *name;
+	gdouble voltage;
+	gdouble angle;
 
 	item_data = g_object_new(CONTING_TYPE_ITEM_DATA,
 			"type", CONTING_ITEM_TYPE_BUS,
@@ -47,11 +49,15 @@ conting_file_cdf_read_bus(const char *line)
 	number = conting_file_int(line, 0, 3);
 	name = conting_file_string(line, 5, 16);
 	type = conting_file_int(line, 24, 25);
+	voltage = conting_file_float(line, 27, 32);
+	angle = conting_file_float(line, 33, 39);
 
 	conting_item_data_set_attr(CONTING_ITEM_DATA(item_data),
 			"number", G_TYPE_INT, number,
 			"type", G_TYPE_INT, type,
 			"name", G_TYPE_STRING, name,
+			"voltage", G_TYPE_DOUBLE, voltage,
+			"angle", G_TYPE_DOUBLE, angle,
 			NULL);
 
 	g_free(name);

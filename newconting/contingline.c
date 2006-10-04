@@ -33,7 +33,21 @@ struct ContingLinePrivate_ {
 	ArtPoint *dragging_point;
 	GList *last_answer;
 	ArtPoint placing_point;
+
+	gboolean shift_mask;
 };
+
+void
+conting_line_set_shift_mask(ContingLine *self, gboolean shift_mask)
+{
+	ContingLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	priv->shift_mask = shift_mask;
+}
 
 static void
 conting_line_draw_selection(ContingDrawing *self,
@@ -370,6 +384,8 @@ conting_line_instance_init(GTypeInstance *self,
 	priv->link1 = NULL;
 
 	priv->dragging_point = NULL;
+
+	priv->shift_mask = FALSE;
 }
 
 
@@ -710,6 +726,143 @@ conting_line_xml_node(ContingSerializable *self, xmlNodePtr drawing_node,
 													   result);
 }
 
+void
+conting_line_create_point(ContingLine *self, ArtPoint *pi)
+{
+	ContingLinePrivate *priv;
+	ArtPoint *new_p;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+	
+	priv = CONTING_LINE_GET_PRIVATE(self);
+	
+	new_p = g_new(ArtPoint, 1);
+	*new_p = *pi;
+
+	g_list_insert_before(priv->points, priv->last_answer, new_p);
+}
+
+static void
+conting_line_grab(ContingDrawing *self, ArtPoint *pi)
+{
+	ContingLinePrivate *priv;
+	GList *n;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	for (n = priv->points; n != NULL; n = g_list_next(n)) {
+		ArtPoint *p = n->data;
+
+		if (p == priv->link0 || p == priv->link1)
+			continue;
+
+		if (fabs(p->x - pi->x) < TOLERANCE
+				&& fabs(p->y - pi->y) < TOLERANCE) {
+			priv->dragging_point = p;
+
+			CONTING_DRAWING_CLASS(parent_class)->grab(self, p);
+			break;
+		}
+	}
+}
+
+static void
+conting_line_ungrab(ContingDrawing *self)
+{
+	ContingLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	if (priv->dragging_point)
+		CONTING_DRAWING_CLASS(parent_class)->ungrab(self);
+
+	priv->dragging_point = NULL;
+}
+
+static void
+conting_line_motion(ContingDrawing *self, ArtPoint *pi)
+{
+	ContingLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	if (priv->dragging_point
+			&& priv->dragging_point != priv->link0
+			&& priv->dragging_point != priv->link1) {
+		*(priv->dragging_point) = *pi;
+	}
+}
+static void
+conting_line_motion_place(ContingDrawing *self, ArtPoint *pi)
+{
+	ContingLinePrivate *priv;
+	gdouble affine[6];
+	ArtPoint pw;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	conting_drawing_get_i2w_affine(self, affine);
+	art_affine_point(&pw, pi, affine);
+
+	priv->placing_point = pw;
+
+	if (priv->placing && priv->shift_mask) {
+		ArtPoint last_point;
+		gdouble invert[6];
+		gdouble angle, s, c;
+
+		last_point = *((ArtPoint *) g_list_last(priv->points)->data);
+		art_affine_point(&last_point, &last_point, affine);
+
+		angle = atan2(pw.y - last_point.y, pw.x - last_point.x);
+
+		/* TODO: improve to allow all possibilities */
+		s = sin(angle);
+		c = cos(angle);
+
+		art_affine_invert(invert, affine);
+		if (fabs(s) <= 0.33) {
+			art_affine_point(&last_point, &last_point, invert);
+			priv->placing_point.y = last_point.y;
+			/*
+			art_affine_translate(affine, pw.x, last_point.y);
+			*/
+		} else if (fabs(s) >= 0.66) {
+			art_affine_point(&last_point, &last_point, invert);
+			priv->placing_point.x = last_point.x;
+			/*
+				art_affine_translate(affine, last_point.x, pw.y);
+			*/
+		} else {
+			gdouble size;
+				   
+			size = MIN(fabs(pw.x - last_point.x), fabs(pw.y - last_point.y));
+						
+			last_point.x += (c < 0 ? -size : size);
+			last_point.y += (s < 0 ? -size : size);
+
+			art_affine_point(&last_point, &last_point, invert);
+			priv->placing_point.x = last_point.x;
+			priv->placing_point.y = last_point.y;
+		}
+				
+
+		/*
+		art_affine_point(&priv->placing_point, &priv->placing_point,
+				affine);
+		conting_drawing_affine_absolute(self, affine);
+		   */
+		}
+}
+
 #include <gdk/gdkkeysyms.h>
 static gboolean
 conting_line_event_place(ContingDrawing *self,
@@ -800,7 +953,6 @@ conting_line_event(ContingDrawing *self,
 	ContingLinePrivate *priv;
 	gdouble affine[6];
 	ArtPoint pi;
-	GList *n;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
 	g_return_val_if_fail(event != NULL, FALSE);
@@ -821,7 +973,7 @@ conting_line_event(ContingDrawing *self,
 			event->button.x, event->button.y, &pi.x, &pi.y);
 	art_affine_invert(affine, affine);
 	art_affine_point(&pi, &pi, affine);
-
+/*
 	switch (event->type) {
 		case GDK_BUTTON_PRESS:
 			conting_drawing_update(self);
@@ -867,6 +1019,7 @@ conting_line_event(ContingDrawing *self,
 		default:
 			return FALSE;
 	}
+	*/
 	return TRUE;
 }
 
@@ -962,6 +1115,11 @@ conting_line_class_init(gpointer g_class, gpointer class_data) {
 
 	drawing_class->get_center = conting_line_get_center;
 	drawing_class->find_link = conting_line_find_link;
+
+	drawing_class->grab = conting_line_grab;
+	drawing_class->ungrab = conting_line_ungrab;
+	drawing_class->motion = conting_line_motion;
+	drawing_class->motion_place = conting_line_motion_place;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;

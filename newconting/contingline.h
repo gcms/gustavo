@@ -36,6 +36,8 @@ void conting_line_get_links(ContingLine *self,
 void conting_line_get_buses(ContingLine *self,
 		ContingBusBase **comp0, ContingBusBase **comp1);
 
+void
+conting_line_set_key_state(ContingLine *self, guint state);
 
 
 #endif /* CONTING_LINE_H */

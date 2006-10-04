@@ -196,7 +196,7 @@ conting_group_event(ContingDrawing *self,
 	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
 			event->button.x, event->button.y,
 			&pw.x, &pw.y);
-
+/*
 	switch (event->type) {
 		case GDK_BUTTON_PRESS:
 			conting_drawing_set_selected(self, TRUE);
@@ -227,6 +227,7 @@ conting_group_event(ContingDrawing *self,
 		default:
 			return FALSE;
 	}
+	*/
 
 	return TRUE;
 }
