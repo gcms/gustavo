@@ -63,9 +63,11 @@ conting_symbol_link(ContingComponent *self,
 
     conting_drawing_w2i(CONTING_DRAWING(self), &pi, &pi);
     
+	/*
     g_print("link: (%lf, %lf); (%lf, %lf) : (%lf, %lf)\n",
             comp->p0.x, comp->p0.y, comp->p1.x, comp->p1.y,
             pi.x, pi.y);
+			*/
 
     if (pi.y < comp->p0.y || pi.y > comp->p1.y
             || pi.x < comp->p0.x || pi.x > comp->p1.x) {

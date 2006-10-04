@@ -47,6 +47,8 @@ void conting_one_line_grab(ContingOneLine *self,
 void conting_one_line_ungrab(ContingOneLine *self,
 		              ContingDrawing *grabbed_drawing);
 
+void conting_one_line_update(ContingOneLine *self,
+                        ArtDRect *bounds);
 void conting_one_line_update_drawing(ContingOneLine *self,
 		ContingDrawing *drawing);
 
@@ -66,4 +68,5 @@ void conting_one_line_edit(ContingOneLine *self, ContingDrawing *drawing);
 
 cairo_t * conting_drawing_get_cairo(ContingDrawing *drawing);
 cairo_t * conting_drawing_get_cairo_absolute(ContingDrawing *drawing);
+
 #endif /* CONTING_ONE_LINE_H */

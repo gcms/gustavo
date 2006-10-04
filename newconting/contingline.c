@@ -239,30 +239,21 @@ conting_line_get_bounds(ContingDrawing *self,
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		art_affine_point(&pw, (ArtPoint *) n->data, affine);
 
-		if (pw.x < bounds->x0) {
-			bounds->x0 = pw.x;
-		} else if (pw.x > bounds->x1) {
-			bounds->x1 = pw.x;
-		}
+		bounds->x0 = MIN(pw.x, bounds->x0);
+		bounds->x1 = MAX(pw.x, bounds->x1);
 
-		if (pw.y < bounds->y0) {
-			bounds->y0 = pw.y;
-		} else if (pw.y > bounds->y1) {
-			bounds->y1 = pw.y;
-		}
-	}
-	art_affine_point(&pw, &priv->placing_point, affine);
-
-	if (pw.x < bounds->x0) {
-		bounds->x0 = pw.x;
-	} else if (pw.x > bounds->x1) {
-		bounds->x1 = pw.x;
+		bounds->y0 = MIN(pw.y, bounds->y0);
+		bounds->y1 = MAX(pw.y, bounds->y1);
 	}
 
-	if (pw.y < bounds->y0) {
-		bounds->y0 = pw.y;
-	} else if (pw.y > bounds->y1) {
-		bounds->y1 = pw.y;
+	if (priv->placing) {
+		art_affine_point(&pw, &priv->placing_point, affine);
+
+		bounds->x0 = MIN(pw.x, bounds->x0);
+		bounds->x1 = MAX(pw.x, bounds->x1);
+
+		bounds->y0 = MIN(pw.y, bounds->y0);
+		bounds->y1 = MAX(pw.y, bounds->y1);
 	}
 
 	/* selection anchors */
@@ -409,7 +400,7 @@ conting_line_link_moved(ContingComponent *comp,
 	art_affine_invert(affine, affine);
 	art_affine_point(&pi, &pi, affine);
 
-	conting_drawing_get_bounds(CONTING_DRAWING(user_data), &bounds);
+	conting_drawing_get_update_bounds(CONTING_DRAWING(user_data), &bounds);
 
 	if (priv->comp0 == comp) {
 		*(priv->link0) = pi;
@@ -419,9 +410,7 @@ conting_line_link_moved(ContingComponent *comp,
 		assert(FALSE);
 	}
 
-	conting_one_line_update_drawing(
-			conting_drawing_get_one_line(CONTING_DRAWING(user_data)),
-			user_data);
+	conting_one_line_update(conting_drawing_get_one_line(user_data), &bounds);
 	conting_drawing_update(CONTING_DRAWING(user_data));
 }
 static void
