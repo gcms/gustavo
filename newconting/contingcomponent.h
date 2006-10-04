@@ -38,7 +38,6 @@ struct ContingComponent_ {
 	gboolean resize_horizontal, resize_vertical;
 
 	/* private */
-    gdouble rotate[6];
 	GHashTable *points;
 	GList *links;
 

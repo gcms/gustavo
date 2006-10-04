@@ -71,6 +71,13 @@ struct ContingDrawingClass_ {
 	void (*find_link)(ContingDrawing *self,
 			ContingDrawingPredicate pred,
 			gpointer user_data);
+
+	void (*grab)(ContingDrawing *drawing, ArtPoint *pi);
+	void (*ungrab)(ContingDrawing *drawing);
+	void (*motion)(ContingDrawing *drawing, ArtPoint *pi);
+
+
+	void (*motion_place)(ContingDrawing *drawing, ArtPoint *pi);
 };
 
 GType conting_drawing_get_type(void);
@@ -100,9 +107,12 @@ gboolean conting_drawing_answer(ContingDrawing *self,
 
 gboolean conting_drawing_event(ContingDrawing *self, GdkEvent *event);
 
-void conting_drawing_grab(ContingDrawing *self);
+void conting_drawing_grab(ContingDrawing *self, ArtPoint *pi);
 void conting_drawing_ungrab(ContingDrawing *self);
 void conting_drawing_update(ContingDrawing *self);
+
+void conting_drawing_motion(ContingDrawing *self, ArtPoint *pi);
+void conting_drawing_motion_place(ContingDrawing *self, ArtPoint *pi);
 
 void conting_drawing_set_selected(ContingDrawing *self, gboolean selected);
 gboolean conting_drawing_is_selected(ContingDrawing *self);
@@ -115,6 +125,11 @@ void conting_drawing_find_link(ContingDrawing *self,
 		ContingDrawingPredicate pred, gpointer user_data);
 
 gpointer conting_drawing_get_attr(ContingDrawing *self, const gchar *attr);
+
+
+#define CONTING_TYPE_DRAWING_EVENT	(conting_drawing_event_get_type())
+GType
+conting_drawing_event_get_type(void);
 
 typedef enum {
     CONTING_DRAWING_NOTHING,
@@ -131,6 +146,7 @@ typedef enum {
 typedef struct {
     ContingDrawingEventType type;
     gdouble x, y;
+	guint state;
 } ContingDrawingEventMotion;
 
 typedef struct {
@@ -159,5 +175,7 @@ typedef union {
     ContingDrawingEventNotify notify;
 } ContingDrawingEvent;
 
+ContingDrawingEvent *
+conting_drawing_event_new(void);
 
 #endif /* CONTING_DRAWING_H */

@@ -13,17 +13,13 @@
 static gint move_signal_id = 0;
 static gint delete_signal_id = 0;
 
-static gint mouse_signal_id = 0;
 
-static gint button_press = 0;
-static gint button_release = 0;
-static gint double_button_press = 0;
+static gint event_motion_id = 0;
+static gint event_button_id = 0;
+static gint event_key_id = 0;
+static gint event_notify_id = 0;
 
-static gint key_press = 0;
-static gint key_release = 0;
-
-static gint enter_signal_id = 0;
-static gint leave_signal_id = 0;
+static GType event_param_types[1];
 
 enum {
     CONTING_DRAWING_PROP_0,
@@ -49,7 +45,35 @@ struct ContingDrawingPrivate_ {
 	guint show_tick;
 	GtkWidget *window;
 	gpointer *params;
+
+	gboolean pressed;
 };
+
+static void
+g_cclosure_marshal_VOID__EVENT(GClosure *closure,
+		GValue *return_value,
+		guint n_param_values,
+		const GValue *param_values,
+		gpointer invocation_hint,
+		gpointer marshal_data)
+{
+	typedef void (*GMarshalFunc_VOID__EVENT)(gpointer data1,
+			ContingDrawingEvent *arg_1, gpointer data2);
+	register GMarshalFunc_VOID__EVENT callback;
+	register GCClosure *cc = (GCClosure *) closure;
+	register gpointer data1, data2;
+
+	g_return_if_fail(n_param_values == 2);
+
+	data1 = g_value_peek_pointer(param_values + 0);
+	data2 = closure->data;
+
+	callback = (GMarshalFunc_VOID__EVENT)
+		(marshal_data ? marshal_data : cc->callback);
+
+	callback(data1, g_value_get_boxed(param_values + 1),
+			data2);
+}
 
 void
 conting_drawing_get_center(ContingDrawing *self,
@@ -276,29 +300,50 @@ conting_drawing_event(ContingDrawing *self,
 }
 
 void
-conting_drawing_grab(ContingDrawing *self)
+conting_drawing_motion(ContingDrawing *self, ArtPoint *pi)
 {
-    ContingGroup *group;
-
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-    if ((group = conting_drawing_get_group(self)) != NULL)
-        conting_group_grab(group, self);
-    else
-        conting_one_line_grab(conting_drawing_get_one_line(self), self);
+	CONTING_DRAWING_GET_CLASS(self)->motion(self, pi);
+}
+void
+conting_drawing_motion_place(ContingDrawing *self, ArtPoint *pi)
+{
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->motion_place(self, pi);
+}
+
+void
+conting_drawing_grab(ContingDrawing *self, ArtPoint *pi)
+{
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->grab(self, pi);
+}
+
+static void
+conting_drawing_grab_impl(ContingDrawing *self, ArtPoint *pi)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+    conting_one_line_grab(conting_drawing_get_one_line(self), self);
 }
 
 void
 conting_drawing_ungrab(ContingDrawing *self)
 {
-    ContingGroup *group;
+    g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+	
+	CONTING_DRAWING_GET_CLASS(self)->ungrab(self);
+}
 
+static void
+conting_drawing_ungrab_impl(ContingDrawing *self)
+{
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
-    if ((group = conting_drawing_get_group(self)) != NULL)
-        conting_group_grab(group, self);
-    else
-        conting_one_line_ungrab(conting_drawing_get_one_line(self), self);
+    conting_one_line_ungrab(conting_drawing_get_one_line(self), self);
 }
 
 void
@@ -467,55 +512,121 @@ conting_drawing_cancel_hint(ContingDrawing *self)
 	}
 }
 
+static void
+conting_drawing_notify_signal(ContingDrawing *self,
+		ContingDrawingEventType type, ArtPoint *pi) {
+	ContingDrawingEvent event;
+
+	event.type = type;
+	event.notify.x = pi->x;
+	event.notify.y = pi->y;
+	
+	g_signal_emit_by_name(self, "notify-event",
+			g_boxed_copy(CONTING_TYPE_DRAWING_EVENT, &event));
+}
+
+static void
+conting_drawing_button_signal(ContingDrawing *self,
+		ContingDrawingEventType type, ArtPoint *pi,
+		guint state, guint button)
+{
+	ContingDrawingEvent event;
+
+	event.type = type;
+	event.button.x = pi->x;
+	event.button.y = pi->y;
+	event.button.state = state;
+	event.button.button = button;
+
+	g_signal_emit_by_name(self, "button-event",
+			g_boxed_copy(CONTING_TYPE_DRAWING_EVENT, &event));
+}
+
+static void
+conting_drawing_key_signal(ContingDrawing *self,
+		ContingDrawingEventType type, guint state, guint keyval)
+{
+	ContingDrawingEvent event;
+
+	event.type = type;
+	event.key.state = state;
+	event.key.keyval = keyval;
+
+	g_signal_emit_by_name(self, "key-event",
+			g_boxed_copy(CONTING_TYPE_DRAWING_EVENT, &event));
+}
+
+static void
+conting_drawing_motion_signal(ContingDrawing *self,
+		ContingDrawingEventType type, ArtPoint *pi, guint state)
+{
+	ContingDrawingEvent event;
+
+	event.type = type;
+	event.motion.x = pi->x;
+	event.motion.y = pi->y;
+	event.motion.state = state;
+	
+	g_signal_emit_by_name(self, "motion-event",
+			g_boxed_copy(CONTING_TYPE_DRAWING_EVENT, &event));
+}
 
 #include <gdk/gdkkeysyms.h>
 static gboolean
 conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 {
 	ContingDrawingPrivate *priv;
+	ArtPoint pi;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), FALSE);
 
 	priv = CONTING_DRAWING_GET_PRIVATE(self);
 
+	conting_one_line_window_to_world(conting_drawing_get_one_line(self),
+			event->button.x, event->button.y, &pi.x, &pi.y);
+	conting_drawing_w2i(self, &pi, &pi);
+
 	switch (event->type) {
 		case GDK_ENTER_NOTIFY:
-			conting_drawing_setup_hint(self);
-			g_print("%p ENTER\n", self);
-			return FALSE;
+			conting_drawing_notify_signal(self, CONTING_DRAWING_ENTER, &pi);
+			return TRUE;
 			break;
+
 		case GDK_LEAVE_NOTIFY:
-			conting_drawing_cancel_hint(self);
-			g_print("%p LEAVE\n", self);
-			return FALSE;
+			conting_drawing_notify_signal(self, CONTING_DRAWING_LEAVE, &pi);
+			return TRUE;
 			break;
+
 		case GDK_BUTTON_PRESS:
-			conting_drawing_cancel_hint(self);
-			conting_drawing_set_selected(self, TRUE);
-
-			return FALSE;
-
+			conting_drawing_button_signal(self, CONTING_DRAWING_BUTTON_PRESS,
+					&pi, event->button.state, event->button.button);
+			return TRUE;
 			break;
+			
+		case GDK_BUTTON_RELEASE:
+			conting_drawing_button_signal(self, CONTING_DRAWING_BUTTON_RELEASE,
+					&pi, event->button.state, event->button.button);
+			return TRUE;
+			break;
+
 		case GDK_2BUTTON_PRESS:
-			if (conting_drawing_is_placed(self)) {
-				conting_one_line_edit(conting_drawing_get_one_line(self),
-						self);
-			}
+			conting_drawing_button_signal(self, CONTING_DRAWING_2BUTTON_PRESS,
+					&pi, event->button.state, event->button.button);
 			return FALSE;
-		case GDK_KEY_PRESS:
-			if (event->key.keyval == GDK_Escape
-					&& !conting_drawing_is_placed(self)) {
-				conting_drawing_delete(self);
-				return TRUE;
-			}
-
-			if (event->key.keyval == GDK_Delete) {
-				conting_drawing_delete(self);
-
-				return TRUE;
-			}
-
 			break;
+
+		case GDK_KEY_PRESS:
+			conting_drawing_key_signal(self, CONTING_DRAWING_KEY_PRESS,
+					event->key.state, event->key.keyval);
+			return TRUE;
+			break;
+
+		case GDK_MOTION_NOTIFY:
+			conting_drawing_motion_signal(self, CONTING_DRAWING_MOTION_NOTIFY,
+					&pi, event->motion.state);
+			return TRUE;
+			break;
+
 		default:
 			break;
 	}
@@ -756,6 +867,11 @@ conting_drawing_class_init(gpointer g_class,
 
 	drawing_class->get_center = conting_drawing_get_center_impl;
 
+	drawing_class->grab = conting_drawing_grab_impl;
+	drawing_class->ungrab = conting_drawing_ungrab_impl;
+	drawing_class->motion = NULL;
+	drawing_class->motion_place = NULL;
+
     move_signal_id = g_signal_newv(
             "move",
             G_TYPE_FROM_CLASS(g_class),
@@ -779,6 +895,52 @@ conting_drawing_class_init(gpointer g_class,
             G_TYPE_NONE,
             0,
             NULL);
+
+	event_param_types[0] = CONTING_TYPE_DRAWING_EVENT;
+	event_motion_id = g_signal_newv(
+			"motion-event",
+			G_TYPE_FROM_CLASS(g_class),
+			G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+			NULL,
+			NULL,
+			NULL,
+			g_cclosure_marshal_VOID__EVENT,
+			G_TYPE_NONE,
+			1,
+			event_param_types);
+	event_button_id = g_signal_newv(
+			"button-event",
+			G_TYPE_FROM_CLASS(g_class),
+			G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+			NULL,
+			NULL,
+			NULL,
+			g_cclosure_marshal_VOID__EVENT,
+			G_TYPE_NONE,
+			1,
+			event_param_types);
+	event_key_id = g_signal_newv(
+			"key-event",
+			G_TYPE_FROM_CLASS(g_class),
+			G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+			NULL,
+			NULL,
+			NULL,
+			g_cclosure_marshal_VOID__EVENT,
+			G_TYPE_NONE,
+			1,
+			event_param_types);
+	event_notify_id = g_signal_newv(
+			"notify-event",
+			G_TYPE_FROM_CLASS(g_class),
+			G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+			NULL,
+			NULL,
+			NULL,
+			g_cclosure_marshal_VOID__EVENT,
+			G_TYPE_NONE,
+			1,
+			event_param_types);
 
     g_type_class_add_private(g_class, sizeof(ContingDrawingPrivate));
 }
@@ -868,4 +1030,26 @@ conting_drawing_get_attr(ContingDrawing *self, const gchar *attr)
 			NULL);
 
 	return result;
+}
+static gpointer
+conting_drawing_event_copy(gpointer boxed)
+{
+	ContingDrawingEvent *result = g_new(ContingDrawingEvent, 1);
+
+	*result = *((ContingDrawingEvent *) boxed);
+	
+	return result;
+}
+
+GType
+conting_drawing_event_get_type(void)
+{
+	static GType type = 0;
+
+	if (type == 0) {
+		type = g_boxed_type_register_static("ContingDrawingEvent",
+			conting_drawing_event_copy, g_free);
+	}
+
+	return type;
 }
