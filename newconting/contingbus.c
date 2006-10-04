@@ -114,12 +114,18 @@ conting_bus_instance_init(GTypeInstance *self,
 	comp->p1.x = 3;
 	comp->p1.y = 20;
 
+	comp->min_bounds.x0 = comp->p0.x;
+	comp->min_bounds.x1 = comp->p1.x;
+	comp->min_bounds.y0 = comp->p0.y;
+	comp->min_bounds.y1 = comp->p1.y;
+	
     /*
 	comp->placed = FALSE;
     */
 	priv->dragging = FALSE;
 	priv->start_resize = NULL;
 
+	comp->resize_vertical = TRUE;
 }
 static void conting_bus_delete(ContingDrawing *self)
 {
@@ -314,9 +320,11 @@ conting_bus_link(ContingComponent *self,
 
     conting_drawing_w2i(CONTING_DRAWING(self), &pi, &pi);
 	
+	/*
 	g_print("link: (%lf, %lf); (%lf, %lf) : (%lf, %lf)\n",
 			comp->p0.x, comp->p0.y, comp->p1.x, comp->p1.y,
 			pi.x, pi.y);
+			*/
 
 	if (pi.y < comp->p0.y || pi.y > comp->p1.y
 			|| pi.x < comp->p0.x || pi.x > comp->p1.x) {

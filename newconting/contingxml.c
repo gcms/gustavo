@@ -54,6 +54,7 @@ static void hash_foreach(gpointer key, gpointer value, gpointer user_data)
 	ContingSerializeFunc key_func;
 	ContingSerializeFunc val_func;
     gpointer extra_data;
+	xmlNodePtr key_node, val_node;
 
 	gpointer *data = user_data;
 
@@ -62,11 +63,17 @@ static void hash_foreach(gpointer key, gpointer value, gpointer user_data)
 	val_func = data[2];
     extra_data = data[3];
 
-	node = xmlNewNode(NULL, "node");
-	xmlAddChild(node, key_func(key, extra_data));
-	xmlAddChild(node, val_func(value, extra_data));
+	key_node = key_func(key, extra_data);
+	val_node = val_func(value, extra_data);
 
-	xmlAddChild(parent, node);
+	if (key_node && val_node) {
+		node = xmlNewNode(NULL, "node");
+
+		xmlAddChild(node, key_node);
+		xmlAddChild(node, val_node);
+
+		xmlAddChild(parent, node);
+	}
 }
 
 xmlNodePtr conting_util_hash_node(const char *name,

@@ -90,6 +90,8 @@ conting_component_connect_link(ContingComponent *comp,
 
     g_signal_connect(G_OBJECT(link), "delete",
             G_CALLBACK(conting_component_link_deleted_stub), comp);
+
+	conting_util_bounds_add_point(&comp->min_bounds, p);
 }
 static void
 conting_component_get_update_bounds(ContingDrawing *self,
@@ -227,6 +229,12 @@ conting_component_get_w2i_affine(ContingDrawing *self,
     art_affine_multiply(affine, invert_drawing, invert_rotate);
 }
 
+#define IS_NEAR(p0, p1) ((p0) < (p1) + TOLERANCE && (p0) > (p1) - TOLERANCE)
+
+#define conting_component_is_resizing(comp) \
+	(CONTING_COMPONENT(comp)->h_resizing \
+	 || CONTING_COMPONENT(comp)->v_resizing)
+
 #include <gdk/gdkkeysyms.h>
 static gboolean
 conting_component_event(ContingDrawing *self,
@@ -248,11 +256,35 @@ conting_component_event(ContingDrawing *self,
 
     switch (event->type) {
         case GDK_BUTTON_PRESS:
-            conting_drawing_grab(self);
-            comp->dragging_point = p;
-            comp->dragging = TRUE;
+			{
+				ArtPoint pi;
 
-            return TRUE;
+	            conting_drawing_grab(self);
+    	        comp->dragging_point = p;
+        	    comp->dragging = TRUE;
+
+				conting_drawing_w2i(self, &pi, &p);
+
+				comp->resizing = 0;
+
+				if (comp->resize_horizontal) {
+					if (IS_NEAR(pi.x, comp->p0.x)) {
+						comp->resizing |= CONTING_RESIZE_LEFT;
+					} else if (IS_NEAR(pi.x, comp->p1.x)) {
+						comp->resizing |= CONTING_RESIZE_RIGHT;
+					}
+				}
+
+				if (comp->resize_vertical) {
+					if (IS_NEAR(pi.y, comp->p0.y)) {
+						comp->resizing |= CONTING_RESIZE_UP;
+					} else if (IS_NEAR(pi.y, comp->p1.y)) {
+						comp->resizing |= CONTING_RESIZE_DOWN;
+					}
+				}
+
+            	return TRUE;
+			}
             break;
         case GDK_MOTION_NOTIFY:
             if (!comp->placed) {
@@ -262,6 +294,47 @@ conting_component_event(ContingDrawing *self,
                 conting_drawing_affine_absolute(self, affine);
 
                 return TRUE;
+			} else if (comp->placed && comp->dragging
+					&& comp->resizing) {
+				/*
+				ArtPoint p0, p1;
+				gdouble w, h;
+				gdouble affine[6];
+				*/
+				ArtPoint pi;
+
+				conting_drawing_w2i(self, &pi, &p);
+
+				if (comp->resizing & CONTING_RESIZE_LEFT) {
+					comp->p0.x = MIN(comp->min_bounds.x0, pi.x);
+				} else if (comp->resizing & CONTING_RESIZE_RIGHT) {
+					comp->p1.x = MAX(comp->min_bounds.x1, pi.x);
+				}
+
+				if (comp->resizing & CONTING_RESIZE_UP) {
+					comp->p0.y = MIN(comp->min_bounds.y0, pi.y);
+				} else if (comp->resizing & CONTING_RESIZE_DOWN) {
+					comp->p1.y = MAX(comp->min_bounds.y1, pi.y);
+				}
+
+/*
+				w = fabs(comp->p1.x - comp->p0.x);
+				h = fabs(comp->p1.y - comp->p0.y);
+
+				p0.x = -w / 2;	p1.x = p0.x + w;
+				p0.y = -h / 2;	p1.y = p0.y + h;
+
+				art_affine_translate(affine,
+						comp->p0.x - p0.x,
+						comp->p0.y - p0.y);
+				conting_drawing_affine(self, affine);
+
+				comp->p0 = p0;
+				comp->p1 = p1;
+				*/
+
+				g_signal_emit_by_name(self, "move");
+				
             } else if (comp->placed && comp->dragging) {
                 gdouble affine[6];
                 art_affine_translate(affine,
@@ -272,7 +345,35 @@ conting_component_event(ContingDrawing *self,
                 comp->dragging_point = p;
 
                 return TRUE;
-            }
+            } else if (comp->resize_horizontal) {
+				ArtPoint pi;
+				assert(comp->placed && !comp->dragging);
+
+				conting_drawing_w2i(self, &pi, &p);
+				
+				if (IS_NEAR(pi.x, comp->p0.x)
+					   || IS_NEAR(pi.x, comp->p1.x)) {
+					conting_one_line_cursor(conting_drawing_get_one_line(self),
+							GDK_PLUS);
+				} else {
+					conting_one_line_cursor(conting_drawing_get_one_line(self),
+							GDK_LEFT_PTR);
+				}
+			} else if (comp->resize_vertical) {
+				ArtPoint pi;
+				assert(comp->placed && !comp->dragging);
+
+				conting_drawing_w2i(self, &pi, &p);
+
+				if (IS_NEAR(pi.y, comp->p0.y)
+						|| IS_NEAR(pi.y, comp->p1.y)) {
+					conting_one_line_cursor(conting_drawing_get_one_line(self),
+							GDK_PLUS);
+				} else {
+					conting_one_line_cursor(conting_drawing_get_one_line(self),
+							GDK_LEFT_PTR);
+				}
+			}
             break;
         case GDK_2BUTTON_PRESS:
         case GDK_BUTTON_RELEASE:
@@ -663,6 +764,9 @@ conting_component_instance_init(GTypeInstance *self, gpointer g_class)
     comp->links = NULL;
 
     comp->dragging = FALSE;
+
+	comp->resize_horizontal = comp->resize_vertical = FALSE;
+	comp->resizing = 0;
 }
 
 static void

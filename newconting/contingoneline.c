@@ -56,9 +56,25 @@ struct ContingOneLinePrivate_ {
     GList *operations;
 };
 
+/* FRIEND METHOD */
+void conting_one_line_update(ContingOneLine *self, ArtDRect *bounds);
+
 /* PRIVATE METHOD */
-static void conting_one_line_update(ContingOneLine *self, ArtDRect *bounds);
 static void conting_one_line_ungroup_all(ContingOneLine *self);
+
+/* FRIEND METHOD */
+/* TODO: make a pool of cursors */
+void
+conting_one_line_cursor(ContingOneLine *self, GdkCursorType type)
+{
+    ContingOneLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	gdk_window_set_cursor(priv->widget->window, gdk_cursor_new(type));
+}
 
 /* CALLBACK FUNCTION */
 static const gchar *
@@ -464,7 +480,7 @@ conting_one_line_answer(ContingOneLine *self,
 }
 #define TOLERANCE CONTING_DRAWING_TOLERANCE
 /* PRIVATE METHOD */
-static void
+void
 conting_one_line_update(ContingOneLine *self,
                         ArtDRect *bounds)
 {
@@ -791,6 +807,8 @@ widget_motion_notify_event(GtkWidget *widget,
     conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
             event->x, event->y,
             &world_x, &world_y);
+
+	conting_one_line_cursor(user_data, GDK_LEFT_PTR);
 
     switch (priv->state) {
         case CONTING_ONE_LINE_SELECTING:

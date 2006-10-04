@@ -23,11 +23,19 @@ typedef struct ContingComponentClass_ ContingComponentClass;
 #include "contingdrawing.h"
 #endif
 
+typedef enum {
+	CONTING_RESIZE_LEFT =	1 << 0,
+	CONTING_RESIZE_RIGHT =	1 << 1,
+	CONTING_RESIZE_DOWN =	1 << 2,
+	CONTING_RESIZE_UP =		1 << 3
+} ContingResizeOrientation;
+
 struct ContingComponent_ {
     ContingDrawing parent;
     /* protected */
     ArtPoint p0, p1;
     gboolean placed;
+	gboolean resize_horizontal, resize_vertical;
 
 	/* private */
     gdouble rotate[6];
@@ -38,6 +46,9 @@ struct ContingComponent_ {
 	gboolean dragging;
 
 	gboolean show;
+
+	ContingResizeOrientation resizing;
+	ArtDRect min_bounds;
 };
 
 struct ContingComponentClass_ {

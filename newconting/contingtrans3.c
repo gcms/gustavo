@@ -171,10 +171,11 @@ conting_trans3_link(ContingComponent *self,
     pi.y = world_y;
 
     conting_drawing_w2i(CONTING_DRAWING(self), &pi, &pi);
-    
+    /*
     g_print("link: (%lf, %lf); (%lf, %lf) : (%lf, %lf)\n",
             comp->p0.x, comp->p0.y, comp->p1.x, comp->p1.y,
             pi.x, pi.y);
+			*/
 
     if (pi.y < comp->p0.y || pi.y > comp->p1.y
             || pi.x < comp->p0.x || pi.x > comp->p1.x) {
@@ -193,12 +194,14 @@ conting_trans3_link(ContingComponent *self,
         } else if (priv->link1 == NULL) {
             pi.x = comp->p1.x;
             priv->link1 = drawing;
-        }
+        } else {
+			return FALSE;
+		}
     } else if (priv->link2 == NULL) {
 //        art_affine_translate(affine, comp->p1.x - pi.x, 0);
         pi.y = comp->p1.y;
         pi.x = comp->p0.x + (comp->p1.x - comp->p0.x) / 2.0;
-        priv->link1 = drawing;
+        priv->link2 = drawing;
     } else {
         return FALSE;
     }
