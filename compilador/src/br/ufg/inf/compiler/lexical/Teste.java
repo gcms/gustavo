@@ -22,7 +22,7 @@ public class Teste {
 	private Nfa nfa;
 
 	private List<Token> tokenList;
-	
+
 	private TokenManager manager;
 
 	public Teste() {
@@ -31,7 +31,7 @@ public class Teste {
 		nfa = new Nfa(Nfa.NOTHING);
 
 		tokenList = new LinkedList<Token>();
-		
+
 		manager = new TokenManager();
 	}
 
@@ -42,7 +42,7 @@ public class Teste {
 			public void invoke(StringBuffer arg0, int arg1, DfaRun arg2)
 					throws CallbackException {
 				Token token = manager.getToken(tokenName, arg0.toString());
-				
+
 				tokenList.add(token);
 				symbolTable.add(token);
 			}
@@ -63,19 +63,20 @@ public class Teste {
 		run.filter();
 	}
 
-	public static void main(String[] args) throws CompileDfaException, ReSyntaxException, IOException {
+	public static void main(String[] args) throws CompileDfaException,
+			ReSyntaxException, IOException {
 		Teste t = new Teste();
-		
+
 		t.addTokenRule("ID", "[A-Za-z_][A-Za-z0-9_]*");
 		t.addTokenRule("NUM", "[0-9]+");
 		t.addTokenRule("SPACE", "[ \t\r\n]+");
 		t.addTokenRule("OPEN_PAREN", "\\(");
 		t.addTokenRule("CLOSE_PAREN", "\\)");
-		
+
 		t.run(new CharSequenceCharSource("if (true) 10"));
-		
+
 		for (Token tok : t.tokenList) {
 			System.out.println(tok);
-		}	
+		}
 	}
 }
