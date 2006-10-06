@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-Wall -g -mms-bitfields -ID:/GTK/include/gtk-2.0 -ID:/GTK/lib/gtk-2.0/include -ID:/GTK/include/atk-1.0 -ID:/GTK/include/cairo -ID:/GTK/include/pango-1.0 -ID:/GTK/include/glib-2.0 -ID:/GTK/lib/glib-2.0/include -ID:/GTK/include/libart-2.0  -ID:/GTK/include
-LIBS=D:/GTK/lib/*.a D:/GTK/bin/*.dll -lm
+CFLAGS=-Wall -g -mms-bitfields -I$(GTK_HOME)/include/gtk-2.0 -I$(GTK_HOME)/lib/gtk-2.0/include -I$(GTK_HOME)/include/atk-1.0 -I$(GTK_HOME)/include/cairo -I$(GTK_HOME)/include/pango-1.0 -I$(GTK_HOME)/include/glib-2.0 -I$(GTK_HOME)/lib/glib-2.0/include -I$(GTK_HOME)/include/libart-2.0  -I$(GTK_HOME)/include
+LIBS=$(GTK_HOME)/lib/*.a $(GTK_HOME)/bin/*.dll -lm
 
 all: build
 	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o -o main
