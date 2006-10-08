@@ -4,7 +4,6 @@
 #include "contingdrawing.h"
 
 
-
 #define CONTING_TYPE_GROUP        (conting_group_get_type())
 #define CONTING_GROUP(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), \
             CONTING_TYPE_GROUP, ContingGroup))
@@ -29,8 +28,6 @@ struct ContingGroupClass_ {
 
 GType conting_group_get_type(void);
 void conting_group_add_drawing(ContingGroup *group, ContingDrawing *drawing);
-void conting_group_grab(ContingGroup *group, ContingDrawing *drawing);
-void conting_group_ungrab(ContingGroup *group, ContingDrawing *drawing);
 gboolean conting_group_contains(ContingGroup *group, ContingDrawing *drawing);
 GSList *conting_group_get_children(ContingGroup *group);
 

@@ -1,7 +1,3 @@
-#ifndef CONTING_COMPONENT_H
-#include "contingcomponent.h"
-#endif
-
 #ifndef CONTING_DRAWING_H
 #define CONTING_DRAWING_H
 
@@ -85,6 +81,7 @@ GType conting_drawing_get_type(void);
 void conting_drawing_draw(ContingDrawing *self, cairo_t *cr);
 
 #include "contingoneline.h"
+#include "contingcomponent.h"
 #include "continggroup.h"
 
 ContingOneLine *conting_drawing_get_one_line(ContingDrawing *self);

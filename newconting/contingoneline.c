@@ -191,6 +191,8 @@ static void
 edit_button(ContingDrawing *drawing, ContingDrawingEvent *event,
 		gpointer user_data)
 {
+    g_print("edit_button %p (%s)\n",
+            drawing, g_type_name(G_OBJECT_TYPE(drawing)));
 	switch (event->type) {
 		case CONTING_DRAWING_BUTTON_PRESS:
 			edit_button_press(drawing, event, user_data);
@@ -1367,6 +1369,14 @@ widget_button_release_event(GtkWidget *widget,
                 conting_drawing_place(CONTING_DRAWING(group));
 
                 if (conting_drawing_is_placed(CONTING_DRAWING(group))) {
+	g_signal_connect(G_OBJECT(group), "motion-event",
+			G_CALLBACK(edit_motion), NULL);
+	g_signal_connect(G_OBJECT(group), "button-event",
+			G_CALLBACK(edit_button), NULL);
+	g_signal_connect(G_OBJECT(group), "key-event",
+			G_CALLBACK(edit_key), NULL);
+	g_signal_connect(G_OBJECT(group), "notify-event",
+			G_CALLBACK(edit_notify), NULL);
                     priv->drawings = g_slist_append(priv->drawings, group);
                 } else {
                     assert(FALSE);
