@@ -1,3 +1,4 @@
+#include "contingdrawing.h"
 #include "contingcomponent.h"
 #include "contingline.h"
 #include "contingbusbase.h"

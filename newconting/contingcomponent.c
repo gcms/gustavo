@@ -1,4 +1,4 @@
-#include "contingcomponent.h"
+#include "contingdrawing.h"
 #include "contingutil.h"
 #include "contingxml.h"
 #include "contingserializable.h"

@@ -1,3 +1,4 @@
+#include "contingdrawing.h"
 #include "contingsymbol.h"
 #include "contingserializable.h"
 #include "contingxml.h"

@@ -1,3 +1,4 @@
+#include "contingdrawing.h"
 #include "contingtrans2.h"
 #include "contingutil.h"
 #include "contingxml.h"
