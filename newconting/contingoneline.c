@@ -89,6 +89,10 @@ edit_button(ContingDrawing *drawing, ContingDrawingEvent *event,
 static void
 edit_key(ContingDrawing *drawing, ContingDrawingEvent *event,
 		gpointer user_data);
+/* SIGNAL CALLBACK */
+static void
+edit_notify(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data);
 
 /* PRIVATE METHOD */
 static void
@@ -118,7 +122,10 @@ conting_one_line_place(ContingOneLine *self, ContingDrawing *drawing)
 			G_CALLBACK(edit_button), NULL);
 	g_signal_connect(G_OBJECT(drawing), "key-event",
 			G_CALLBACK(edit_key), NULL);
+	g_signal_connect(G_OBJECT(drawing), "notify-event",
+			G_CALLBACK(edit_notify), NULL);
 }
+
 
 static void
 edit_enter(ContingDrawing *drawing, ContingDrawingEvent *event,
@@ -131,6 +138,21 @@ edit_left(ContingDrawing *drawing, ContingDrawingEvent *event,
 		gpointer user_data)
 {
 	g_print("%p left\n", drawing);
+}
+static void
+edit_notify(ContingDrawing *drawing, ContingDrawingEvent *event,
+        gpointer user_data)
+{
+    switch (event->type) {
+        case CONTING_DRAWING_ENTER:
+            edit_enter(drawing, event, user_data);
+            break;
+        case CONTING_DRAWING_LEAVE:
+            edit_left(drawing, event, user_data);
+            break;
+        default:
+            break;
+    }
 }
 
 static void

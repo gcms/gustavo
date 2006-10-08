@@ -37,7 +37,10 @@ void conting_line_get_buses(ContingLine *self,
 		ContingBusBase **comp0, ContingBusBase **comp1);
 
 void
-conting_line_set_key_state(ContingLine *self, guint state);
+conting_line_set_shift_mask(ContingLine *self, gboolean shift_mask);
+
+void
+conting_line_create_point(ContingLine *self, const ArtPoint *pi);
 
 
 #endif /* CONTING_LINE_H */

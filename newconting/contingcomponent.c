@@ -11,10 +11,10 @@ static gpointer parent_iface = NULL;
         CONTING_TYPE_COMPONENT, ContingComponentPrivate))
 typedef struct ContingComponentPrivate_ ContingComponentPrivate;
 struct ContingComponentPrivate_ {
-	gboolean grabbed;
-	ArtPoint grabbed_pw;
+    gboolean grabbed;
+    ArtPoint grabbed_pw;
 
-	gdouble rotate[6];
+    gdouble rotate[6];
 };
 
 
@@ -24,28 +24,27 @@ struct ContingComponentPrivate_ {
 void
 conting_component_rotate(ContingComponent *self)
 {
-	ContingComponentPrivate *priv;
-	GList *n;
+    ContingComponentPrivate *priv;
     gdouble rotate[6];
 
-	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
     
-	
-	art_affine_rotate(rotate, 90.0);
+    
+    art_affine_rotate(rotate, 90.0);
     art_affine_multiply(priv->rotate, priv->rotate, rotate);
 
     if (self->placed)
-    	g_signal_emit_by_name(self, "move");
+        g_signal_emit_by_name(self, "move");
 
 
-	/*
-	conting_drawing_update(self);
+    /*
+    conting_drawing_update(self);
 
     for (n = comp->links; n != NULL; n = g_list_next(n))
-		conting_drawing_update(CONTING_DRAWING(n->data));
-		*/
+        conting_drawing_update(CONTING_DRAWING(n->data));
+        */
 }
 
 gboolean
@@ -72,18 +71,18 @@ conting_component_link(ContingComponent *self,
 
 static void
 conting_component_draw_selection(ContingDrawing *self,
-		ContingDrawingBoxDrawer drawer)
+        ContingDrawingBoxDrawer drawer)
 {
-	ContingComponent *comp;
+    ContingComponent *comp;
 
-	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-	comp = CONTING_COMPONENT(self);
+    comp = CONTING_COMPONENT(self);
 
-	drawer(self, comp->p0.x, comp->p0.y);
-	drawer(self, comp->p0.x, comp->p1.y);
-	drawer(self, comp->p1.x, comp->p0.y);
-	drawer(self, comp->p1.x, comp->p1.y);
+    drawer(self, comp->p0.x, comp->p0.y);
+    drawer(self, comp->p0.x, comp->p1.y);
+    drawer(self, comp->p1.x, comp->p0.y);
+    drawer(self, comp->p1.x, comp->p1.y);
 }
 
 static void
@@ -94,10 +93,10 @@ conting_component_draw(ContingDrawing *self, cairo_t *cr)
 
     g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-	comp = CONTING_COMPONENT(self);
-	
-	pw0 = comp->p0;
-	pw1 = comp->p1;
+    comp = CONTING_COMPONENT(self);
+    
+    pw0 = comp->p0;
+    pw1 = comp->p1;
 }
 
 static void
@@ -128,7 +127,7 @@ conting_component_connect_link(ContingComponent *comp,
     g_signal_connect(G_OBJECT(link), "delete",
             G_CALLBACK(conting_component_link_deleted_stub), comp);
 
-	conting_util_bounds_add_point(&comp->min_bounds, p);
+    conting_util_bounds_add_point(&comp->min_bounds, p);
 }
 static void
 conting_component_get_update_bounds(ContingDrawing *self,
@@ -153,12 +152,12 @@ conting_component_get_update_bounds(ContingDrawing *self,
     bounds->y1 = MAX(pw0.y, pw1.y);
 
 
-	if (conting_drawing_is_selected(self)) {
-		bounds->x0 -= TOLERANCE;
-		bounds->y0 -= TOLERANCE;
-		bounds->x1 += TOLERANCE;
-		bounds->y1 += TOLERANCE;
-	}
+    if (conting_drawing_is_selected(self)) {
+        bounds->x0 -= TOLERANCE;
+        bounds->y0 -= TOLERANCE;
+        bounds->x1 += TOLERANCE;
+        bounds->y1 += TOLERANCE;
+    }
 
     if (comp->show) {
         GList *n;
@@ -241,7 +240,7 @@ conting_component_get_i2w_affine(ContingDrawing *self,
 
     g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-   	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+       priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
     CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(self, affine);
 
@@ -269,8 +268,8 @@ conting_component_get_w2i_affine(ContingDrawing *self,
 #define IS_NEAR(p0, p1) ((p0) < (p1) + TOLERANCE && (p0) > (p1) - TOLERANCE)
 
 #define conting_component_is_resizing(comp) \
-	(CONTING_COMPONENT(comp)->h_resizing \
-	 || CONTING_COMPONENT(comp)->v_resizing)
+    (CONTING_COMPONENT(comp)->h_resizing \
+     || CONTING_COMPONENT(comp)->v_resizing)
 
 #include <gdk/gdkkeysyms.h>
 static gboolean
@@ -292,39 +291,39 @@ conting_component_event(ContingDrawing *self,
             &p.x, &p.y);
 
     switch (event->type) {
-		/*
+        /*
         case GDK_BUTTON_PRESS:
-			{
-				ArtPoint pi;
+            {
+                ArtPoint pi;
 
-	            conting_drawing_grab(self);
-    	        comp->dragging_point = p;
-        	    comp->dragging = TRUE;
+                conting_drawing_grab(self);
+                comp->dragging_point = p;
+                comp->dragging = TRUE;
 
-				conting_drawing_w2i(self, &pi, &p);
+                conting_drawing_w2i(self, &pi, &p);
 
-				comp->resizing = 0;
+                comp->resizing = 0;
 
-				if (comp->resize_horizontal) {
-					if (IS_NEAR(pi.x, comp->p0.x)) {
-						comp->resizing |= CONTING_RESIZE_LEFT;
-					} else if (IS_NEAR(pi.x, comp->p1.x)) {
-						comp->resizing |= CONTING_RESIZE_RIGHT;
-					}
-				}
+                if (comp->resize_horizontal) {
+                    if (IS_NEAR(pi.x, comp->p0.x)) {
+                        comp->resizing |= CONTING_RESIZE_LEFT;
+                    } else if (IS_NEAR(pi.x, comp->p1.x)) {
+                        comp->resizing |= CONTING_RESIZE_RIGHT;
+                    }
+                }
 
-				if (comp->resize_vertical) {
-					if (IS_NEAR(pi.y, comp->p0.y)) {
-						comp->resizing |= CONTING_RESIZE_UP;
-					} else if (IS_NEAR(pi.y, comp->p1.y)) {
-						comp->resizing |= CONTING_RESIZE_DOWN;
-					}
-				}
+                if (comp->resize_vertical) {
+                    if (IS_NEAR(pi.y, comp->p0.y)) {
+                        comp->resizing |= CONTING_RESIZE_UP;
+                    } else if (IS_NEAR(pi.y, comp->p1.y)) {
+                        comp->resizing |= CONTING_RESIZE_DOWN;
+                    }
+                }
 
-            	return TRUE;
-			}
+                return TRUE;
+            }
             break;
-			*/
+            */
         case GDK_MOTION_NOTIFY:
             if (!comp->placed) {
                 gdouble affine[6];
@@ -333,47 +332,47 @@ conting_component_event(ContingDrawing *self,
                 conting_drawing_affine_absolute(self, affine);
 
                 return TRUE;
-			} else if (comp->placed && comp->dragging
-					&& comp->resizing) {
-				/*
-				ArtPoint p0, p1;
-				gdouble w, h;
-				gdouble affine[6];
-				*/
-				ArtPoint pi;
+            } else if (comp->placed && comp->dragging
+                    && comp->resizing) {
+                /*
+                ArtPoint p0, p1;
+                gdouble w, h;
+                gdouble affine[6];
+                */
+                ArtPoint pi;
 
-				conting_drawing_w2i(self, &pi, &p);
+                conting_drawing_w2i(self, &pi, &p);
 
-				if (comp->resizing & CONTING_RESIZE_LEFT) {
-					comp->p0.x = MIN(comp->min_bounds.x0, pi.x);
-				} else if (comp->resizing & CONTING_RESIZE_RIGHT) {
-					comp->p1.x = MAX(comp->min_bounds.x1, pi.x);
-				}
+                if (comp->resizing & CONTING_RESIZE_LEFT) {
+                    comp->p0.x = MIN(comp->min_bounds.x0, pi.x);
+                } else if (comp->resizing & CONTING_RESIZE_RIGHT) {
+                    comp->p1.x = MAX(comp->min_bounds.x1, pi.x);
+                }
 
-				if (comp->resizing & CONTING_RESIZE_UP) {
-					comp->p0.y = MIN(comp->min_bounds.y0, pi.y);
-				} else if (comp->resizing & CONTING_RESIZE_DOWN) {
-					comp->p1.y = MAX(comp->min_bounds.y1, pi.y);
-				}
+                if (comp->resizing & CONTING_RESIZE_UP) {
+                    comp->p0.y = MIN(comp->min_bounds.y0, pi.y);
+                } else if (comp->resizing & CONTING_RESIZE_DOWN) {
+                    comp->p1.y = MAX(comp->min_bounds.y1, pi.y);
+                }
 
 /*
-				w = fabs(comp->p1.x - comp->p0.x);
-				h = fabs(comp->p1.y - comp->p0.y);
+                w = fabs(comp->p1.x - comp->p0.x);
+                h = fabs(comp->p1.y - comp->p0.y);
 
-				p0.x = -w / 2;	p1.x = p0.x + w;
-				p0.y = -h / 2;	p1.y = p0.y + h;
+                p0.x = -w / 2;    p1.x = p0.x + w;
+                p0.y = -h / 2;    p1.y = p0.y + h;
 
-				art_affine_translate(affine,
-						comp->p0.x - p0.x,
-						comp->p0.y - p0.y);
-				conting_drawing_affine(self, affine);
+                art_affine_translate(affine,
+                        comp->p0.x - p0.x,
+                        comp->p0.y - p0.y);
+                conting_drawing_affine(self, affine);
 
-				comp->p0 = p0;
-				comp->p1 = p1;
-				*/
+                comp->p0 = p0;
+                comp->p1 = p1;
+                */
 
-				g_signal_emit_by_name(self, "move");
-				
+                g_signal_emit_by_name(self, "move");
+                
             } else if (comp->placed && comp->dragging) {
                 gdouble affine[6];
                 art_affine_translate(affine,
@@ -385,34 +384,34 @@ conting_component_event(ContingDrawing *self,
 
                 return TRUE;
             } else if (comp->resize_horizontal) {
-				ArtPoint pi;
-				assert(comp->placed && !comp->dragging);
+                ArtPoint pi;
+                assert(comp->placed && !comp->dragging);
 
-				conting_drawing_w2i(self, &pi, &p);
-				
-				if (IS_NEAR(pi.x, comp->p0.x)
-					   || IS_NEAR(pi.x, comp->p1.x)) {
-					conting_one_line_cursor(conting_drawing_get_one_line(self),
-							GDK_PLUS);
-				} else {
-					conting_one_line_cursor(conting_drawing_get_one_line(self),
-							GDK_LEFT_PTR);
-				}
-			} else if (comp->resize_vertical) {
-				ArtPoint pi;
-				assert(comp->placed && !comp->dragging);
+                conting_drawing_w2i(self, &pi, &p);
+                
+                if (IS_NEAR(pi.x, comp->p0.x)
+                       || IS_NEAR(pi.x, comp->p1.x)) {
+                    conting_one_line_cursor(conting_drawing_get_one_line(self),
+                            GDK_PLUS);
+                } else {
+                    conting_one_line_cursor(conting_drawing_get_one_line(self),
+                            GDK_LEFT_PTR);
+                }
+            } else if (comp->resize_vertical) {
+                ArtPoint pi;
+                assert(comp->placed && !comp->dragging);
 
-				conting_drawing_w2i(self, &pi, &p);
+                conting_drawing_w2i(self, &pi, &p);
 
-				if (IS_NEAR(pi.y, comp->p0.y)
-						|| IS_NEAR(pi.y, comp->p1.y)) {
-					conting_one_line_cursor(conting_drawing_get_one_line(self),
-							GDK_PLUS);
-				} else {
-					conting_one_line_cursor(conting_drawing_get_one_line(self),
-							GDK_LEFT_PTR);
-				}
-			}
+                if (IS_NEAR(pi.y, comp->p0.y)
+                        || IS_NEAR(pi.y, comp->p1.y)) {
+                    conting_one_line_cursor(conting_drawing_get_one_line(self),
+                            GDK_PLUS);
+                } else {
+                    conting_one_line_cursor(conting_drawing_get_one_line(self),
+                            GDK_LEFT_PTR);
+                }
+            }
             break;
         case GDK_2BUTTON_PRESS:
         case GDK_BUTTON_RELEASE:
@@ -424,7 +423,7 @@ conting_component_event(ContingDrawing *self,
             break;
         case GDK_KEY_PRESS:
             if (event->key.keyval == GDK_r) {
-				conting_component_rotate(comp);
+                conting_component_rotate(comp);
                 return TRUE;
             }
 
@@ -572,13 +571,13 @@ conting_component_write(ContingSerializable *self,
                            xmlNodePtr *result)
 {
     ContingComponent *comp;
-	ContingComponentPrivate *priv;
+    ContingComponentPrivate *priv;
     xmlNodePtr class_node;
 
     g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
     comp = CONTING_COMPONENT(self);
-	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
     class_node = xmlNewNode(NULL, BAD_CAST "class");
     xmlNewProp(class_node, BAD_CAST "name",
@@ -657,7 +656,7 @@ conting_component_read(ContingSerializable *self, xmlNodePtr drawing_node,
                             GHashTable *id_drawing)
 {
     ContingComponent *comp;
-	ContingComponentPrivate *priv;
+    ContingComponentPrivate *priv;
     xmlNodePtr class_node;
 
     g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
@@ -665,7 +664,7 @@ conting_component_read(ContingSerializable *self, xmlNodePtr drawing_node,
     assert(xmlStrEqual(drawing_node->name, "drawing"));
     /* Load p0, p1 */
     comp = CONTING_COMPONENT(self);
-	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
     for (class_node = drawing_node->children; class_node != NULL;
             class_node = class_node->next) {
@@ -741,120 +740,120 @@ conting_component_finalize(GObject *self)
 static gboolean
 conting_component_find_link_pred(ContingDrawing *self, gpointer user_data)
 {
-	gpointer *params = user_data;
-	ContingDrawingPredicate pred = params[2];
+    gpointer *params = user_data;
+    ContingDrawingPredicate pred = params[2];
 
-	if (params[1] == self)
-		return FALSE;
+    if (params[1] == self)
+        return FALSE;
 
-	return pred(self, params[0]);
+    return pred(self, params[0]);
 }
 
 static void
 conting_component_find_link(ContingDrawing *self, ContingDrawingPredicate pred,
-		gpointer user_data) {
-	ContingComponent *comp;
-	gpointer params[3];
-	GList *n;
+        gpointer user_data) {
+    ContingComponent *comp;
+    gpointer params[3];
+    GList *n;
 
-	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-	comp = CONTING_COMPONENT(self);
+    comp = CONTING_COMPONENT(self);
 
-	if (!pred(self, user_data))
-		return;
+    if (!pred(self, user_data))
+        return;
 
-	params[0] = user_data;
-	params[1] = self;
-	params[2] = pred;
+    params[0] = user_data;
+    params[1] = self;
+    params[2] = pred;
 
-	for (n = comp->links; n != NULL; n = g_list_next(n)) {
-		ContingDrawing *drawing = n->data;
-		if (pred(drawing, user_data)) {
-			conting_drawing_find_link(drawing,
-					conting_component_find_link_pred, params);
-		}
-	}
+    for (n = comp->links; n != NULL; n = g_list_next(n)) {
+        ContingDrawing *drawing = n->data;
+        if (pred(drawing, user_data)) {
+            conting_drawing_find_link(drawing,
+                    conting_component_find_link_pred, params);
+        }
+    }
 }
 
 static void
 conting_component_grab(ContingDrawing *self, ArtPoint *pi)
 {
-	ContingComponentPrivate *priv;
+    ContingComponentPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-	priv->grabbed = TRUE;
-	conting_drawing_i2w(self, &priv->grabbed_pw, pi);
+    priv->grabbed = TRUE;
+    conting_drawing_i2w(self, &priv->grabbed_pw, pi);
 
-	CONTING_DRAWING_CLASS(parent_class)->grab(self, pi);
+    CONTING_DRAWING_CLASS(parent_class)->grab(self, pi);
 }
 
 static void
 conting_component_ungrab(ContingDrawing *self)
 {
-	ContingComponentPrivate *priv;
+    ContingComponentPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-	if (priv->grabbed == TRUE)
-		CONTING_DRAWING_CLASS(parent_class)->ungrab(self);
+    if (priv->grabbed == TRUE)
+        CONTING_DRAWING_CLASS(parent_class)->ungrab(self);
 
-	priv->grabbed = FALSE;
+    priv->grabbed = FALSE;
 }
 
 static void
 conting_component_motion(ContingDrawing *self, ArtPoint *pi)
 {
-	ContingComponentPrivate *priv;
+    ContingComponentPrivate *priv;
 
-	g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
+    g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
-	if (priv->grabbed) {
-		/* TODO: Should I transform pi and grabbed_pw to world coords? */
-		gdouble affine[6];
-		ArtPoint pw;
+    if (priv->grabbed) {
+        /* TODO: Should I transform pi and grabbed_pw to world coords? */
+        gdouble affine[6];
+        ArtPoint pw;
 
-		conting_drawing_i2w(self, &pw, pi);
-		
+        conting_drawing_i2w(self, &pw, pi);
+        
         art_affine_translate(affine,
-				pw.x - priv->grabbed_pw.x,
+                pw.x - priv->grabbed_pw.x,
                 pw.y - priv->grabbed_pw.y);
 
         conting_drawing_affine(self, affine);
         g_signal_emit_by_name(self, "move");
         priv->grabbed_pw = pw;
-	}
+    }
 }
 
 static void
 conting_component_motion_place(ContingDrawing *self, ArtPoint *pi)
 {
-	ArtPoint pw;
-	gdouble affine[6];
+    ArtPoint pw;
+    gdouble affine[6];
 
-	conting_drawing_i2w(self, &pw, pi);
+    conting_drawing_i2w(self, &pw, pi);
 
-	art_affine_translate(affine, pw.x, pw.y);
-	conting_drawing_affine_absolute(self, affine);
+    art_affine_translate(affine, pw.x, pw.y);
+    conting_drawing_affine_absolute(self, affine);
 }
 
 static void
 conting_component_instance_init(GTypeInstance *self, gpointer g_class)
 {
     ContingComponent *comp;
-	ContingComponentPrivate *priv;
+    ContingComponentPrivate *priv;
 
     g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
     comp = CONTING_COMPONENT(self);
-	priv = CONTING_COMPONENT_GET_PRIVATE(self);
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
     comp->p0.x = comp->p0.y = comp->p1.x = comp->p1.y = 0;
     comp->placed = FALSE;
@@ -866,22 +865,22 @@ conting_component_instance_init(GTypeInstance *self, gpointer g_class)
 
     comp->dragging = FALSE;
 
-	comp->resize_horizontal = comp->resize_vertical = FALSE;
-	comp->resizing = 0;
+    comp->resize_horizontal = comp->resize_vertical = FALSE;
+    comp->resizing = 0;
 
-	priv->grabbed = FALSE;
+    priv->grabbed = FALSE;
 }
 
 static void
 conting_component_serializable_init(gpointer g_iface, gpointer iface_data)
 {
-	ContingSerializableClass *serial_class;
+    ContingSerializableClass *serial_class;
 
-	serial_class = g_iface;
+    serial_class = g_iface;
     serial_class->read = conting_component_read;
     serial_class->write = conting_component_write;
 
-	parent_iface = g_type_interface_peek_parent(g_iface);
+    parent_iface = g_type_interface_peek_parent(g_iface);
 }
 
 static void
@@ -907,12 +906,12 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
     drawing_class->event = conting_component_event;
     drawing_class->delete = conting_component_delete;
 
-	drawing_class->find_link = conting_component_find_link;
+    drawing_class->find_link = conting_component_find_link;
 
-	drawing_class->grab = conting_component_grab;
-	drawing_class->ungrab = conting_component_ungrab;
-	drawing_class->motion = conting_component_motion;
-	drawing_class->motion_place = conting_component_motion_place;
+    drawing_class->grab = conting_component_grab;
+    drawing_class->ungrab = conting_component_ungrab;
+    drawing_class->motion = conting_component_motion;
+    drawing_class->motion_place = conting_component_motion_place;
 
 
     component_class = CONTING_COMPONENT_CLASS(g_class);
@@ -922,7 +921,7 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
 
     parent_class = g_type_class_peek_parent(g_class);
 
-	g_type_class_add_private(g_class, sizeof(ContingComponentPrivate));
+    g_type_class_add_private(g_class, sizeof(ContingComponentPrivate));
 }
 
 GType conting_component_get_type(void) {
@@ -946,15 +945,15 @@ GType conting_component_get_type(void) {
                 "ContingComponent",
                 &type_info, 0);
 
-		static const GInterfaceInfo serial_info = {
-			conting_component_serializable_init,
-			NULL,
-			NULL	
-		};
+        static const GInterfaceInfo serial_info = {
+            conting_component_serializable_init,
+            NULL,
+            NULL    
+        };
 
-		g_type_add_interface_static(type,
-				CONTING_TYPE_SERIALIZABLE,
-				&serial_info);
+        g_type_add_interface_static(type,
+                CONTING_TYPE_SERIALIZABLE,
+                &serial_info);
 
     }
 

@@ -727,7 +727,7 @@ conting_line_xml_node(ContingSerializable *self, xmlNodePtr drawing_node,
 }
 
 void
-conting_line_create_point(ContingLine *self, ArtPoint *pi)
+conting_line_create_point(ContingLine *self, const ArtPoint *pi)
 {
 	ContingLinePrivate *priv;
 	ArtPoint *new_p;
