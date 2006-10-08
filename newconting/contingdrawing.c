@@ -380,8 +380,10 @@ conting_drawing_is_selected(ContingDrawing *self)
     return priv->selected;
 }
 
+/*
 static void conting_drawing_setup_hint(ContingDrawing *self);
 static void conting_drawing_cancel_hint(ContingDrawing *self);
+*/
 
 
 void
@@ -397,6 +399,7 @@ conting_drawing_delete(ContingDrawing *self)
  * Create a new widget class, which contains an area to place a label, and
  * an hbox to place items. See termometer_test.c for an example */
 /** TOOLTIP LIKE WINDOW */
+/*
 static gboolean
 window_exposed(GtkWidget *widget, GdkEventExpose *event,
 		gpointer user_data)
@@ -449,7 +452,7 @@ show_hint(gpointer user_data)
 	self = params[0];
 	tick = (guint) params[1];
 
-	/** An "evil" hack? Detects if the drawing was deleted */
+	** An "evil" hack? Detects if the drawing was deleted *
 	if (params[0] == NULL)
 		goto show_hint_end;
 
@@ -480,8 +483,8 @@ conting_drawing_setup_hint(ContingDrawing *self)
 
 	priv->show_tick++;
 
-	/* Each call must have each own params, such that
-	 * we can't use a static array */
+	* Each call must have each own params, such that
+	 * we can't use a static array *
 
 	if (priv->params)
 		return;
@@ -511,6 +514,7 @@ conting_drawing_cancel_hint(ContingDrawing *self)
 		priv->params = NULL;
 	}
 }
+*/
 
 static void
 conting_drawing_notify_signal(ContingDrawing *self,
@@ -719,10 +723,6 @@ conting_drawing_delete_impl(ContingDrawing *self)
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
 
     priv = CONTING_DRAWING_GET_PRIVATE(self);
-
-	if (conting_drawing_is_placed(self)) {
-		conting_drawing_cancel_hint(self);
-	}
 
     conting_one_line_delete_drawing(conting_drawing_get_one_line(self),
             self);

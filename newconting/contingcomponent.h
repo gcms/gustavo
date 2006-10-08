@@ -90,6 +90,8 @@ void conting_component_disconnect_link(ContingComponent *self,
 		                               ContingDrawing *drawing);
 void conting_component_connect_link(ContingComponent *self,
 		                        ContingDrawing *link, ArtPoint *p);
+void
+conting_component_rotate(ContingComponent *self);
 
 
 

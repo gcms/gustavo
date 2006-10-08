@@ -186,7 +186,6 @@ conting_group_event(ContingDrawing *self,
 		                GdkEvent *event)
 {
 	ContingGroupPrivate *priv;
-	GSList *n;
 	ArtPoint pw;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_GROUP(self), FALSE);
