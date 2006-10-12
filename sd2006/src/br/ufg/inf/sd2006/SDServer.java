@@ -34,10 +34,14 @@ public class SDServer implements Runnable {
 	    System.out.println("request on " + request.getObjectRef());
 
 	    Object[] params = request.getParams();
-	    Class[] paramClass = new Class[params.length];
+	    Class[] paramClass = null;
 
-	    for (int i = 0; i < params.length; i++) {
-		paramClass[i] = params[i].getClass();
+	    if (params != null) {
+		paramClass = new Class[params.length];
+
+		for (int i = 0; i < params.length; i++) {
+		    paramClass[i] = params[i].getClass();
+		}
 	    }
 
 	    Object obj = manager.getObject(request.getObjectRef());

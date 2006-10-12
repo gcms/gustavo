@@ -19,6 +19,7 @@ public class ClientMain3 {
 		.getProxy(Somador.class);
 
 	System.out.println(s.soma(10, 2));
+	System.out.println(s.hashCode());
     }
 
 }
