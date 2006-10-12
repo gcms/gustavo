@@ -9,6 +9,8 @@ import java.net.Socket;
 public class RemoteObject {
     private ObjectReference objectReference;
 
+    private Object proxy;
+
     public RemoteObject(ObjectReference ref) {
 	if (ref == null) {
 	    throw new IllegalArgumentException(
@@ -70,8 +72,9 @@ public class RemoteObject {
     }
 
     public Object getProxy(Class[] interfaces) {
-	return Proxy.newProxyInstance(RemoteObject.class.getClassLoader(),
-		interfaces, new RemoteObjectProxy(this));
+	return proxy = (proxy != null ? proxy : Proxy.newProxyInstance(
+		RemoteObject.class.getClassLoader(), interfaces,
+		new RemoteObjectProxy(this)));
     }
 
     public Object getProxy(Class iface) {
