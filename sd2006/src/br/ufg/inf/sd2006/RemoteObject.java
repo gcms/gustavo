@@ -10,6 +10,11 @@ public class RemoteObject {
     private ObjectReference objectReference;
 
     public RemoteObject(ObjectReference ref) {
+	if (ref == null) {
+	    throw new IllegalArgumentException(
+		    "Must have a valid object reference");
+	}
+
 	objectReference = ref;
     }
 
