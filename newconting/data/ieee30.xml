@@ -1,0 +1,1461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<one-line>
+  <drawing id="1" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="10"/>
+          <point>3.000000 -6.000000</point>
+        </node>
+        <node>
+          <drawing id="8"/>
+          <point>3.000000 12.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 94.333333 162.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="8" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="1"/>
+      <attribute type="drawing" name="comp1" id="3"/>
+      <attribute type="point" name="link0">25.333333 39.666667</attribute>
+      <attribute type="point" name="link1">69.000000 221.666666</attribute>
+      <attribute type="list" name="points">
+        <point>25.333333 39.666667</point>
+        <point>69.000000 221.666666</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 57.000000 126.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="10" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="1"/>
+      <attribute type="drawing" name="comp1" id="9"/>
+      <attribute type="point" name="link0">43.333333 39.666667</attribute>
+      <attribute type="point" name="link1">110.000000 80.333334</attribute>
+      <attribute type="list" name="points">
+        <point>43.333333 39.666667</point>
+        <point>110.000000 80.333334</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 57.000000 126.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="9" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="10"/>
+          <point>-3.000000 2.666667</point>
+        </node>
+        <node>
+          <drawing id="50"/>
+          <point>3.000000 3.333333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 170.000000 203.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="49" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="12"/>
+          <point>-3.000000 -5.666667</point>
+        </node>
+        <node>
+          <drawing id="50"/>
+          <point>3.000000 10.000000</point>
+        </node>
+        <node>
+          <drawing id="80"/>
+          <point>3.000000 2.333333</point>
+        </node>
+        <node>
+          <drawing id="81"/>
+          <point>3.000000 -6.333333</point>
+        </node>
+        <node>
+          <drawing id="51"/>
+          <point>3.000000 -3.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 249.000000 201.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="50" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="9"/>
+      <attribute type="drawing" name="comp1" id="49"/>
+      <attribute type="point" name="link0">173.000000 207.000000</attribute>
+      <attribute type="point" name="link1">239.000000 204.000000</attribute>
+      <attribute type="list" name="points">
+        <point>173.000000 207.000000</point>
+        <point>233.333333 212.500000</point>
+        <point>239.000000 204.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="51" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="60"/>
+          <point>3.000000 -1.666667</point>
+        </node>
+        <node>
+          <drawing id="62"/>
+          <point>-3.000000 -2.500000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 361.666667 107.500000</attribute>
+    </class>
+  </drawing>
+  <drawing id="11" class="ContingTrans3">
+    <class name="ContingTrans3">
+      <attribute type="drawing" name="link0" id="16"/>
+      <attribute type="drawing" name="link1" id="17"/>
+      <attribute type="drawing" name="link2" id="12"/>
+    </class>
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-8.500000 -8.500000</attribute>
+      <attribute type="point" name="p1">8.500000 8.500000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="12"/>
+          <point>0.000000 8.500000</point>
+        </node>
+        <node>
+          <drawing id="16"/>
+          <point>-8.500000 -2.833333</point>
+        </node>
+        <node>
+          <drawing id="17"/>
+          <point>8.500000 -2.833333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 254.666667 174.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="12" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="11"/>
+      <attribute type="drawing" name="comp1" id="49"/>
+      <attribute type="point" name="link0">254.666667 183.166667</attribute>
+      <attribute type="point" name="link1">254.666667 198.000000</attribute>
+      <attribute type="list" name="points">
+        <point>254.666667 183.166667</point>
+        <point>254.666667 198.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="14" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="16"/>
+          <point>3.000000 13.166667</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 198.000001 146.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="16" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="11"/>
+      <attribute type="drawing" name="comp1" id="14"/>
+      <attribute type="point" name="link0">246.166667 171.833334</attribute>
+      <attribute type="point" name="link1">201.000001 159.833334</attribute>
+      <attribute type="list" name="points">
+        <point>246.166667 171.833334</point>
+        <point>201.000001 159.833334</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="15" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="28"/>
+          <point>-3.000000 12.666667</point>
+        </node>
+        <node>
+          <drawing id="48"/>
+          <point>-3.000000 -13.333333</point>
+        </node>
+        <node>
+          <drawing id="17"/>
+          <point>3.000000 -1.833334</point>
+        </node>
+        <node>
+          <drawing id="26"/>
+          <point>-3.000000 -1.333333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 260.666667 150.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="17" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="11"/>
+      <attribute type="drawing" name="comp1" id="15"/>
+      <attribute type="point" name="link0">263.166667 171.833334</attribute>
+      <attribute type="point" name="link1">262.500000 153.666667</attribute>
+      <attribute type="list" name="points">
+        <point>263.166667 171.833334</point>
+        <point>262.500000 153.666667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="26" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="15"/>
+      <attribute type="drawing" name="comp1" id="24"/>
+      <attribute type="point" name="link0">262.000000 147.666667</attribute>
+      <attribute type="point" name="link1">249.500000 61.166667</attribute>
+      <attribute type="list" name="points">
+        <point>262.000000 147.666667</point>
+        <point>249.500000 61.166667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="28" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="15"/>
+      <attribute type="drawing" name="comp1" id="22"/>
+      <attribute type="point" name="link0">248.000000 147.666667</attribute>
+      <attribute type="point" name="link1">188.833333 74.500000</attribute>
+      <attribute type="list" name="points">
+        <point>248.000000 147.666667</point>
+        <point>188.833333 74.500000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="43" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="48"/>
+          <point>3.000000 4.666667</point>
+        </node>
+        <node>
+          <drawing id="65"/>
+          <point>3.000000 -7.333333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 312.666667 124.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="48" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="15"/>
+      <attribute type="drawing" name="comp1" id="43"/>
+      <attribute type="point" name="link0">274.000000 147.666667</attribute>
+      <attribute type="point" name="link1">308.000000 127.666667</attribute>
+      <attribute type="list" name="points">
+        <point>274.000000 147.666667</point>
+        <point>308.000000 127.666667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="51" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="60"/>
+          <point>3.000000 -1.666667</point>
+        </node>
+        <node>
+          <drawing id="62"/>
+          <point>-3.000000 -2.500000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 361.666667 107.500000</attribute>
+    </class>
+  </drawing>
+  <drawing id="29" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="22"/>
+      <attribute type="drawing" name="comp1" id="24"/>
+      <attribute type="point" name="link0">212.000000 93.666667</attribute>
+      <attribute type="point" name="link1">247.333333 80.333333</attribute>
+      <attribute type="list" name="points">
+        <point>212.000000 93.666667</point>
+        <point>226.000000 106.000000</point>
+        <point>248.000000 104.000000</point>
+        <point>247.333333 80.333333</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -9.166667 -19.166667</attribute>
+    </class>
+  </drawing>
+  <drawing id="46" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="24"/>
+      <attribute type="drawing" name="comp1" id="25"/>
+      <attribute type="point" name="link0">271.333333 80.333333</attribute>
+      <attribute type="point" name="link1">312.666667 99.000000</attribute>
+      <attribute type="list" name="points">
+        <point>271.333333 80.333333</point>
+        <point>277.333333 108.000000</point>
+        <point>308.000000 108.666667</point>
+        <point>312.666667 99.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -9.166667 -19.166667</attribute>
+    </class>
+  </drawing>
+  <drawing id="22" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="28"/>
+          <point>3.000000 8.666667</point>
+        </node>
+        <node>
+          <drawing id="29"/>
+          <point>3.000000 -5.333333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 197.500000 71.500000</attribute>
+    </class>
+  </drawing>
+  <drawing id="24" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="46"/>
+          <point>3.000000 -11.333333</point>
+        </node>
+        <node>
+          <drawing id="29"/>
+          <point>3.000000 12.666667</point>
+        </node>
+        <node>
+          <drawing id="26"/>
+          <point>3.000000 1.333333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 250.833333 58.166667</attribute>
+    </class>
+  </drawing>
+  <drawing id="25" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="46"/>
+          <point>3.000000 6.666667</point>
+        </node>
+        <node>
+          <drawing id="62"/>
+          <point>3.000000 -6.500000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 310.166667 76.833333</attribute>
+    </class>
+  </drawing>
+  <drawing id="59" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="60"/>
+          <point>-3.000000 0.000000</point>
+        </node>
+        <node>
+          <drawing id="74"/>
+          <point>3.000000 -0.833333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 366.666667 148.333333</attribute>
+    </class>
+  </drawing>
+  <drawing id="60" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="51"/>
+      <attribute type="drawing" name="comp1" id="59"/>
+      <attribute type="point" name="link0">363.333333 110.500000</attribute>
+      <attribute type="point" name="link1">366.666667 145.333333</attribute>
+      <attribute type="list" name="points">
+        <point>363.333333 110.500000</point>
+        <point>366.666667 145.333333</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="62" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="25"/>
+      <attribute type="drawing" name="comp1" id="51"/>
+      <attribute type="point" name="link0">316.666667 79.833333</attribute>
+      <attribute type="point" name="link1">364.166667 104.500000</attribute>
+      <attribute type="list" name="points">
+        <point>316.666667 79.833333</point>
+        <point>364.166667 104.500000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="64" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="72"/>
+          <point>3.000000 5.833333</point>
+        </node>
+        <node>
+          <drawing id="65"/>
+          <point>-3.000000 6.666667</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 339.166667 179.166667</attribute>
+    </class>
+  </drawing>
+  <drawing id="65" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="43"/>
+      <attribute type="drawing" name="comp1" id="64"/>
+      <attribute type="point" name="link0">320.000000 127.666667</attribute>
+      <attribute type="point" name="link1">332.500000 176.166667</attribute>
+      <attribute type="list" name="points">
+        <point>320.000000 127.666667</point>
+        <point>332.500000 176.166667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="70" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="35"/>
+          <point>3.000000 7.500000</point>
+        </node>
+        <node>
+          <drawing id="72"/>
+          <point>-3.000000 10.833333</point>
+        </node>
+        <node>
+          <drawing id="74"/>
+          <point>-3.000000 2.500000</point>
+        </node>
+        <node>
+          <drawing id="39"/>
+          <point>3.000000 -6.666667</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 400.833333 213.333333</attribute>
+    </class>
+  </drawing>
+  <drawing id="72" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="70"/>
+      <attribute type="drawing" name="comp1" id="64"/>
+      <attribute type="point" name="link0">390.000000 210.333333</attribute>
+      <attribute type="point" name="link1">333.333333 182.166667</attribute>
+      <attribute type="list" name="points">
+        <point>390.000000 210.333333</point>
+        <point>333.333333 182.166667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="74" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="70"/>
+      <attribute type="drawing" name="comp1" id="59"/>
+      <attribute type="point" name="link0">398.333333 210.333333</attribute>
+      <attribute type="point" name="link1">367.500000 151.333333</attribute>
+      <attribute type="list" name="points">
+        <point>398.333333 210.333333</point>
+        <point>367.500000 151.333333</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="33" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="86"/>
+          <point>3.000000 8.000000</point>
+        </node>
+        <node>
+          <drawing id="90"/>
+          <point>3.000000 -6.000000</point>
+        </node>
+        <node>
+          <drawing id="60"/>
+          <point>3.000000 -12.000000</point>
+        </node>
+        <node>
+          <drawing id="40"/>
+          <point>-3.000000 -11.333333</point>
+        </node>
+        <node>
+          <drawing id="81"/>
+          <point>3.000000 13.333333</point>
+        </node>
+        <node>
+          <drawing id="36"/>
+          <point>3.000000 10.000000</point>
+        </node>
+        <node>
+          <drawing id="96"/>
+          <point>3.000000 -0.666667</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 405.333333 271.333333</attribute>
+    </class>
+  </drawing>
+  <drawing id="34" class="ContingTrans2">
+    <class name="ContingTrans2">
+      <attribute type="drawing" name="link0" id="35"/>
+      <attribute type="drawing" name="link1" id="36"/>
+    </class>
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-5.000000 -8.500000</attribute>
+      <attribute type="point" name="p1">5.000000 8.500000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="35"/>
+          <point>0.000000 -8.500000</point>
+        </node>
+        <node>
+          <drawing id="36"/>
+          <point>0.000000 8.500000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 394.000000 242.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="35" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="34"/>
+      <attribute type="drawing" name="comp1" id="70"/>
+      <attribute type="point" name="link0">394.000000 233.500000</attribute>
+      <attribute type="point" name="link1">393.333333 216.333333</attribute>
+      <attribute type="list" name="points">
+        <point>394.000000 233.500000</point>
+        <point>393.333333 216.333333</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="36" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="34"/>
+      <attribute type="drawing" name="comp1" id="33"/>
+      <attribute type="point" name="link0">394.000000 250.500000</attribute>
+      <attribute type="point" name="link1">395.333333 274.333333</attribute>
+      <attribute type="list" name="points">
+        <point>394.000000 250.500000</point>
+        <point>395.333333 274.333333</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="38" class="ContingTrans3">
+    <class name="ContingTrans3">
+      <attribute type="drawing" name="link0" id="39"/>
+      <attribute type="drawing" name="link1" id="42"/>
+      <attribute type="drawing" name="link2" id="40"/>
+    </class>
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-8.500000 -8.500000</attribute>
+      <attribute type="point" name="p1">8.500000 8.500000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="42"/>
+          <point>8.500000 -2.833333</point>
+        </node>
+        <node>
+          <drawing id="40"/>
+          <point>0.000000 8.500000</point>
+        </node>
+        <node>
+          <drawing id="39"/>
+          <point>-8.500000 -2.833333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 415.333333 242.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="39" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="38"/>
+      <attribute type="drawing" name="comp1" id="70"/>
+      <attribute type="point" name="link0">406.833333 239.833333</attribute>
+      <attribute type="point" name="link1">407.500000 216.333333</attribute>
+      <attribute type="list" name="points">
+        <point>406.833333 239.833333</point>
+        <point>407.500000 216.333333</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="40" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="38"/>
+      <attribute type="drawing" name="comp1" id="33"/>
+      <attribute type="point" name="link0">415.333333 251.166667</attribute>
+      <attribute type="point" name="link1">416.666667 268.333333</attribute>
+      <attribute type="list" name="points">
+        <point>415.333333 251.166667</point>
+        <point>416.666667 268.333333</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="41" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="42"/>
+          <point>-3.000000 9.166667</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 454.666667 198.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="42" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="38"/>
+      <attribute type="drawing" name="comp1" id="41"/>
+      <attribute type="point" name="link0">423.833333 239.833333</attribute>
+      <attribute type="point" name="link1">451.666667 207.166667</attribute>
+      <attribute type="list" name="points">
+        <point>423.833333 239.833333</point>
+        <point>451.666667 207.166667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="48" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="90"/>
+          <point>-3.000000 8.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 523.333333 250.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="59" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="60"/>
+          <point>3.000000 0.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 526.000000 82.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="60" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="33"/>
+      <attribute type="drawing" name="comp1" id="59"/>
+      <attribute type="point" name="link0">417.333333 274.333333</attribute>
+      <attribute type="point" name="link1">526.000000 85.000000</attribute>
+      <attribute type="list" name="points">
+        <point>417.333333 274.333333</point>
+        <point>421.333333 281.333333</point>
+        <point>504.000000 254.000000</point>
+        <point>526.000000 85.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="80" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="3"/>
+      <attribute type="drawing" name="comp1" id="49"/>
+      <attribute type="point" name="link0">134.000000 347.666666</attribute>
+      <attribute type="point" name="link1">246.666667 204.000000</attribute>
+      <attribute type="list" name="points">
+        <point>134.000000 347.666666</point>
+        <point>238.000000 220.666667</point>
+        <point>246.666667 204.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="81" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="33"/>
+      <attribute type="drawing" name="comp1" id="49"/>
+      <attribute type="point" name="link0">392.000000 274.333333</attribute>
+      <attribute type="point" name="link1">255.333333 204.000000</attribute>
+      <attribute type="list" name="points">
+        <point>392.000000 274.333333</point>
+        <point>390.000000 282.000000</point>
+        <point>256.000000 211.333333</point>
+        <point>255.333333 204.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="86" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="33"/>
+      <attribute type="drawing" name="comp1" id="3"/>
+      <attribute type="point" name="link0">397.333333 274.333333</attribute>
+      <attribute type="point" name="link1">145.333333 347.666666</attribute>
+      <attribute type="list" name="points">
+        <point>397.333333 274.333333</point>
+        <point>394.666667 288.666667</point>
+        <point>154.666667 336.000000</point>
+        <point>145.333333 347.666666</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="3" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="86"/>
+          <point>-3.000000 -10.000000</point>
+        </node>
+        <node>
+          <drawing id="80"/>
+          <point>-3.000000 1.333333</point>
+        </node>
+        <node>
+          <drawing id="99"/>
+          <point>3.000000 -10.666667</point>
+        </node>
+        <node>
+          <drawing id="8"/>
+          <point>-3.000000 9.333333</point>
+        </node>
+        <node>
+          <drawing id="51"/>
+          <point>-3.000000 -1.666667</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 135.333333 350.666666</attribute>
+    </class>
+  </drawing>
+  <drawing id="90" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="33"/>
+      <attribute type="drawing" name="comp1" id="48"/>
+      <attribute type="point" name="link0">411.333333 274.333333</attribute>
+      <attribute type="point" name="link1">520.333333 258.666667</attribute>
+      <attribute type="list" name="points">
+        <point>411.333333 274.333333</point>
+        <point>418.000000 290.666667</point>
+        <point>520.333333 258.666667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="95" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="101"/>
+          <point>3.000000 1.333333</point>
+        </node>
+        <node>
+          <drawing id="96"/>
+          <point>-3.000000 2.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 408.000000 320.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="96" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="33"/>
+      <attribute type="drawing" name="comp1" id="95"/>
+      <attribute type="point" name="link0">406.000000 274.333333</attribute>
+      <attribute type="point" name="link1">406.000000 317.000000</attribute>
+      <attribute type="list" name="points">
+        <point>406.000000 274.333333</point>
+        <point>406.000000 317.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="98" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="99"/>
+          <point>3.000000 13.333333</point>
+        </node>
+        <node>
+          <drawing id="101"/>
+          <point>-3.000000 -6.666667</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 400.000000 378.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="99" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="3"/>
+      <attribute type="drawing" name="comp1" id="98"/>
+      <attribute type="point" name="link0">146.000000 353.666666</attribute>
+      <attribute type="point" name="link1">386.666667 381.666667</attribute>
+      <attribute type="list" name="points">
+        <point>146.000000 353.666666</point>
+        <point>146.000000 361.333333</point>
+        <point>386.666667 366.666667</point>
+        <point>386.666667 381.666667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="101" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="98"/>
+      <attribute type="drawing" name="comp1" id="95"/>
+      <attribute type="point" name="link0">406.666667 375.666667</attribute>
+      <attribute type="point" name="link1">406.666667 323.000000</attribute>
+      <attribute type="list" name="points">
+        <point>406.666667 375.666667</point>
+        <point>406.666667 323.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <data class="ContingData">
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="1">
+      <attribute name="angle" type="gdouble">0.000000</attribute>
+      <attribute name="name" type="gchararray">Glen Lyn 132</attribute>
+      <attribute name="number" type="gint">1</attribute>
+      <attribute name="type" type="gint">3</attribute>
+      <attribute name="voltage" type="gdouble">1.060000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="3">
+      <attribute name="angle" type="gdouble">-5.480000</attribute>
+      <attribute name="name" type="gchararray">Claytor  132</attribute>
+      <attribute name="number" type="gint">2</attribute>
+      <attribute name="type" type="gint">2</attribute>
+      <attribute name="voltage" type="gdouble">1.043000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="9">
+      <attribute name="angle" type="gdouble">-7.960000</attribute>
+      <attribute name="name" type="gchararray">Kumis    132</attribute>
+      <attribute name="number" type="gint">3</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.021000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="49">
+      <attribute name="angle" type="gdouble">-9.620000</attribute>
+      <attribute name="name" type="gchararray">Hancock  132</attribute>
+      <attribute name="number" type="gint">4</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.012000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="98">
+      <attribute name="angle" type="gdouble">-14.370000</attribute>
+      <attribute name="name" type="gchararray">Fieldale 132</attribute>
+      <attribute name="number" type="gint">5</attribute>
+      <attribute name="type" type="gint">2</attribute>
+      <attribute name="voltage" type="gdouble">1.010000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="33">
+      <attribute name="angle" type="gdouble">-11.340000</attribute>
+      <attribute name="name" type="gchararray">Roanoke  132</attribute>
+      <attribute name="number" type="gint">6</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.010000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="95">
+      <attribute name="angle" type="gdouble">-13.120000</attribute>
+      <attribute name="name" type="gchararray">Blaine   132</attribute>
+      <attribute name="number" type="gint">7</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.002000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="48">
+      <attribute name="angle" type="gdouble">-12.100000</attribute>
+      <attribute name="name" type="gchararray">Reusens  132</attribute>
+      <attribute name="number" type="gint">8</attribute>
+      <attribute name="type" type="gint">2</attribute>
+      <attribute name="voltage" type="gdouble">1.010000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="38">
+      <attribute name="angle" type="gdouble">-14.380000</attribute>
+      <attribute name="name" type="gchararray">Roanoke  1.0</attribute>
+      <attribute name="number" type="gint">9</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.051000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="70">
+      <attribute name="angle" type="gdouble">-15.970000</attribute>
+      <attribute name="name" type="gchararray">Roanoke   33</attribute>
+      <attribute name="number" type="gint">10</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.045000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="41">
+      <attribute name="angle" type="gdouble">-14.390000</attribute>
+      <attribute name="name" type="gchararray">Roanoke   11</attribute>
+      <attribute name="number" type="gint">11</attribute>
+      <attribute name="type" type="gint">2</attribute>
+      <attribute name="voltage" type="gdouble">1.082000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="15">
+      <attribute name="angle" type="gdouble">-15.240000</attribute>
+      <attribute name="name" type="gchararray">Hancock   33</attribute>
+      <attribute name="number" type="gint">12</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.057000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="14">
+      <attribute name="angle" type="gdouble">-15.240000</attribute>
+      <attribute name="name" type="gchararray">Hancock   11</attribute>
+      <attribute name="number" type="gint">13</attribute>
+      <attribute name="type" type="gint">2</attribute>
+      <attribute name="voltage" type="gdouble">1.071000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="22">
+      <attribute name="angle" type="gdouble">-16.130000</attribute>
+      <attribute name="name" type="gchararray">Bus 14    33</attribute>
+      <attribute name="number" type="gint">14</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.042000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="24">
+      <attribute name="angle" type="gdouble">-16.220000</attribute>
+      <attribute name="name" type="gchararray">Bus 15    33</attribute>
+      <attribute name="number" type="gint">15</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.038000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="43">
+      <attribute name="angle" type="gdouble">-15.830000</attribute>
+      <attribute name="name" type="gchararray">Bus 16    33</attribute>
+      <attribute name="number" type="gint">16</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.045000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="64">
+      <attribute name="angle" type="gdouble">-16.140000</attribute>
+      <attribute name="name" type="gchararray">Bus 17    33</attribute>
+      <attribute name="number" type="gint">17</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.040000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="25">
+      <attribute name="angle" type="gdouble">-16.820000</attribute>
+      <attribute name="name" type="gchararray">Bus 18    33</attribute>
+      <attribute name="number" type="gint">18</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.028000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="51">
+      <attribute name="angle" type="gdouble">-17.000000</attribute>
+      <attribute name="name" type="gchararray">Bus 19    33</attribute>
+      <attribute name="number" type="gint">19</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.026000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="59">
+      <attribute name="angle" type="gdouble">-16.800000</attribute>
+      <attribute name="name" type="gchararray">Bus 20    33</attribute>
+      <attribute name="number" type="gint">20</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.030000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-16.420000</attribute>
+      <attribute name="name" type="gchararray">Bus 21    33</attribute>
+      <attribute name="number" type="gint">21</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.033000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-16.410000</attribute>
+      <attribute name="name" type="gchararray">Bus 22    33</attribute>
+      <attribute name="number" type="gint">22</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.033000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-16.610000</attribute>
+      <attribute name="name" type="gchararray">Bus 23    33</attribute>
+      <attribute name="number" type="gint">23</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.027000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-16.780000</attribute>
+      <attribute name="name" type="gchararray">Bus 24    33</attribute>
+      <attribute name="number" type="gint">24</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.021000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-16.350000</attribute>
+      <attribute name="name" type="gchararray">Bus 25    33</attribute>
+      <attribute name="number" type="gint">25</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.017000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-16.770000</attribute>
+      <attribute name="name" type="gchararray">Bus 26    33</attribute>
+      <attribute name="number" type="gint">26</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.000000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-15.820000</attribute>
+      <attribute name="name" type="gchararray">Cloverdle 33</attribute>
+      <attribute name="number" type="gint">27</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.023000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS" drawing="59">
+      <attribute name="angle" type="gdouble">-11.970000</attribute>
+      <attribute name="name" type="gchararray">Cloverdle132</attribute>
+      <attribute name="number" type="gint">28</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.007000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-17.060000</attribute>
+      <attribute name="name" type="gchararray">Bus 29    33</attribute>
+      <attribute name="number" type="gint">29</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">1.003000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BUS">
+      <attribute name="angle" type="gdouble">-17.940000</attribute>
+      <attribute name="name" type="gchararray">Bus 30    33</attribute>
+      <attribute name="number" type="gint">30</attribute>
+      <attribute name="type" type="gint">0</attribute>
+      <attribute name="voltage" type="gdouble">0.992000</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">1</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">2</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">1</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">3</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">2</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">4</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">3</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">4</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">2</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">5</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">2</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">6</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">4</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">6</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">5</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">7</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">6</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">7</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">6</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">8</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">6</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.978000</attribute>
+      <attribute name="z bus number" type="gint">9</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">6</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.969000</attribute>
+      <attribute name="z bus number" type="gint">10</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">9</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">11</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">9</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">10</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">4</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.932000</attribute>
+      <attribute name="z bus number" type="gint">12</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">12</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">13</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">12</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">14</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">12</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">15</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">12</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">16</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">14</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">15</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">16</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">17</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">15</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">18</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">18</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">19</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">19</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">20</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">10</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">20</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">10</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">17</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">10</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">21</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">10</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">22</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">21</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">22</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">15</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">23</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">22</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">24</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">23</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">24</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">24</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">25</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">25</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">26</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">25</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">27</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">28</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.968000</attribute>
+      <attribute name="z bus number" type="gint">27</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">27</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">29</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">27</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">30</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">29</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">30</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">8</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">28</attribute>
+    </class>
+    <class name="ContingItemData" type="CONTING_ITEM_TYPE_BRANCH">
+      <attribute name="angle ratio" type="gdouble">0.000000</attribute>
+      <attribute name="tap bus number" type="gint">6</attribute>
+      <attribute name="voltage ratio" type="gdouble">0.000000</attribute>
+      <attribute name="z bus number" type="gint">28</attribute>
+    </class>
+  </data>
+</one-line>
