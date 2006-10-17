@@ -324,7 +324,7 @@ conting_data_check(ContingData *self, GList **error_list)
 		}
 	}
 
-	return *error_list == NULL;
+	return error_list == NULL || *error_list == NULL;
 }
 
 static void

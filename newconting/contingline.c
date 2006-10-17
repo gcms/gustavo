@@ -95,8 +95,10 @@ conting_line_draw(ContingDrawing *self, cairo_t *cr)
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
 		pw1 = n->data;
 
+        /*
 		g_print("drawing: (%lf, %lf); (%lf, %lf)\n",
 				pw0->x, pw0->y, pw1->x, pw1->y);
+                */
 
 		cairo_move_to(cr, pw0->x, pw0->y);
 		cairo_line_to(cr, pw1->x, pw1->y);
@@ -410,6 +412,10 @@ conting_line_link_moved(ContingComponent *comp,
 		return;
 	}
 
+	g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(user_data)),
+			conting_drawing_id(user_data));
+	g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(comp)),
+			conting_drawing_id(comp));
 	assert(conting_component_get_link_point(comp,
 				CONTING_DRAWING(user_data), &pi));
 
@@ -419,6 +425,10 @@ conting_line_link_moved(ContingComponent *comp,
 
 	conting_drawing_get_update_bounds(CONTING_DRAWING(user_data), &bounds);
 
+	g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(priv->comp0)),
+			conting_drawing_id(priv->comp0));
+	g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(priv->comp1)),
+			conting_drawing_id(priv->comp1));
 	if (priv->comp0 == comp) {
 		*(priv->link0) = pi;
 	} else if (priv->comp1 == comp) {
@@ -645,6 +655,9 @@ conting_line_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
 
                 if (xmlStrEqual(type, BAD_CAST "drawing")
                         && xmlStrEqual(name, BAD_CAST "comp0")) {
+					g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(self)),
+							conting_drawing_id(self));
+							
                     priv->comp0 = CONTING_COMPONENT(
                             conting_util_load_drawing(attr, id_drawing));
 			        g_signal_connect(G_OBJECT(priv->comp0), "move",
@@ -653,8 +666,12 @@ conting_line_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
 		        			G_CALLBACK(conting_line_link_moved), priv->comp0);
         			g_signal_connect(G_OBJECT(priv->comp0), "delete",
 		        			G_CALLBACK(conting_line_link_deleted), self);
+					g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(priv->comp0)),
+							conting_drawing_id(priv->comp0));
                 } else if (xmlStrEqual(type, BAD_CAST "drawing")
                         && xmlStrEqual(name, BAD_CAST "comp1")) {
+					g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(self)),
+							conting_drawing_id(self));
                     priv->comp1 = CONTING_COMPONENT(
                             conting_util_load_drawing(attr, id_drawing));
 			        g_signal_connect(G_OBJECT(priv->comp1), "move",
@@ -663,6 +680,8 @@ conting_line_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
 		        			G_CALLBACK(conting_line_link_moved), priv->comp1);
         			g_signal_connect(G_OBJECT(priv->comp1), "delete",
 		        			G_CALLBACK(conting_line_link_deleted), self);
+					g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(priv->comp1)),
+							conting_drawing_id(priv->comp1));
                 } else if (xmlStrEqual(type, BAD_CAST "point")
                         && xmlStrEqual(name, BAD_CAST "link0")) {
                     conting_util_load_point(attr, &link0);
@@ -686,6 +705,17 @@ conting_line_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
             priv->link1 = n->data;
         }
     }
+
+	if (priv->link0 == NULL) {
+		priv->link0 = priv->points->data;
+	}
+
+	if (priv->link1 == NULL) {
+		assert(g_list_last(priv->points));
+		priv->link1 = g_list_last(priv->points)->data;
+	}
+
+	assert(priv->link0 && priv->link1);
 
     priv->placing = FALSE;
     priv->placed = TRUE;
@@ -862,6 +892,14 @@ conting_line_motion_place(ContingDrawing *self, ArtPoint *pi)
 		conting_drawing_affine_absolute(self, affine);
 		   */
 		}
+}
+
+static void
+conting_line_accept(ContingDrawing *self, ContingVisitor *visitor)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	conting_visitor_visit_line(visitor, CONTING_LINE(self));
 }
 
 #include <gdk/gdkkeysyms.h>
@@ -1046,9 +1084,11 @@ conting_line_answer(ContingDrawing *self,
 	pi.y = world_y;
 	art_affine_point(&pi, &pi, invert);
 
+    /*
 	g_print("%lf %lf) -> (%lf, %lf)\n",
 			world_x, world_y,
 			pi.x, pi.y);
+            */
 
 	p0 = priv->points->data;
 	for (n = g_list_next(priv->points); n != NULL; n = g_list_next(n)) {
@@ -1121,6 +1161,8 @@ conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->ungrab = conting_line_ungrab;
 	drawing_class->motion = conting_line_motion;
 	drawing_class->motion_place = conting_line_motion_place;
+
+	drawing_class->accept = conting_line_accept;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;

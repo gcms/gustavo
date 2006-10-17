@@ -45,7 +45,6 @@ conting_trans3_draw(ContingDrawing *self, cairo_t *cr)
             pw0.x + (pw1.x - pw0.x) / 2.0,
             pw0.y + (pw1.y - pw0.y) / 2.0,
             (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
-    cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_stroke(cr);
 
     pw0 = comp->p0;
@@ -57,7 +56,6 @@ conting_trans3_draw(ContingDrawing *self, cairo_t *cr)
             pw0.x + (pw1.x - pw0.x) / 2.0,
             pw0.y + (pw1.y - pw0.y) / 2.0,
             (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
-    cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_stroke(cr);
 
     /* Low winding */
@@ -72,10 +70,17 @@ conting_trans3_draw(ContingDrawing *self, cairo_t *cr)
             pw0.x + (pw1.x - pw0.x) / 2.0,
             pw0.y + (pw1.y - pw0.y) / 2.0,
             (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
-    cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_stroke(cr);
 
     CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
+}
+
+static void
+conting_trans3_accept(ContingDrawing *self, ContingVisitor *visitor)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
+
+	conting_visitor_visit_trans3(visitor, CONTING_TRANS3(self));
 }
 
 static void
@@ -336,6 +341,8 @@ conting_trans3_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_trans3_draw;
     drawing_class->delete = conting_trans3_delete;
+
+	drawing_class->accept = conting_trans3_accept;
 
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = conting_trans3_link;

@@ -6,16 +6,16 @@
 
 #include "contingdrawing.h"
 
-#define CONTING_TYPE_DRAWING_OPERATION			(conting_drawing_operation_get_type())
-#define CONTING_DRAWING_OPERATION(o)				(G_TYPE_CHECK_INSTANCE_CAST ((o), \
+#define CONTING_TYPE_DRAWING_OPERATION  (conting_drawing_operation_get_type())
+#define CONTING_DRAWING_OPERATION(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), \
 			CONTING_TYPE_DRAWING_OPERATION, ContingDrawingOperation))
-#define CONTING_DRAWING_OPERATION_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST ((k), \
+#define CONTING_DRAWING_OPERATION_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST ((k), \
 			CONTING_TYPE_DRAWING_OPERATION, ContingDrawingOperationClass))
-#define CONTING_IS_DRAWING_OPERATION(o)			(G_TYPE_CHECK_INSTANCE_TYPE ((o), \
+#define CONTING_IS_DRAWING_OPERATION(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), \
 			CONTING_TYPE_DRAWING_OPERATION))
-#define CONTING_IS_DRAWING_OPERATION_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), \
+#define CONTING_IS_DRAWING_OPERATION_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), \
 			CONTING_TYPE_DRAWING_OPERATION))
-#define CONTING_DRAWING_OPERATION_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_INTERFACE ((o), \
+#define CONTING_DRAWING_OPERATION_GET_CLASS(o) (G_TYPE_INSTANCE_GET_INTERFACE ((o), \
 			CONTING_TYPE_DRAWING_OPERATION, ContingDrawingOperationClass))
 
 
@@ -40,6 +40,11 @@ GType conting_drawing_operation_label_get_type(void);
 
 typedef const gchar *(*ContingLabelFunc)(ContingDrawingOperation *self,
 		ContingDrawing *drawing, gpointer user_data);
+
+
+#define CONTING_TYPE_DRAWING_OPERATION_DEFAULT (conting_drawing_operation_default_get_type())
+GType conting_drawing_operation_default_get_type(void);
+
 
 void conting_drawing_operation_get_bounds(ContingDrawingOperation *self,
 		ContingDrawing *drawing, ArtDRect *bounds);

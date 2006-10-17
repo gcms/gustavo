@@ -45,6 +45,9 @@ conting_file_peco_read_bus(const gchar *line)
 	gdouble voltage;
 	gdouble angle;
 
+	gdouble load_mw, load_mvar;
+	gdouble gen_mw, gen_mvar;
+
 	item_data = g_object_new(CONTING_TYPE_ITEM_DATA,
 			"type", CONTING_ITEM_TYPE_BUS,
 			NULL);
@@ -68,12 +71,22 @@ conting_file_peco_read_bus(const gchar *line)
 	voltage = conting_file_float(line, 22, 25);
 	angle = conting_file_float(line, 26, 29);
 
+	load_mw = conting_file_float(line, 55, 59);
+	load_mvar = conting_file_float(line, 60, 64);
+
+	gen_mw = conting_file_float(line, 30, 34);
+	gen_mvar = conting_file_float(line, 35, 39);
+
 	conting_item_data_set_attr(CONTING_ITEM_DATA(item_data),
 			"number", G_TYPE_INT, number,
 			"type", G_TYPE_INT, type,
 			"name", G_TYPE_STRING, name,
 			"voltage", G_TYPE_DOUBLE, voltage,
 			"angle", G_TYPE_DOUBLE, angle,
+			"load mw", G_TYPE_DOUBLE, load_mw,
+			"load mvar", G_TYPE_DOUBLE, load_mvar,
+			"gen mw", G_TYPE_DOUBLE, gen_mw,
+			"gen mvar", G_TYPE_DOUBLE, gen_mvar,
 			NULL);
 
 	g_free(name);

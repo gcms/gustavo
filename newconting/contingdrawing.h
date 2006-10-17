@@ -1,3 +1,8 @@
+#ifndef CONTING_VISITOR_H
+#include "contingvisitor.h"
+#endif
+
+
 #ifndef CONTING_DRAWING_H
 #define CONTING_DRAWING_H
 
@@ -74,6 +79,9 @@ struct ContingDrawingClass_ {
 
 
 	void (*motion_place)(ContingDrawing *drawing, ArtPoint *pi);
+
+
+	void (*accept)(ContingDrawing *self, ContingVisitor *visitor);
 };
 
 GType conting_drawing_get_type(void);

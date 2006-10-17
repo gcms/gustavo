@@ -59,12 +59,22 @@ conting_load_instance_init(GTypeInstance *self,
 }
 
 static void
+conting_load_accept(ContingDrawing *self, ContingVisitor *visitor)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_LOAD(self));
+
+	conting_visitor_visit_load(visitor, CONTING_LOAD(self));
+}
+
+static void
 conting_load_class_init(gpointer g_class, gpointer class_data)
 {
     ContingDrawingClass *drawing_class;
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_load_draw;
+
+	drawing_class->accept = conting_load_accept;
 
     parent_class = g_type_class_peek_parent(g_class);
 }

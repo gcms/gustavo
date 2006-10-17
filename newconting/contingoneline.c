@@ -39,24 +39,20 @@ struct ContingOneLinePrivate_ {
     ContingOneLineState state;
 
     gdouble ppu;
-
-    ContingDrawing *placing_drawing;
-
     ArtDRect scrolling_area;
-
-    GSList *drawings;
-
-    ContingDrawing *grabbed_drawing;
-
     ArtDRect selection_box;
 
     ContingData *file_data;
 
-    ContingDrawing *current_drawing;
-    ContingDrawing *entered_drawing;
+    GSList *drawings;
+    
+    ContingDrawing *placing_drawing;
+    ContingDrawing *grabbed_drawing;
+	ContingDrawing *current_drawing;
+	ContingDrawing *entered_drawing;
 
     GList *operations;
-	ContingOneLineMode mode;
+    ContingOneLineMode mode;
 };
 
 /* FRIEND METHOD */
@@ -105,12 +101,15 @@ conting_one_line_place(ContingOneLine *self, ContingDrawing *drawing)
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
-	assert(priv->placing_drawing == drawing);
+	assert(priv->placing_drawing == drawing
+			|| priv->placing_drawing == NULL);
 	assert(conting_drawing_is_placed(drawing));
 	
 	g_signal_handlers_disconnect_by_func(drawing, create_motion, NULL);
 	g_signal_handlers_disconnect_by_func(drawing, create_button, NULL);
 	g_signal_handlers_disconnect_by_func(drawing, create_key, NULL);
+    g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
+            0, 0, NULL, NULL, NULL);
 
 	priv->drawings = g_slist_append(priv->drawings, drawing);
     priv->state = CONTING_ONE_LINE_NONE;
@@ -161,6 +160,10 @@ edit_button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
 {
 	ArtPoint pi;
 	
+    g_print("edit_button_press %p (%s)\n",
+            drawing, g_type_name(G_OBJECT_TYPE(drawing)));
+
+
 	conting_drawing_set_selected(drawing, TRUE);
 	
 	pi.x = event->button.x;
@@ -176,6 +179,9 @@ static void
 edit_2button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
 		gpointer user_data)
 {
+    g_print("edit_2button_press %p (%s)\n",
+            drawing, g_type_name(G_OBJECT_TYPE(drawing)));
+    
 	conting_drawing_ungrab(drawing);
 	conting_one_line_edit(conting_drawing_get_one_line(drawing), drawing);
 }
@@ -183,6 +189,8 @@ static void
 edit_button_release(ContingDrawing *drawing, ContingDrawingEvent *event,
 		gpointer user_data)
 {
+    g_print("edit_button_release %p (%s)\n",
+            drawing, g_type_name(G_OBJECT_TYPE(drawing)));
 	conting_drawing_ungrab(drawing);
 }
 
@@ -309,6 +317,91 @@ edit_key(ContingDrawing *drawing, ContingDrawingEvent *event,
 	}
 }
 
+/* PRIVATE STATIC METHOD */
+static void
+conting_one_line_color_by_voltage(GdkColor *color, gdouble voltage)
+{
+	if (voltage < 25) {
+		g_print("blue\n");
+		gdk_color_parse("blue", color);
+	} else if (voltage < 50) {
+		g_print("orange\n");
+		gdk_color_parse("OrangeRed", color);
+	} else if (voltage < 100) {
+		g_print("red\n");
+		gdk_color_parse("red", color);
+	} else if (voltage < 200) {
+		g_print("yellow\n");
+		gdk_color_parse("yellow", color);
+	} else {
+		g_print("green\n");
+		gdk_color_parse("green", color);
+	}
+}
+
+/* PRIVATE METHOD */
+static void
+conting_one_line_set_color(ContingOneLine *self, ContingDrawing *drawing)
+{
+	ContingOneLinePrivate *priv;
+	GdkColor color;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+
+	if (CONTING_IS_BUS(drawing)) {
+		ContingItemData *item_data;
+		gdouble voltage;
+		gint number;
+	   
+		item_data = conting_data_get(priv->file_data, drawing);
+
+		conting_item_data_get_attr(item_data, "number", &number, NULL);
+		conting_item_data_get_attr(item_data, "voltage", &voltage, NULL);
+
+		g_print("%d is %lf ->\t", number, voltage);
+
+		conting_one_line_color_by_voltage(&color, voltage);
+
+		g_object_set(drawing, "color", &color, NULL);
+	}
+}
+
+/* PRIVATE METHOD */
+static void
+conting_one_line_set_view(ContingOneLine *self)
+{
+	ContingOneLinePrivate *priv;
+	GSList *n;
+
+	g_print("set view\n\n\n\n\n");
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	assert(conting_data_check(priv->file_data, NULL));
+
+	if (priv->mode == CONTING_ONE_LINE_VIEW)
+		return;
+
+	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+		ContingDrawing *drawing = n->data;
+		
+    	g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
+				0, 0, NULL, NULL, NULL);
+		conting_one_line_set_color(self, drawing);
+	}
+
+
+	priv->mode = CONTING_ONE_LINE_VIEW;
+
+	conting_one_line_update(self, NULL);
+}
+
+
 /* PUBLIC METHOD */
 gboolean
 conting_one_line_set_mode(ContingOneLine *self, ContingOneLineMode mode)
@@ -321,10 +414,15 @@ conting_one_line_set_mode(ContingOneLine *self, ContingOneLineMode mode)
 
 	switch (mode) {
 		case CONTING_ONE_LINE_EDIT:
+			return priv->mode == CONTING_ONE_LINE_EDIT;
 			break;
 		case CONTING_ONE_LINE_VIEW:
-			if (!conting_data_check(priv->file_data, NULL))
+			if (!conting_data_check(priv->file_data, NULL)) {
 				return FALSE;
+			} else {
+				conting_one_line_set_view(self);
+				return TRUE;
+			}
 			break;
 		default:
 			break;
@@ -590,6 +688,8 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
     conting_one_line_clear(self);
+	if (priv->placing_drawing)
+		conting_drawing_delete(priv->placing_drawing);
 
     id_drawing = g_hash_table_new(NULL, NULL);
 
@@ -615,7 +715,12 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
     	if (!type)
             continue;
 
-        drawing = CONTING_DRAWING(g_object_new(type, "one-line", self, NULL));
+        drawing = CONTING_DRAWING(
+				g_object_new(type, "one-line", self, NULL));
+	
+		assert(drawing);
+		if (!drawing)
+			continue;
 
         printf("putting %lu (%s) = %p\n",
                 strtoul(id, NULL, 10), g_type_name(type), drawing);
@@ -639,6 +744,8 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
         id = xmlGetProp(drawing_node, BAD_CAST "id");
         drawing = g_hash_table_lookup(id_drawing,
                 GUINT_TO_POINTER(strtoul(id, NULL, 10)));
+
+		assert(drawing);
         printf("drawing %lu (%s) = %p\n",
                 strtoul(id, NULL, 10),
                 g_type_name(G_OBJECT_TYPE(drawing)),
@@ -647,7 +754,10 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
         
         conting_serializable_read(CONTING_SERIALIZABLE(drawing),
                 drawing_node, id_drawing);
+        conting_one_line_place(self, drawing);
+        /*
         priv->drawings = g_slist_append(priv->drawings, drawing);
+        */
 
         xmlFree(id);
     }
@@ -696,11 +806,17 @@ conting_one_line_save(ContingOneLine *self, const char *filename)
 
     for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
         drawing_node = xmlNewNode(NULL, BAD_CAST "drawing");
+
+		
+		/* Adding id property */
         g_object_get(G_OBJECT(n->data), "id", &id, NULL);
         sprintf(buff, "%d", id);
         xmlNewProp(drawing_node, BAD_CAST "id", BAD_CAST buff);
+		
+		/* Adding class name property */
         xmlNewProp(drawing_node, BAD_CAST "class",
                 BAD_CAST G_OBJECT_TYPE_NAME(n->data));
+		
         conting_serializable_write(CONTING_SERIALIZABLE(n->data), drawing_node,
                 NULL);
         xmlAddChild(root_node, drawing_node);
@@ -752,7 +868,7 @@ conting_one_line_answer(ContingOneLine *self,
     return list;
 }
 #define TOLERANCE CONTING_DRAWING_TOLERANCE
-/* PRIVATE METHOD */
+/* FRIEND METHOD */
 void
 conting_one_line_update(ContingOneLine *self,
                         ArtDRect *bounds)
@@ -854,15 +970,9 @@ conting_one_line_window_to_world(ContingOneLine *self,
 
     if (world_x)
         *world_x = p.x;
-/* 
- * *world_x = priv->scrolling_area.x0 + (win_x / priv->ppu);
- */
 
     if (world_y)
         *world_y = p.y;
-/*
- *      *world_y = priv->scrolling_area.y0 + (win_y / priv->ppu);
- */
 }
 
 /* PUBLIC METHOD */
@@ -957,6 +1067,9 @@ conting_one_line_delete_drawing(ContingOneLine *self,
             bounds.x0, bounds.y0, bounds.x1, bounds.y1);
 
     g_print("UNREF\n");
+
+    g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
+            0, 0, NULL, NULL, NULL);
     g_object_unref(drawing);
 
     conting_one_line_update(self, &bounds);
@@ -976,8 +1089,12 @@ conting_one_line_send_event(ContingOneLine *self,
     conting_one_line_get_update_bounds(self, drawing, &bounds);
     result = conting_drawing_event(drawing, event);
     conting_one_line_update(self, &bounds);
+
+    /* Avoid the case in which drawing was deleted */
     if (conting_one_line_contains(self, drawing)) {
-        conting_drawing_update(drawing);
+        conting_one_line_get_update_bounds(self, drawing, &bounds);
+        
+        conting_one_line_update(self, &bounds);
     }
 
     return result;
@@ -1094,10 +1211,10 @@ widget_motion_notify_event(GtkWidget *widget,
                     priv->grabbed_drawing, (GdkEvent *) event);
             break;
         case CONTING_ONE_LINE_NONE:
-            {
-                GSList *n;
-                gboolean leave = TRUE;
-                ContingDrawing *entered = NULL;
+			{
+				GSList *n;
+				gboolean leave = TRUE; /* should leave the current drawing? */
+				ContingDrawing *entered = NULL; /* drawing to be entered */
 
                 for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
                     if (conting_drawing_answer(CONTING_DRAWING(n->data),
@@ -1108,11 +1225,6 @@ widget_motion_notify_event(GtkWidget *widget,
                         if (entered == NULL) {
                             entered = n->data;
                         }
-
-                        if (conting_one_line_send_event(
-                                CONTING_ONE_LINE(user_data),
-                                CONTING_DRAWING(n->data), (GdkEvent *) event))
-                            break;
                     }
                 }
 
@@ -1125,9 +1237,10 @@ widget_motion_notify_event(GtkWidget *widget,
                         priv->entered_drawing = NULL;
                     }
 
+                    assert(priv->entered_drawing == NULL);
+
                     if (entered) {
                         GdkEvent *eevent = gdk_event_copy((GdkEvent *) event);
-                        assert(priv->entered_drawing != entered);
                         eevent->type = GDK_ENTER_NOTIFY;
                         conting_one_line_send_event(
                                 CONTING_ONE_LINE(user_data),
@@ -1136,28 +1249,23 @@ widget_motion_notify_event(GtkWidget *widget,
                     }
                 }
 
+                if (priv->entered_drawing) {
+                    assert(conting_drawing_answer(priv->entered_drawing,
+                                world_x, world_y));
+
+                    conting_one_line_send_event(user_data,
+                            priv->entered_drawing, (GdkEvent *) event);
+                }
+
             }
                break;
         case CONTING_ONE_LINE_CREATED:
             assert(priv->placing_drawing != NULL
                     && CONTING_IS_DRAWING(priv->placing_drawing));
-            {
-                conting_one_line_send_event(CONTING_ONE_LINE(user_data),
-                        priv->placing_drawing, (GdkEvent *) event);
-                /*
-                gdouble translate[6];
-                art_affine_translate(translate, world_x, world_y);
-                conting_drawing_affine_absolute(priv->placing_drawing,
-                        translate);
-                */
-                /*
-                gtk_widget_queue_draw(priv->widget);
-                */
-            }
+            conting_one_line_send_event(CONTING_ONE_LINE(user_data),
+                    priv->placing_drawing, (GdkEvent *) event);
             break;
     }
-
-/*    gtk_widget_queue_draw(priv->widget); */
 
     return TRUE;
 }
@@ -1229,7 +1337,8 @@ widget_button_press_event(GtkWidget *widget,
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
 
-    /* can add a check if CTRL key is hold */
+    /* can add a check if CTRL key is hold to allow selection of multiple
+     * components */
     for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
         conting_drawing_set_selected(CONTING_DRAWING(n->data), FALSE);
     }
@@ -1269,45 +1378,87 @@ widget_button_press_event(GtkWidget *widget,
                 g_print("NONE ANSWER\n");
 
                 g_print("selecting start()\n");
-                priv->state = CONTING_ONE_LINE_SELECTING;
-                priv->selection_box.x0 = event->x;
-                priv->selection_box.y0 = event->y;
-                priv->selection_box.x1 = event->x;
-                priv->selection_box.y1 = event->y;
-                
+
+				if (priv->mode = CONTING_ONE_LINE_EDIT) {
+	                priv->state = CONTING_ONE_LINE_SELECTING;
+    	            priv->selection_box.x0 = event->x;
+        	        priv->selection_box.y0 = event->y;
+            	    priv->selection_box.x1 = event->x;
+                	priv->selection_box.y1 = event->y;
+				}
             }
             break;
         case CONTING_ONE_LINE_CREATED:
             assert(priv->placing_drawing != NULL
                     && CONTING_IS_DRAWING(priv->placing_drawing));
-            {
-/*
-                conting_one_line_send_event(CONTING_ONE_LINE(user_data),
-                        priv->placing_drawing, (GdkEvent *) event);
-                        */
-                /*
-                gdouble translate[6];
-                art_affine_translate(translate, world_x, world_y);
-                conting_drawing_affine_absolute(priv->placing_drawing,
-                        translate);
-*/
 
-				conting_one_line_send_event(user_data, priv->placing_drawing,
-						(GdkEvent *) event);
-				/*
-                conting_drawing_place(priv->placing_drawing);
-
-                if (conting_drawing_is_placed(priv->placing_drawing)) {
-                    priv->drawings = g_slist_append(priv->drawings,
-                            priv->placing_drawing);
-                    priv->state = CONTING_ONE_LINE_NONE;
-                    priv->placing_drawing = NULL;
-                }
-				*/
-            }
+			conting_one_line_send_event(user_data, priv->placing_drawing,
+					(GdkEvent *) event);
+            break;
     }
 
     return TRUE;
+}
+
+/* PRIVATE METHOD */
+static void
+conting_one_line_group(ContingOneLine *self)
+{
+    ContingOneLinePrivate *priv;
+    GSList *n;
+    ArtDRect selection_bounds;
+    ContingGroup *group;
+   
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);  
+   
+    group = CONTING_GROUP(
+            g_object_new(CONTING_TYPE_GROUP,
+                "one-line", self, NULL));
+
+    conting_util_correct_bounds(&priv->selection_box,
+            &priv->selection_box);
+
+    conting_one_line_window_to_world(self,
+            priv->selection_box.x0, priv->selection_box.y0,
+            &selection_bounds.x0, &selection_bounds.y0);
+
+    conting_one_line_window_to_world(self,
+            priv->selection_box.x1, priv->selection_box.y1,
+            &selection_bounds.x1, &selection_bounds.y1);
+
+    for (n = priv->drawings; n != NULL; ) {
+        ContingDrawing *drawing;
+        ArtDRect bounds;
+
+        drawing = n->data;
+        conting_drawing_get_bounds(drawing, &bounds);
+
+        n = g_slist_next(n);
+        if (conting_util_bounds_contains(&selection_bounds, &bounds)) {
+            g_print("%p added\n", drawing);
+            priv->drawings = g_slist_remove(priv->drawings, drawing);
+            conting_group_add_drawing(group, drawing);
+        }
+    }
+
+    conting_drawing_place(CONTING_DRAWING(group));
+
+
+    if (conting_drawing_is_placed(CONTING_DRAWING(group))) {
+	    g_signal_connect(G_OBJECT(group), "motion-event",
+		    	G_CALLBACK(edit_motion), NULL);
+	    g_signal_connect(G_OBJECT(group), "button-event",
+	    		G_CALLBACK(edit_button), NULL);
+    	g_signal_connect(G_OBJECT(group), "key-event",
+			    G_CALLBACK(edit_key), NULL);
+    	g_signal_connect(G_OBJECT(group), "notify-event",
+	    		G_CALLBACK(edit_notify), NULL);
+        priv->drawings = g_slist_append(priv->drawings, group);
+    } else {
+        assert(FALSE);
+    }
 }
 
 /* SIGNAL CALLBACK */
@@ -1330,62 +1481,9 @@ widget_button_release_event(GtkWidget *widget,
 
     switch (priv->state) {
         case CONTING_ONE_LINE_SELECTING:
-            {
-                /* TODO: change the place of this group creation/deletion
-                 * code. maybe make it part of continggroup.c */
-                GSList *n;
-                ArtDRect selection_bounds;
-                ContingGroup *group = CONTING_GROUP(
-                        g_object_new(CONTING_TYPE_GROUP,
-                            "one-line", user_data, NULL));
-
-                conting_util_correct_bounds(&priv->selection_box,
-                        &priv->selection_box);
-
-                conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
-                        priv->selection_box.x0, priv->selection_box.y0,
-                        &selection_bounds.x0, &selection_bounds.y0);
-                conting_one_line_window_to_world(CONTING_ONE_LINE(user_data),
-                        priv->selection_box.x1, priv->selection_box.y1,
-                        &selection_bounds.x1, &selection_bounds.y1);
-
-                for (n = priv->drawings; n != NULL; ) {
-                    ContingDrawing *drawing;
-                    ArtDRect bounds;
-
-                    drawing = n->data;
-                    conting_drawing_get_bounds(drawing, &bounds);
-
-                    n = g_slist_next(n);
-                    if (conting_util_bounds_contains(&selection_bounds,
-                                &bounds)) {
-                        g_print("%p added\n", drawing);
-                        priv->drawings = g_slist_remove(priv->drawings,
-                                drawing);
-                        conting_group_add_drawing(group, drawing);
-                    }
-                }
-
-                conting_drawing_place(CONTING_DRAWING(group));
-
-                if (conting_drawing_is_placed(CONTING_DRAWING(group))) {
-	g_signal_connect(G_OBJECT(group), "motion-event",
-			G_CALLBACK(edit_motion), NULL);
-	g_signal_connect(G_OBJECT(group), "button-event",
-			G_CALLBACK(edit_button), NULL);
-	g_signal_connect(G_OBJECT(group), "key-event",
-			G_CALLBACK(edit_key), NULL);
-	g_signal_connect(G_OBJECT(group), "notify-event",
-			G_CALLBACK(edit_notify), NULL);
-                    priv->drawings = g_slist_append(priv->drawings, group);
-                } else {
-                    assert(FALSE);
-                }
-
-                priv->state = CONTING_ONE_LINE_NONE;
-                conting_one_line_update_selection(CONTING_ONE_LINE(user_data),
-                        event->x, event->y);
-            }
+            conting_one_line_group(user_data);
+            priv->state = CONTING_ONE_LINE_NONE;
+            conting_one_line_update_selection(user_data, event->x, event->y);
             break;
         case CONTING_ONE_LINE_GRABBING:
             assert(priv->grabbed_drawing
@@ -1433,12 +1531,15 @@ widget_expose_event(GtkWidget *widget,
             widget->allocation.x, widget->allocation.y,
             widget->allocation.width, widget->allocation.height);
 
+    assert(widget == priv->widget);
+
+	/*
     for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
         ContingDrawing *drawing = n->data;
 
         conting_one_line_draw(user_data, drawing);
-
     }
+	*/
 
     for (opr_n = priv->operations; opr_n; opr_n = g_list_next(opr_n)) {
         ContingDrawingOperation *opr = opr_n->data;
@@ -1474,9 +1575,11 @@ widget_expose_event(GtkWidget *widget,
         case CONTING_ONE_LINE_NONE:
             break;
         case CONTING_ONE_LINE_CREATED:
-            {
-                conting_one_line_draw(user_data, priv->placing_drawing);
-            }
+    		for (opr_n = priv->operations; opr_n; opr_n = g_list_next(opr_n)) {
+		        ContingDrawingOperation *opr = opr_n->data;
+
+		        conting_drawing_operation_draw(opr, priv->placing_drawing);
+		    }
             break;
         default:
             break;
@@ -1593,6 +1696,19 @@ conting_one_line_create(ContingOneLine *self,
 }
 
 /* PUBLIC METHOD */
+static void
+conting_one_line_finalize(GObject *self)
+{
+    ContingOneLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    /* TODO: implement it */
+}
+
+/* PUBLIC METHOD */
 void
 conting_one_line_set_widget(ContingOneLine *self,
                             GtkWidget *widget)
@@ -1603,6 +1719,7 @@ conting_one_line_set_widget(ContingOneLine *self,
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+    /* TODO: disconnect signals if there is an widget already set */
     assert (priv->widget == NULL);
 
     priv->widget = widget;
@@ -1636,6 +1753,7 @@ conting_one_line_class_init(gpointer g_class,
     gobject_class = G_OBJECT_CLASS(g_class);
     gobject_class->set_property = conting_one_line_set_property;
     gobject_class->get_property = conting_one_line_get_property;
+    gobject_class->finalize = conting_one_line_finalize;
 
     g_object_class_install_property(G_OBJECT_CLASS(g_class),
             CONTING_ONE_LINE_PROP_PPU,
@@ -1689,6 +1807,10 @@ conting_one_line_instance_init(GTypeInstance *self,
 
     {
         ContingDrawingOperation *operation;
+
+		operation = g_object_new(CONTING_TYPE_DRAWING_OPERATION_DEFAULT, NULL);
+		priv->operations = g_list_append(priv->operations, operation);
+		
         operation = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL, NULL);
         g_object_set(operation,
                 "label-func", conting_drawing_return_attr,
@@ -1698,6 +1820,7 @@ conting_one_line_instance_init(GTypeInstance *self,
     }
 }
 
+/* GET TYPE */
 GType
 conting_one_line_get_type(void)
 {
@@ -1725,103 +1848,3 @@ conting_one_line_get_type(void)
 
     return type;
 }
-
-/*
-#include "contingcomponent.h"
-#include "contingline.h"
-static void
-conting_one_line_create_by_type(ContingOneLine *oneline, GType type)
-{
-    GObject *object;
-
-    object = g_object_new(type,
-            "one-line", oneline,
-            NULL);
-
-    conting_one_line_create(oneline, CONTING_DRAWING(object));
-}
-static void
-bus_button_clicked(GtkButton *button,
-                    gpointer user_data)
-{
-    conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
-            CONTING_TYPE_BUS);
-}
-
-static void
-line_button_clicked(GtkButton *button,
-                    gpointer user_data)
-{
-    conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
-            CONTING_TYPE_LINE);
-}
-
-static void
-trans2_button_clicked(GtkButton *button,
-                      gpointer user_data)
-{
-    conting_one_line_create_by_type(CONTING_ONE_LINE(user_data),
-            CONTING_TYPE_TRANS2);
-}
-
-static void darea_realize(GtkWidget *widget, gpointer user_data) {
-    gtk_widget_add_events(widget, GDK_EXPOSURE_MASK
-            | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK
-            | GDK_POINTER_MOTION_MASK | GDK_KEY_PRESS_MASK
-            | GDK_KEY_RELEASE_MASK);
-}
-
-int main(int argc, char *argv[]) {
-    GtkWidget *window, *swindow, *darea;
-    GtkWidget *vbox, *hbox;
-    GtkWidget *bus_button, *line_button, *trans2_button;
-    ContingOneLine *oneline;
-
-    gtk_init(&argc, &argv);
-
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_widget_set_size_request(GTK_WIDGET(window), 300, 300);
-
-    vbox = gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(window), vbox);
-
-    swindow = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(swindow),
-            GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-    gtk_box_pack_start(GTK_BOX(vbox), swindow, TRUE, TRUE, 0);
-
-    darea = gtk_drawing_area_new();
-    gtk_widget_set_size_request(GTK_WIDGET(darea), 600, 600);
-    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(swindow), darea);
-    g_signal_connect(G_OBJECT(darea), "realize",
-            G_CALLBACK(darea_realize), NULL);
-
-    oneline = CONTING_ONE_LINE(g_object_new(CONTING_TYPE_ONE_LINE, NULL));
-    conting_one_line_set_widget(oneline, darea);
-
-    hbox = gtk_hbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
-
-    bus_button = gtk_button_new_with_label("BUS");
-    g_signal_connect(G_OBJECT(bus_button), "clicked",
-            G_CALLBACK(bus_button_clicked), oneline);
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), bus_button);
-
-    line_button = gtk_button_new_with_label("LINE");
-    g_signal_connect(G_OBJECT(line_button), "clicked",
-            G_CALLBACK(line_button_clicked), oneline);
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), line_button);
-
-    trans2_button = gtk_button_new_with_label("TRANS2");
-    g_signal_connect(G_OBJECT(trans2_button), "clicked",
-            G_CALLBACK(trans2_button_clicked), oneline);
-    gtk_box_pack_start_defaults(GTK_BOX(hbox), trans2_button);
-    
-    gtk_widget_show_all(window);
-
-    gtk_main();
-    
-    return 0;
-}
-*/

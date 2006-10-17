@@ -27,6 +27,32 @@ struct ContingTrans2Private_ {
 };
 
 static void
+conting_trans2_draw_ltc(ContingDrawing *self, cairo_t *cr)
+{
+    ContingTrans2Private *priv;
+    ContingComponent *comp;
+	ArtPoint p0, p1;
+
+	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+
+	priv = CONTING_TRANS2_GET_PRIVATE(self);
+	comp = CONTING_COMPONENT(self);
+
+	p0.x = comp->p0.x;
+   	p1.x = comp->p1.x;
+
+	p0.y = comp->p0.y + fabs(comp->p1.y - comp->p0.y) / 2.0
+		- fabs(comp->p1.y - comp->p0.y) / 3.0;
+	p1.y = comp->p0.y + fabs(comp->p1.y - comp->p0.y) / 2.0
+		+ fabs(comp->p1.y - comp->p0.y) / 3.0;
+
+	cairo_move_to(cr, p0.x, p0.y);
+	cairo_line_to(cr, p1.x, p1.y);
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_stroke(cr);
+}
+
+static void
 conting_trans2_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingTrans2Private *priv;
@@ -54,7 +80,6 @@ conting_trans2_draw(ContingDrawing *self, cairo_t *cr)
 			rect.x + ((gdouble) rect.width / 2.0),
 			rect.y + ((gdouble) rect.height / 2.0),
 			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
-	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
 
     pw0 = comp->p0;
@@ -71,10 +96,24 @@ conting_trans2_draw(ContingDrawing *self, cairo_t *cr)
 			rect.x + ((gdouble) rect.width / 2.0),
 			rect.y + ((gdouble) rect.height / 2.0),
 			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
-	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
 
+	if (conting_drawing_get_attr(self, "min tap")
+			&& conting_drawing_get_attr(self, "max tap")) {
+		cairo_save(cr);
+		conting_trans2_draw_ltc(self, cr);
+		cairo_restore(cr);
+	}
+
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
+}
+
+static void
+conting_trans2_accept(ContingDrawing *self, ContingVisitor *visitor)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+
+	conting_visitor_visit_trans2(visitor, CONTING_TRANS2(self));
 }
 
 
@@ -324,6 +363,8 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_trans2_draw;
     drawing_class->delete = conting_trans2_delete;
+
+	drawing_class->accept = conting_trans2_accept;
 	
     component_class = CONTING_COMPONENT_CLASS(g_class);
     component_class->link = conting_trans2_link;
