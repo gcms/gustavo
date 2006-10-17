@@ -134,9 +134,14 @@ void conting_util_load_affine(xmlNodePtr affine_node, gdouble affine[6])
             TRUE);
 
 
+	g_print("%s\n", affine_text);
     sscanf(affine_text, "%lf %lf %lf %lf %lf %lf",
             affine, affine + 1, affine + 2,
             affine + 3, affine + 4, affine + 5);
+
+	g_print("%lf %lf %lf %lf %lf %lf\n",
+			affine[0], affine[1], affine[2],
+			affine[3], affine[4], affine[5]);
 
     xmlFree(affine_text);
 }

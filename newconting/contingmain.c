@@ -118,6 +118,10 @@ check_clicked(GtkMenuItem *menuitem,
 
 	g_list_foreach(errors, (GFunc) conting_error_free, NULL);
 	g_list_free(errors);
+
+	if (ok) {
+		conting_one_line_set_mode(oneline, CONTING_ONE_LINE_VIEW);
+	}
 }
 
 static void
@@ -318,7 +322,8 @@ static void darea_realize(GtkWidget *widget, gpointer user_data) {
 }
              
 
-int main(int argc, char *argv[]) {
+int
+main(int argc, char *argv[]) {
     GtkWidget *window, *swindow, *darea;
     GtkWidget *vbox, *hbox;
 

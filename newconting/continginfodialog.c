@@ -344,8 +344,10 @@ conting_info_dialog_response_cb(GtkDialog *self, gint response_id,
 	if (!CONTING_IS_BUS(priv->drawing))
 		goto DESTROY;
 
-    if (response_id == GTK_RESPONSE_CANCEL) {
+    if (response_id != GTK_RESPONSE_OK) {
 		conting_data_assoc(priv->data, priv->drawing, priv->prev_assoc);
+        g_print("conting_data_assoc(%p, %p, %p)\n",
+                priv->data, priv->drawing, priv->prev_assoc);
 	}
 
 DESTROY:

@@ -21,6 +21,8 @@ static gint event_notify_id = 0;
 
 static GType event_param_types[1];
 
+static guint next_id = 0;
+
 enum {
     CONTING_DRAWING_PROP_0,
     CONTING_DRAWING_PROP_ONE_LINE,
@@ -41,12 +43,6 @@ struct ContingDrawingPrivate_ {
     gdouble affine[6];
 
     gboolean selected;
-
-	guint show_tick;
-	GtkWidget *window;
-	gpointer *params;
-
-	gboolean pressed;
 };
 
 static void
@@ -99,7 +95,7 @@ conting_drawing_get_center_impl(ContingDrawing *self,
 }
 
 #define TOLERANCE CONTING_DRAWING_TOLERANCE
-void
+static void
 conting_drawing_draw_box(ContingDrawing *self,
 		gdouble x, gdouble y)
 {
@@ -315,6 +311,14 @@ conting_drawing_motion_place(ContingDrawing *self, ArtPoint *pi)
 }
 
 void
+conting_drawing_accept(ContingDrawing *self, ContingVisitor *visitor)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
+
+	CONTING_DRAWING_GET_CLASS(self)->accept(self, visitor);
+}
+
+void
 conting_drawing_grab(ContingDrawing *self, ArtPoint *pi)
 {
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));
@@ -379,12 +383,6 @@ conting_drawing_is_selected(ContingDrawing *self)
 
     return priv->selected;
 }
-
-/*
-static void conting_drawing_setup_hint(ContingDrawing *self);
-static void conting_drawing_cancel_hint(ContingDrawing *self);
-*/
-
 
 void
 conting_drawing_delete(ContingDrawing *self)
@@ -659,10 +657,10 @@ conting_drawing_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
 
     priv = CONTING_DRAWING_GET_PRIVATE(self);
 
-    printf("conting_drawing_place_xml()\n");
-
-    id = xmlGetProp(drawing_node, BAD_CAST "id");
-    priv->id = strtoul(id, NULL, 10);
+	/*
+	priv->id = strtoul(id, NULL, 10);
+	next_id = MAX(priv->id, next_id);
+	*/
 
     for (class_node = drawing_node->children; class_node;
             class_node = class_node->next) {
@@ -684,6 +682,9 @@ conting_drawing_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
                 name = xmlGetProp(attr, BAD_CAST "name");
                 type = xmlGetProp(attr, BAD_CAST "type");
 
+				g_print("<attribute name=\"%s\" type=\"%s\">\n",
+						name, type);
+
                 if (xmlStrEqual(type, BAD_CAST "affine")
                         && xmlStrEqual(name, BAD_CAST "affine")) {
                     conting_util_load_affine(attr, priv->affine);
@@ -693,6 +694,11 @@ conting_drawing_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
         }
 
     }
+
+	printf("%s(%p) = (%lf %lf %lf %lf %lf %lf)\n",
+			g_type_name(G_OBJECT_TYPE(self)), self,
+			priv->affine[0], priv->affine[1], priv->affine[2],
+			priv->affine[3], priv->affine[4], priv->affine[5]);
     
 }
 
@@ -784,12 +790,23 @@ conting_drawing_set_property(GObject *self,
     }
 }
 
+
 static guint
 conting_drawing_get_id(void)
 {
-    static guint id = 0;
+    return ++next_id;
+}
 
-    return ++id;
+guint
+conting_drawing_id(ContingDrawing *self)
+{
+	ContingDrawingPrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), 0);
+
+	priv = CONTING_DRAWING_GET_PRIVATE(self);
+
+	return priv->id;
 }
 
 static void
@@ -810,9 +827,6 @@ conting_drawing_instance_init(GTypeInstance *self,
     priv->group = NULL;
 
     priv->id = conting_drawing_get_id();
-
-	priv->show_tick = 0;
-	priv->window = NULL;
 }
 
 static void
@@ -871,6 +885,8 @@ conting_drawing_class_init(gpointer g_class,
 	drawing_class->ungrab = conting_drawing_ungrab_impl;
 	drawing_class->motion = NULL;
 	drawing_class->motion_place = NULL;
+
+	drawing_class->accept = NULL;
 
     move_signal_id = g_signal_newv(
             "move",

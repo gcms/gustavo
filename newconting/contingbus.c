@@ -14,12 +14,19 @@
 
 static gpointer parent_class = NULL;
 
+enum {
+	CONTING_BUS_PROP_0,
+	CONTING_BUS_PROP_COLOR
+};
+
 typedef struct ContingBusPrivate_ ContingBusPrivate;
 struct ContingBusPrivate_ {
 	gboolean dragging;
 	ArtPoint dragging_point;
 
 	ArtPoint *start_resize;
+
+	GdkColor color;
 };
 
 
@@ -37,6 +44,10 @@ conting_bus_draw(ContingDrawing *self, cairo_t *cr)
     comp = CONTING_COMPONENT(self);
 
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+	cairo_set_source_rgb(cr,
+			(gdouble) priv->color.red / (gdouble) G_MAXINT16,
+			(gdouble) priv->color.green / (gdouble) G_MAXINT16,
+			(gdouble) priv->color.blue / (gdouble) G_MAXINT16);
 	
 	cairo_move_to(cr, comp->p0.x, comp->p0.y);
 	cairo_line_to(cr, comp->p1.x, comp->p0.y);
@@ -44,7 +55,6 @@ conting_bus_draw(ContingDrawing *self, cairo_t *cr)
 	cairo_line_to(cr, comp->p0.x, comp->p1.y);
 	cairo_line_to(cr, comp->p0.x, comp->p0.y);
 
-	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_fill(cr);
 	cairo_stroke(cr);
 	
@@ -348,6 +358,58 @@ conting_bus_link(ContingComponent *self,
 }
 
 static void
+conting_bus_accept(ContingDrawing *self, ContingVisitor *visitor)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+
+	conting_visitor_visit_bus(visitor, CONTING_BUS(self));
+}
+static void
+conting_bus_get_property(GObject *self,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+    ContingBusPrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+
+    priv = CONTING_BUS_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_BUS_PROP_COLOR:
+            g_value_set_pointer(value, &priv->color);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+
+static void
+conting_bus_set_property(GObject *self,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+    ContingBusPrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_BUS(self));
+
+    priv = CONTING_BUS_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_BUS_PROP_COLOR:
+            priv->color = *((GdkColor *) g_value_get_pointer(value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+
+
+static void
 conting_bus_class_init(gpointer g_class, gpointer class_data)
 {
     ContingDrawingClass *drawing_class;
@@ -359,11 +421,23 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
 	drawing_class->event = conting_bus_event;
 	drawing_class->delete = conting_bus_delete;
 
+	drawing_class->accept = conting_bus_accept;
+
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->link = conting_bus_link;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_bus_finalize;
+
+	gobject_class->set_property = conting_bus_set_property;
+	gobject_class->get_property = conting_bus_get_property;
+	g_object_class_install_property(gobject_class,
+			CONTING_BUS_PROP_COLOR,
+			g_param_spec_pointer("color",
+								 "Bus color",
+								 "bus color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
+			
 
 	g_type_class_add_private(g_class, sizeof(ContingBusPrivate));
 

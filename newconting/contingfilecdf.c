@@ -42,6 +42,11 @@ conting_file_cdf_read_bus(const char *line)
 	gdouble voltage;
 	gdouble angle;
 
+	gdouble load_mw, load_mvar;
+	gdouble gen_mw, gen_mvar;
+
+	gdouble base_kv;
+
 	item_data = g_object_new(CONTING_TYPE_ITEM_DATA,
 			"type", CONTING_ITEM_TYPE_BUS,
 			NULL);
@@ -51,13 +56,25 @@ conting_file_cdf_read_bus(const char *line)
 	type = conting_file_int(line, 24, 25);
 	voltage = conting_file_float(line, 27, 32);
 	angle = conting_file_float(line, 33, 39);
+	
+	load_mw = conting_file_float(line, 40, 48);
+	load_mvar = conting_file_float(line, 49, 58);
+
+	gen_mw = conting_file_float(line, 59, 66);
+	gen_mvar = conting_file_float(line, 67, 74);
+
+	base_kv = conting_file_float(line, 76, 82);
 
 	conting_item_data_set_attr(CONTING_ITEM_DATA(item_data),
 			"number", G_TYPE_INT, number,
 			"type", G_TYPE_INT, type,
 			"name", G_TYPE_STRING, name,
-			"voltage", G_TYPE_DOUBLE, voltage,
+			"voltage", G_TYPE_DOUBLE, voltage * base_kv,
 			"angle", G_TYPE_DOUBLE, angle,
+			"load mw", G_TYPE_DOUBLE, load_mw,
+			"load mvar", G_TYPE_DOUBLE, load_mvar,
+			"gen mw", G_TYPE_DOUBLE, gen_mw,
+			"gen mvar", G_TYPE_DOUBLE, gen_mvar,
 			NULL);
 
 	g_free(name);
@@ -77,6 +94,10 @@ conting_file_cdf_read_branch(const char *line)
 	conting_item_data_set_attr(CONTING_ITEM_DATA(item_data),
 			"tap bus number", G_TYPE_INT, conting_file_int(line, 0, 3),
 			"z bus number", G_TYPE_INT, conting_file_int(line, 5, 8),
+            "voltage ratio", G_TYPE_DOUBLE, conting_file_float(line, 76, 81),
+        	"angle ratio", G_TYPE_DOUBLE, conting_file_float(line, 83, 89),
+			"min tap", G_TYPE_DOUBLE, conting_file_float(line, 90, 96),
+			"max tap", G_TYPE_DOUBLE, conting_file_float(line, 97, 103),
 			NULL);
 
 	return CONTING_ITEM_DATA(item_data);

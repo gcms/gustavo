@@ -55,6 +55,14 @@ conting_gen_draw(ContingDrawing *self, cairo_t *cr)
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
 }
 
+static void
+conting_gen_accept(ContingDrawing *self, ContingVisitor *visitor)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_GEN(self));
+
+	conting_visitor_visit_gen(visitor, CONTING_GEN(self));
+}
+
 
 static void
 conting_gen_instance_init(GTypeInstance *self,
@@ -83,6 +91,8 @@ conting_gen_class_init(gpointer g_class, gpointer class_data)
 
     drawing_class = CONTING_DRAWING_CLASS(g_class);
     drawing_class->draw = conting_gen_draw;
+	
+	drawing_class->accept = conting_gen_accept;
 
     parent_class = g_type_class_peek_parent(g_class);
 }
