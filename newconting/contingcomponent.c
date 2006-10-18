@@ -46,10 +46,14 @@ conting_component_link_deleted(ContingComponent *comp,
 ContingDrawing *
 conting_component_is_linked(ContingComponent *self, ContingDrawing *drawing)
 {
+	GList *n;
+	
 	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), NULL);
 	g_return_val_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing), NULL);
 
-	return g_list_find(self->links, drawing);
+	n = g_list_find(self->links, drawing);
+
+	return n == NULL ? NULL : n->data;
 }
 
 /**
@@ -182,7 +186,7 @@ conting_component_connect_link(ContingComponent *comp,
     g_return_if_fail(comp != NULL && CONTING_IS_COMPONENT(comp));
 
     new_point = g_new(ArtPoint, 1);
-    *new_point = *p;
+    *new_point = *pi;
 
     comp->links = g_list_append(comp->links, link);
     g_hash_table_insert(comp->points, link, new_point);
@@ -192,7 +196,7 @@ conting_component_connect_link(ContingComponent *comp,
 
 	/* TODO: Think about it. Should this go into conting_bus_link() ?
 	 * Do other drawings have the same restrictions about resizing? */
-    conting_util_bounds_add_point(&comp->min_bounds, p);
+    conting_util_bounds_add_point(&comp->min_bounds, pi);
 }
 
 /* PUBLIC METHOD IMPLEMENTATION */
