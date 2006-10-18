@@ -45,9 +45,9 @@ conting_bus_draw(ContingDrawing *self, cairo_t *cr)
 
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 	cairo_set_source_rgb(cr,
-			(gdouble) priv->color.red / (gdouble) G_MAXINT16,
-			(gdouble) priv->color.green / (gdouble) G_MAXINT16,
-			(gdouble) priv->color.blue / (gdouble) G_MAXINT16);
+			(gdouble) priv->color.red / (gdouble) G_MAXUINT16,
+			(gdouble) priv->color.green / (gdouble) G_MAXUINT16,
+			(gdouble) priv->color.blue / (gdouble) G_MAXUINT16);
 	
 	cairo_move_to(cr, comp->p0.x, comp->p0.y);
 	cairo_line_to(cr, comp->p1.x, comp->p0.y);

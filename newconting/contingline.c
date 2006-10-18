@@ -13,6 +13,11 @@
 static gpointer parent_class = NULL;
 static gpointer parent_iface = NULL;
 
+enum {
+	CONTING_LINE_PROP_0,
+	CONTING_LINE_PROP_COLOR
+};
+
 #define CONTING_LINE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_LINE, ContingLinePrivate))
 
@@ -36,6 +41,8 @@ struct ContingLinePrivate_ {
 	ArtPoint placing_point;
 
 	gboolean shift_mask;
+
+	GdkColor color;
 };
 
 void
@@ -89,6 +96,10 @@ conting_line_draw(ContingDrawing *self, cairo_t *cr)
 	
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 	cairo_set_line_width(cr, width);
+	cairo_set_source_rgb(cr,
+			priv->color.red / (gdouble) G_MAXUINT16,
+			priv->color.green / (gdouble) G_MAXUINT16,
+			priv->color.blue / (gdouble) G_MAXUINT16);
 
 	pw0 = priv->points->data;
 
@@ -297,6 +308,49 @@ conting_line_finalize(GObject *self)
 	g_list_free(priv->points);
 
 	G_OBJECT_CLASS(parent_class)->finalize(self);
+}
+static void
+conting_line_set_property(GObject *self,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+    ContingLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+    priv = CONTING_LINE_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_LINE_PROP_COLOR:
+            priv->color = *((GdkColor *) g_value_get_pointer(value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+
+static void
+conting_line_get_property(GObject *self,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+    ContingLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+    priv = CONTING_LINE_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_LINE_PROP_COLOR:
+            g_value_set_pointer(value, &priv->color);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
 }
 
 static void
@@ -1166,7 +1220,16 @@ conting_line_class_init(gpointer g_class, gpointer class_data) {
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;
+	gobject_class->set_property = conting_line_set_property;
+	gobject_class->get_property = conting_line_get_property;
 
+	g_object_class_install_property(gobject_class,
+			CONTING_LINE_PROP_COLOR,
+			g_param_spec_pointer("color",
+								 "Line color",
+								 "line color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
+			
 	g_type_class_add_private(g_class, sizeof(ContingLinePrivate));
 
 	parent_class = g_type_class_peek_parent(g_class);

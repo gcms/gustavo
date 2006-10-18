@@ -69,6 +69,8 @@ void conting_one_line_edit(ContingOneLine *self, ContingDrawing *drawing);
 cairo_t * conting_drawing_get_cairo(ContingDrawing *drawing);
 cairo_t * conting_drawing_get_cairo_absolute(ContingDrawing *drawing);
 
+#include "contingitemdata.h"
+ContingItemData * conting_drawing_get_item_data(ContingDrawing *drawing);
 typedef enum {
 	CONTING_ONE_LINE_EDIT,
 	CONTING_ONE_LINE_VIEW

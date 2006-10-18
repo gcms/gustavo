@@ -4,6 +4,7 @@
 #include "contingxml.h"
 #include "continggroup.h"
 #include "contingdata.h"
+#include "contingitemdata.h"
 #include "continginfodialog.h"
 #include "contingline.h"
 #include "contingbusbase.h"
@@ -53,6 +54,8 @@ struct ContingOneLinePrivate_ {
 
     GList *operations;
     ContingOneLineMode mode;
+
+	GdkColor bgcolor;
 };
 
 /* FRIEND METHOD */
@@ -317,65 +320,13 @@ edit_key(ContingDrawing *drawing, ContingDrawingEvent *event,
 	}
 }
 
-/* PRIVATE STATIC METHOD */
-static void
-conting_one_line_color_by_voltage(GdkColor *color, gdouble voltage)
-{
-	if (voltage < 25) {
-		g_print("blue\n");
-		gdk_color_parse("blue", color);
-	} else if (voltage < 50) {
-		g_print("orange\n");
-		gdk_color_parse("OrangeRed", color);
-	} else if (voltage < 100) {
-		g_print("red\n");
-		gdk_color_parse("red", color);
-	} else if (voltage < 200) {
-		g_print("yellow\n");
-		gdk_color_parse("yellow", color);
-	} else {
-		g_print("green\n");
-		gdk_color_parse("green", color);
-	}
-}
-
-/* PRIVATE METHOD */
-static void
-conting_one_line_set_color(ContingOneLine *self, ContingDrawing *drawing)
-{
-	ContingOneLinePrivate *priv;
-	GdkColor color;
-
-	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
-	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
-
-	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
-
-
-	if (CONTING_IS_BUS(drawing)) {
-		ContingItemData *item_data;
-		gdouble voltage;
-		gint number;
-	   
-		item_data = conting_data_get(priv->file_data, drawing);
-
-		conting_item_data_get_attr(item_data, "number", &number, NULL);
-		conting_item_data_get_attr(item_data, "voltage", &voltage, NULL);
-
-		g_print("%d is %lf ->\t", number, voltage);
-
-		conting_one_line_color_by_voltage(&color, voltage);
-
-		g_object_set(drawing, "color", &color, NULL);
-	}
-}
-
 /* PRIVATE METHOD */
 static void
 conting_one_line_set_view(ContingOneLine *self)
 {
 	ContingOneLinePrivate *priv;
 	GSList *n;
+	ContingVisitor *color;
 
 	g_print("set view\n\n\n\n\n");
 	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
@@ -387,13 +338,18 @@ conting_one_line_set_view(ContingOneLine *self)
 	if (priv->mode == CONTING_ONE_LINE_VIEW)
 		return;
 
+	color = g_object_new(CONTING_TYPE_VISITOR_COLOR, NULL);
 	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 		ContingDrawing *drawing = n->data;
 		
     	g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
 				0, 0, NULL, NULL, NULL);
-		conting_one_line_set_color(self, drawing);
+
+		conting_drawing_accept(drawing, color);
 	}
+
+	g_object_unref(color);
+	gdk_color_parse("black", &priv->bgcolor);
 
 
 	priv->mode = CONTING_ONE_LINE_VIEW;
@@ -1522,16 +1478,32 @@ widget_expose_event(GtkWidget *widget,
     ContingOneLinePrivate *priv;
     GSList *n;
     GList *opr_n;
+	cairo_t *cr;
 
     g_return_val_if_fail(user_data != NULL && CONTING_IS_ONE_LINE(user_data),
             FALSE);
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(user_data);
+
+    assert(widget == priv->widget);
+
+
+	cr = gdk_cairo_create(widget->window);
+	/*
     gdk_draw_rectangle(widget->window, widget->style->white_gc, TRUE,
             widget->allocation.x, widget->allocation.y,
             widget->allocation.width, widget->allocation.height);
+			*/
+	cairo_rectangle(cr, 0, 0,
+			widget->allocation.width, widget->allocation.height);
+	cairo_set_source_rgb(cr,
+			priv->bgcolor.red / (gdouble) G_MAXUINT16,
+			priv->bgcolor.green / (gdouble) G_MAXUINT16,
+			priv->bgcolor.blue / (gdouble) G_MAXUINT16);
+	cairo_fill(cr);
+	cairo_stroke(cr);
 
-    assert(widget == priv->widget);
+	cairo_destroy(cr);
 
 	/*
     for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
@@ -1818,6 +1790,8 @@ conting_one_line_instance_init(GTypeInstance *self,
                 NULL);
         priv->operations = g_list_append(priv->operations, operation);
     }
+
+	gdk_color_parse("white", &priv->bgcolor);
 }
 
 /* GET TYPE */
@@ -1847,4 +1821,21 @@ conting_one_line_get_type(void)
     }
 
     return type;
+}
+
+
+/* PUBLIC STATIC METHOD */
+ContingItemData *
+conting_drawing_get_item_data(ContingDrawing *drawing)
+{
+	ContingOneLine *self;
+	ContingOneLinePrivate *priv;
+
+	g_object_get(drawing, "one-line", &self, NULL);
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), NULL);
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	return conting_data_get(priv->file_data, drawing);
 }

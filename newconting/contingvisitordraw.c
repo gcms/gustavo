@@ -71,7 +71,7 @@ conting_visitor_draw_get_type(void)
 				&type_info, 0);
 
 		g_type_add_interface_static(type,
-				CONTING_TYPE_DRAWING_OPERATION,
+				CONTING_TYPE_VISITOR,
 				&iface_info);
 	}
 
