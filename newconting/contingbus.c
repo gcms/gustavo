@@ -6,32 +6,28 @@
 #include <math.h>
 #include <assert.h>
 
-#define CONTING_BUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
-        CONTING_TYPE_BUS, ContingBusPrivate))
-
-#define TOLERANCE 3
-#define SIZE ((TOLERANCE * 2) - 1)
-
+/* PARENT CLASS POINTER */
 static gpointer parent_class = NULL;
 
+
+/* CLASS PROPERTIES */
 enum {
 	CONTING_BUS_PROP_0,
 	CONTING_BUS_PROP_COLOR
 };
 
+/* CLASS PRIVATE DATA ACCESSOR MACRO */
+#define CONTING_BUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
+        CONTING_TYPE_BUS, ContingBusPrivate))
+
+/* CLASS PRIVATE DATA TYPE AND STRUCTURE */
 typedef struct ContingBusPrivate_ ContingBusPrivate;
 struct ContingBusPrivate_ {
-	gboolean dragging;
-	ArtPoint dragging_point;
-
-	ArtPoint *start_resize;
-
 	GdkColor color;
 };
 
 
-
-
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_bus_draw(ContingDrawing *self, cairo_t *cr)
 {
@@ -43,7 +39,6 @@ conting_bus_draw(ContingDrawing *self, cairo_t *cr)
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 	cairo_set_source_rgb(cr,
 			(gdouble) priv->color.red / (gdouble) G_MAXUINT16,
 			(gdouble) priv->color.green / (gdouble) G_MAXUINT16,
@@ -58,44 +53,12 @@ conting_bus_draw(ContingDrawing *self, cairo_t *cr)
 	cairo_fill(cr);
 	cairo_stroke(cr);
 	
-	/*
-	{
-		const gchar *name;
-		ContingData *data;
-		ContingItemData *item_data;
-
-		g_object_get(conting_drawing_get_one_line(self),
-				"data", &data,
-				NULL);
-
-		if (data == NULL)
-			goto end_block;
-
-		item_data = conting_data_get(data, self);
-
-		if (item_data == NULL)
-			goto end_block;
-
-		conting_item_data_get_attr(item_data,
-				"name", &name,
-				NULL);
-
-		cairo_set_font_size(cr, 8);
-		cairo_move_to(cr, rect.x, rect.y - 2.0);
-		cairo_select_font_face(cr, "Arial",
-				CAIRO_FONT_SLANT_NORMAL,
-				CAIRO_FONT_WEIGHT_BOLD);
-		cairo_set_source_rgb(cr, 0, 0, 0);
-		cairo_show_text(cr, name);
-		cairo_stroke(cr);
-		
-	}
-end_block:
-*/
-
-
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
 }
+
+
+/* TODO: remove it, useless, as it does nothing */
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_bus_finalize(GObject *self)
 {
@@ -108,9 +71,9 @@ conting_bus_finalize(GObject *self)
 	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
+/* INSTANCE INIT */
 static void
-conting_bus_instance_init(GTypeInstance *self,
-		                   gpointer g_class)
+conting_bus_instance_init(GTypeInstance *self, gpointer g_class)
 {
 	ContingBusPrivate *priv;
     ContingComponent *comp;
@@ -129,16 +92,17 @@ conting_bus_instance_init(GTypeInstance *self,
 	comp->min_bounds.x1 = comp->p1.x;
 	comp->min_bounds.y0 = comp->p0.y;
 	comp->min_bounds.y1 = comp->p1.y;
-	
-    /*
-	comp->placed = FALSE;
-    */
-	priv->dragging = FALSE;
-	priv->start_resize = NULL;
 
+	comp->min_w = fabs(comp->p1.x - comp->p0.x);
+	comp->min_h = fabs(comp->p1.y - comp->p0.y);
+	
 	comp->resize_vertical = TRUE;
 }
-static void conting_bus_delete(ContingDrawing *self)
+
+/* TODO: remove it, as conting_bus_finalize() it does nothing */
+/* PUBLIC METHOD IMPLEMENTATION */
+static void
+conting_bus_delete(ContingDrawing *self)
 {
 	ContingBusPrivate *priv;
 
@@ -149,8 +113,8 @@ static void conting_bus_delete(ContingDrawing *self)
 	CONTING_DRAWING_CLASS(parent_class)->delete(self);
 }
 
-#include <gdk/gdkkeysyms.h>
 /*
+#include <gdk/gdkkeysyms.h>
 static void
 conting_bus_get_points_bounds(ContingBus *self,
 			                        ArtDRect *bounds)
@@ -183,6 +147,11 @@ conting_bus_get_points_bounds(ContingBus *self,
 }
 */
 
+/* TODO: remove it. It still performs some functionality, but in practice
+ * it doesn't happens as the current implementation of
+ * conting_drawing_event() on ContingDrawing class answers TRUE to all
+ * currently generated events. */
+/* PUBLIC METHOD IMPLEMENTATION */
 static gboolean
 conting_bus_event(ContingDrawing *self,
 		                GdkEvent *event)
@@ -308,11 +277,26 @@ conting_bus_event(ContingDrawing *self,
 
 
 
+/**
+ * Attempts to link drawing to a component. The point (world_x, world_y) is
+ * where the drawing wishes to connect to the component. The returned
+ * point pw, is the actual point used in the link. All points are specified
+ * as world coordinates.
+ * 
+ * @param self this component
+ * @param drawing the drawing that wishes to link to this component
+ * @param world_x x coordinate of the linking point
+ * @param world_y y coordinate of the linking point
+ * @param pw  return value to store the point that was actually used to link
+ * component to drawing
+ * @return TRUE if the link occurred.
+ */
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static gboolean
-conting_bus_link(ContingComponent *self,
-		               ContingDrawing *drawing,
-					   gdouble world_x, gdouble world_y,
-					   ArtPoint *pw)
+conting_bus_link(ContingComponent *self, ContingDrawing *drawing,
+		gdouble world_x, gdouble world_y,
+		ArtPoint *pw)
 {
 	ContingBusPrivate *priv;
     ContingComponent *comp;
@@ -323,7 +307,8 @@ conting_bus_link(ContingComponent *self,
     priv = CONTING_BUS_GET_PRIVATE(self);
     comp = CONTING_COMPONENT(self);
 
-	if (g_list_find(comp->links, drawing))
+	/* if it's already linked */
+	if (conting_component_is_linked(comp, drawing))
 		return FALSE;
 
 	pi.x = world_x;
@@ -343,20 +328,20 @@ conting_bus_link(ContingComponent *self,
 	}
 
 	if (fabs(pi.x - comp->p0.x) < fabs(pi.x - comp->p1.x)) {
-//		art_affine_translate(affine, priv->p0.x - pi.x, 0);
 		pi.x = comp->p0.x;
 	} else {
-//		art_affine_translate(affine, priv->p1.x - pi.x, 0);
 		pi.x = comp->p1.x;
 	}
 
     conting_drawing_i2w(CONTING_DRAWING(self), pw, &pi);
 
+	/* link it using pi as the linking point */
 	conting_component_connect_link(self, drawing, &pi);
 
 	return TRUE;
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_bus_accept(ContingDrawing *self, ContingVisitor *visitor)
 {
@@ -364,6 +349,8 @@ conting_bus_accept(ContingDrawing *self, ContingVisitor *visitor)
 
 	conting_visitor_visit_bus(visitor, CONTING_BUS(self));
 }
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_bus_get_property(GObject *self,
                          guint prop_id,
@@ -386,6 +373,7 @@ conting_bus_get_property(GObject *self,
     }
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_bus_set_property(GObject *self,
                          guint prop_id,
@@ -409,6 +397,7 @@ conting_bus_set_property(GObject *self,
 }
 
 
+/* CLASS INIT */
 static void
 conting_bus_class_init(gpointer g_class, gpointer class_data)
 {
@@ -444,7 +433,9 @@ conting_bus_class_init(gpointer g_class, gpointer class_data)
 	parent_class = g_type_class_peek_parent(g_class);
 }
 
-GType conting_bus_get_type(void) {
+/* GET TYPE */
+GType
+conting_bus_get_type(void) {
     static GType type = 0;
 
     if (type == 0) {

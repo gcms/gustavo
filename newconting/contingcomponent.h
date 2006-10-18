@@ -48,6 +48,7 @@ struct ContingComponent_ {
 
 	ContingResizeOrientation resizing;
 	ArtDRect min_bounds;
+	gdouble min_w, min_h;
 };
 
 struct ContingComponentClass_ {
@@ -86,12 +87,16 @@ gboolean conting_component_get_link_point(ContingComponent *self,
                                           ContingDrawing *line,
                                           ArtPoint *p);
 
+/*
 void conting_component_disconnect_link(ContingComponent *self,
 		                               ContingDrawing *drawing);
+									   */
 void conting_component_connect_link(ContingComponent *self,
 		                        ContingDrawing *link, ArtPoint *p);
-void
-conting_component_rotate(ContingComponent *self);
+void conting_component_rotate(ContingComponent *self);
+
+ContingDrawing *conting_component_is_linked(ContingComponent *self,
+		ContingDrawing *drawing);
 
 
 

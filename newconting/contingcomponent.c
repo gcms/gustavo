@@ -4,11 +4,23 @@
 #include "contingserializable.h"
 #include <assert.h>
 
+/* MACRO DEFINITIONS */
+#define TOLERANCE CONTING_DRAWING_TOLERANCE
+#define SIZE ((TOLERANCE * 2) - 1)
+
+
+/* PARENT CLASS POINTER */
 static gpointer parent_class = NULL;
+
+/* PARENT INTERFACE POINTER (ContingSerializable) */
 static gpointer parent_iface = NULL;
 
+
+/* CLASS PRIVATE DATA ACCESSOR MACRO */
 #define CONTING_COMPONENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_COMPONENT, ContingComponentPrivate))
+
+/* CLASS PRIVATE DATA TYPE AND STRUCTURE */
 typedef struct ContingComponentPrivate_ ContingComponentPrivate;
 struct ContingComponentPrivate_ {
     gboolean grabbed;
@@ -17,10 +29,35 @@ struct ContingComponentPrivate_ {
     gdouble rotate[6];
 };
 
+/* PROTOTYPE DECLARATIONS */
+static void
+conting_component_link_deleted(ContingComponent *comp,
+                               ContingDrawing *link);
 
-#define TOLERANCE CONTING_DRAWING_TOLERANCE
-#define SIZE ((TOLERANCE * 2) - 1)
+/**
+ * Checks if a drawing is linked to this component.
+ * 
+ * @param self this component
+ * @param drawing drawing to be checked
+ * @return a pointer to the drawing linked to this component which matches
+ * with the drawing parameter
+ */
+/* PUBLIC METHOD */
+ContingDrawing *
+conting_component_is_linked(ContingComponent *self, ContingDrawing *drawing)
+{
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), NULL);
+	g_return_val_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing), NULL);
 
+	return g_list_find(self->links, drawing);
+}
+
+/**
+ * Rotates this component by 90 degree.
+ *
+ * @param self this component
+ */
+/* PUBLIC METHOD */
 void
 conting_component_rotate(ContingComponent *self)
 {
@@ -38,7 +75,6 @@ conting_component_rotate(ContingComponent *self)
     if (self->placed)
         g_signal_emit_by_name(self, "move");
 
-
     /*
     conting_drawing_update(self);
 
@@ -47,16 +83,42 @@ conting_component_rotate(ContingComponent *self)
         */
 }
 
+/**
+ * Checks if the drawing specified by line is linked to this component, and
+ * obtains the point in which they are linked.
+ *
+ * @param self this component
+ * @param line drawing linked to this component
+ * @param pw return value used to store the point where line is linked
+ * to this component in world coordinates
+ * @return TRUE if line is linked to this component, FALSE otherwise
+ */
+/* PUBLIC METHOD INVOKER */
 gboolean
 conting_component_get_link_point(ContingComponent *self,
                                  ContingDrawing *line,
-                                 ArtPoint *p)
+                                 ArtPoint *pw)
 {
     g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), FALSE);
 
-    return CONTING_COMPONENT_GET_CLASS(self)->get_link_point(self, line, p);
+    return CONTING_COMPONENT_GET_CLASS(self)->get_link_point(self, line, pw);
 }
 
+/**
+ * Attempts to link drawing to a component. The point (world_x, world_y) is
+ * where the drawing wishes to connect to the component. The returned
+ * point pw, is the actual point used in the link. All points are specified
+ * as world coordinates.
+ * 
+ * @param self this component
+ * @param drawing the drawing that wishes to link to this component
+ * @param world_x x coordinate of the linking point
+ * @param world_y y coordinate of the linking point
+ * @param pw  return value to store the point that was actually used to link
+ * component to drawing
+ * @return TRUE if the link occurred.
+ */
+/* PUBLIC METHOD INVOKER */
 gboolean
 conting_component_link(ContingComponent *self,
                        ContingDrawing *drawing,
@@ -69,6 +131,7 @@ conting_component_link(ContingComponent *self,
             world_x, world_y, pw);
 }
 
+/* PRIVATE METHOD */
 static void
 conting_component_draw_selection(ContingDrawing *self,
         ContingDrawingBoxDrawer drawer)
@@ -85,6 +148,8 @@ conting_component_draw_selection(ContingDrawing *self,
     drawer(self, comp->p1.x, comp->p1.y);
 }
 
+/* TODO: remove it, as it does nothing */
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_draw(ContingDrawing *self, cairo_t *cr)
 {
@@ -99,9 +164,7 @@ conting_component_draw(ContingDrawing *self, cairo_t *cr)
     pw1 = comp->p1;
 }
 
-static void
-conting_component_link_deleted(ContingComponent *comp,
-                               ContingDrawing *link);
+/* CALLBACK FUNCTION */
 static void
 conting_component_link_deleted_stub(ContingDrawing *drawing,
                                     gpointer user_data)
@@ -109,9 +172,10 @@ conting_component_link_deleted_stub(ContingDrawing *drawing,
     conting_component_link_deleted(CONTING_COMPONENT(user_data), drawing);
 }
 
+/* PROTECTED METHOD */
 void
 conting_component_connect_link(ContingComponent *comp,
-                           ContingDrawing *link, ArtPoint *p)
+		ContingDrawing *link, ArtPoint *pi)
 {
     ArtPoint *new_point;
 
@@ -120,15 +184,18 @@ conting_component_connect_link(ContingComponent *comp,
     new_point = g_new(ArtPoint, 1);
     *new_point = *p;
 
-    g_print("g_list_append()\n");
     comp->links = g_list_append(comp->links, link);
     g_hash_table_insert(comp->points, link, new_point);
 
     g_signal_connect(G_OBJECT(link), "delete",
             G_CALLBACK(conting_component_link_deleted_stub), comp);
 
+	/* TODO: Think about it. Should this go into conting_bus_link() ?
+	 * Do other drawings have the same restrictions about resizing? */
     conting_util_bounds_add_point(&comp->min_bounds, p);
 }
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_get_update_bounds(ContingDrawing *self,
                                     ArtDRect *bounds)
@@ -159,6 +226,7 @@ conting_component_get_update_bounds(ContingDrawing *self,
         bounds->y1 += TOLERANCE;
     }
 
+	/*
     if (comp->show) {
         GList *n;
         ArtPoint p;
@@ -170,8 +238,10 @@ conting_component_get_update_bounds(ContingDrawing *self,
 
         conting_util_expand_bounds(bounds, 9);
     }
+	*/
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_get_bounds(ContingDrawing *self,
                              ArtDRect *bounds)
@@ -194,6 +264,8 @@ conting_component_get_bounds(ContingDrawing *self,
     bounds->x1 = MAX(pw0.x, pw1.x);
     bounds->y1 = MAX(pw0.y, pw1.y);
 }
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_place(ContingDrawing *self)
 {
@@ -208,6 +280,8 @@ conting_component_place(ContingDrawing *self)
 
     conting_drawing_set_selected(self, TRUE);
 }
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static gboolean
 conting_component_is_placed(ContingDrawing *self)
 {
@@ -219,6 +293,8 @@ conting_component_is_placed(ContingDrawing *self)
 
     return comp->placed;
 }
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static gboolean
 conting_component_answer(ContingDrawing *self,
                          gdouble world_x, gdouble world_y)
@@ -232,6 +308,8 @@ conting_component_answer(ContingDrawing *self,
     return world_x >= bounds.x0 && world_x <= bounds.x1
         && world_y >= bounds.y0 && world_y <= bounds.y1;
 }
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_get_i2w_affine(ContingDrawing *self,
                                  gdouble affine[6])
@@ -240,12 +318,14 @@ conting_component_get_i2w_affine(ContingDrawing *self,
 
     g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
-       priv = CONTING_COMPONENT_GET_PRIVATE(self);
+    priv = CONTING_COMPONENT_GET_PRIVATE(self);
 
     CONTING_DRAWING_CLASS(parent_class)->get_i2w_affine(self, affine);
 
     art_affine_multiply(affine, priv->rotate, affine);
 }
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_get_w2i_affine(ContingDrawing *self,
                                  gdouble affine[6])
@@ -265,6 +345,7 @@ conting_component_get_w2i_affine(ContingDrawing *self,
     art_affine_multiply(affine, invert_drawing, invert_rotate);
 }
 
+/* TODO: Remove it. It's currently ununsed */
 #define IS_NEAR(p0, p1) ((p0) < (p1) + TOLERANCE && (p0) > (p1) - TOLERANCE)
 
 #define conting_component_is_resizing(comp) \
@@ -443,6 +524,7 @@ conting_component_event(ContingDrawing *self,
     return FALSE;
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static gboolean
 conting_component_get_link_point_impl(ContingComponent *self,
                                       ContingDrawing *line,
@@ -465,7 +547,8 @@ conting_component_get_link_point_impl(ContingComponent *self,
     return TRUE;
 }
 
-void
+/* PRIVATE METHOD */
+static void
 conting_component_disconnect_link(ContingComponent *comp,
                                   ContingDrawing *drawing)
 {
@@ -478,6 +561,7 @@ conting_component_disconnect_link(ContingComponent *comp,
     comp->links = g_list_remove(comp->links, drawing);
 }
 
+/* PROTECTED METHOD IMPLEMENTATION */
 static void
 conting_component_link_deleted_impl(ContingComponent *comp,
                                     ContingDrawing *link)
@@ -488,6 +572,7 @@ conting_component_link_deleted_impl(ContingComponent *comp,
     conting_component_disconnect_link(comp, link);
 }
 
+/* PROTECTED METHOD INVOKER */
 static void
 conting_component_link_deleted(ContingComponent *comp,
                                ContingDrawing *link)
@@ -498,13 +583,13 @@ conting_component_link_deleted(ContingComponent *comp,
     CONTING_COMPONENT_GET_CLASS(comp)->link_deleted(comp, link);
 }
 
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_delete(ContingDrawing *self)
 {
     ContingComponent *comp;
     GList *n, *next;
-
-    g_print("DELETING\n");
 
     g_return_if_fail(self != NULL && CONTING_IS_COMPONENT(self));
 
@@ -722,6 +807,8 @@ conting_component_read(ContingSerializable *self, xmlNodePtr drawing_node,
     ((ContingSerializableClass *) parent_iface)->read(self,
             drawing_node, id_drawing);
 }
+
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_finalize(GObject *self)
 {
@@ -737,6 +824,7 @@ conting_component_finalize(GObject *self)
     G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
+/* CALLBACK FUNCTION */
 static gboolean
 conting_component_find_link_pred(ContingDrawing *self, gpointer user_data)
 {
@@ -749,6 +837,7 @@ conting_component_find_link_pred(ContingDrawing *self, gpointer user_data)
     return pred(self, params[0]);
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_find_link(ContingDrawing *self, ContingDrawingPredicate pred,
         gpointer user_data) {
@@ -776,6 +865,7 @@ conting_component_find_link(ContingDrawing *self, ContingDrawingPredicate pred,
     }
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_grab(ContingDrawing *self, ArtPoint *pi)
 {
@@ -791,6 +881,7 @@ conting_component_grab(ContingDrawing *self, ArtPoint *pi)
     CONTING_DRAWING_CLASS(parent_class)->grab(self, pi);
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_ungrab(ContingDrawing *self)
 {
@@ -806,6 +897,7 @@ conting_component_ungrab(ContingDrawing *self)
     priv->grabbed = FALSE;
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_motion(ContingDrawing *self, ArtPoint *pi)
 {
@@ -832,6 +924,7 @@ conting_component_motion(ContingDrawing *self, ArtPoint *pi)
     }
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
 static void
 conting_component_motion_place(ContingDrawing *self, ArtPoint *pi)
 {
@@ -844,6 +937,7 @@ conting_component_motion_place(ContingDrawing *self, ArtPoint *pi)
     conting_drawing_affine_absolute(self, affine);
 }
 
+/* INSTANCE INIT */
 static void
 conting_component_instance_init(GTypeInstance *self, gpointer g_class)
 {
@@ -871,6 +965,7 @@ conting_component_instance_init(GTypeInstance *self, gpointer g_class)
     priv->grabbed = FALSE;
 }
 
+/* INIT INTERFACE (ContingSerializable) */
 static void
 conting_component_serializable_init(gpointer g_iface, gpointer iface_data)
 {
@@ -883,6 +978,7 @@ conting_component_serializable_init(gpointer g_iface, gpointer iface_data)
     parent_iface = g_type_interface_peek_parent(g_iface);
 }
 
+/* CLASS INIT */
 static void
 conting_component_class_init(gpointer g_class, gpointer class_data)
 {
@@ -924,7 +1020,9 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
     g_type_class_add_private(g_class, sizeof(ContingComponentPrivate));
 }
 
-GType conting_component_get_type(void) {
+/* GET TYPE */
+GType
+conting_component_get_type(void) {
     static GType type = 0;
 
     if (type == 0) {
