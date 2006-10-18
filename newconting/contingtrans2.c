@@ -9,6 +9,12 @@
 #include <assert.h>
 #include <math.h>
 
+enum {
+	CONTING_TRANS2_PROP_0,
+	CONTING_TRANS2_PROP_COLOR0,
+	CONTING_TRANS2_PROP_COLOR1
+};
+
 #define CONTING_TRANS2_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_TRANS2, ContingTrans2Private))
 
@@ -24,6 +30,7 @@ struct ContingTrans2Private_ {
     ArtPoint dragging_point;
 
     ContingDrawing *link0, *link1;
+	GdkColor color0, color1;
 };
 
 static void
@@ -80,6 +87,10 @@ conting_trans2_draw(ContingDrawing *self, cairo_t *cr)
 			rect.x + ((gdouble) rect.width / 2.0),
 			rect.y + ((gdouble) rect.height / 2.0),
 			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
+	cairo_set_source_rgb(cr,
+			priv->color0.red / (gdouble) G_MAXUINT16,
+			priv->color0.green / (gdouble) G_MAXUINT16,
+			priv->color0.blue / (gdouble) G_MAXUINT16);
 	cairo_stroke(cr);
 
     pw0 = comp->p0;
@@ -96,10 +107,14 @@ conting_trans2_draw(ContingDrawing *self, cairo_t *cr)
 			rect.x + ((gdouble) rect.width / 2.0),
 			rect.y + ((gdouble) rect.height / 2.0),
 			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
+	cairo_set_source_rgb(cr,
+			priv->color1.red / (gdouble) G_MAXUINT16,
+			priv->color1.green / (gdouble) G_MAXUINT16,
+			priv->color1.blue / (gdouble) G_MAXUINT16);
 	cairo_stroke(cr);
 
 	if (conting_drawing_get_attr(self, "min tap")
-			&& conting_drawing_get_attr(self, "max tap")) {
+			|| conting_drawing_get_attr(self, "max tap")) {
 		cairo_save(cr);
 		conting_trans2_draw_ltc(self, cr);
 		cairo_restore(cr);
@@ -116,7 +131,73 @@ conting_trans2_accept(ContingDrawing *self, ContingVisitor *visitor)
 	conting_visitor_visit_trans2(visitor, CONTING_TRANS2(self));
 }
 
+void
+conting_trans2_get_buses(ContingTrans2 *self,
+		ContingBus **bus0, ContingBus **bus1)
+{
+	ContingTrans2Private *priv;
+	ContingDrawing *stub;
 
+	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+
+	priv = CONTING_TRANS2_GET_PRIVATE(self);
+
+	/* TODO: check if is it correct.
+	 * That means, if conting_line_get_buses() applied on link0
+	 * returns bus1 and bus0 in this order */
+	conting_line_get_buses(priv->link0, bus1, bus0);
+}
+
+
+static void
+conting_trans2_set_property(GObject *self,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+    ContingTrans2Private *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+
+    priv = CONTING_TRANS2_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_TRANS2_PROP_COLOR0:
+            priv->color0 = *((GdkColor *) g_value_get_pointer(value));
+            break;
+        case CONTING_TRANS2_PROP_COLOR1:
+            priv->color1 = *((GdkColor *) g_value_get_pointer(value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+
+static void
+conting_trans2_get_property(GObject *self,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+    ContingTrans2Private *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
+
+    priv = CONTING_TRANS2_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_TRANS2_PROP_COLOR0:
+            g_value_set_pointer(value, &priv->color0);
+            break;
+        case CONTING_TRANS2_PROP_COLOR1:
+            g_value_set_pointer(value, &priv->color1);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
 static void
 conting_trans2_finalize(GObject *self)
 {
@@ -372,6 +453,24 @@ conting_trans2_class_init(gpointer g_class, gpointer class_data)
 
     gobject_class = G_OBJECT_CLASS(g_class);
     gobject_class->finalize = conting_trans2_finalize;
+    gobject_class->get_property = conting_trans2_get_property;
+    gobject_class->set_property = conting_trans2_set_property;
+	
+	g_object_class_install_property(gobject_class,
+			CONTING_TRANS2_PROP_COLOR0,
+			g_param_spec_pointer("color0",
+								 "0 color",
+								 "0 color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
+	
+	g_object_class_install_property(gobject_class,
+			CONTING_TRANS2_PROP_COLOR1,
+			g_param_spec_pointer("color1",
+								 "1 color",
+								 "1 color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
+			
+
 
     g_type_class_add_private(g_class, sizeof(ContingTrans2Private));
 

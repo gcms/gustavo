@@ -8,6 +8,13 @@
 #include <math.h>
 #include <assert.h>
 
+enum {
+	CONTING_TRANS3_PROP_0,
+	CONTING_TRANS3_PROP_COLOR0,
+	CONTING_TRANS3_PROP_COLOR1,
+	CONTING_TRANS3_PROP_COLOR2
+};
+
 #define CONTING_TRANS3_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_TRANS3, ContingTrans3Private))
 
@@ -20,6 +27,7 @@ static gpointer parent_iface = NULL;
 typedef struct ContingTrans3Private_ ContingTrans3Private;
 struct ContingTrans3Private_ {
     ContingDrawing *link0, *link1, *link2;
+	GdkColor color0, color1, color2;
 };
 
 static void
@@ -45,6 +53,10 @@ conting_trans3_draw(ContingDrawing *self, cairo_t *cr)
             pw0.x + (pw1.x - pw0.x) / 2.0,
             pw0.y + (pw1.y - pw0.y) / 2.0,
             (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
+	cairo_set_source_rgb(cr,
+			priv->color0.red / (gdouble) G_MAXUINT16,
+			priv->color0.green / (gdouble) G_MAXUINT16,
+			priv->color0.blue / (gdouble) G_MAXUINT16);
     cairo_stroke(cr);
 
     pw0 = comp->p0;
@@ -56,6 +68,10 @@ conting_trans3_draw(ContingDrawing *self, cairo_t *cr)
             pw0.x + (pw1.x - pw0.x) / 2.0,
             pw0.y + (pw1.y - pw0.y) / 2.0,
             (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
+	cairo_set_source_rgb(cr,
+			priv->color1.red / (gdouble) G_MAXUINT16,
+			priv->color1.green / (gdouble) G_MAXUINT16,
+			priv->color1.blue / (gdouble) G_MAXUINT16);
     cairo_stroke(cr);
 
     /* Low winding */
@@ -70,6 +86,10 @@ conting_trans3_draw(ContingDrawing *self, cairo_t *cr)
             pw0.x + (pw1.x - pw0.x) / 2.0,
             pw0.y + (pw1.y - pw0.y) / 2.0,
             (pw1.x - pw0.x) / 2.0, 0, 2 * M_PI);
+	cairo_set_source_rgb(cr,
+			priv->color2.red / (gdouble) G_MAXUINT16,
+			priv->color2.green / (gdouble) G_MAXUINT16,
+			priv->color2.blue / (gdouble) G_MAXUINT16);
     cairo_stroke(cr);
 
     CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
@@ -83,6 +103,117 @@ conting_trans3_accept(ContingDrawing *self, ContingVisitor *visitor)
 	conting_visitor_visit_trans3(visitor, CONTING_TRANS3(self));
 }
 
+static gboolean
+find_link_pred(ContingDrawing *self, gpointer user_data)
+{
+	gpointer *params = user_data;
+	ContingDrawingPredicate pred = params[1];
+
+
+	if (params[2] == self)
+		return FALSE;
+
+	return pred(self, params[0]);
+}
+
+static gboolean
+conting_trans3_get_bus_pred(ContingDrawing *drawing, gpointer user_data)
+{
+	ContingDrawing **bus = user_data;
+
+	if (*bus == NULL && CONTING_IS_BUS(drawing)) {
+		*bus = drawing;
+
+		return FALSE;
+	}
+
+	return *bus == NULL;
+}
+
+void
+conting_trans3_get_buses(ContingTrans3 *self,
+		ContingBus **bus0, ContingBus **bus1, ContingBus **bus2)
+{
+	ContingTrans3Private *priv;
+	gpointer params[3];
+
+	g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
+
+	priv = CONTING_TRANS3_GET_PRIVATE(self);
+
+	assert(conting_drawing_is_placed(CONTING_DRAWING(self)));
+	assert(priv->link0 && priv->link1 && priv->link2);
+
+	*bus0 = *bus1 = *bus2 = NULL;
+
+	params[1] = conting_trans3_get_bus_pred;
+	params[2] = self;
+
+	params[0] = bus0;
+	conting_drawing_find_link(priv->link0, find_link_pred, params);
+	
+	params[0] = bus1;
+	conting_drawing_find_link(priv->link1, find_link_pred, params);
+	
+	params[0] = bus2;
+	conting_drawing_find_link(priv->link2, find_link_pred, params);
+}
+
+static void
+conting_trans3_set_property(GObject *self,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+    ContingTrans3Private *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
+
+    priv = CONTING_TRANS3_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_TRANS3_PROP_COLOR0:
+            priv->color0 = *((GdkColor *) g_value_get_pointer(value));
+            break;
+        case CONTING_TRANS3_PROP_COLOR1:
+            priv->color1 = *((GdkColor *) g_value_get_pointer(value));
+            break;
+        case CONTING_TRANS3_PROP_COLOR2:
+            priv->color2 = *((GdkColor *) g_value_get_pointer(value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+
+static void
+conting_trans3_get_property(GObject *self,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+    ContingTrans3Private *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_TRANS3(self));
+
+    priv = CONTING_TRANS3_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_TRANS3_PROP_COLOR0:
+            g_value_set_pointer(value, &priv->color0);
+            break;
+        case CONTING_TRANS3_PROP_COLOR1:
+            g_value_set_pointer(value, &priv->color1);
+            break;
+        case CONTING_TRANS3_PROP_COLOR2:
+            g_value_set_pointer(value, &priv->color2);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
 static void
 conting_trans3_finalize(GObject *self)
 {
@@ -350,7 +481,30 @@ conting_trans3_class_init(gpointer g_class, gpointer class_data)
 
     gobject_class = G_OBJECT_CLASS(g_class);
     gobject_class->finalize = conting_trans3_finalize;
+	gobject_class->get_property = conting_trans3_get_property;
+	gobject_class->set_property = conting_trans3_set_property;
 
+	g_object_class_install_property(gobject_class,
+			CONTING_TRANS3_PROP_COLOR0,
+			g_param_spec_pointer("color0",
+								 "0 color",
+								 "0 color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
+	
+	g_object_class_install_property(gobject_class,
+			CONTING_TRANS3_PROP_COLOR1,
+			g_param_spec_pointer("color1",
+								 "1 color",
+								 "1 color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
+	
+	g_object_class_install_property(gobject_class,
+			CONTING_TRANS3_PROP_COLOR2,
+			g_param_spec_pointer("color2",
+								 "2 color",
+								 "2 color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
+	
     g_type_class_add_private(g_class, sizeof(ContingTrans3Private));
 
     parent_class = g_type_class_peek_parent(g_class);

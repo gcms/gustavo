@@ -130,6 +130,7 @@ void conting_drawing_find_link(ContingDrawing *self,
 		ContingDrawingPredicate pred, gpointer user_data);
 
 gpointer conting_drawing_get_attr(ContingDrawing *self, const gchar *attr);
+void conting_drawing_accept(ContingDrawing *self, ContingVisitor *visitor);
 
 
 #define CONTING_TYPE_DRAWING_EVENT	(conting_drawing_event_get_type())

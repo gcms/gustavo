@@ -29,6 +29,10 @@ struct ContingTrans3Class_ {
 
 GType conting_trans3_get_type(void);
 
+void
+conting_trans3_get_buses(ContingTrans3 *self,
+		ContingBus **bus0, ContingBus **bus1, ContingBus **bus2);
+
 
 
 

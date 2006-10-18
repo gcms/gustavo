@@ -50,7 +50,7 @@ void conting_visitor_visit_load(ContingVisitor *self, ContingLoad *load);
 void conting_visitor_visit_gen(ContingVisitor *self, ContingGen *gen);
 
 
-#define CONTING_TYPE_VISITOR_DRAW	(conting_visitor_draw_get_type())
+#define CONTING_TYPE_VISITOR_COLOR	(conting_visitor_color_get_type())
 
-GType conting_visitor_draw_get_type(void);
+GType conting_visitor_color_get_type(void);
 #endif /* CONTING_VISITOR_H */
