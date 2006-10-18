@@ -525,6 +525,8 @@ conting_drawing_get_cairo(ContingDrawing *drawing)
 
     conting_drawing_get_i2w_affine(drawing, affine);
     cairo_transform(cr, (cairo_matrix_t *) affine);
+
+	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
     
     return cr;
 
