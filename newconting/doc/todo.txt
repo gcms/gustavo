@@ -206,3 +206,17 @@ uma interface
 
 30/09/2006
 - Fix ContingGroup draw() method
+
+24/10/2006
+- Currently the responsability of connecting the signal handlers of the
+  components in edit mode is conting_one_line_open() which does this
+  by calling conting_one_line_place(). This should be changed, so that
+  this responsability goes to conting_one_line_set_edit().
+
+- Change ContingDrawingOperationDefault so that you can configure it.
+  One example of configuration would be disable drawing the generators/loads.
+
+- Add controls to contingmain so that we can add and remove various
+  ContingDrawingOperation.
+
+- Design information to display and actions to do on view mode.
