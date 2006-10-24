@@ -49,8 +49,7 @@ void conting_visitor_visit_trans3(ContingVisitor *self, ContingTrans3 *trans3);
 void conting_visitor_visit_load(ContingVisitor *self, ContingLoad *load);
 void conting_visitor_visit_gen(ContingVisitor *self, ContingGen *gen);
 
+#include "contingvisitorcolor.h"
 
-#define CONTING_TYPE_VISITOR_COLOR	(conting_visitor_color_get_type())
 
-GType conting_visitor_color_get_type(void);
 #endif /* CONTING_VISITOR_H */
