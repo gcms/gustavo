@@ -320,6 +320,42 @@ edit_key(ContingDrawing *drawing, ContingDrawingEvent *event,
 	}
 }
 
+static GdkColor *
+color_by_name(const gchar *name)
+{
+    static GdkColor color;
+    
+    gdk_color_parse(name, &color);
+
+    return &color;
+}
+
+/* PRIVATE METHOD */
+static void
+conting_one_line_set_edit(ContingOneLine *self) 
+{
+	ContingOneLinePrivate *priv;
+    GSList *n;
+    ContingVisitor *color;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    color = g_object_new(CONTING_TYPE_VISITOR_COLOR, NULL);
+
+    for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+        conting_drawing_accept(n->data, color);
+    }
+
+    g_object_unref(color);
+	gdk_color_parse("white", &priv->bgcolor);
+
+    
+    priv->mode = CONTING_ONE_LINE_EDIT;
+    conting_one_line_update(self, NULL);
+}
+
 /* PRIVATE METHOD */
 static void
 conting_one_line_set_view(ContingOneLine *self)
@@ -338,7 +374,22 @@ conting_one_line_set_view(ContingOneLine *self)
 	if (priv->mode == CONTING_ONE_LINE_VIEW)
 		return;
 
+    /* TODO: load these from settings */
 	color = g_object_new(CONTING_TYPE_VISITOR_COLOR, NULL);
+    conting_visitor_color_add_interval(CONTING_VISITOR_COLOR(color),
+            -1, 25, color_by_name("blue"));
+    conting_visitor_color_add_interval(CONTING_VISITOR_COLOR(color),
+            25, 50, color_by_name("orange"));
+    conting_visitor_color_add_interval(CONTING_VISITOR_COLOR(color),
+            50, 100, color_by_name("red"));
+    conting_visitor_color_add_interval(CONTING_VISITOR_COLOR(color),
+            100, 200, color_by_name("yellow"));
+    conting_visitor_color_add_interval(CONTING_VISITOR_COLOR(color),
+            200, -1, color_by_name("green"));
+    conting_visitor_color_use_default(CONTING_VISITOR_COLOR(color),
+            FALSE);
+
+    
 	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 		ContingDrawing *drawing = n->data;
 		
@@ -370,7 +421,8 @@ conting_one_line_set_mode(ContingOneLine *self, ContingOneLineMode mode)
 
 	switch (mode) {
 		case CONTING_ONE_LINE_EDIT:
-			return priv->mode == CONTING_ONE_LINE_EDIT;
+            conting_one_line_set_edit(self);
+            return TRUE;
 			break;
 		case CONTING_ONE_LINE_VIEW:
 			if (!conting_data_check(priv->file_data, NULL)) {
@@ -735,7 +787,7 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
 
     xmlCleanupParser();
 
-    conting_one_line_update(self, NULL);
+    conting_one_line_set_mode(self, CONTING_ONE_LINE_EDIT);
 }
 
 /* PUBLIC METHOD */
@@ -1337,7 +1389,7 @@ widget_button_press_event(GtkWidget *widget,
 
                 g_print("selecting start()\n");
 
-				if (priv->mode = CONTING_ONE_LINE_EDIT) {
+				if (priv->mode == CONTING_ONE_LINE_EDIT) {
 	                priv->state = CONTING_ONE_LINE_SELECTING;
     	            priv->selection_box.x0 = event->x;
         	        priv->selection_box.y0 = event->y;
