@@ -1204,8 +1204,23 @@ conting_one_line_set_property(GObject *self,
 
     switch (prop_id) {
         case CONTING_ONE_LINE_PROP_PPU:
-            priv->ppu = g_value_get_double(value);
-            conting_one_line_update(CONTING_ONE_LINE(self), NULL);
+			{
+				gint x, y;
+				gdk_drawable_get_size(priv->widget->window, &x, &y);
+
+				x = (gdouble) x / priv->ppu;
+				y = (gdouble) y / priv->ppu;
+				
+    	        priv->ppu = g_value_get_double(value);
+
+				x = (gdouble) x * priv->ppu;
+				y = (gdouble) y * priv->ppu;
+
+				gtk_widget_set_size_request(priv->widget, x, y);
+				gtk_widget_queue_resize_no_redraw(priv->widget);
+
+        	    conting_one_line_update(CONTING_ONE_LINE(self), NULL);
+			}
             break;
         case CONTING_ONE_LINE_PROP_DATA:
             priv->file_data = g_value_get_object(value);
