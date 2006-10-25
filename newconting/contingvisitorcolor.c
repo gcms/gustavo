@@ -113,12 +113,22 @@ conting_visitor_color_add_interval(ContingVisitorColor *self,
 static void
 conting_visitor_color_visit_line(ContingVisitor *self, ContingLine *line)
 {
+	ContingVisitorColorPrivate *priv;
 	ContingComponent *comp0, *comp1;
 
 	GdkColor color;
 
 	ContingItemData *item_data;
 	gdouble voltage;
+
+	g_return_if_fail(self != NULL && CONTING_IS_VISITOR_COLOR(self));
+
+	priv = CONTING_VISITOR_COLOR_GET_PRIVATE(self);
+
+	if (priv->use_default) {
+		g_object_set(line, "color", &priv->default_color, NULL);
+		return;
+	}
 
 	conting_line_get_links(line, &comp0, &comp1);
 	assert(comp0 && comp1);
@@ -141,13 +151,21 @@ conting_visitor_color_visit_line(ContingVisitor *self, ContingLine *line)
 static void
 conting_visitor_color_visit_bus(ContingVisitor *self, ContingBus *bus)
 {
+	ContingVisitorColorPrivate *priv;
 	GdkColor color;
 	
 	ContingItemData *item_data;
 	gdouble voltage;
 
-	g_return_if_fail(self != NULL && CONTING_IS_VISITOR(self));
+	g_return_if_fail(self != NULL && CONTING_IS_VISITOR_COLOR(self));
 	g_return_if_fail(bus != NULL && CONTING_IS_BUS(bus));
+
+	priv = CONTING_VISITOR_COLOR_GET_PRIVATE(self);
+
+	if (priv->use_default) {
+		g_object_set(bus, "color", &priv->default_color, NULL);
+		return;
+	}
 
 	item_data = conting_drawing_get_item_data(CONTING_DRAWING(bus));
 
@@ -163,12 +181,23 @@ static void
 conting_visitor_color_visit_trans2(ContingVisitor *self,
         ContingTrans2 *trans2)
 {
+	ContingVisitorColorPrivate *priv;
 	ContingBus *bus0, *bus1;
 
 	GdkColor color;
 
 	ContingItemData *item_data;
 	gdouble voltage;
+
+	g_return_if_fail(self != NULL && CONTING_IS_VISITOR_COLOR(self));
+
+	priv = CONTING_VISITOR_COLOR_GET_PRIVATE(self);
+
+	if (priv->use_default) {
+		g_object_set(trans2, "color0", &priv->default_color, NULL);
+		g_object_set(trans2, "color1", &priv->default_color, NULL);
+		return;
+	}
 
 	conting_trans2_get_buses(trans2, &bus0, &bus1);
 
@@ -189,12 +218,25 @@ static void
 conting_visitor_color_visit_trans3(ContingVisitor *self,
         ContingTrans3 *trans3)
 {
+	ContingVisitorColorPrivate *priv;
 	ContingBus *bus0, *bus1, *bus2;
 
 	GdkColor color;
 
 	ContingItemData *item_data;
 	gdouble voltage;
+	
+	g_return_if_fail(self != NULL && CONTING_IS_VISITOR_COLOR(self));
+
+	priv = CONTING_VISITOR_COLOR_GET_PRIVATE(self);
+
+	if (priv->use_default) {
+		g_object_set(trans3, "color0", &priv->default_color, NULL);
+		g_object_set(trans3, "color1", &priv->default_color, NULL);
+		g_object_set(trans3, "color2", &priv->default_color, NULL);
+		return;
+	}
+
 
 	conting_trans3_get_buses(trans3, &bus0, &bus1, &bus2);
 	g_print("bus0 = %p %s\n", bus0, CONTING_IS_BUS(bus0) ? "YES" : "NO");

@@ -95,6 +95,33 @@ edit_notify(ContingDrawing *drawing, ContingDrawingEvent *event,
 
 /* PRIVATE METHOD */
 static void
+conting_one_line_connect_edit(ContingOneLine *self, ContingDrawing *drawing)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+	
+	g_signal_handlers_disconnect_by_func(drawing, create_motion, NULL);
+	g_signal_handlers_disconnect_by_func(drawing, create_button, NULL);
+	g_signal_handlers_disconnect_by_func(drawing, create_key, NULL);
+    g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
+            0, 0, NULL, NULL, NULL);
+
+	g_signal_connect(G_OBJECT(drawing), "motion-event",
+			G_CALLBACK(edit_motion), NULL);
+	g_signal_connect(G_OBJECT(drawing), "button-event",
+			G_CALLBACK(edit_button), NULL);
+	g_signal_connect(G_OBJECT(drawing), "key-event",
+			G_CALLBACK(edit_key), NULL);
+	g_signal_connect(G_OBJECT(drawing), "notify-event",
+			G_CALLBACK(edit_notify), NULL);
+}
+
+/* PRIVATE METHOD */
+static void
 conting_one_line_place(ContingOneLine *self, ContingDrawing *drawing)
 {
 	ContingOneLinePrivate *priv;
@@ -108,24 +135,11 @@ conting_one_line_place(ContingOneLine *self, ContingDrawing *drawing)
 			|| priv->placing_drawing == NULL);
 	assert(conting_drawing_is_placed(drawing));
 	
-	g_signal_handlers_disconnect_by_func(drawing, create_motion, NULL);
-	g_signal_handlers_disconnect_by_func(drawing, create_button, NULL);
-	g_signal_handlers_disconnect_by_func(drawing, create_key, NULL);
-    g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
-            0, 0, NULL, NULL, NULL);
-
 	priv->drawings = g_slist_append(priv->drawings, drawing);
     priv->state = CONTING_ONE_LINE_NONE;
     priv->placing_drawing = NULL;
 
-	g_signal_connect(G_OBJECT(drawing), "motion-event",
-			G_CALLBACK(edit_motion), NULL);
-	g_signal_connect(G_OBJECT(drawing), "button-event",
-			G_CALLBACK(edit_button), NULL);
-	g_signal_connect(G_OBJECT(drawing), "key-event",
-			G_CALLBACK(edit_key), NULL);
-	g_signal_connect(G_OBJECT(drawing), "notify-event",
-			G_CALLBACK(edit_notify), NULL);
+	conting_one_line_connect_edit(self, drawing);
 }
 
 
@@ -342,17 +356,25 @@ conting_one_line_set_edit(ContingOneLine *self)
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+	/* Initialize visitors */
     color = g_object_new(CONTING_TYPE_VISITOR_COLOR, NULL);
 
     for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+		/* connect edit signals */
+		conting_one_line_connect_edit(self, n->data);
+
+		/* Apply the visitors */
         conting_drawing_accept(n->data, color);
     }
-
+	/* Destroy visitors */
     g_object_unref(color);
+
+	/* Setup background color */
 	gdk_color_parse("white", &priv->bgcolor);
 
     
     priv->mode = CONTING_ONE_LINE_EDIT;
+	priv->state = CONTING_ONE_LINE_NONE;
     conting_one_line_update(self, NULL);
 }
 
@@ -393,6 +415,9 @@ conting_one_line_set_view(ContingOneLine *self)
 	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 		ContingDrawing *drawing = n->data;
 		
+		/* TODO: change it for
+		 * conting_one_line_connect_view(), similar to
+		 * conting_one_line_connect_edit() */
     	g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
 				0, 0, NULL, NULL, NULL);
 
@@ -764,10 +789,11 @@ conting_one_line_open(ContingOneLine *self, const char *filename)
         
         conting_serializable_read(CONTING_SERIALIZABLE(drawing),
                 drawing_node, id_drawing);
+
+		/*
         conting_one_line_place(self, drawing);
-        /*
-        priv->drawings = g_slist_append(priv->drawings, drawing);
         */
+        priv->drawings = g_slist_append(priv->drawings, drawing);
 
         xmlFree(id);
     }
