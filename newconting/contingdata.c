@@ -9,11 +9,14 @@
 #include <string.h>
 #include <assert.h>
 
+/* PARENT CLASS POINTER */
 static gpointer parent_class = NULL;
 
+/* CLASS PRIVATE DATA ACCESSOR MACRO */
 #define CONTING_DATA_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), \
         CONTING_TYPE_DATA, ContingDataPrivate))
 
+/* CLASS PRIVATE DATA TYPE AND STRUCTURE */
 typedef struct ContingDataPrivate_ ContingDataPrivate;
 struct ContingDataPrivate_ {
 	GList *item_data;
@@ -24,6 +27,7 @@ struct ContingDataPrivate_ {
 	gboolean loaded;
 };
 
+/* PUBLIC METHOD */
 GList *
 conting_data_get_unassoc(ContingData *self)
 {
@@ -44,6 +48,7 @@ conting_data_get_unassoc(ContingData *self)
 	return result;
 }
 
+/* PRIVATE METHOD */
 static ContingItemData *
 conting_data_get_branch(ContingData *self,
 		ContingItemData *bus0, ContingItemData *bus1)
@@ -107,6 +112,8 @@ conting_data_is_bus_pred(ContingDrawing *drawing, gpointer user_data)
 	return *bus == NULL;
 }
 
+/* TODO: change everything in this method. It's all trash */
+/* PUBLIC METHOD */
 ContingItemData *
 conting_data_get(ContingData *self, ContingDrawing *drawing)
 {
@@ -162,6 +169,7 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 	return g_hash_table_lookup(priv->drawing_data, drawing);
 }
 
+/* PUBLIC METHOD */
 void
 conting_data_assoc(ContingData *self,
 		ContingDrawing *drawing, ContingItemData *data)
@@ -189,6 +197,7 @@ conting_data_assoc(ContingData *self,
 			G_CALLBACK(conting_data_unassoc), self);
 }
 
+/* PUBLIC METHOD */
 void
 conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
 {
