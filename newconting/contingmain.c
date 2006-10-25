@@ -94,34 +94,48 @@ show_ok_dialog(void)
     gtk_widget_show(dialog);
 }
 
-
-static void
-check_clicked(GtkMenuItem *menuitem,
-		gpointer user_data)
-{
+static gboolean
+check_data(GList **errors) {
 	ContingData *data;
-	GList *errors;
     gboolean ok;
 
 	g_object_get(oneline,
 			"data", &data,
 			NULL);
 
-	errors = NULL;
-	ok = conting_data_check(data, &errors);
+	ok = conting_data_check(data, errors);
 
-    if (ok) {
+	return ok;
+}
+
+static void
+mode_menu_activate(GtkMenuItem *menuitem,
+		gpointer user_data)
+{
+	GList *errors = NULL;
+	
+	if (check_data(&errors)) {
+		conting_one_line_set_mode(oneline, (ContingOneLineMode) user_data);
+	} else {
+        show_error_dialog(errors);
+		g_list_foreach(errors, (GFunc) conting_error_free, NULL);
+		g_list_free(errors);
+	}
+}
+
+static void
+check_clicked(GtkMenuItem *menuitem,
+		gpointer user_data)
+{
+	GList *errors = NULL;
+
+    if (check_data(&errors)) {
         show_ok_dialog();
     } else {
         show_error_dialog(errors);
+		g_list_foreach(errors, (GFunc) conting_error_free, NULL);
+		g_list_free(errors);
     }
-
-	g_list_foreach(errors, (GFunc) conting_error_free, NULL);
-	g_list_free(errors);
-
-	if (ok) {
-		conting_one_line_set_mode(oneline, CONTING_ONE_LINE_VIEW);
-	}
 }
 
 static void
@@ -336,6 +350,8 @@ main(int argc, char *argv[]) {
     GtkListStore *list_store;
     GtkTreeIter iter;
 
+	GSList *group;
+
     gtk_init(&argc, &argv);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -380,6 +396,28 @@ main(int argc, char *argv[]) {
     g_signal_connect(G_OBJECT(submenu), "activate",
             G_CALLBACK(close_menu_activate), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
+	/* */
+	menu = gtk_menu_item_new_with_mnemonic("_Visualizar");
+	gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu);
+	submenu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
+	menu = submenu;
+
+	group = NULL;
+
+	submenu = gtk_radio_menu_item_new_with_mnemonic(group, "_Edit");
+	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(submenu));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
+    g_signal_connect(G_OBJECT(submenu), "activate",
+            G_CALLBACK(mode_menu_activate), CONTING_ONE_LINE_EDIT);
+
+	submenu = gtk_radio_menu_item_new_with_mnemonic(group, "_View");
+	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(submenu));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
+    g_signal_connect(G_OBJECT(submenu), "activate",
+            G_CALLBACK(mode_menu_activate), CONTING_ONE_LINE_VIEW);
+	/* */
+	 
     gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
     hbox = gtk_hbox_new(FALSE, 0);
