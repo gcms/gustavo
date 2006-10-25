@@ -2,6 +2,8 @@
 #include "contingvisitorcolor.h"
 #include <assert.h>
 
+static gpointer parent_class = NULL;
+
 #define CONTING_VISITOR_COLOR_GET_PRIVATE(o) \
    (G_TYPE_INSTANCE_GET_PRIVATE((o), CONTING_TYPE_VISITOR_COLOR, \
                                 ContingVisitorColorPrivate))
@@ -304,6 +306,8 @@ conting_visitor_color_finalize(GObject *self)
     g_list_free(priv->color_ranges);
 
     priv->color_ranges = NULL;
+
+	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
 static void
@@ -330,6 +334,8 @@ conting_visitor_color_class_init(gpointer g_class, gpointer class_data)
     gobject_class->finalize = conting_visitor_color_finalize;
 
     g_type_class_add_private(g_class, sizeof(ContingVisitorColorPrivate));
+
+	parent_class = g_type_class_peek_parent(g_class);
 }
 
 GType
