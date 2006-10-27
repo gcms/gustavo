@@ -5,6 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="D:/downloads/eclipse/plugins/org.codehaus.groovy.eclipse_1.0.0.20060905/lib/commons-io-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/downloads/eclipse/plugins/org.codehaus.groovy.eclipse_1.0.0.20060905/lib/commons-lang-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/downloads/eclipse/plugins/org.codehaus.groovy.eclipse_1.0.0.20060905/lib/groovy-all-1.0-JSR-06.jar"/>
-	<classpathentry exported="true" kind="lib" path="bin-groovy"/>
+	<classpathentry kind="lib" path="bin-groovy"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
