@@ -31,11 +31,6 @@ public class ClientMain {
 	Set<ObjectReference> refs = doOperation;
 
 	System.out.println(refs);
-	for (ObjectReference r : refs) {
-	    Class c = (Class) (new RemoteObject(r).doOperation("getClass",
-		    new Object[] {}));
 
-	    System.out.println(c.getName());
-	}
     }
 }
