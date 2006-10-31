@@ -4,7 +4,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "contingdrawing.h"
 
 #define CONTING_TYPE_DRAWING_OPERATION  (conting_drawing_operation_get_type())
 #define CONTING_DRAWING_OPERATION(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), \
@@ -21,6 +20,8 @@
 
 typedef struct ContingDrawingOperation_ ContingDrawingOperation;
 typedef struct ContingDrawingOperationClass_ ContingDrawingOperationClass;
+
+#include "contingdrawing.h"
 
 struct ContingDrawingOperationClass_ {
 	GTypeInterface parent;
@@ -40,6 +41,10 @@ GType conting_drawing_operation_label_get_type(void);
 
 typedef const gchar *(*ContingLabelFunc)(ContingDrawingOperation *self,
 		ContingDrawing *drawing, gpointer user_data);
+
+ContingDrawingOperation *
+conting_drawing_operation_label_new_with_func(ContingLabelFunc func,
+        gpointer user_data);
 
 
 #define CONTING_TYPE_DRAWING_OPERATION_DEFAULT (conting_drawing_operation_default_get_type())

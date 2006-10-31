@@ -49,8 +49,8 @@ conting_drawing_operation_label_draw(ContingDrawingOperation *self,
 {
 	ContingDrawingOperationLabel *opr;
 	cairo_t *cr;
-	ContingComponent *comp;
-	ArtPoint pw0, pw1;
+    ArtDRect bounds;
+	ArtPoint pw0;
 	const gchar *name;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DRAWING_OPERATION(self));
@@ -66,12 +66,10 @@ conting_drawing_operation_label_draw(ContingDrawingOperation *self,
 	if (name == NULL)
 		return;
 
-	comp = CONTING_COMPONENT(drawing);
-	conting_drawing_i2w(drawing, &pw0, &comp->p0);
-	conting_drawing_i2w(drawing, &pw1, &comp->p1);
+    conting_drawing_get_bounds(drawing, &bounds);
 
-	pw0.x = MIN(pw0.x, pw1.x);
-	pw0.y = MIN(pw0.y, pw1.y);
+	pw0.x = MIN(bounds.x0, bounds.x1);
+	pw0.y = MIN(bounds.y0, bounds.y1);
 
 	pw0.y -= 5;
 
@@ -235,4 +233,20 @@ conting_drawing_operation_label_get_type(void)
 	}
 
 	return type;
+}
+ContingDrawingOperation *
+conting_drawing_operation_label_new_with_func(ContingLabelFunc func,
+        gpointer user_data)
+{
+    GObject *opr;
+
+    opr = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL, NULL);
+
+    g_object_set(opr,
+            "label-func", func,
+            "user-data", user_data,
+            NULL);
+
+    return CONTING_DRAWING_OPERATION(opr);
+
 }

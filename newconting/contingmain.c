@@ -1,7 +1,10 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
+
 #include "contingoneline.h"
 #include "contingbus.h"
 #include "contingline.h"
@@ -12,6 +15,165 @@
 
 static ContingOneLine *oneline;
 
+
+/* SIGNAL CALLBACKS */
+static void
+toolbutton_clicked(GtkToolButton *button,
+                   gpointer user_data);
+static void
+check_clicked(GtkToolButton *button,
+                   gpointer user_data);
+
+static void
+show_name_clicked(GtkToolButton *button, gpointer user_data);
+
+static void
+show_number_clicked(GtkToolButton *button, gpointer user_data);
+
+
+/**
+ * Creates the toolbar for editing mode.
+ * Includes:
+ * - create components
+ * - check data
+ */
+/* PRIVATE FUNCTION */
+static GtkWidget *
+conting_main_get_edit_toolbar(void)
+{
+    static GtkWidget *toolbar = NULL;
+    GtkToolItem *toolbutton;
+
+    if (toolbar != NULL)
+        return toolbar;
+
+    toolbar = gtk_toolbar_new();
+    
+    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar),
+            GTK_TOOLBAR_ICONS);
+
+    
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/bus.png"), "Bus");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_BUS);
+    
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/line.png"), "Line");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_LINE);
+    
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/trans2.png"), "Trans2");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_TRANS2);
+    
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/trans3.png"), "Trans3");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_TRANS3);
+    
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/gen.png"), "Generator");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_GEN);
+    
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/load.png"), "Load");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_LOAD);
+
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
+            gtk_separator_tool_item_new(), -1);
+    
+	toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_APPLY);
+	gtk_tool_button_set_label(GTK_TOOL_BUTTON(toolbutton), "Check");
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(check_clicked), NULL);
+
+    g_object_ref(toolbar);
+    return toolbar;
+}
+
+/**
+ * Creates the toolbar for viewing mode.
+ *
+ * Includes:
+ * - show labels/numbers
+ */
+/* PRIVATE FUNCTION */
+static GtkWidget *
+conting_main_get_view_toolbar(void)
+{
+    static GtkWidget *toolbar = NULL;
+    GtkToolItem *toolbutton;
+
+    if (toolbar != NULL)
+        return toolbar;
+
+    toolbar = gtk_toolbar_new();
+    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar),
+            GTK_TOOLBAR_ICONS);
+
+    
+	toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_BOLD);
+    gtk_tool_button_set_label(GTK_TOOL_BUTTON(toolbutton), "Show names");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(show_name_clicked), NULL);
+    
+	toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_BOLD);
+    gtk_tool_button_set_label(GTK_TOOL_BUTTON(toolbutton), "Show numbers");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(show_number_clicked), NULL);
+
+    g_object_ref(toolbar);
+    return toolbar;
+}
+
+/* SIGNAL CALLBACK */
+static void
+conting_main_change_mode(ContingOneLine *ol, ContingOneLineMode mode,
+        gpointer user_data)
+{
+    GtkWidget *handle = user_data;
+    GtkWidget *old_child, *child;
+
+
+    old_child = GTK_BIN(handle)->child;
+
+    switch (mode) {
+        case CONTING_ONE_LINE_VIEW:
+            child = conting_main_get_view_toolbar();
+            break;
+        case CONTING_ONE_LINE_EDIT:
+            child = conting_main_get_edit_toolbar();
+            break;
+        default:
+            return;
+    }
+
+    gtk_widget_hide(old_child);
+    gtk_container_remove(GTK_CONTAINER(handle), old_child);
+
+    gtk_container_add(GTK_CONTAINER(handle), child);
+    gtk_widget_show(child);
+    gtk_widget_show_all(handle);
+}
+
+
+/**
+ * Creates a TreeView containing the list of errors specified in errors.
+ */
+/* PRIVATE FUNCTION */
 static GtkWidget *
 get_error_list(GList *errors)
 {
@@ -58,6 +220,7 @@ get_error_list(GList *errors)
     return tree;
 }
 
+/* PRIVATE FUNCTION */
 static void
 show_error_dialog(GList *errors)
 {
@@ -79,6 +242,7 @@ show_error_dialog(GList *errors)
     gtk_widget_show_all(dialog);
 }
 
+/* PRIVATE FUNCTION */
 static void
 show_ok_dialog(void)
 {
@@ -94,6 +258,10 @@ show_ok_dialog(void)
     gtk_widget_show(dialog);
 }
 
+/**
+ * Checks the data associations of the oneline.
+ */
+/* PRIVATE FUNCTION */
 static gboolean
 check_data(GList **errors) {
 	ContingData *data;
@@ -108,23 +276,35 @@ check_data(GList **errors) {
 	return ok;
 }
 
+/* SIGNAL CALLBACK */
 static void
 mode_menu_activate(GtkMenuItem *menuitem,
 		gpointer user_data)
 {
 	GList *errors = NULL;
-	
-	if (check_data(&errors)) {
-		conting_one_line_set_mode(oneline, (ContingOneLineMode) user_data);
-	} else {
-        show_error_dialog(errors);
-		g_list_foreach(errors, (GFunc) conting_error_free, NULL);
-		g_list_free(errors);
-	}
+    ContingOneLineMode mode = (ContingOneLineMode) user_data;
+
+    g_print("mode = %d\n", mode);
+
+    /* TODO: instead of calling check_data in case of CONTING_ONE_LINE_VIEW
+     * and showing a list of errors, just check if the mode could be
+     * changed using conting_one_line_set_mode() return value and display
+     * an error message if not possible */
+    if (mode == CONTING_ONE_LINE_VIEW) {
+        if (!check_data(&errors)) {
+            show_error_dialog(errors);
+        	g_list_foreach(errors, (GFunc) conting_error_free, NULL);
+		    g_list_free(errors);
+            return;
+      	}
+    }
+
+    conting_one_line_set_mode(oneline, mode);
 }
 
+/* SIGNAL CALLBACK */
 static void
-check_clicked(GtkMenuItem *menuitem,
+check_clicked(GtkToolButton *menuitem,
 		gpointer user_data)
 {
 	GList *errors = NULL;
@@ -138,6 +318,97 @@ check_clicked(GtkMenuItem *menuitem,
     }
 }
 
+/**
+ * Returns the string to be used as a label to drawing.
+ */
+/* CALLBACK FUNCTION */
+static const gchar *
+name_label(ContingDrawingOperation *self, ContingDrawing *drawing,
+        gpointer user_data)
+{
+    ContingData *data;
+    ContingItemData *item_data;
+    const gchar *name;
+
+    assert(oneline == conting_drawing_get_one_line(drawing));
+
+    g_object_get(oneline, "data", &data, NULL);
+
+    item_data = conting_data_get(data, drawing);
+
+    conting_item_data_get_attr(item_data, "name", &name, NULL);
+
+    return name;
+}
+
+/* SIGNAL CALLBACK */
+static void
+show_name_clicked(GtkToolButton *button, gpointer user_data)
+{
+    static gboolean showing = FALSE;
+    static ContingDrawingOperation *opr = NULL;
+
+    if (opr == NULL) {
+        opr = conting_drawing_operation_label_new_with_func(name_label, NULL);
+    }
+
+    if (showing) {
+        showing = FALSE;
+        conting_one_line_remove_operation(oneline, opr);
+    } else {
+        showing = TRUE;
+        conting_one_line_add_operation(oneline, opr);
+    }
+}
+/* CALLBACK FUNCTION */
+static const gchar *
+number_label(ContingDrawingOperation *self, ContingDrawing *drawing,
+        gpointer user_data)
+{
+    ContingData *data;
+    ContingItemData *item_data;
+    static gchar name[256];
+    gint number = 0;
+
+    assert(oneline == conting_drawing_get_one_line(drawing));
+
+    g_object_get(oneline, "data", &data, NULL);
+
+    item_data = conting_data_get(data, drawing);
+
+    if (item_data == NULL)
+        return "";
+
+    conting_item_data_get_attr(item_data, "number", &number, NULL);
+    if (number == 0)
+        return "";
+
+    sprintf(name, "%d", number);
+
+    return name;
+}
+
+/* SIGNAL CALLBACK */
+static void
+show_number_clicked(GtkToolButton *button, gpointer user_data)
+{
+    static gboolean showing = FALSE;
+    static ContingDrawingOperation *opr = NULL;
+
+    if (opr == NULL) {
+        opr = conting_drawing_operation_label_new_with_func(number_label, NULL);
+    }
+
+    if (showing) {
+        showing = FALSE;
+        conting_one_line_remove_operation(oneline, opr);
+    } else {
+        showing = TRUE;
+        conting_one_line_add_operation(oneline, opr);
+    }
+}
+
+/* SIGNAL CALLBACK */
 static void
 save_menu_activate(GtkMenuItem *menuitem,
                    gpointer user_data)  
@@ -166,6 +437,7 @@ save_menu_activate(GtkMenuItem *menuitem,
     gtk_widget_destroy(save);
 }
 
+/* SIGNAL CALLBACK */
 static void
 open_menu_activate(GtkMenuItem *menuitem,
                    gpointer user_data)  
@@ -199,6 +471,7 @@ open_menu_activate(GtkMenuItem *menuitem,
     gtk_widget_destroy(open);
 }
 
+/*SIGNAL CALLBACK */
 static void
 load_menu_activate(GtkMenuItem *menuitem,
                    gpointer user_data)  
@@ -226,6 +499,7 @@ load_menu_activate(GtkMenuItem *menuitem,
     gtk_widget_destroy(open);
 }
 
+/* SIGNAL CALLBACK */
 static void
 close_menu_activate(GtkMenuItem *menuitem,
                     gpointer user_data)
@@ -234,6 +508,10 @@ close_menu_activate(GtkMenuItem *menuitem,
 }
 
 
+/**
+ * Creates components.
+ */
+/* SIGNAL CALLBACK */
 static void
 toolbutton_clicked(GtkToolButton *button,
                    gpointer user_data)
@@ -247,7 +525,12 @@ toolbutton_clicked(GtkToolButton *button,
 	conting_one_line_create(oneline, CONTING_DRAWING(object));
 }
 
-static void combo_box_changed(GtkComboBox *combo,
+/**
+ * Sets zoom.
+ */
+/* SIGNAL CALLBACK */
+static void
+combo_box_changed(GtkComboBox *combo,
                               gpointer user_data)
 {
 	gchar *text;
@@ -328,7 +611,13 @@ zoom_realize(GtkWidget *zoom,
 	gtk_widget_add_events(zoom, GDK_KEY_PRESS_MASK);
 }
 */
-static void darea_realize(GtkWidget *widget, gpointer user_data) {
+
+/**
+ * Set widget event mask.
+ */
+/* SIGNAL CALLBACK */
+static void
+darea_realize(GtkWidget *widget, gpointer user_data) {
     gtk_widget_add_events(widget, GDK_EXPOSURE_MASK
             | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK
             | GDK_POINTER_MOTION_MASK | GDK_KEY_PRESS_MASK
@@ -336,6 +625,8 @@ static void darea_realize(GtkWidget *widget, gpointer user_data) {
 }
              
 
+/* APPLICATION ENTRY POINT */
+/* MAIN FUNCTION */
 int
 main(int argc, char *argv[]) {
     GtkWidget *window, *swindow, *darea;
@@ -354,9 +645,12 @@ main(int argc, char *argv[]) {
 
     gtk_init(&argc, &argv);
 
+
+    oneline = CONTING_ONE_LINE(g_object_new(CONTING_TYPE_ONE_LINE, NULL));
+
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_size_request(GTK_WIDGET(window), 400, 400);
-    gtk_window_set_title(GTK_WINDOW(window), "Conting One-Line Designer");
+    gtk_window_set_title(GTK_WINDOW(window), "Conting One-Line");
     g_signal_connect(G_OBJECT(window), "delete-event",
             G_CALLBACK(gtk_widget_destroy), NULL);
     g_signal_connect(G_OBJECT(window), "destroy",
@@ -409,13 +703,13 @@ main(int argc, char *argv[]) {
 	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(submenu));
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
     g_signal_connect(G_OBJECT(submenu), "activate",
-            G_CALLBACK(mode_menu_activate), CONTING_ONE_LINE_EDIT);
+            G_CALLBACK(mode_menu_activate), (gpointer) CONTING_ONE_LINE_EDIT);
 
 	submenu = gtk_radio_menu_item_new_with_mnemonic(group, "_View");
 	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(submenu));
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
     g_signal_connect(G_OBJECT(submenu), "activate",
-            G_CALLBACK(mode_menu_activate), CONTING_ONE_LINE_VIEW);
+            G_CALLBACK(mode_menu_activate), (gpointer) CONTING_ONE_LINE_VIEW);
 	/* */
 	 
     gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
@@ -423,50 +717,13 @@ main(int argc, char *argv[]) {
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 
-    toolbar = gtk_toolbar_new();
-    gtk_toolbar_set_icon_size(GTK_TOOLBAR(toolbar),
-            GTK_ICON_SIZE_SMALL_TOOLBAR);
-    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar),
-            GTK_TOOLBAR_ICONS);
-	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/bus.png"), "Bus");
-    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
-    g_signal_connect(G_OBJECT(toolbutton), "clicked",
-            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_BUS);
-	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/line.png"), "Line");
-    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
-    g_signal_connect(G_OBJECT(toolbutton), "clicked",
-            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_LINE);
-	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/trans2.png"), "Trans2");
-    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
-    g_signal_connect(G_OBJECT(toolbutton), "clicked",
-            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_TRANS2);
-	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/trans3.png"), "Trans3");
-    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
-    g_signal_connect(G_OBJECT(toolbutton), "clicked",
-            G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_TRANS3);
-	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/gen.png"), "Generator");
-	g_signal_connect(G_OBJECT(toolbutton), "clicked",
-			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_GEN);
-    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
-	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/load.png"), "Load");
-	g_signal_connect(G_OBJECT(toolbutton), "clicked",
-			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_LOAD);
-    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
-	toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_APPLY);
-	gtk_tool_button_set_label(GTK_TOOL_BUTTON(toolbutton), "Check");
-	g_signal_connect(G_OBJECT(toolbutton), "clicked",
-			G_CALLBACK(check_clicked), NULL);
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    toolbar = conting_main_get_edit_toolbar();
 
     handle = gtk_handle_box_new();
     gtk_container_add(GTK_CONTAINER(handle), toolbar);
     gtk_box_pack_start(GTK_BOX(hbox), handle, TRUE, TRUE, 0);
+    g_signal_connect(G_OBJECT(oneline), "change-mode",
+            G_CALLBACK(conting_main_change_mode), handle);
 
     list_store = gtk_list_store_new(1, G_TYPE_STRING);
     gtk_list_store_append(list_store, &iter);
@@ -506,10 +763,8 @@ main(int argc, char *argv[]) {
     gtk_widget_set_size_request(GTK_WIDGET(darea), 1000, 1000);
     g_signal_connect(G_OBJECT(darea), "realize",
             G_CALLBACK(darea_realize), NULL);
-
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(swindow), darea);
 
-    oneline = CONTING_ONE_LINE(g_object_new(CONTING_TYPE_ONE_LINE, NULL));
     conting_one_line_set_widget(oneline, darea);
 
 	g_signal_connect(G_OBJECT(zoom), "changed",

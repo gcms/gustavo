@@ -70,8 +70,9 @@ conting_data_get_branch(ContingData *self,
 	conting_item_data_get_attr(bus1,
 			"number", &n1,
 			NULL);
-
+/*
 	g_print("find link from \"%d\" to \"%d\"\n", n0, n1);
+    */
 
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
 		ContingItemData *item = n->data;
@@ -85,15 +86,20 @@ conting_data_get_branch(ContingData *self,
 				"z bus number", &z,
 				NULL);
 
+        /*
 		g_print("branch between \"%d\" and \"%d\"\n", tap, z);
+        */
 
 		if ((n0 == tap && n1 == z) || (n0 == z && n1 == tap)) {
+            /*
 			g_print("FOUNd\n");
+            */
 			return item;
 		}
 	}
-
+    /*
 	g_print("NULL\n");
+    */
 
 	return NULL;
 }
