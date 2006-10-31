@@ -220,3 +220,11 @@ uma interface
   ContingDrawingOperation.
 
 - Design information to display and actions to do on view mode.
+
+27/10/2006
+- Deselect drawings before going into view mode
+
+30/10/2006
+- Change ContingDrawingOperationLabel so that you can set relative
+  places to draw the label
+- Add a color attribute to ContingDrawingOperationLabel

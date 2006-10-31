@@ -18,6 +18,9 @@
 #include <assert.h>
 #include <math.h>
 
+static gint change_mode_id = 0;
+static GType param_types[] = { G_TYPE_INT };
+
 enum {
     CONTING_ONE_LINE_PROP_0,
     CONTING_ONE_LINE_PROP_PPU,
@@ -356,6 +359,8 @@ conting_one_line_set_edit(ContingOneLine *self)
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+    conting_one_line_ungroup_all(self);
+
 	/* Initialize visitors */
     color = g_object_new(CONTING_TYPE_VISITOR_COLOR, NULL);
 
@@ -395,6 +400,12 @@ conting_one_line_set_view(ContingOneLine *self)
 
 	if (priv->mode == CONTING_ONE_LINE_VIEW)
 		return;
+
+    conting_one_line_ungroup_all(self);
+    for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
+        conting_drawing_set_selected(CONTING_DRAWING(n->data), FALSE);
+    }
+
 
     /* TODO: load these from settings */
 	color = g_object_new(CONTING_TYPE_VISITOR_COLOR, NULL);
@@ -439,30 +450,36 @@ gboolean
 conting_one_line_set_mode(ContingOneLine *self, ContingOneLineMode mode)
 {
 	ContingOneLinePrivate *priv;
+    ContingOneLineMode prev_mode;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), FALSE);
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+    prev_mode = priv->mode;
+
 	switch (mode) {
 		case CONTING_ONE_LINE_EDIT:
             conting_one_line_set_edit(self);
-            return TRUE;
 			break;
 		case CONTING_ONE_LINE_VIEW:
 			if (!conting_data_check(priv->file_data, NULL)) {
 				return FALSE;
 			} else {
 				conting_one_line_set_view(self);
-				return TRUE;
 			}
 			break;
 		default:
 			break;
 	}
 
-
 	priv->mode = mode;
+    
+    g_print("OMG\n\n");
+    if (prev_mode != mode) {
+        g_signal_emit_by_name(self, "change-mode", mode);
+    }
+
 	return TRUE;
 }
 
@@ -1729,6 +1746,9 @@ conting_one_line_create(ContingOneLine *self,
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
+    if (priv->mode != CONTING_ONE_LINE_EDIT)
+        return;
+
     switch (priv->state) {
         case CONTING_ONE_LINE_NONE:
             priv->placing_drawing = drawing;
@@ -1762,7 +1782,68 @@ conting_one_line_create(ContingOneLine *self,
 			G_CALLBACK(create_key), NULL);
 }
 
+/* PRIVATE METHOD */
+static void
+conting_one_line_operation_update(ContingOneLine *self,
+        ContingDrawingOperation *opr)
+{
+    ContingOneLinePrivate *priv;
+    GSList *n;
+    ArtDRect total_bounds, bounds;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    if (!priv->drawings)
+        return;
+
+    conting_drawing_operation_get_bounds(opr, priv->drawings->data, &bounds);
+    total_bounds = bounds;
+
+    for (n = priv->drawings->next; n != NULL; n = g_slist_next(n)) {
+        ContingDrawing *drawing = n->data;
+
+        conting_drawing_operation_get_bounds(opr, drawing, &bounds);
+        conting_util_union_bounds(&total_bounds, &bounds, &total_bounds);
+    }
+
+    conting_one_line_update(self, &total_bounds);
+}
+
 /* PUBLIC METHOD */
+void
+conting_one_line_add_operation(ContingOneLine *self,
+        ContingDrawingOperation *opr)
+{
+    ContingOneLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    priv->operations = g_list_append(priv->operations, opr);
+
+    conting_one_line_operation_update(self, opr);
+}
+
+/* PUBLIC METHOD */
+void
+conting_one_line_remove_operation(ContingOneLine *self,
+        ContingDrawingOperation *opr)
+{
+    ContingOneLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+    priv->operations = g_list_remove(priv->operations, opr);
+
+    conting_one_line_operation_update(self, opr);
+}
+
+/* PUBLIC METDHO IMPLEMENTATION */
 static void
 conting_one_line_finalize(GObject *self)
 {
@@ -1840,6 +1921,18 @@ conting_one_line_class_init(gpointer g_class,
                                 CONTING_TYPE_DATA,
                                 G_PARAM_READABLE | G_PARAM_WRITABLE));
 
+    change_mode_id = g_signal_newv(
+            "change-mode",
+            G_TYPE_FROM_CLASS(g_class),
+            G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            NULL, /* class closure */
+            NULL, /* accumulator */
+            NULL, /* accu_data */
+            g_cclosure_marshal_VOID__INT,
+            G_TYPE_NONE, /* return_type */
+            1,
+            param_types);
+
     g_type_class_add_private(g_class, sizeof(ContingOneLinePrivate));
 
 }
@@ -1877,13 +1970,15 @@ conting_one_line_instance_init(GTypeInstance *self,
 
 		operation = g_object_new(CONTING_TYPE_DRAWING_OPERATION_DEFAULT, NULL);
 		priv->operations = g_list_append(priv->operations, operation);
-		
+
+/*        
         operation = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL, NULL);
         g_object_set(operation,
                 "label-func", conting_drawing_return_attr,
                 "user-data", "name",
                 NULL);
         priv->operations = g_list_append(priv->operations, operation);
+        */
     }
 
 	gdk_color_parse("white", &priv->bgcolor);
