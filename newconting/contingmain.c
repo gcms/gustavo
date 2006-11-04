@@ -328,15 +328,19 @@ name_label(ContingDrawingOperation *self, ContingDrawing *drawing,
 {
     ContingData *data;
     ContingItemData *item_data;
-    const gchar *name;
+    const gchar *name = NULL;
 
     assert(oneline == conting_drawing_get_one_line(drawing));
 
     g_object_get(oneline, "data", &data, NULL);
 
     item_data = conting_data_get(data, drawing);
+	if (item_data == NULL)
+		return "";
 
     conting_item_data_get_attr(item_data, "name", &name, NULL);
+	if (name == NULL)
+		return "";
 
     return name;
 }
@@ -349,7 +353,11 @@ show_name_clicked(GtkToolButton *button, gpointer user_data)
     static ContingDrawingOperation *opr = NULL;
 
     if (opr == NULL) {
-        opr = conting_drawing_operation_label_new_with_func(name_label, NULL);
+        opr = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL,
+				"label-func", name_label,
+				"place", CONTING_DRAWING_OPERATION_LABEL_BOTTOM,
+				NULL);
+		/* conting_drawing_operation_label_new_with_func(name_label, NULL);*/
     }
 
     if (showing) {
@@ -396,7 +404,13 @@ show_number_clicked(GtkToolButton *button, gpointer user_data)
     static ContingDrawingOperation *opr = NULL;
 
     if (opr == NULL) {
+		/*
         opr = conting_drawing_operation_label_new_with_func(number_label, NULL);
+		*/
+        opr = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL,
+				"label-func", number_label,
+				"place", CONTING_DRAWING_OPERATION_LABEL_TOP,
+				NULL);
     }
 
     if (showing) {
