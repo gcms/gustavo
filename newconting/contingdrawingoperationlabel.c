@@ -10,6 +10,7 @@ enum {
 	CONTING_DRAWING_OPERATION_LABEL_PROP_TEXT,
 	CONTING_DRAWING_OPERATION_LABEL_PROP_ATTR,
 	CONTING_DRAWING_OPERATION_LABEL_PROP_USER_DATA,
+	CONTING_DRAWING_OPERATION_LABEL_PROP_PLACE,
 };
 
 struct ContingDrawingOperationLabel_ {
@@ -18,6 +19,8 @@ struct ContingDrawingOperationLabel_ {
 	ContingLabelFunc label_func;
 	gpointer user_data;
 	const gchar *text;
+
+	ContingDrawingOperationLabelPlace place;
 };
 
 struct ContingDrawingOperationLabelClass_
@@ -76,11 +79,50 @@ conting_drawing_operation_label_draw(ContingDrawingOperation *self,
 	cr = conting_drawing_get_cairo_absolute(drawing);
 
 	cairo_set_font_size(cr, 8);
-	cairo_move_to(cr, pw0.x, pw0.y);
 	cairo_select_font_face(cr, "Arial",
 			CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_source_rgb(cr, 1, 0, 0);
-	cairo_show_text(cr, name);
+	{
+		PangoLayout *layout;
+		PangoFontDescription *font;
+		PangoRectangle  logical_rect;
+
+		layout = pango_cairo_create_layout(cr);
+
+		font = pango_font_description_new();
+		pango_font_description_set_size(font, 6 * PANGO_SCALE);
+		g_print("size = %d\n", pango_font_description_get_size(font));
+		pango_font_description_set_family_static(font, "Arial");
+		pango_font_description_set_style(font, PANGO_STYLE_NORMAL);
+
+		pango_layout_set_font_description(layout, font);
+		pango_layout_set_text(layout, name, strlen(name));
+
+		pango_layout_get_pixel_extents(layout, NULL, &logical_rect);
+
+		switch (opr->place) {
+			case CONTING_DRAWING_OPERATION_LABEL_TOP:
+				pw0.x = MIN(bounds.x0, bounds.x1)
+					+ fabs(bounds.x1 - bounds.x0) / 2.0
+					- logical_rect.width / 2.0;
+				pw0.y = MIN(bounds.y0, bounds.y1) - logical_rect.height;
+				break;
+			case CONTING_DRAWING_OPERATION_LABEL_BOTTOM:
+				pw0.x = MIN(bounds.x0, bounds.x1)
+					+ fabs(bounds.x1 - bounds.x0) / 2.0
+					- logical_rect.width / 2.0;
+				pw0.y = MAX(bounds.y0, bounds.y1);
+				break;
+		}
+		cairo_move_to(cr, pw0.x, pw0.y);
+
+		pango_cairo_update_layout(cr, layout);
+		pango_cairo_show_layout(cr, layout);
+
+	 	g_object_unref(layout);
+
+/*	cairo_show_text(cr, name); */
+	}
 	cairo_stroke(cr);
 
 	cairo_destroy(cr);
@@ -108,6 +150,9 @@ conting_drawing_operation_label_get_property(GObject *self,
         case CONTING_DRAWING_OPERATION_LABEL_PROP_TEXT:
             g_value_set_string(value, opr->text);
             break;
+		case CONTING_DRAWING_OPERATION_LABEL_PROP_PLACE:
+			g_value_set_int(value, opr->place);
+			break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -136,6 +181,9 @@ conting_drawing_operation_label_set_property(GObject *self,
         case CONTING_DRAWING_OPERATION_LABEL_PROP_TEXT:
             opr->text = g_value_get_string(value);
             break;
+		case CONTING_DRAWING_OPERATION_LABEL_PROP_PLACE:
+			opr->place = g_value_get_int(value);
+			break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -194,6 +242,15 @@ conting_drawing_operation_label_class_init(gpointer g_class,
 								"Label text",
 								"default label text",
 								"",
+								G_PARAM_READABLE | G_PARAM_WRITABLE));
+
+	/* too lazy to make it into an enum */
+	g_object_class_install_property(gobject_class,
+			CONTING_DRAWING_OPERATION_LABEL_PROP_PLACE,
+			g_param_spec_int("place",
+								"Label place",
+								"default label text",
+								0, 1, 0,
 								G_PARAM_READABLE | G_PARAM_WRITABLE));
 	
 }

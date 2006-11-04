@@ -46,6 +46,11 @@ ContingDrawingOperation *
 conting_drawing_operation_label_new_with_func(ContingLabelFunc func,
         gpointer user_data);
 
+typedef enum {
+	CONTING_DRAWING_OPERATION_LABEL_TOP,
+	CONTING_DRAWING_OPERATION_LABEL_BOTTOM,
+} ContingDrawingOperationLabelPlace;
+
 
 #define CONTING_TYPE_DRAWING_OPERATION_DEFAULT (conting_drawing_operation_default_get_type())
 GType conting_drawing_operation_default_get_type(void);

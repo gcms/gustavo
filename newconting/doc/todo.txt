@@ -228,3 +228,6 @@ uma interface
 - Change ContingDrawingOperationLabel so that you can set relative
   places to draw the label
 - Add a color attribute to ContingDrawingOperationLabel
+
+03/11/2006
+- Criar uma lista de ContingDrawingOperation s para cada modo de ContingOneLine
