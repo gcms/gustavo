@@ -231,3 +231,10 @@ uma interface
 
 03/11/2006
 - Criar uma lista de ContingDrawingOperation s para cada modo de ContingOneLine
+
+08/11/2006
+- REMEMBER: 24/10/2006
+  -> Change ContingDrawingOperationDefault so that you can configure it.
+  -> Add an enable/disable filtering property to ContingDrawingOperationDefault
+  -> Make it so that an ContingDrawingOperation can signal something to
+     ContingOneLine, to update the operation

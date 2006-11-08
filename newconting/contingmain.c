@@ -30,6 +30,11 @@ show_name_clicked(GtkToolButton *button, gpointer user_data);
 static void
 show_number_clicked(GtkToolButton *button, gpointer user_data);
 
+static void
+hide_gen_clicked(GtkToolButton *button, gpointer user_data);
+
+static void
+hide_load_clicked(GtkToolButton *button, gpointer user_data);
 
 /**
  * Creates the toolbar for editing mode.
@@ -129,11 +134,23 @@ conting_main_get_view_toolbar(void)
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(show_name_clicked), NULL);
     
-	toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_BOLD);
-    gtk_tool_button_set_label(GTK_TOOL_BUTTON(toolbutton), "Show numbers");
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/number.png"), "Show numbers");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(show_number_clicked), NULL);
+
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/show.png"), "Hide generators");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(hide_gen_clicked), NULL);
+
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/show.png"), "Hide loads");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(hide_load_clicked), NULL);
 
     g_object_ref(toolbar);
     return toolbar;
@@ -318,6 +335,54 @@ check_clicked(GtkToolButton *menuitem,
     }
 }
 
+/** Sets default drawingoperation to hide the generators */
+/* SIGNAL CALLBACK */
+static void
+hide_gen_clicked(GtkToolButton *button, gpointer user_data)
+{
+	ContingDrawingOperationDefault *default_opr;
+	static gboolean show = TRUE;
+
+	/* TODO: this is a stub, should be completely refactored.
+	 * It knows too much about other objects internals */
+	default_opr = conting_one_line_get_default_operation(oneline);
+
+	default_opr->enable = TRUE;
+
+	if (show) {
+		show = FALSE;
+		default_opr->mask |= CONTING_DRAWING_OPERATION_DEFAULT_GEN;
+	} else {
+		show = TRUE;
+		default_opr->mask &= ~CONTING_DRAWING_OPERATION_DEFAULT_GEN;
+	}
+
+	conting_one_line_operation_update(oneline, default_opr);
+}
+/* SIGNAL CALLBACK */
+static void
+hide_load_clicked(GtkToolButton *button, gpointer user_data)
+{
+	ContingDrawingOperationDefault *default_opr;
+	static gboolean show = TRUE;
+
+	/* TODO: this is a stub, should be completely refactored.
+	 * It knows too much about other objects internals */
+	default_opr = conting_one_line_get_default_operation(oneline);
+
+	default_opr->enable = TRUE;
+
+	if (show) {
+		show = FALSE;
+		default_opr->mask |= CONTING_DRAWING_OPERATION_DEFAULT_LOAD;
+	} else {
+		show = TRUE;
+		default_opr->mask &= ~CONTING_DRAWING_OPERATION_DEFAULT_LOAD;
+	}
+
+	conting_one_line_operation_update(oneline, default_opr);
+}
+
 /**
  * Returns the string to be used as a label to drawing.
  */
@@ -331,6 +396,10 @@ name_label(ContingDrawingOperation *self, ContingDrawing *drawing,
     const gchar *name = NULL;
 
     assert(oneline == conting_drawing_get_one_line(drawing));
+
+	/* TODO: is it good? is it safe? */
+	if (!CONTING_IS_BUS_BASE(drawing))
+		return "";
 
     g_object_get(oneline, "data", &data, NULL);
 
@@ -368,6 +437,8 @@ show_name_clicked(GtkToolButton *button, gpointer user_data)
         conting_one_line_add_operation(oneline, opr);
     }
 }
+
+/* TODO: almost the same thing of name_label, refactor it. */
 /* CALLBACK FUNCTION */
 static const gchar *
 number_label(ContingDrawingOperation *self, ContingDrawing *drawing,
@@ -379,6 +450,10 @@ number_label(ContingDrawingOperation *self, ContingDrawing *drawing,
     gint number = 0;
 
     assert(oneline == conting_drawing_get_one_line(drawing));
+
+	/* TODO: is it good? is it safe? */
+	if (!CONTING_IS_BUS_BASE(drawing))
+		return "";
 
     g_object_get(oneline, "data", &data, NULL);
 
@@ -395,7 +470,6 @@ number_label(ContingDrawingOperation *self, ContingDrawing *drawing,
 
     return name;
 }
-
 /* SIGNAL CALLBACK */
 static void
 show_number_clicked(GtkToolButton *button, gpointer user_data)
@@ -410,6 +484,7 @@ show_number_clicked(GtkToolButton *button, gpointer user_data)
         opr = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL,
 				"label-func", number_label,
 				"place", CONTING_DRAWING_OPERATION_LABEL_TOP,
+				"color-name", "purple",
 				NULL);
     }
 

@@ -151,7 +151,8 @@ conting_visitor_color_visit_line(ContingVisitor *self, ContingLine *line)
 }
 
 static void
-conting_visitor_color_visit_bus(ContingVisitor *self, ContingBus *bus)
+conting_visitor_color_visit_bus(ContingVisitor *self,
+		ContingDrawing *drawing)
 {
 	ContingVisitorColorPrivate *priv;
 	GdkColor color;
@@ -160,23 +161,23 @@ conting_visitor_color_visit_bus(ContingVisitor *self, ContingBus *bus)
 	gdouble voltage;
 
 	g_return_if_fail(self != NULL && CONTING_IS_VISITOR_COLOR(self));
-	g_return_if_fail(bus != NULL && CONTING_IS_BUS(bus));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
 
 	priv = CONTING_VISITOR_COLOR_GET_PRIVATE(self);
 
 	if (priv->use_default) {
-		g_object_set(bus, "color", &priv->default_color, NULL);
+		g_object_set(drawing, "color", &priv->default_color, NULL);
 		return;
 	}
 
-	item_data = conting_drawing_get_item_data(CONTING_DRAWING(bus));
+	item_data = conting_drawing_get_item_data(drawing);
 
 	g_return_if_fail(item_data != NULL && CONTING_IS_ITEM_DATA(item_data));
 	conting_item_data_get_attr(item_data, "voltage", &voltage, NULL);
 
 	color_by_voltage(self, &color, voltage);
 
-	g_object_set(bus, "color", &color, NULL);
+	g_object_set(drawing, "color", &color, NULL);
 }
 
 static void
@@ -266,11 +267,13 @@ conting_visitor_color_visit_trans3(ContingVisitor *self,
 		g_print("bus2 voltage %lf\n", voltage);
 	}
 }
+/*
 static void
 conting_visitor_color_visit_simple(ContingVisitor *visitor,
         ContingDrawing *drawing)
 {
 }
+*/
 
 static void
 conting_visitor_color_visitor_init(gpointer g_iface,
@@ -281,9 +284,9 @@ conting_visitor_color_visitor_init(gpointer g_iface,
 	visitor_class = g_iface;
 
 	visitor_class->visit_line = conting_visitor_color_visit_line;
-	visitor_class->visit_bus = conting_visitor_color_visit_bus;
-	visitor_class->visit_load = (gpointer) conting_visitor_color_visit_simple;
-	visitor_class->visit_gen = (gpointer) conting_visitor_color_visit_simple;
+	visitor_class->visit_bus = (gpointer) conting_visitor_color_visit_bus;
+	visitor_class->visit_load = (gpointer) conting_visitor_color_visit_bus;
+	visitor_class->visit_gen = (gpointer) conting_visitor_color_visit_bus;
 	
 	visitor_class->visit_trans2 = conting_visitor_color_visit_trans2;
 	visitor_class->visit_trans3 = conting_visitor_color_visit_trans3;

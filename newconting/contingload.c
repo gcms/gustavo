@@ -13,10 +13,13 @@ conting_load_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingComponent *comp;
     ArtPoint pw0, pw1, pw2;
+	GdkColor *color;
 
     g_return_if_fail(self != NULL && CONTING_IS_LOAD(self));
 
     comp = CONTING_COMPONENT(self);
+
+	g_object_get(self, "color", &color, NULL);
 
     pw0 = comp->p0;
     pw1 = comp->p1;
@@ -31,13 +34,17 @@ conting_load_draw(ContingDrawing *self, cairo_t *cr)
 	pw2.y = comp->p0.y + (comp->p1.y - comp->p0.y) / 2.0;
 
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
-
+	
 	cairo_move_to(cr, pw0.x, pw0.y);
 	cairo_line_to(cr, pw1.x, pw1.y);
 	cairo_line_to(cr, pw2.x, pw2.y);
 	cairo_line_to(cr, pw0.x, pw0.y);
+	cairo_line_to(cr, pw1.x, pw1.y);
+	cairo_set_source_rgb(cr,
+			(gdouble) color->red / (gdouble) G_MAXUINT16,
+			(gdouble) color->green / (gdouble) G_MAXUINT16,
+			(gdouble) color->blue / (gdouble) G_MAXUINT16);
 	cairo_fill_preserve(cr);
-	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_stroke(cr);
 
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
