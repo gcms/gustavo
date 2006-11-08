@@ -2,6 +2,9 @@
 #include "contingoneline.h"
 #include "contingbusbase.h"
 
+#include <string.h>
+#include <math.h>
+
 typedef struct ContingDrawingOperationLabel_ ContingDrawingOperationLabel;
 typedef struct ContingDrawingOperationLabelClass_ ContingDrawingOperationLabelClass;
 
@@ -11,6 +14,8 @@ enum {
 	CONTING_DRAWING_OPERATION_LABEL_PROP_ATTR,
 	CONTING_DRAWING_OPERATION_LABEL_PROP_USER_DATA,
 	CONTING_DRAWING_OPERATION_LABEL_PROP_PLACE,
+	CONTING_DRAWING_OPERATION_LABEL_PROP_COLOR,
+	CONTING_DRAWING_OPERATION_LABEL_PROP_COLOR_NAME
 };
 
 struct ContingDrawingOperationLabel_ {
@@ -21,6 +26,8 @@ struct ContingDrawingOperationLabel_ {
 	const gchar *text;
 
 	ContingDrawingOperationLabelPlace place;
+
+	GdkColor color;
 };
 
 struct ContingDrawingOperationLabelClass_
@@ -81,7 +88,10 @@ conting_drawing_operation_label_draw(ContingDrawingOperation *self,
 	cairo_set_font_size(cr, 8);
 	cairo_select_font_face(cr, "Arial",
 			CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-	cairo_set_source_rgb(cr, 1, 0, 0);
+	cairo_set_source_rgb(cr,
+			(gdouble) opr->color.red / (gdouble) G_MAXUINT16,
+			(gdouble) opr->color.green / (gdouble) G_MAXUINT16,
+			(gdouble) opr->color.blue / (gdouble) G_MAXUINT16);
 	{
 		PangoLayout *layout;
 		PangoFontDescription *font;
@@ -153,6 +163,9 @@ conting_drawing_operation_label_get_property(GObject *self,
 		case CONTING_DRAWING_OPERATION_LABEL_PROP_PLACE:
 			g_value_set_int(value, opr->place);
 			break;
+		case CONTING_DRAWING_OPERATION_LABEL_PROP_COLOR:
+			g_value_set_pointer(value, &opr->color);
+			break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -184,6 +197,12 @@ conting_drawing_operation_label_set_property(GObject *self,
 		case CONTING_DRAWING_OPERATION_LABEL_PROP_PLACE:
 			opr->place = g_value_get_int(value);
 			break;
+		case CONTING_DRAWING_OPERATION_LABEL_PROP_COLOR:
+			opr->color = *((GdkColor *) g_value_get_pointer(value));
+			break;
+		case CONTING_DRAWING_OPERATION_LABEL_PROP_COLOR_NAME:
+			gdk_color_parse(g_value_get_string(value), &opr->color);
+			break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
             break;
@@ -199,6 +218,8 @@ conting_drawing_operation_label_instance_init(GTypeInstance *self,
 	opr->user_data = NULL;
 
 	opr->text = NULL;
+
+	gdk_color_parse("red", &opr->color);
 }
 
 static void
@@ -244,7 +265,8 @@ conting_drawing_operation_label_class_init(gpointer g_class,
 								"",
 								G_PARAM_READABLE | G_PARAM_WRITABLE));
 
-	/* too lazy to make it into an enum */
+	/* too lazy to make it into an enum
+	 * TODO: make it g_param_spec_enum*/
 	g_object_class_install_property(gobject_class,
 			CONTING_DRAWING_OPERATION_LABEL_PROP_PLACE,
 			g_param_spec_int("place",
@@ -252,6 +274,21 @@ conting_drawing_operation_label_class_init(gpointer g_class,
 								"default label text",
 								0, 1, 0,
 								G_PARAM_READABLE | G_PARAM_WRITABLE));
+	
+	g_object_class_install_property(gobject_class,
+			CONTING_DRAWING_OPERATION_LABEL_PROP_COLOR,
+			g_param_spec_pointer("color",
+								 "Font color",
+								 "Font color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class,
+			CONTING_DRAWING_OPERATION_LABEL_PROP_COLOR_NAME,
+			g_param_spec_string("color-name",
+								"Font color name",
+								"The name of the color",
+								"red",
+								G_PARAM_WRITABLE));
 	
 }
 

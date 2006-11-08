@@ -181,3 +181,6 @@ ligacao de ramos e componentes
 
 30/09/2006
 - Draw labels as operations
+
+08/11/2006
+- Done most of things stated in todo up to 03/11/2006

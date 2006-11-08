@@ -71,7 +71,8 @@ cairo_t * conting_drawing_get_cairo_absolute(ContingDrawing *drawing);
 
 typedef enum {
 	CONTING_ONE_LINE_EDIT,
-	CONTING_ONE_LINE_VIEW
+	CONTING_ONE_LINE_VIEW,
+	CONTING_ONE_LINE_MODE_NUMBER
 } ContingOneLineMode;
 
 gboolean conting_one_line_set_mode(ContingOneLine *self,
@@ -83,6 +84,9 @@ void conting_one_line_add_operation(ContingOneLine *self,
 void
 conting_one_line_remove_operation(ContingOneLine *self,
         ContingDrawingOperation *opr);
+
+ContingDrawingOperationDefault *
+conting_one_line_get_default_operation(ContingOneLine *self);
 
 #include "contingitemdata.h"
 ContingItemData * conting_drawing_get_item_data(ContingDrawing *drawing);

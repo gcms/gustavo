@@ -51,9 +51,7 @@ typedef enum {
 	CONTING_DRAWING_OPERATION_LABEL_BOTTOM,
 } ContingDrawingOperationLabelPlace;
 
-
-#define CONTING_TYPE_DRAWING_OPERATION_DEFAULT (conting_drawing_operation_default_get_type())
-GType conting_drawing_operation_default_get_type(void);
+#include "contingdrawingoperationdefault.h"
 
 
 void conting_drawing_operation_get_bounds(ContingDrawingOperation *self,

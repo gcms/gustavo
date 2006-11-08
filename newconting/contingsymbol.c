@@ -6,6 +6,64 @@
 static gpointer parent_class = NULL;
 static gpointer parent_iface = NULL;
 
+enum {
+	CONTING_SYMBOL_PROP_0,
+	CONTING_SYMBOL_PROP_COLOR
+};
+
+#define CONTING_SYMBOL_GET_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE((o), \
+            CONTING_TYPE_SYMBOL, ContingSymbolPrivate))
+
+typedef struct ContingSymbolPrivate_ ContingSymbolPrivate;
+struct ContingSymbolPrivate_ {
+	GdkColor color;
+};
+
+static void
+conting_symbol_get_property(GObject *self,
+                             guint prop_id,
+                             GValue *value,
+                             GParamSpec *pspec)
+{
+    ContingSymbolPrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_SYMBOL(self));
+
+    priv = CONTING_SYMBOL_GET_PRIVATE(self);
+
+    switch (prop_id) {
+        case CONTING_SYMBOL_PROP_COLOR:
+            g_value_set_pointer(value, &priv->color);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+
+static void
+conting_symbol_set_property(GObject *self,
+                             guint prop_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
+{
+    ContingSymbolPrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_SYMBOL(self));
+
+    priv = CONTING_SYMBOL_GET_PRIVATE(self);
+	
+    switch (prop_id) {
+        case CONTING_SYMBOL_PROP_COLOR:
+            priv->color = *((GdkColor *) g_value_get_pointer(value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+            break;
+    }
+}
+
+
 static void
 conting_symbol_delete(ContingDrawing *self)
 {
@@ -177,12 +235,16 @@ static void
 conting_symbol_instance_init(GTypeInstance *self, gpointer g_class)
 {
 	ContingSymbol *symb;
+	ContingSymbolPrivate *priv;
 
 	g_return_if_fail(self != NULL && CONTING_IS_SYMBOL(self));
 
 	symb = CONTING_SYMBOL(self);
+	priv = CONTING_SYMBOL_GET_PRIVATE(self);
 	
 	symb->link0 = NULL;
+
+	gdk_color_parse("black", &priv->color);
 }
 
 static void
@@ -202,6 +264,7 @@ conting_symbol_class_init(gpointer g_class, gpointer class_data)
 {
 	ContingDrawingClass *drawing_class;
 	ContingComponentClass *component_class;
+	GObjectClass *gobject_class;
 
 	drawing_class = CONTING_DRAWING_CLASS(g_class);
 	drawing_class->delete = conting_symbol_delete;
@@ -211,6 +274,19 @@ conting_symbol_class_init(gpointer g_class, gpointer class_data)
 	component_class->link = conting_symbol_link;
 
 	parent_class = g_type_class_peek_parent(g_class);
+
+	g_type_class_add_private(g_class, sizeof(ContingSymbolPrivate));
+
+	gobject_class = G_OBJECT_CLASS(g_class);
+	gobject_class->get_property = conting_symbol_get_property;
+	gobject_class->set_property = conting_symbol_set_property;
+
+	g_object_class_install_property(gobject_class,
+			CONTING_SYMBOL_PROP_COLOR,
+			g_param_spec_pointer("color",
+								 "Font color",
+								 "Font color",
+								 G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
 
 GType

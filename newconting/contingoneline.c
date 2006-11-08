@@ -55,7 +55,9 @@ struct ContingOneLinePrivate_ {
 	ContingDrawing *current_drawing;
 	ContingDrawing *entered_drawing;
 
-    GList *operations;
+	GList *operations_bank[CONTING_ONE_LINE_MODE_NUMBER];
+#define operations operations_bank[priv->mode]
+
     ContingOneLineMode mode;
 
 	GdkColor bgcolor;
@@ -1782,8 +1784,9 @@ conting_one_line_create(ContingOneLine *self,
 			G_CALLBACK(create_key), NULL);
 }
 
+/* WARNING: HACK, should be static */
 /* PRIVATE METHOD */
-static void
+void
 conting_one_line_operation_update(ContingOneLine *self,
         ContingDrawingOperation *opr)
 {
@@ -1961,8 +1964,21 @@ conting_one_line_instance_init(GTypeInstance *self,
     priv->current_drawing = NULL;
     priv->entered_drawing = NULL;
 
+
+	for (priv->mode = 0; priv->mode < CONTING_ONE_LINE_MODE_NUMBER;
+			priv->mode++) {
+		ContingDrawingOperation *operation;
+
+		priv->operations = NULL;
+
+		operation = g_object_new(CONTING_TYPE_DRAWING_OPERATION_DEFAULT, NULL);
+		priv->operations = g_list_append(priv->operations, operation);
+	}
+
 	priv->mode = CONTING_ONE_LINE_EDIT;
 
+
+/*        
     priv->operations = NULL;
 
     {
@@ -1971,15 +1987,14 @@ conting_one_line_instance_init(GTypeInstance *self,
 		operation = g_object_new(CONTING_TYPE_DRAWING_OPERATION_DEFAULT, NULL);
 		priv->operations = g_list_append(priv->operations, operation);
 
-/*        
         operation = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL, NULL);
         g_object_set(operation,
                 "label-func", conting_drawing_return_attr,
                 "user-data", "name",
                 NULL);
         priv->operations = g_list_append(priv->operations, operation);
-        */
     }
+        */
 
 	gdk_color_parse("white", &priv->bgcolor);
 }
@@ -2028,4 +2043,26 @@ conting_drawing_get_item_data(ContingDrawing *drawing)
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
 	return conting_data_get(priv->file_data, drawing);
+}
+
+/* PUBLIC METHOD */
+ContingDrawingOperationDefault*
+conting_one_line_get_default_operation(ContingOneLine *self)
+{
+	ContingOneLinePrivate *priv;
+	GList *n;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), NULL);
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	/* TODO: find a better way to store and find the
+	 * ContingDrawingOperationDefault */
+
+	for (n = priv->operations; n != NULL; n = g_list_next(n)) {
+		if (G_OBJECT_TYPE(n->data) == CONTING_TYPE_DRAWING_OPERATION_DEFAULT)
+			return n->data;
+	}
+
+	return NULL;
 }

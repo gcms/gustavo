@@ -12,6 +12,7 @@ conting_gen_draw(ContingDrawing *self, cairo_t *cr)
 {
     ContingSymbol *symb;
     ContingComponent *comp;
+	GdkColor *color;
 
     ArtPoint pw0, pw1;
     GdkRectangle rect;
@@ -20,6 +21,8 @@ conting_gen_draw(ContingDrawing *self, cairo_t *cr)
 
     symb = CONTING_SYMBOL(self);
     comp = CONTING_COMPONENT(self);
+
+	g_object_get(self, "color", &color, NULL);
 
     pw0 = comp->p0;
     pw1 = comp->p1;
@@ -35,21 +38,24 @@ conting_gen_draw(ContingDrawing *self, cairo_t *cr)
 			rect.x + ((gdouble) rect.width / 2.0),
 			rect.y + ((gdouble) rect.height / 2.0),
 			(gdouble) rect.width / 2.0, 0, 2 * M_PI);
-	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_set_source_rgb(cr,
+			(gdouble) color->red / (gdouble) G_MAXUINT16,
+			(gdouble) color->green / (gdouble) G_MAXUINT16,
+			(gdouble) color->blue / (gdouble) G_MAXUINT16);
 	cairo_stroke(cr);
 
 	cairo_arc(cr,
 			rect.x + ((gdouble) rect.width / 3.0),
 			rect.y + ((gdouble) rect.height / 2.0),
 			(gdouble) rect.width / 8.0, 0, M_PI);
-	cairo_set_source_rgb(cr, 0, 0, 0);
+/*	cairo_set_source_rgb(cr, 0, 0, 0); */
 	cairo_stroke(cr);
 
 	cairo_arc(cr,
 			rect.x + (2 * (gdouble) rect.width / 3.0),
 			rect.y + ((gdouble) rect.height / 2.0),
 			(gdouble) rect.width / 8.0, M_PI, 2 * M_PI);
-	cairo_set_source_rgb(cr, 0, 0, 0);
+/*	cairo_set_source_rgb(cr, 0, 0, 0); */
 	cairo_stroke(cr);
 
 	CONTING_DRAWING_CLASS(parent_class)->draw(self, cr);
