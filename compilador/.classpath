@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry path="src" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
-	<classpathentry path="/home/alunograd/monq.jar" kind="lib"/>
+	<classpathentry path="lib/monq.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

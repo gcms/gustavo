@@ -1,30 +1,34 @@
 package br.ufg.inf.compiler.syntatic;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 public class Production {
 	private NonTerminal variable;
 
-	private List<Symbol> symbols;
+	private Sentence sentence;
 
-	public Production(NonTerminal variable, Symbol[] symbols) {
+	Production(NonTerminal variable, Symbol[] symbols) {
 		this.variable = variable;
-		this.symbols = new ArrayList<Symbol>();
-		Collections.addAll(this.symbols, symbols);
+		this.sentence = new Sentence();
+		Collections.addAll(this.sentence, symbols);
+	}
+	
+	Production(NonTerminal variable, Sentence symbols) {
+		this.variable = variable;
+		this.sentence = new Sentence();
+		this.sentence = symbols;
 	}
 
 	private Production() {
 		variable = null;
-		symbols = new ArrayList<Symbol>();
+		sentence = new Sentence();
 	}
 
-	public List<Symbol> getSymbols() {
-		return symbols;
+	public Sentence getSentence() {
+		return sentence;
 	}
 
 	public NonTerminal getVariable() {
@@ -32,15 +36,15 @@ public class Production {
 	}
 
 	public boolean isRecursive() {
-		return symbols.contains(variable);
+		return sentence.contains(variable);
 	}
 
 	public int numSymbols() {
-		return getSymbols().size();
+		return getSentence().size();
 	}
 
 	public boolean derives(Symbol s) {
-		return numSymbols() == 1 && getSymbols().get(0).equals(s);
+		return numSymbols() == 1 && getSentence().first().equals(s);
 	}
 
 	public boolean derivesEpsilon() {
@@ -48,7 +52,7 @@ public class Production {
 	}
 
 	public boolean hasDerivation(Symbol s) {
-		return symbols.contains(s);
+		return sentence.contains(s);
 	}
 
 	/**
@@ -59,7 +63,7 @@ public class Production {
 	 * @return true if this symbol list is a subset of s
 	 */
 	public boolean symbolsIsSubsetOf(Set<Symbol> s) {
-		for (Symbol e : symbols) {
+		for (Symbol e : sentence) {
 			if (!s.contains(e))
 				return false;
 		}
@@ -90,7 +94,7 @@ public class Production {
 
 			for (Production p : result) {
 				Production clone = (Production) p.clone();
-				for (Iterator<Symbol> it = clone.symbols.iterator(); it
+				for (Iterator<Symbol> it = clone.sentence.iterator(); it
 						.hasNext(); /* */) {
 					Symbol s = it.next();
 
@@ -111,7 +115,7 @@ public class Production {
 	}
 
 	public boolean isCycle() {
-		return numSymbols() == 1 && getSymbols().get(0).equals(variable);
+		return numSymbols() == 1 && getSentence().first().equals(variable);
 	}
 
 	public boolean equals(Object o) {
@@ -120,18 +124,18 @@ public class Production {
 
 		Production p = (Production) o;
 
-		return variable.equals(p.variable) && symbols.equals(p.symbols);
+		return variable.equals(p.variable) && sentence.equals(p.sentence);
 	}
 
 	public int hashCode() {
-		return variable.hashCode() * 1 + symbols.hashCode() * 3;
+		return variable.hashCode() * 1 + sentence.hashCode() * 3;
 	}
 
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(variable.toString() + " -> ");
 
-		for (Symbol s : symbols) {
+		for (Symbol s : sentence) {
 			builder.append(s.toString());
 			builder.append(" ");
 		}
@@ -142,7 +146,7 @@ public class Production {
 	public Object clone() {
 		Production p = new Production();
 		p.variable = variable;
-		p.symbols = new ArrayList<Symbol>(symbols);
+		p.sentence = new Sentence(sentence);
 
 		return p;
 	}
@@ -151,8 +155,8 @@ public class Production {
 		if (!prod.getVariable().equals(getVariable()))
 			return false;
 
-		Iterator<Symbol> prodIt = prod.getSymbols().iterator();
-		Iterator<Symbol> it = getSymbols().iterator();
+		Iterator<Symbol> prodIt = prod.getSentence().iterator();
+		Iterator<Symbol> it = getSentence().iterator();
 
 		for (/* */; prodIt.hasNext(); /* */) {
 			if (!it.hasNext())
@@ -166,6 +170,6 @@ public class Production {
 	}
 
 	public boolean isLeftRecursive() {
-		return numSymbols() > 0 && getVariable().equals(getSymbols().get(0));
+		return numSymbols() > 0 && getVariable().equals(getSentence().first());
 	}
 }
