@@ -1,6 +1,9 @@
 package br.ufg.inf.compiler.syntatic;
 
 public class Terminal extends Symbol {
+	public static final Terminal EPSILON = new Terminal("EPSILON");
+	public static final Terminal END = new Terminal("$");
+
 	public String text;
 
 	public Terminal(String string) {

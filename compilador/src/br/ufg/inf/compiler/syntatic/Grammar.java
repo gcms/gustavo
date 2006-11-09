@@ -2,13 +2,12 @@ package br.ufg.inf.compiler.syntatic;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 public class Grammar {
-	public NonTerminal startSymbol;
+	private NonTerminal startSymbol;
 
-	public Set<Production> productions;
+	private Set<Production> productions;
 
 	private Grammar() {
 		this(null);
@@ -199,13 +198,13 @@ public class Grammar {
 					Production p = it.next();
 
 					if (p.getVariable().equals(vars[i])
-							&& p.getSymbols().size() > 0
-							&& p.getSymbols().get(0).equals(vars[j])) {
+							&& p.getSentence().size() > 0
+							&& p.getSentence().first().equals(vars[j])) {
 						/* Ai -> Aj y */
 
 						for (Production d : getProductionsBySymbol(vars[j])) {
-							List<Symbol> delta = d.getSymbols();
-							delta.addAll(p.getSymbols().subList(1, -1));
+							Sentence delta = d.getSentence();
+							delta.addAll(p.getSentence().subSentence(1, -1));
 						}
 
 						it.remove();
@@ -218,7 +217,7 @@ public class Grammar {
 				Production p = it.next();
 
 				if (p.isLeftRecursive()) {
-					
+
 					it.remove();
 				}
 			}
@@ -239,6 +238,22 @@ public class Grammar {
 		}
 
 		return builder.toString();
+	}
+
+	public void addProduction(NonTerminal nonTerm, Sentence sentence) {
+		productions.add(new Production(nonTerm, sentence));
+	}
+
+	public void addProduction(NonTerminal nonTerm, Symbol[] symbols) {
+		productions.add(new Production(nonTerm, symbols));
+	}
+
+	public void addProduction(char nonTerm, String sentence) {
+		if (!Character.isUpperCase(nonTerm))
+			throw new IllegalArgumentException();
+
+		addProduction(new NonTerminal(Character.toString(nonTerm)),
+				new Sentence(sentence));
 	}
 
 	public static void main(String[] args) {
@@ -278,5 +293,9 @@ public class Grammar {
 		g.setNoEpsilon();
 		System.out.println(g.findEpsilonVariables());
 		System.out.println(g);
+	}
+
+	public Set<Production> getProductions() {
+		return productions;
 	}
 }
