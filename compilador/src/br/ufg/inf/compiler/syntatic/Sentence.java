@@ -2,6 +2,7 @@ package br.ufg.inf.compiler.syntatic;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 
 	public Sentence(String sentence) {
 		symbols = new ArrayList<Symbol>();
-		
+
 		for (int i = 0; i < sentence.length(); i++) {
 			char ch = sentence.charAt(i);
 			if (Character.isUpperCase(ch)) {
@@ -28,8 +29,8 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 		}
 	}
 
-	public Sentence(List<Symbol> symbols) {
-		this.symbols = symbols;
+	public Sentence(Collection<? extends Symbol> symbols) {
+		this.symbols = new ArrayList<Symbol>(symbols);		
 	}
 
 	public Sentence() {
@@ -96,4 +97,21 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 		return new Sentence(symbols.subList(i, j));
 	}
 
+	public Sentence subSentenceAfter(Symbol s) {
+		for (int i = 0; i < size(); i++) {
+			if (symbols.get(i).equals(s)) {
+				return new Sentence(subSentence(i + 1, symbols.size()));
+			}
+		}
+
+		return null;
+	}
+	
+	public void removeFirst() {
+		symbols.remove(0);
+	}
+	
+	public String toString() {
+		return symbols.toString();
+	}
 }

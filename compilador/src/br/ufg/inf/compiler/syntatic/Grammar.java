@@ -298,4 +298,8 @@ public class Grammar {
 	public Set<Production> getProductions() {
 		return productions;
 	}
+
+	public NonTerminal getStartSymbol() {
+		return startSymbol;
+	}
 }
