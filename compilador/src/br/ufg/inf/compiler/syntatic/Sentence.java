@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 
@@ -113,5 +114,37 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 	
 	public String toString() {
 		return symbols.toString();
+	}
+	
+	public Iterator<Symbol> reverseIterator() {
+		class ReverseIterator implements Iterator {
+			
+			private int pos = symbols.size();
+
+			public boolean hasNext() {
+				return pos > 0;
+			}
+
+			public Object next() {
+				pos--;
+				return symbols.get(pos);
+			}
+
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+			
+		}
+		
+		return new ReverseIterator();
+	}
+	
+	public static void main(String[] args) {
+		Sentence s = new Sentence("asdf");
+		
+		for (Iterator it = s.reverseIterator(); it.hasNext(); ) {
+			System.out.print(it.next());
+		}
+		System.out.println();
 	}
 }
