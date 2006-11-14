@@ -17,21 +17,45 @@ import monq.jfa.FaAction;
 import monq.jfa.Nfa;
 import monq.jfa.ReSyntaxException;
 
+/**
+ * Classe utilizada para representar um analisador lexico. Esta classe lexico
+ * pode ser usado para gerar uma sequencia de tokens, a partir de uma sequencia
+ * de caracteres.
+ * 
+ * @author gustavomota
+ * 
+ */
 public class Lexer {
+	/** Tabela de simbolos. */
 	private Set<Token> symbolTable;
 
+	/** Nfa representando o processamento da entrada de caracteres. */
 	private Nfa nfa;
 
+	/** Fila de tokens processados. */
 	private Queue<Token> tokenList;
 
+	/**
+	 * Gerenciador de tokens, usado para tornar o mapeamento token -> tipo, mais
+	 * agil.
+	 */
 	private TokenManager manager;
 
+	/** Utilizado para o controle da thread onde o automato eh executado. */
 	private boolean started;
 
+	/** Utilizado para o controle da thread onde o automato eh executado. */
 	private boolean finished;
 
+	/** Thread onde o processamento e realizado. */
 	private Thread t;
 
+	/**
+	 * Cria um novo analisador lexico, a partir de uma fonte de caracteres.
+	 * 
+	 * @param src
+	 *            objeto responsavel por gerar um fluxo de caracteres
+	 */
 	public Lexer(final CharSource src) {
 		symbolTable = new HashSet<Token>();
 
@@ -41,6 +65,13 @@ public class Lexer {
 
 		manager = new TokenManager();
 
+		/*
+		 * O automato responsavel pelo processamento, eh executado nesta nova
+		 * thread. Quando um novo token eh identificado, ele eh adicionado a
+		 * lista de tokens, e a thread gera uma notificacao, para que caso
+		 * alguma outra thread esteja tentando obter o proximo token possa
+		 * desbloquear.
+		 */
 		t = new Thread() {
 			public void run() {
 				try {
@@ -53,6 +84,7 @@ public class Lexer {
 					e.printStackTrace();
 				}
 
+				/* thread finalizou o processamento, finished = true */
 				synchronized (Lexer.this) {
 					finished = true;
 					Lexer.this.notifyAll();
@@ -61,6 +93,20 @@ public class Lexer {
 		};
 	}
 
+	/**
+	 * Adiciona uma nova regra a expecificacao lexica do analisador. A
+	 * especificacao lexica, consiste em uma serie de pares do tipo <Expressao
+	 * Regular, Nome do Token>. Esta especificacao eh utilizada pelo analisador
+	 * para identificar qual token serah gerado, de acordo com os valores na
+	 * entrada de caracteres.
+	 * 
+	 * @param tokenName
+	 *            nome do token
+	 * @param tokenRule
+	 *            expressao regular indicando regra de formacao do token
+	 * @throws ReSyntaxException
+	 *             no caso de um erro na formacao da expressao regular
+	 */
 	public void addTokenRule(final String tokenName, String tokenRule)
 			throws ReSyntaxException {
 		FaAction action = new FaAction() {
@@ -69,9 +115,11 @@ public class Lexer {
 					throws CallbackException {
 				Token token = manager.getToken(tokenName, arg0.toString());
 
+				/* adiciona o token a fila de tokens e a tabela de simbolos */
 				tokenList.offer(token);
 				symbolTable.add(token);
 
+				/* notifica threads esperando */
 				synchronized (Lexer.this) {
 					Lexer.this.notifyAll();
 				}
@@ -95,11 +143,13 @@ public class Lexer {
 
 	public Token getToken() {
 		synchronized (this) {
+			/* inicia a thread the processamento (caso nao tenha iniciado) */
 			if (!started) {
 				started = true;
 				t.start();
 			}
 
+			/* espera notificacao, de token na fila */
 			while (!finished && tokenList.isEmpty()) {
 				try {
 					wait();
@@ -108,6 +158,8 @@ public class Lexer {
 					e.printStackTrace();
 				}
 			}
+
+			/* retorna token no inicio da fila, e o remove dela */
 			return tokenList.poll();
 		}
 	}

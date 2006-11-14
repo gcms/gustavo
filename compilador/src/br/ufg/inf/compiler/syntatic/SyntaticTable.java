@@ -1,18 +1,18 @@
 package br.ufg.inf.compiler.syntatic;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.TreeMap;
 
 import br.ufg.inf.compiler.lexical.Lexer;
 import br.ufg.inf.compiler.lexical.Token;
 
 public class SyntaticTable {
 
-	private static class Entry implements Comparable {
+	private static class Entry {
 		private NonTerminal nonTerm;
 
 		private Terminal term;
@@ -40,12 +40,6 @@ public class SyntaticTable {
 			return "[" + nonTerm + ", " + term + "]";
 		}
 
-		public int compareTo(Object o) {
-			Entry e = (Entry) o;
-			return (term.toString() + nonTerm.toString()).compareTo(e.term
-					.toString()
-					+ e.nonTerm.toString());
-		}
 	}
 
 	/**
@@ -82,7 +76,7 @@ public class SyntaticTable {
 
 	public SyntaticTable(Grammar grammar) {
 		this.grammar = grammar;
-		table = new TreeMap<Entry, Production>();
+		table = new HashMap<Entry, Production>();
 
 		fillTable();
 	}
@@ -291,26 +285,13 @@ public class SyntaticTable {
 	public static void main(String[] args) {
 		Grammar g = new Grammar(new NonTerminal("E"));
 
-		g.addProduction('E', "Tbc");
+		g.addProduction('E', "TbAc");
 		g.addProduction('T', "i");
 		g.addProduction('A', "a");
 		g.addProduction('T', "");
 
 		SyntaticTable t = new SyntaticTable(g);
 
-		System.out.println(t.first(new Sentence("T")));
-		System.out.println(t.follows(new NonTerminal("T")));
-
-		System.out.println(t.table);
-		System.out.println(t.table.get(new Entry(new NonTerminal("E"),
-				new Terminal("b"))));
-
-		System.out.println(new Entry(new NonTerminal("E"), new Terminal("i")));
-		System.out.println(new Entry(new NonTerminal("E"), new Terminal("i"))
-				.equals(new Entry(new NonTerminal("E"), new Terminal("i"))));
-
-		System.out.println(t.getEntry(new NonTerminal("E"), new Terminal("i")));
-
-		System.out.println(t.parse(new Sentence("ibc")));
+		System.out.println(t.parse(new Sentence("bac")));
 	}
 }
