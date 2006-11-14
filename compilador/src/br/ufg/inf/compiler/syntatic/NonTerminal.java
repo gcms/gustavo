@@ -35,4 +35,8 @@ public class NonTerminal extends Symbol {
 		return text.equals(n.text);
 	}
 
+	public int hashCode() {
+		return text.hashCode();
+	}
+
 }
