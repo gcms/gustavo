@@ -146,21 +146,14 @@ public class SyntaticTable {
 			Sentence s = p.getSentence().subSentenceAfter(nonTerm);
 
 			if (s != null) {
-				for (Set<Terminal> first = first(s); s.size() > 0; first = first(s)) {
-					result.addAll(first);
-					result.remove(Terminal.EPSILON);
+				Set<Terminal> first = first(s);
+				
+				result.addAll(first);
+				result.remove(Terminal.EPSILON);
 
-					System.out.println(s.size());
-					s.removeFirst();
-
-					if (!first.contains(Terminal.EPSILON))
-						break;
-				}
-
-				if (s.size() == 0) {
+				if (first.contains(Terminal.EPSILON) || s.size() == 0) {
 					result.addAll(follows(p.getVariable()));
 				}
-
 			}
 		}
 
@@ -188,7 +181,7 @@ public class SyntaticTable {
 	public static void main(String[] args) {
 		Grammar g = new Grammar(new NonTerminal("E"));
 
-		g.addProduction('E', "Tbc");
+		g.addProduction('E', "TTbc");
 		g.addProduction('T', "i");
 		g.addProduction('A', "a");
 		g.addProduction('T', "");
@@ -196,7 +189,7 @@ public class SyntaticTable {
 		SyntaticTable t = new SyntaticTable(g);
 
 		System.out.println(t.first(new Sentence("T")));
-		System.out.println(t.follows(new NonTerminal("E")));
+		System.out.println(t.follows(new NonTerminal("T")));
 
 		System.out.println(t.table);
 	}
