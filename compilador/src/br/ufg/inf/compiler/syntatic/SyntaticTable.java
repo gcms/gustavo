@@ -1,16 +1,18 @@
 package br.ufg.inf.compiler.syntatic;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
+import java.util.TreeMap;
+
+import br.ufg.inf.compiler.lexical.Lexer;
+import br.ufg.inf.compiler.lexical.Token;
 
 public class SyntaticTable {
 
-	private static class Entry {
+	private static class Entry implements Comparable {
 		private NonTerminal nonTerm;
 
 		private Terminal term;
@@ -37,6 +39,13 @@ public class SyntaticTable {
 		public String toString() {
 			return "[" + nonTerm + ", " + term + "]";
 		}
+
+		public int compareTo(Object o) {
+			Entry e = (Entry) o;
+			return (term.toString() + nonTerm.toString()).compareTo(e.term
+					.toString()
+					+ e.nonTerm.toString());
+		}
 	}
 
 	/**
@@ -62,7 +71,9 @@ public class SyntaticTable {
 	private void setEntry(NonTerminal nonTerm, Terminal term,
 			Production production) {
 		if (getEntry(nonTerm, term) != null)
-			throw new RuntimeException("duas producoes na mesma celula");
+			throw new RuntimeException("duas producoes na mesma celula\n"
+					+ "Em [" + nonTerm + ", " + term + "]: "
+					+ getEntry(nonTerm, term) + " " + production);
 
 		table.put(new Entry(nonTerm, term), production);
 	}
@@ -71,7 +82,7 @@ public class SyntaticTable {
 
 	public SyntaticTable(Grammar grammar) {
 		this.grammar = grammar;
-		table = new HashMap<Entry, Production>();
+		table = new TreeMap<Entry, Production>();
 
 		fillTable();
 	}
@@ -147,7 +158,7 @@ public class SyntaticTable {
 
 			if (s != null) {
 				Set<Terminal> first = first(s);
-				
+
 				result.addAll(first);
 				result.remove(Terminal.EPSILON);
 
@@ -178,10 +189,109 @@ public class SyntaticTable {
 		}
 	}
 
+	private class LexerTerminalStream implements TerminalStream {
+		private Lexer lexer;
+
+		private Terminal current;
+
+		public LexerTerminalStream(Lexer lexer) {
+			this.lexer = lexer;
+		}
+
+		public Terminal getTerminal() {
+			if (current != null)
+				return current;
+
+			advance();
+			return current;
+		}
+
+		public void advance() {
+			Token token = lexer.getToken();
+
+			current = (token == null ? Terminal.END : new Terminal(token
+					.getType()));
+		}
+	}
+
+	public boolean parse(Lexer lexer) {
+		return parse(new LexerTerminalStream(lexer));
+	}
+
+	private class SentenceTerminalStream implements TerminalStream {
+		private Iterator<Symbol> it;
+
+		private Terminal data;
+
+		public SentenceTerminalStream(Sentence sentence) {
+			it = sentence.iterator();
+		}
+
+		public void advance() {
+			if (it.hasNext())
+				data = (Terminal) it.next();
+			else
+				data = Terminal.END;
+		}
+
+		public Terminal getTerminal() {
+			if (data == null)
+				advance();
+
+			return data;
+		}
+	}
+
+	public boolean parse(Sentence sentence) {
+		return parse(new SentenceTerminalStream(sentence));
+	}
+
+	public boolean parse(TerminalStream stream) {
+		Stack<Symbol> stack = new Stack<Symbol>();
+
+		stack.push(Terminal.END);
+		stack.push(grammar.getStartSymbol());
+
+		Symbol x;
+		Terminal a;
+		do {
+			x = stack.peek();
+			a = stream.getTerminal();
+
+			if (x instanceof Terminal) {
+				if (x.equals(a)) {
+					stack.pop();
+					stream.advance();
+				} else {
+					return false;
+				}
+			} else {
+				assert (x instanceof NonTerminal);
+				Production p = getEntry((NonTerminal) x, a);
+				System.out.println("getEntry(" + x + ", " + a + ") = " + p);
+				if (p != null && p.getVariable().equals(x)) {
+					stack.pop();
+
+					for (Iterator<Symbol> it = p.getSentence()
+							.reverseIterator(); it.hasNext();) {
+						stack.push(it.next());
+					}
+
+					System.out.println(p);
+				} else {
+					return false;
+				}
+
+			}
+		} while (!x.equals(Terminal.END));
+
+		return true;
+	}
+
 	public static void main(String[] args) {
 		Grammar g = new Grammar(new NonTerminal("E"));
 
-		g.addProduction('E', "TTbc");
+		g.addProduction('E', "Tbc");
 		g.addProduction('T', "i");
 		g.addProduction('A', "a");
 		g.addProduction('T', "");
@@ -192,5 +302,15 @@ public class SyntaticTable {
 		System.out.println(t.follows(new NonTerminal("T")));
 
 		System.out.println(t.table);
+		System.out.println(t.table.get(new Entry(new NonTerminal("E"),
+				new Terminal("b"))));
+
+		System.out.println(new Entry(new NonTerminal("E"), new Terminal("i")));
+		System.out.println(new Entry(new NonTerminal("E"), new Terminal("i"))
+				.equals(new Entry(new NonTerminal("E"), new Terminal("i"))));
+
+		System.out.println(t.getEntry(new NonTerminal("E"), new Terminal("i")));
+
+		System.out.println(t.parse(new Sentence("ibc")));
 	}
 }
