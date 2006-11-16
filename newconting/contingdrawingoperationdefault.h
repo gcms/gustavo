@@ -43,5 +43,13 @@ void conting_drawing_operation_default_set_mask(
 gint conting_drawing_operation_default_get_mask(
 		ContingDrawingOperationDefault *self);
 
+void conting_drawing_operation_default_add_mask(
+		ContingDrawingOperationDefault *self, gint mask);
+
+void conting_drawing_operation_default_remove_mask(
+		ContingDrawingOperationDefault *self, gint mask);
+
+void conting_drawing_operation_default_set_filter(
+		ContingDrawingOperationDefault *self, gboolean filter);
 #endif /* CONTING_DRAWING_OPERATION_DEFAULT_H */
 

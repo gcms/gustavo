@@ -35,6 +35,8 @@ GType
 conting_drawing_operation_get_type(void);
 
 
+#include "contingdrawingoperationdefault.h"
+
 /* Drawing operation label */
 #define CONTING_TYPE_DRAWING_OPERATION_LABEL (conting_drawing_operation_label_get_type())
 GType conting_drawing_operation_label_get_type(void);
@@ -50,8 +52,6 @@ typedef enum {
 	CONTING_DRAWING_OPERATION_LABEL_TOP,
 	CONTING_DRAWING_OPERATION_LABEL_BOTTOM,
 } ContingDrawingOperationLabelPlace;
-
-#include "contingdrawingoperationdefault.h"
 
 
 void conting_drawing_operation_get_bounds(ContingDrawingOperation *self,
