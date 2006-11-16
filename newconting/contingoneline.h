@@ -85,8 +85,14 @@ void
 conting_one_line_remove_operation(ContingOneLine *self,
         ContingDrawingOperation *opr);
 
-ContingDrawingOperationDefault *
-conting_one_line_get_default_operation(ContingOneLine *self);
+ContingOneLineMode
+conting_one_line_get_mode(ContingOneLine *self);
+
+#define conting_one_line_get_default_operation(o) conting_one_line_get_default_operation_by_mode((o), conting_one_line_get_mode((o)))
+
+ContingDrawingOperationDefault*
+conting_one_line_get_default_operation_by_mode(ContingOneLine *self,
+		ContingOneLineMode mode);
 
 #include "contingitemdata.h"
 ContingItemData * conting_drawing_get_item_data(ContingDrawing *drawing);

@@ -391,7 +391,9 @@ conting_one_line_set_view(ContingOneLine *self)
 {
 	ContingOneLinePrivate *priv;
 	GSList *n;
+	
 	ContingVisitor *color;
+	ContingDrawingOperationDefault *default_opr;
 
 	g_print("set view\n\n\n\n\n");
 	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
@@ -439,6 +441,12 @@ conting_one_line_set_view(ContingOneLine *self)
 
 	g_object_unref(color);
 	gdk_color_parse("black", &priv->bgcolor);
+
+	/* Enable filtering. This shouldn't be needed everytime. Maybe
+	 * change the place of it to instance init. */
+	default_opr = conting_one_line_get_default_operation_by_mode(self,
+			CONTING_ONE_LINE_VIEW);
+	conting_drawing_operation_default_set_filter(default_opr, TRUE);
 
 
 	priv->mode = CONTING_ONE_LINE_VIEW;
@@ -1964,7 +1972,7 @@ conting_one_line_instance_init(GTypeInstance *self,
     priv->current_drawing = NULL;
     priv->entered_drawing = NULL;
 
-
+	/* Init default operations */
 	for (priv->mode = 0; priv->mode < CONTING_ONE_LINE_MODE_NUMBER;
 			priv->mode++) {
 		ContingDrawingOperation *operation;
@@ -2044,10 +2052,23 @@ conting_drawing_get_item_data(ContingDrawing *drawing)
 
 	return conting_data_get(priv->file_data, drawing);
 }
+/* PUBLIC METHOD */
+ContingOneLineMode
+conting_one_line_get_mode(ContingOneLine *self)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), -1);
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	return priv->mode;
+}
 
 /* PUBLIC METHOD */
 ContingDrawingOperationDefault*
-conting_one_line_get_default_operation(ContingOneLine *self)
+conting_one_line_get_default_operation_by_mode(ContingOneLine *self,
+		ContingOneLineMode mode)
 {
 	ContingOneLinePrivate *priv;
 	GList *n;
@@ -2059,7 +2080,7 @@ conting_one_line_get_default_operation(ContingOneLine *self)
 	/* TODO: find a better way to store and find the
 	 * ContingDrawingOperationDefault */
 
-	for (n = priv->operations; n != NULL; n = g_list_next(n)) {
+	for (n = priv->operations_bank[mode]; n != NULL; n = g_list_next(n)) {
 		if (G_OBJECT_TYPE(n->data) == CONTING_TYPE_DRAWING_OPERATION_DEFAULT)
 			return n->data;
 	}

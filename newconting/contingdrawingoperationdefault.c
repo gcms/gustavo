@@ -16,6 +16,27 @@ conting_drawing_operation_default_get_mask(
 }
 
 
+void
+conting_drawing_operation_default_add_mask(
+		ContingDrawingOperationDefault *self, gint mask)
+{
+	self->mask |= mask;
+}
+
+void
+conting_drawing_operation_default_remove_mask(
+		ContingDrawingOperationDefault *self, gint mask)
+{
+	self->mask &= ~mask;
+}
+
+void
+conting_drawing_operation_default_set_filter(
+		ContingDrawingOperationDefault *self, gboolean filter)
+{
+	self->enable = filter;
+}
+
 static void
 conting_drawing_operation_default_get_bounds(ContingDrawingOperation *self,
 		ContingDrawing *drawing, ArtDRect *bounds)

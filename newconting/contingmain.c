@@ -141,13 +141,13 @@ conting_main_get_view_toolbar(void)
             G_CALLBACK(show_number_clicked), NULL);
 
 	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/show.png"), "Hide generators");
+			gtk_image_new_from_file("images/gen.png"), "Hide generators");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(hide_gen_clicked), NULL);
 
 	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/show.png"), "Hide loads");
+			gtk_image_new_from_file("images/load.png"), "Hide loads");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(hide_load_clicked), NULL);
@@ -341,22 +341,25 @@ static void
 hide_gen_clicked(GtkToolButton *button, gpointer user_data)
 {
 	ContingDrawingOperationDefault *default_opr;
-	static gboolean show = TRUE;
+	static gboolean show = FALSE;
 
 	/* TODO: this is a stub, should be completely refactored.
 	 * It knows too much about other objects internals */
 	default_opr = conting_one_line_get_default_operation(oneline);
 
-	default_opr->enable = TRUE;
-
 	if (show) {
 		show = FALSE;
-		default_opr->mask |= CONTING_DRAWING_OPERATION_DEFAULT_GEN;
+		conting_drawing_operation_default_add_mask(default_opr,
+				CONTING_DRAWING_OPERATION_DEFAULT_GEN);
 	} else {
 		show = TRUE;
-		default_opr->mask &= ~CONTING_DRAWING_OPERATION_DEFAULT_GEN;
+		conting_drawing_operation_default_remove_mask(default_opr,
+				CONTING_DRAWING_OPERATION_DEFAULT_GEN);
 	}
 
+	/* FIXME: shouldn't do this. Instead, conting_one_line_operation_update()
+	 * should be private to ContingOneLine, and defualt_opr would signal it
+	 * when it changes. */
 	conting_one_line_operation_update(oneline, default_opr);
 }
 /* SIGNAL CALLBACK */
@@ -364,22 +367,25 @@ static void
 hide_load_clicked(GtkToolButton *button, gpointer user_data)
 {
 	ContingDrawingOperationDefault *default_opr;
-	static gboolean show = TRUE;
+	static gboolean show = FALSE;
 
 	/* TODO: this is a stub, should be completely refactored.
 	 * It knows too much about other objects internals */
 	default_opr = conting_one_line_get_default_operation(oneline);
 
-	default_opr->enable = TRUE;
-
 	if (show) {
 		show = FALSE;
-		default_opr->mask |= CONTING_DRAWING_OPERATION_DEFAULT_LOAD;
+		conting_drawing_operation_default_add_mask(default_opr,
+				CONTING_DRAWING_OPERATION_DEFAULT_LOAD);
 	} else {
 		show = TRUE;
-		default_opr->mask &= ~CONTING_DRAWING_OPERATION_DEFAULT_LOAD;
+		conting_drawing_operation_default_remove_mask(default_opr,
+				CONTING_DRAWING_OPERATION_DEFAULT_LOAD);
 	}
 
+	/* FIXME: shouldn't do this. Instead, conting_one_line_operation_update()
+	 * should be private to ContingOneLine, and defualt_opr would signal it
+	 * when it changes. */
 	conting_one_line_operation_update(oneline, default_opr);
 }
 
