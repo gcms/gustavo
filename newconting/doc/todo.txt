@@ -238,3 +238,12 @@ uma interface
   -> Add an enable/disable filtering property to ContingDrawingOperationDefault
   -> Make it so that an ContingDrawingOperation can signal something to
      ContingOneLine, to update the operation
+
+17/11/2006
+- Criar uma nova barra de ferramentas, que ficara sendo mostrada durante
+  todo o tempo. Nesta ferramenta devera haver um botao para mostrar as
+  informacoes do sistema em questao.
+- Adicionar eventos aos objetos no modo de visualizacao.
+  -> Transformadores devem mostrar seus taps (max/min/nominal)
+  -> Se a barra for geradora devemos ter opcao de colocar limites de Pq e Qq
+- Lancar XPVM a partir de um meno na aplicacao
