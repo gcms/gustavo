@@ -1,3 +1,4 @@
+#include "contingdrawing.h"
 #include "contingdrawingoperation.h"
 
 GType
