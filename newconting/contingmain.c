@@ -324,6 +324,13 @@ mode_menu_activate(GtkMenuItem *menuitem,
 
 /* SIGNAL CALLBACK */
 static void
+launch_xpvm_activate(GtkMenuItem *menuitem,
+		gpointer user_data)
+{
+}
+
+/* SIGNAL CALLBACK */
+static void
 check_clicked(GtkToolButton *menuitem,
 		gpointer user_data)
 {
@@ -818,18 +825,28 @@ main(int argc, char *argv[]) {
 
 	group = NULL;
 
-	submenu = gtk_radio_menu_item_new_with_mnemonic(group, "_Edit");
+	submenu = gtk_radio_menu_item_new_with_mnemonic(group, "_Editar");
 	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(submenu));
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
     g_signal_connect(G_OBJECT(submenu), "activate",
             G_CALLBACK(mode_menu_activate), (gpointer) CONTING_ONE_LINE_EDIT);
 
-	submenu = gtk_radio_menu_item_new_with_mnemonic(group, "_View");
+	submenu = gtk_radio_menu_item_new_with_mnemonic(group, "_Caso base");
 	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(submenu));
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
     g_signal_connect(G_OBJECT(submenu), "activate",
             G_CALLBACK(mode_menu_activate), (gpointer) CONTING_ONE_LINE_VIEW);
 	/* */
+	menu = gtk_menu_item_new_with_mnemonic("_Ferramentas");
+	gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu);
+	submenu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
+	menu = submenu;
+	submenu = gtk_image_menu_item_new_with_mnemonic("_Executar XPVM");
+    g_signal_connect(G_OBJECT(submenu), "activate",
+            G_CALLBACK(launch_xpvm_activate), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
+
 	 
     gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
