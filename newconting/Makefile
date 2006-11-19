@@ -3,9 +3,9 @@ CFLAGS=-Wall -fbounds-checking -g `pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --c
 LIBS=`pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --libs` -lm
 
 all: build
-	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o contingvisitor.o contingvisitorcolor.o contingdrawingoperationdefault.o -o main
+	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o contingvisitor.o contingvisitorcolor.o contingdrawingoperationdefault.o contingsysteminfo.o -o main
 
-build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o contingvisitor.o contingvisitorcolor.o contingdrawingoperationdefault.o
+build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o contingvisitor.o contingvisitorcolor.o contingdrawingoperationdefault.o contingsysteminfo.o
 
 contingutil.o: contingutil.c
 	$(CC) $(CFLAGS) -c contingutil.c -o contingutil.o
@@ -70,4 +70,5 @@ clean:
 	rm -f contingvisitorcolor.o
 	rm -f contingdrawingoperationlabel.o
 	rm -f contingdrawingoperationdefault.o
+	rm -f contingsysteminfo.o
 	rm -f main

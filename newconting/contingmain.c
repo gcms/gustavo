@@ -13,7 +13,10 @@
 #include "continggen.h"
 #include "contingload.h"
 
+#include "contingsysteminfo.h"
+
 static ContingOneLine *oneline;
+static GtkWidget *window;
 
 
 /* SIGNAL CALLBACKS */
@@ -620,6 +623,27 @@ toolbutton_clicked(GtkToolButton *button,
 	conting_one_line_create(oneline, CONTING_DRAWING(object));
 }
 
+/* SIGNAL CALLBACK */
+static void
+system_info_clicked(GtkToolButton *button,
+		gpointer user_data)
+{
+	ContingData *data;
+	GtkDialog *dialog;
+	
+	g_object_get(oneline,
+			"data", &data,
+			NULL);
+			
+	dialog = conting_system_info_get_dialog(data);
+	
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(window));
+	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+	
+	gtk_dialog_run(dialog);	
+}			
+
+
 /**
  * Sets zoom.
  */
@@ -724,7 +748,7 @@ darea_realize(GtkWidget *widget, gpointer user_data) {
 /* MAIN FUNCTION */
 int
 main(int argc, char *argv[]) {
-    GtkWidget *window, *swindow, *darea;
+    GtkWidget *swindow, *darea;
     GtkWidget *vbox, *hbox;
 
 	GtkWidget *menubar, *menu, *submenu;
@@ -811,6 +835,23 @@ main(int argc, char *argv[]) {
 
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+
+	/* Perm toolbar */
+	toolbar = gtk_toolbar_new();
+	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar),
+            GTK_TOOLBAR_ICONS);
+    gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar), FALSE);
+
+	handle = gtk_handle_box_new();
+	gtk_container_add(GTK_CONTAINER(handle), toolbar);
+	
+    toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_NEW);
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+    		G_CALLBACK(system_info_clicked), NULL);
+    
+    gtk_box_pack_start(GTK_BOX(hbox), handle, FALSE, FALSE, 0);
+    
 
     toolbar = conting_main_get_edit_toolbar();
 
