@@ -542,6 +542,8 @@ conting_drawing_button_signal(ContingDrawing *self,
 
 	g_signal_emit_by_name(self, "button-event",
 			g_boxed_copy(CONTING_TYPE_DRAWING_EVENT, &event));
+
+	g_print("signal emitting button-event\n");
 }
 
 static void
@@ -612,6 +614,7 @@ conting_drawing_event_impl(ContingDrawing *self, GdkEvent *event)
 			break;
 
 		case GDK_2BUTTON_PRESS:
+			g_print("2 BUTTON PRESS\n");
 			conting_drawing_button_signal(self, CONTING_DRAWING_2BUTTON_PRESS,
 					&pi, event->button.state, event->button.button);
 			return FALSE;
