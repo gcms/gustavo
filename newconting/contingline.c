@@ -1178,6 +1178,21 @@ conting_line_answer(ContingDrawing *self,
 	return FALSE;
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
+static GList *
+conting_line_get_links_drawing(ContingDrawing *self)
+{
+	ContingLinePrivate *priv;
+	GList *links = NULL;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), NULL);
+
+	links = g_list_append(links, priv->comp0);
+	links = g_list_append(links, priv->comp1);
+
+	return links;
+}
+
 static void
 conting_line_serializable_init(gpointer g_iface, gpointer iface_data)
 {
@@ -1217,6 +1232,8 @@ conting_line_class_init(gpointer g_class, gpointer class_data) {
 	drawing_class->motion_place = conting_line_motion_place;
 
 	drawing_class->accept = conting_line_accept;
+
+	drawing_class->get_links = conting_line_get_links_drawing;
 
 	gobject_class = G_OBJECT_CLASS(g_class);
 	gobject_class->finalize = conting_line_finalize;

@@ -247,3 +247,10 @@ uma interface
   -> Transformadores devem mostrar seus taps (max/min/nominal)
   -> Se a barra for geradora devemos ter opcao de colocar limites de Pq e Qq
 - Lancar XPVM a partir de um meno na aplicacao
+
+22/11/2006
+- Modificar conting_data_get() criar uma nova forma de organizar os dados, de
+  forma que seja possivel obter dados especificos de cada item. O ContingData
+  retorna items carregados do arquivo.
+- Criar uma forma de visualizar estes dados especificos em um GtkDialog, talvez
+  usando um visitor.

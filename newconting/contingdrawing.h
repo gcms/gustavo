@@ -82,6 +82,8 @@ struct ContingDrawingClass_ {
 
 
 	void (*accept)(ContingDrawing *self, ContingVisitor *visitor);
+
+	GList *(*get_links)(ContingDrawing *self);
 };
 
 GType conting_drawing_get_type(void);
@@ -131,6 +133,8 @@ void conting_drawing_find_link(ContingDrawing *self,
 
 gpointer conting_drawing_get_attr(ContingDrawing *self, const gchar *attr);
 void conting_drawing_accept(ContingDrawing *self, ContingVisitor *visitor);
+
+GList *conting_drawing_get_links(ContingDrawing *self);
 
 
 #define CONTING_TYPE_DRAWING_EVENT	(conting_drawing_event_get_type())
