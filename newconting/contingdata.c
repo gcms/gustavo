@@ -170,6 +170,9 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 		for (n = CONTING_COMPONENT(drawing)->links; n; n = g_list_next(n)) {
 			return conting_data_get(self, CONTING_DRAWING(n->data));
 		}
+	} else if (CONTING_IS_TRANS3(drawing)) {
+		if (!g_hash_table_lookup(priv->drawing_data, drawing)) {
+		}
 	}
 
 	return g_hash_table_lookup(priv->drawing_data, drawing);

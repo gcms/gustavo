@@ -125,6 +125,29 @@ conting_one_line_connect_edit(ContingOneLine *self, ContingDrawing *drawing)
 			G_CALLBACK(edit_notify), NULL);
 }
 
+/* SIGNAL CALLBACK */
+static void
+view_button(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data);
+
+/* PRIVATE METHOD */
+static void
+conting_one_line_connect_view(ContingOneLine *self, ContingDrawing *drawing)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+	g_return_if_fail(drawing != NULL && CONTING_IS_DRAWING(drawing));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
+			0, 0, NULL, NULL, NULL);
+
+	g_signal_connect(G_OBJECT(drawing), "button-event",
+			G_CALLBACK(view_button), NULL);
+}
+
 /* PRIVATE METHOD */
 static void
 conting_one_line_place(ContingOneLine *self, ContingDrawing *drawing)
@@ -339,6 +362,26 @@ edit_key(ContingDrawing *drawing, ContingDrawingEvent *event,
 	}
 }
 
+static void
+view_2button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	conting_one_line_edit(conting_drawing_get_one_line(drawing), drawing);
+}
+
+static void
+view_button(ContingDrawing *drawing, ContingDrawingEvent *event,
+		gpointer user_data)
+{
+	g_print("view_button\n");
+	switch (event->type) {
+		case CONTING_DRAWING_2BUTTON_PRESS:
+			view_2button_press(drawing, event, user_data);
+			break;
+		default:
+	}
+}
+
 static GdkColor *
 color_by_name(const gchar *name)
 {
@@ -430,11 +473,7 @@ conting_one_line_set_view(ContingOneLine *self)
 	for (n = priv->drawings; n != NULL; n = g_slist_next(n)) {
 		ContingDrawing *drawing = n->data;
 		
-		/* TODO: change it for
-		 * conting_one_line_connect_view(), similar to
-		 * conting_one_line_connect_edit() */
-    	g_signal_handlers_disconnect_matched(drawing, G_SIGNAL_MATCH_DATA,
-				0, 0, NULL, NULL, NULL);
+		conting_one_line_connect_view(self, n->data);
 
 		conting_drawing_accept(drawing, color);
 	}
@@ -450,6 +489,7 @@ conting_one_line_set_view(ContingOneLine *self)
 
 
 	priv->mode = CONTING_ONE_LINE_VIEW;
+	priv->state = CONTING_ONE_LINE_NONE;
 
 	conting_one_line_update(self, NULL);
 }
@@ -1431,6 +1471,7 @@ widget_button_press_event(GtkWidget *widget,
         case CONTING_ONE_LINE_SELECTING:
         case CONTING_ONE_LINE_NONE:
             {
+				g_print("\n\n\nBUTTON PRESS");
                 gboolean found = FALSE;
                 for (n = priv->drawings; n != NULL; /* */) {
                     ContingDrawing *drawing = n->data;
