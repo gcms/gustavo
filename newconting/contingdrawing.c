@@ -114,6 +114,14 @@ conting_drawing_draw_box(ContingDrawing *self,
 	cairo_destroy(cr);
 }
 
+GList *
+conting_drawing_get_links(ContingDrawing *self)
+{
+	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), NULL);
+
+	return CONTING_DRAWING_GET_CLASS(self)->get_links(self);
+}
+
 void
 conting_drawing_draw(ContingDrawing *self, cairo_t *cr)
 {
@@ -890,6 +898,8 @@ conting_drawing_class_init(gpointer g_class,
 	drawing_class->motion_place = NULL;
 
 	drawing_class->accept = NULL;
+
+	drawing_class->get_links = NULL;
 
     move_signal_id = g_signal_newv(
             "move",

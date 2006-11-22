@@ -941,6 +941,15 @@ conting_component_motion_place(ContingDrawing *self, ArtPoint *pi)
     conting_drawing_affine_absolute(self, affine);
 }
 
+/* PUBLIC METHOD IMPLEMENTATION */
+static GList *
+conting_component_get_links(ContingDrawing *self)
+{
+	g_return_val_if_fail(self != NULL && CONTING_IS_COMPONENT(self), NULL);
+
+	return g_list_copy(CONTING_COMPONENT(self)->links);
+}
+
 /* INSTANCE INIT */
 static void
 conting_component_instance_init(GTypeInstance *self, gpointer g_class)
@@ -1012,6 +1021,8 @@ conting_component_class_init(gpointer g_class, gpointer class_data)
     drawing_class->ungrab = conting_component_ungrab;
     drawing_class->motion = conting_component_motion;
     drawing_class->motion_place = conting_component_motion_place;
+
+	drawing_class->get_links = conting_component_get_links;
 
 
     component_class = CONTING_COMPONENT_CLASS(g_class);
