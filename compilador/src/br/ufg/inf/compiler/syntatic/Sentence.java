@@ -2,10 +2,8 @@ package br.ufg.inf.compiler.syntatic;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 
@@ -31,7 +29,7 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 	}
 
 	public Sentence(Collection<? extends Symbol> symbols) {
-		this.symbols = new ArrayList<Symbol>(symbols);		
+		this.symbols = new ArrayList<Symbol>(symbols);
 	}
 
 	public Sentence() {
@@ -107,25 +105,25 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 
 		return null;
 	}
-	
+
 	public void removeFirst() {
 		symbols.remove(0);
 	}
-	
+
 	public String toString() {
 		return symbols.toString();
 	}
-	
+
 	public Iterator<Symbol> reverseIterator() {
-		class ReverseIterator implements Iterator {
-			
+		return new Iterator<Symbol>() {
+
 			private int pos = symbols.size();
 
 			public boolean hasNext() {
 				return pos > 0;
 			}
 
-			public Object next() {
+			public Symbol next() {
 				pos--;
 				return symbols.get(pos);
 			}
@@ -133,16 +131,14 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
-			
-		}
-		
-		return new ReverseIterator();
+
+		};
 	}
-	
+
 	public static void main(String[] args) {
 		Sentence s = new Sentence("asdf");
-		
-		for (Iterator it = s.reverseIterator(); it.hasNext(); ) {
+
+		for (Iterator it = s.reverseIterator(); it.hasNext();) {
 			System.out.print(it.next());
 		}
 		System.out.println();
