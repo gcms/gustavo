@@ -1024,31 +1024,16 @@ conting_drawing_get_type(void)
 
     return type;
 }
+
 gpointer
 conting_drawing_get_attr(ContingDrawing *self, const gchar *attr)
 {
-	ContingOneLine *oneline;
-	ContingData *data;
 	ContingItemData *item_data;
 	gpointer result;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DRAWING(self), NULL);
 
-	g_object_get(self,
-			"one-line", &oneline,
-			NULL);
-
-	g_return_val_if_fail(oneline != NULL && CONTING_IS_ONE_LINE(oneline),
-			NULL);
-
-	g_object_get(oneline,
-			"data", &data,
-			NULL);
-
-	if (data == NULL)
-		return NULL;
-
-	item_data = conting_data_get(data, self);
+	item_data = conting_drawing_get_item_data(self);
 
 	if (item_data == NULL)
 		return NULL;

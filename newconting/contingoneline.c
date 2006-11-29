@@ -361,12 +361,18 @@ edit_key(ContingDrawing *drawing, ContingDrawingEvent *event,
 			break;
 	}
 }
-
+#include "contingvisitorview.h"
 static void
 view_2button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
 		gpointer user_data)
 {
-	conting_one_line_edit(conting_drawing_get_one_line(drawing), drawing);
+	ContingVisitor *view_visitor;
+
+	view_visitor = g_object_new(CONTING_TYPE_VISITOR_VIEW, NULL);
+	conting_drawing_accept(drawing, view_visitor);
+
+	g_object_unref(view_visitor);
+//	conting_one_line_edit(conting_drawing_get_one_line(drawing), drawing);
 }
 
 static void
@@ -379,6 +385,7 @@ view_button(ContingDrawing *drawing, ContingDrawingEvent *event,
 			view_2button_press(drawing, event, user_data);
 			break;
 		default:
+			break;
 	}
 }
 
@@ -1906,6 +1913,18 @@ conting_one_line_finalize(GObject *self)
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
     /* TODO: implement it */
+}
+/* PUBLIC METHOD */
+GtkWidget *
+conting_one_line_get_widget(ContingOneLine *self)
+{
+    ContingOneLinePrivate *priv;
+
+    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+    priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	return priv->widget;
 }
 
 /* PUBLIC METHOD */
