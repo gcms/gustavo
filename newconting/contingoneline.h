@@ -56,6 +56,7 @@ GSList *conting_one_line_answer(ContingOneLine *self,
 		                        gdouble world_x, gdouble world_y);
 
 void conting_one_line_delete_drawing(ContingOneLine *self, ContingDrawing *);
+GtkWidget *conting_one_line_get_widget(ContingOneLine *self);
 void conting_one_line_set_widget(ContingOneLine *self, GtkWidget *widget);
 void conting_one_line_create(ContingOneLine *self, ContingDrawing *drawing);
 
