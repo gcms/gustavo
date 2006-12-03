@@ -9,8 +9,12 @@ public class Grammar {
 
 	private Set<Production> productions;
 
-	private Grammar() {
+	Grammar() {
 		this(null);
+	}
+
+	void setStartSymbol(NonTerminal startSymbol) {
+		this.startSymbol = startSymbol;
 	}
 
 	public Grammar(NonTerminal startSymbol) {

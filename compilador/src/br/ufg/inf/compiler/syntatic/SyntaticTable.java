@@ -201,10 +201,10 @@ public class SyntaticTable {
 		}
 
 		public void advance() {
-			Token token = lexer.getToken();
+			Token token = lexer.nextToken();
 
 			current = (token == null ? Terminal.END : new Terminal(token
-					.getType()));
+					.getType(), token.getValue()));
 		}
 	}
 
