@@ -5,14 +5,21 @@ public class Terminal extends Symbol {
 
 	public static final Terminal END = new Terminal("$");
 
-	public String text;
+	public String name;
+
+	public String value;
 
 	public Terminal(String string) {
-		text = string;
+		name = string;
+	}
+
+	public Terminal(String name, String value) {
+		this(name);
+		this.value = value;
 	}
 
 	public String toString() {
-		return text;
+		return name;
 	}
 
 	public boolean equals(Object o) {
@@ -21,10 +28,10 @@ public class Terminal extends Symbol {
 
 		Terminal n = (Terminal) o;
 
-		return text.equals(n.text);
+		return name.equals(n.name);
 	}
 
 	public int hashCode() {
-		return text.hashCode();
+		return name.hashCode();
 	}
 }

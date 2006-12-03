@@ -107,7 +107,7 @@ public class Lexer {
 	 * @throws ReSyntaxException
 	 *             no caso de um erro na formacao da expressao regular
 	 */
-	public void addTokenRule(final String tokenName, String tokenRule)
+	void addTokenRule(final String tokenName, String tokenRule)
 			throws ReSyntaxException {
 		FaAction action = new FaAction() {
 
@@ -133,6 +133,15 @@ public class Lexer {
 		nfa.or(tokenRule, action);
 	}
 
+	/**
+	 * Executa o processamento da cadeia de entrada, gerando uma sequencia de
+	 * tokens que é armazenada em um fila.
+	 * 
+	 * @param src
+	 *            fonte de caracteres
+	 * @throws CompileDfaException
+	 * @throws IOException
+	 */
 	private void run(CharSource src) throws CompileDfaException, IOException {
 		Dfa dfa = nfa.compile(DfaRun.UNMATCHED_THROW);
 
@@ -141,7 +150,13 @@ public class Lexer {
 		run.filter();
 	}
 
-	public Token getToken() {
+	/**
+	 * Obtém o próximo token. Consome um token da fila de tokens. Se a fila está
+	 * vazia, espera a thread produtora criar um novo token.
+	 * 
+	 * @return próximo token
+	 */
+	public Token nextToken() {
 		synchronized (this) {
 			/* inicia a thread the processamento (caso nao tenha iniciado) */
 			if (!started) {
@@ -177,7 +192,7 @@ public class Lexer {
 
 		Token tok;
 
-		while ((tok = t.getToken()) != null) {
+		while ((tok = t.nextToken()) != null) {
 			System.out.println(tok);
 		}
 
