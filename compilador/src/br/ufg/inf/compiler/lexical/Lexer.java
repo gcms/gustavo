@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
+import br.ufg.inf.compiler.main.LexicalException;
+
 import monq.jfa.CallbackException;
 import monq.jfa.CharSource;
 import monq.jfa.CompileDfaException;
@@ -13,6 +15,7 @@ import monq.jfa.Dfa;
 import monq.jfa.DfaRun;
 import monq.jfa.FaAction;
 import monq.jfa.Nfa;
+import monq.jfa.NomatchException;
 import monq.jfa.ReSyntaxException;
 
 /**
@@ -145,7 +148,11 @@ public class Lexer {
 
 		DfaRun run = new DfaRun(dfa, src);
 
-		run.filter();
+		try {
+			run.filter();
+		} catch (NomatchException e) {
+			throw new LexicalException(e);
+		}
 	}
 
 	/**
@@ -176,24 +183,19 @@ public class Lexer {
 			return tokenList.poll();
 		}
 	}
-/*
-	public static void main(String[] args) throws CompileDfaException,
-			ReSyntaxException, IOException {
-		Lexer t = new Lexer(
-				new ByteCharSource(new FileInputStream("teste.txt")));
-
-		t.addTokenRule("ID", "[A-Za-z_][A-Za-z0-9_]*");
-		t.addTokenRule("NUM", "[0-9]+");
-		t.addTokenRule("SPACE", "[ \t\r\n]+");
-		t.addTokenRule("OPEN_PAREN", "\\(");
-		t.addTokenRule("CLOSE_PAREN", "\\)");
-
-		Token tok;
-
-		while ((tok = t.nextToken()) != null) {
-			System.out.println(tok);
-		}
-
-	}
-	*/
+	/*
+	 * public static void main(String[] args) throws CompileDfaException,
+	 * ReSyntaxException, IOException { Lexer t = new Lexer( new
+	 * ByteCharSource(new FileInputStream("teste.txt")));
+	 * 
+	 * t.addTokenRule("ID", "[A-Za-z_][A-Za-z0-9_]*"); t.addTokenRule("NUM",
+	 * "[0-9]+"); t.addTokenRule("SPACE", "[ \t\r\n]+");
+	 * t.addTokenRule("OPEN_PAREN", "\\("); t.addTokenRule("CLOSE_PAREN",
+	 * "\\)");
+	 * 
+	 * Token tok;
+	 * 
+	 * while ((tok = t.nextToken()) != null) { System.out.println(tok); }
+	 *  }
+	 */
 }
