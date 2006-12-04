@@ -3,7 +3,7 @@ package br.ufg.inf.compiler.lexical;
 import java.util.HashMap;
 import java.util.Map;
 
-import br.ufg.inf.compiler.syntatic.Terminal;
+import br.ufg.inf.compiler.main.SetupException;
 
 import monq.jfa.CharSource;
 import monq.jfa.Nfa;
@@ -18,7 +18,8 @@ import monq.jfa.ReSyntaxException;
  * 
  */
 public class LexerSpec {
-	private Map<String, String> tokenSpec;
+
+	private Map<String, Token> tokenSpec;
 
 	private Nfa nfa;
 
@@ -26,7 +27,8 @@ public class LexerSpec {
 	 * Cria uma nova especificação léxica.
 	 */
 	public LexerSpec() {
-		tokenSpec = new HashMap<String, String>();
+		tokenSpec = new HashMap<String, Token>();
+
 		nfa = new Nfa(Nfa.NOTHING);
 	}
 
@@ -41,7 +43,7 @@ public class LexerSpec {
 	 */
 	public void addTokenRule(final String tokenName, String tokenRule)
 			throws ReSyntaxException {
-		tokenSpec.put(tokenName, tokenRule);
+		tokenSpec.put(tokenName, new Token(tokenName, tokenRule));
 		nfa.or(tokenRule);
 	}
 
@@ -53,11 +55,11 @@ public class LexerSpec {
 	 * @return um novo analisador léxico
 	 */
 	public Lexer getLexer(CharSource src) {
-		Lexer l = new Lexer(src);
+		Lexer l = new Lexer(this, src);
 
-		for (Map.Entry<String, String> e : tokenSpec.entrySet()) {
+		for (Token e : tokenSpec.values()) {
 			try {
-				l.addTokenRule(e.getKey(), e.getValue());
+				l.addTokenRule(e.getTokenName(), e.getTokenRule());
 			} catch (ReSyntaxException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -78,7 +80,33 @@ public class LexerSpec {
 		return tokenSpec.containsKey(s);
 	}
 
-	public Terminal getTerminal(String s) {
-		return new Terminal(s);
+	/**
+	 * Obtem a especificação léxica para o token de nome s
+	 * 
+	 * @param s
+	 *            nome do token
+	 * @return
+	 */
+	public Token getTokenSpec(String s) {
+		return tokenSpec.get(s);
+	}
+
+	/**
+	 * Cria uma nova instancia do token do tipo especificado por tokenName.
+	 * 
+	 * @param tokenName
+	 *            nome do tipo do token
+	 * @param string
+	 *            valor da instancia do token
+	 * @return nova instancia do tipo do token especificado por tokenName
+	 */
+	public Lexeme getToken(String tokenName, String string) {
+		Token spec = tokenSpec.get(tokenName);
+
+		if (spec == null) {
+			throw new SetupException("Token inválido: " + tokenName);
+		}
+
+		return new Lexeme(string, spec);
 	}
 }

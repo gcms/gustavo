@@ -5,62 +5,129 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Representa uma produção em uma gramática.
+ * 
+ * @author gustavo
+ * 
+ */
 public class Production {
+	/** Lado esquerdo da produção. */
 	private NonTerminal variable;
 
+	/** Lado direito da produção. */
 	private Sentence sentence;
 
+	/**
+	 * Cria uma produção
+	 * 
+	 * @param variable
+	 *            variável (lado esquerdo)
+	 * @param symbols
+	 *            símbolos (lado direito)
+	 */
 	Production(NonTerminal variable, Symbol[] symbols) {
 		this.variable = variable;
 		this.sentence = new Sentence();
 		Collections.addAll(this.sentence, symbols);
 	}
-	
+
+	/**
+	 * Cria uma produção
+	 * 
+	 * @param variable
+	 *            variável (lado esquerdo)
+	 * @param symbols
+	 *            símbolos (lado direito)
+	 */
 	Production(NonTerminal variable, Sentence symbols) {
 		this.variable = variable;
 		this.sentence = new Sentence();
 		this.sentence = symbols;
 	}
 
+	/**
+	 * Cria uma produção.
+	 */
 	private Production() {
 		variable = null;
 		sentence = new Sentence();
 	}
 
+	/**
+	 * Obtém o lado direito da produção.
+	 * 
+	 * @return forma sentencial (lado direito)
+	 */
 	public Sentence getSentence() {
 		return sentence;
 	}
 
+	/**
+	 * Obtém o lado esquerdo da produção
+	 * 
+	 * @return variável (lado esquerdo)
+	 */
 	public NonTerminal getVariable() {
 		return variable;
 	}
 
+	/**
+	 * Determina se a produção é recursiva.
+	 * 
+	 * @return true se a produção é recursiva
+	 */
 	public boolean isRecursive() {
 		return sentence.contains(variable);
 	}
 
+	/**
+	 * Retorna o tamanho do lado direito da produção
+	 * 
+	 * @return número de símbolos do lado direito da produção
+	 */
 	public int numSymbols() {
 		return getSentence().size();
 	}
 
+	/**
+	 * Determina se a produção deriva o símbolo s.
+	 * 
+	 * @param sa
+	 *            true se esta produção deriva s
+	 * @return
+	 */
 	public boolean derives(Symbol s) {
 		return numSymbols() == 1 && getSentence().first().equals(s);
 	}
 
+	/**
+	 * Determina se a produção deriva EPSILON.
+	 * 
+	 * @return true se esta produção deriva EPSILON
+	 */
 	public boolean derivesEpsilon() {
 		return numSymbols() == 0;
 	}
 
+	/**
+	 * Determina se o lado direito da produção contém o símbolo s.
+	 * 
+	 * @param s
+	 *            símbolo a ser procurado
+	 * @return se s está no lado direito da produção
+	 */
 	public boolean hasDerivation(Symbol s) {
 		return sentence.contains(s);
 	}
 
 	/**
-	 * Tests if the symbols of this production is a subset of a specified set.
+	 * Testa se os símbolos desta produção são um subconjunto do conjunto
+	 * especificado.
 	 * 
 	 * @param s
-	 *            set which will be tested if the symbol list is a subset
-	 * @return true if this symbol list is a subset of s
+	 *            conjunto de símbolos especificado
+	 * @return true se o lado direito é subconjunto de s
 	 */
 	public boolean symbolsIsSubsetOf(Set<Symbol> s) {
 		for (Symbol e : sentence) {
@@ -114,23 +181,53 @@ public class Production {
 		return result;
 	}
 
+	/**
+	 * Determina se a produção cicla.
+	 * 
+	 * @return true se cicla
+	 */
 	public boolean isCycle() {
 		return numSymbols() == 1 && getSentence().first().equals(variable);
 	}
 
-	public boolean equals(Object o) {
-		if (!(o instanceof Production))
-			return false;
-
-		Production p = (Production) o;
-
-		return variable.equals(p.variable) && sentence.equals(p.sentence);
-	}
-
+	@Override
 	public int hashCode() {
-		return variable.hashCode() * 1 + sentence.hashCode() * 3;
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result
+				+ ((sentence == null) ? 0 : sentence.hashCode());
+		result = PRIME * result
+				+ ((variable == null) ? 0 : variable.hashCode());
+		return result;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Production other = (Production) obj;
+		if (sentence == null) {
+			if (other.sentence != null)
+				return false;
+		} else if (!sentence.equals(other.sentence))
+			return false;
+		if (variable == null) {
+			if (other.variable != null)
+				return false;
+		} else if (!variable.equals(other.variable))
+			return false;
+		return true;
+	}
+
+	/**
+	 * Obtém representação em texto desta produção.
+	 * 
+	 * @return texto representando esta produção
+	 */
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(variable.toString() + " -> ");
@@ -143,6 +240,11 @@ public class Production {
 		return builder.toString();
 	}
 
+	/**
+	 * Cria uma cópia desta produção.
+	 * 
+	 * @return cópia desta produção
+	 */
 	public Object clone() {
 		Production p = new Production();
 		p.variable = variable;
@@ -151,6 +253,12 @@ public class Production {
 		return p;
 	}
 
+	/**
+	 * Não é usado mais.
+	 * 
+	 * @param prod
+	 * @return
+	 */
 	public boolean isLike(Production prod) {
 		if (!prod.getVariable().equals(getVariable()))
 			return false;
@@ -169,6 +277,11 @@ public class Production {
 		return true;
 	}
 
+	/**
+	 * Determina se a produção é recursiva a esquerda.
+	 * 
+	 * @return true se a produção for recursiva a esquerda.
+	 */
 	public boolean isLeftRecursive() {
 		return numSymbols() > 0 && getVariable().equals(getSentence().first());
 	}

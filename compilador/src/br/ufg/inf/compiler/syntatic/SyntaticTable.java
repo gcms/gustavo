@@ -8,7 +8,9 @@ import java.util.Set;
 import java.util.Stack;
 
 import br.ufg.inf.compiler.lexical.Lexer;
+import br.ufg.inf.compiler.lexical.Lexeme;
 import br.ufg.inf.compiler.lexical.Token;
+import br.ufg.inf.compiler.main.SetupException;
 
 public class SyntaticTable {
 
@@ -65,9 +67,10 @@ public class SyntaticTable {
 	private void setEntry(NonTerminal nonTerm, Terminal term,
 			Production production) {
 		if (getEntry(nonTerm, term) != null)
-			throw new RuntimeException("duas producoes na mesma celula\n"
-					+ "Em [" + nonTerm + ", " + term + "]: "
-					+ getEntry(nonTerm, term) + " " + production);
+			throw new SetupException(
+					"SyntaticTable: Duas producoes na mesma celula\n" + "Em ["
+							+ nonTerm + ", " + term + "]: "
+							+ getEntry(nonTerm, term) + " " + production);
 
 		table.put(new Entry(nonTerm, term), production);
 	}
@@ -183,16 +186,16 @@ public class SyntaticTable {
 		}
 	}
 
-	private class LexerTerminalStream implements TerminalStream {
+	private class LexerTokenStream implements TokenStream {
 		private Lexer lexer;
 
-		private Terminal current;
+		private Lexeme current;
 
-		public LexerTerminalStream(Lexer lexer) {
+		public LexerTokenStream(Lexer lexer) {
 			this.lexer = lexer;
 		}
 
-		public Terminal getTerminal() {
+		public Lexeme getToken() {
 			if (current != null)
 				return current;
 
@@ -201,23 +204,22 @@ public class SyntaticTable {
 		}
 
 		public void advance() {
-			Token token = lexer.nextToken();
+			Lexeme token = lexer.nextToken();
 
-			current = (token == null ? Terminal.END : new Terminal(token
-					.getType(), token.getValue()));
+			current = token;
 		}
 	}
 
 	public boolean parse(Lexer lexer) {
-		return parse(new LexerTerminalStream(lexer));
+		return parse(new LexerTokenStream(lexer));
 	}
 
-	private class SentenceTerminalStream implements TerminalStream {
+	private class SentenceTokenStream implements TokenStream {
 		private Iterator<Symbol> it;
 
 		private Terminal data;
 
-		public SentenceTerminalStream(Sentence sentence) {
+		public SentenceTokenStream(Sentence sentence) {
 			it = sentence.iterator();
 		}
 
@@ -228,19 +230,19 @@ public class SyntaticTable {
 				data = Terminal.END;
 		}
 
-		public Terminal getTerminal() {
+		public Lexeme getToken() {
 			if (data == null)
 				advance();
 
-			return data;
+			return new Lexeme(data.getName(), new Token(data.getName(), null));
 		}
 	}
 
 	public boolean parse(Sentence sentence) {
-		return parse(new SentenceTerminalStream(sentence));
+		return parse(new SentenceTokenStream(sentence));
 	}
 
-	public boolean parse(TerminalStream stream) {
+	public boolean parse(TokenStream stream) {
 		Stack<Symbol> stack = new Stack<Symbol>();
 
 		stack.push(Terminal.END);
@@ -248,9 +250,11 @@ public class SyntaticTable {
 
 		Symbol x;
 		Terminal a;
+		Lexeme t;
 		do {
 			x = stack.peek();
-			a = stream.getTerminal();
+			t = stream.getToken();
+			a = (t == null ? Terminal.END : new Terminal(t.getTokenName()));
 
 			if (x instanceof Terminal) {
 				if (x.equals(a)) {

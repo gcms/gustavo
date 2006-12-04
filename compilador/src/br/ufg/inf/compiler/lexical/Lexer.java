@@ -1,13 +1,11 @@
 package br.ufg.inf.compiler.lexical;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-import monq.jfa.ByteCharSource;
 import monq.jfa.CallbackException;
 import monq.jfa.CharSource;
 import monq.jfa.CompileDfaException;
@@ -27,19 +25,19 @@ import monq.jfa.ReSyntaxException;
  */
 public class Lexer {
 	/** Tabela de simbolos. */
-	private Set<Token> symbolTable;
+	private Set<Lexeme> symbolTable;
 
 	/** Nfa representando o processamento da entrada de caracteres. */
 	private Nfa nfa;
 
 	/** Fila de tokens processados. */
-	private Queue<Token> tokenList;
+	private Queue<Lexeme> tokenList;
 
 	/**
 	 * Gerenciador de tokens, usado para tornar o mapeamento token -> tipo, mais
 	 * agil.
 	 */
-	private TokenManager manager;
+	private LexerSpec manager;
 
 	/** Utilizado para o controle da thread onde o automato eh executado. */
 	private boolean started;
@@ -56,14 +54,14 @@ public class Lexer {
 	 * @param src
 	 *            objeto responsavel por gerar um fluxo de caracteres
 	 */
-	public Lexer(final CharSource src) {
-		symbolTable = new HashSet<Token>();
+	public Lexer(LexerSpec spec, final CharSource src) {
+		symbolTable = new HashSet<Lexeme>();
 
 		nfa = new Nfa(Nfa.NOTHING);
 
-		tokenList = new LinkedList<Token>();
+		tokenList = new LinkedList<Lexeme>();
 
-		manager = new TokenManager();
+		manager = spec;
 
 		/*
 		 * O automato responsavel pelo processamento, eh executado nesta nova
@@ -113,7 +111,7 @@ public class Lexer {
 
 			public void invoke(StringBuffer arg0, int arg1, DfaRun arg2)
 					throws CallbackException {
-				Token token = manager.getToken(tokenName, arg0.toString());
+				Lexeme token = manager.getToken(tokenName, arg0.toString());
 
 				/* adiciona o token a fila de tokens e a tabela de simbolos */
 				tokenList.offer(token);
@@ -156,7 +154,7 @@ public class Lexer {
 	 * 
 	 * @return próximo token
 	 */
-	public Token nextToken() {
+	public Lexeme nextToken() {
 		synchronized (this) {
 			/* inicia a thread the processamento (caso nao tenha iniciado) */
 			if (!started) {
@@ -178,7 +176,7 @@ public class Lexer {
 			return tokenList.poll();
 		}
 	}
-
+/*
 	public static void main(String[] args) throws CompileDfaException,
 			ReSyntaxException, IOException {
 		Lexer t = new Lexer(
@@ -197,4 +195,5 @@ public class Lexer {
 		}
 
 	}
+	*/
 }
