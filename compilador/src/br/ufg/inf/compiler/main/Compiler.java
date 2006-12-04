@@ -46,7 +46,7 @@ public class Compiler {
 	 * @param src
 	 *            fonte de caracteres
 	 */
-	void run(CharSource src) {
+	public void run(CharSource src) {
 		Lexer lexer = spec.getLexer(src);
 		SyntaticTable table = new SyntaticTable(grammar);
 
@@ -60,8 +60,8 @@ public class Compiler {
 	 *            nome do arquivo
 	 * @throws FileNotFoundException
 	 */
-	void run(String filename) throws FileNotFoundException {
-		run(new ByteCharSource(new FileInputStream(filename)));
+	public void run(String filename) throws FileNotFoundException {
+		run(new ByteCharSource(filename));
 	}
 
 	/**

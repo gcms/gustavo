@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler>
+  <lexical>
+    <token-spec>
+      <token>
+        <name>LETTER_A</name>
+        <regex>a</regex>
+      </token>
+      <token>
+        <name>LETTER_B</name>
+        <regex>b</regex>
+      </token>
+      <token>
+        <name>LETTER_C</name>
+        <regex>c</regex>
+      </token>
+      <token>
+        <name>LETTER_I</name>
+        <regex>i</regex>
+      </token>
+    </token-spec>
+  </lexical>
+  <syntatic>
+    <grammar>
+      <start-symbol>E</start-symbol>
+      <rules>
+        <production>
+          <left-side>E</left-side>
+          <right-side>T LETTER_B A LETTER_C</right-side>
+        </production>
+        <production>
+          <left-side>T</left-side>
+          <right-side>LETTER_I</right-side>
+        </production>
+        <production>
+          <left-side>A</left-side>
+          <right-side>LETTER_A</right-side>
+        </production>
+        <production>
+          <left-side>T</left-side>
+          <right-side></right-side>
+        </production>
+      </rules>
+    </grammar>
+  </syntatic>
+</compiler>

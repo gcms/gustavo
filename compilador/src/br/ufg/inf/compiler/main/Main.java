@@ -1,6 +1,12 @@
 package br.ufg.inf.compiler.main;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import monq.jfa.ByteCharSource;
+import monq.jfa.CharSequenceCharSource;
+import monq.jfa.CharSource;
 
 import br.ufg.inf.compiler.xml.DOMBuilder;
 import jargs.gnu.CmdLineParser;
@@ -75,6 +81,19 @@ public class Main {
 
 		Compiler c = new Compiler(builder.getLexerSpec(), builder.getGrammar());
 
-		c.run(inputFile, outputFile);
+		CharSource src = new ByteCharSource(inputFile);
+		int data;
+		try {
+			while ((data = src.read()) != -1) {
+				System.out.println("'" + (char) data + "'" + "\t" + data);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("EOF");
+
+		// c.run(new CharSequenceCharSource("a+b"));
+		c.run(inputFile);
 	}
 }
