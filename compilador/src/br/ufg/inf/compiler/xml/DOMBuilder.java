@@ -249,7 +249,6 @@ public class DOMBuilder {
 			Node n = l.item(i);
 
 			if (n.getNodeName().equals("production")) {
-				System.out.println("production>\n\t" + n.getTextContent());
 				parseProduction(n);
 			}
 		}
@@ -267,12 +266,11 @@ public class DOMBuilder {
 
 			if (n.getNodeName().equals("left-side")) {
 				leftSide = new NonTerminal(n.getTextContent());
-				System.out.println(leftSide + "->");
 			} else if (n.getNodeName().equals("right-side")) {
 				String rightSideString = n.getTextContent();
 				List<Symbol> symbols = new ArrayList<Symbol>();
 
-				String[] items = rightSideString.split(" ");
+				String[] items = rightSideString.split("[ \r\n\t]");
 
 				for (String s : items) {
 					if (s.length() == 0) {
@@ -282,8 +280,6 @@ public class DOMBuilder {
 						symbols.add(new NonTerminal(s));
 					}
 
-					System.out.println("\t\"" + s + "\".isToken*()? = "
-							+ spec.isToken(s));
 				}
 
 				rightSide = new Sentence(symbols);

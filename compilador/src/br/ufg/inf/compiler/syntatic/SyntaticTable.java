@@ -72,6 +72,8 @@ public class SyntaticTable {
 							+ nonTerm + ", " + term + "]: "
 							+ getEntry(nonTerm, term) + " " + production);
 
+		System.out.println("installing [" + nonTerm + ", " + term + "] = "
+				+ production);
 		table.put(new Entry(nonTerm, term), production);
 	}
 
@@ -86,56 +88,92 @@ public class SyntaticTable {
 
 	private Set<Terminal> first(Sentence sentence) {
 		Set<Terminal> result = new HashSet<Terminal>();
+		System.out.println("+first(" + sentence + ")");
 
 		if (sentence.size() == 0) {
 			result.add(Terminal.EPSILON);
+			System.out.println("-first(" + sentence + ")");
 			return result;
-		}
-
-		if (sentence.first() instanceof Terminal) {
+		} else if (sentence.first() instanceof Terminal) {
 			result.add((Terminal) sentence.first());
-
-			return result;
-		}
-
-		assert (sentence.first() instanceof NonTerminal);
-
-		for (Symbol s : sentence) {
-			/*
-			 * Remove EPSILON from result, so that we result doesn't returns
-			 * EPSILON in the set when first doesn't contains EPSILON.
-			 */
-			result.remove(Terminal.EPSILON);
-
-			if (s instanceof Terminal) {
-				result.add((Terminal) s);
-				break;
-			}
-
-			NonTerminal n = (NonTerminal) s;
-
-			Set<Terminal> first = new HashSet<Terminal>();
+		} else {
+			NonTerminal n = (NonTerminal) sentence.first();
 			for (Production p : grammar.getProductionsBySymbol(n)) {
-				first.addAll(first(p.getSentence()));
+				if (p.derivesEpsilon()) {
+					result.add(Terminal.EPSILON);
+				} else {
+					result.addAll(first(p.getSentence()));
+				}
 			}
-
-			/*
-			 * If first doesn't contain EPSILON add all the terminals to the
-			 * result and break to return it
-			 */
-			if (!first.contains(Terminal.EPSILON)) {
-				result.addAll(first);
-				break;
-			}
-
-			result.addAll(first);
 		}
 
+		if (result.contains(Terminal.EPSILON)) {
+			Sentence next = sentence.subSentence(1, sentence.size());
+
+			result.remove(Terminal.EPSILON);
+			if (!next.isEmpty())
+				result.addAll(first(next));
+		}
+
+		System.out.println("-first(" + sentence + ")");
 		return result;
+		// assert (sentence.first() instanceof NonTerminal);
+		//
+		// for (Symbol s : sentence) {
+		// /*
+		// * Remove EPSILON from result, so that we result doesn't returns
+		// * EPSILON in the set when first doesn't contains EPSILON.
+		// */
+		// result.remove(Terminal.EPSILON);
+		//
+		// if (s instanceof Terminal) {
+		// result.add((Terminal) s);
+		// break;
+		// }
+		//
+		// NonTerminal n = (NonTerminal) s;
+		//
+		// Set<Terminal> first = new HashSet<Terminal>();
+		// for (Production p : grammar.getProductionsBySymbol(n)) {
+		// System.out.println(p);
+		//
+		// first.addAll(first(p.getSentence()));
+		// }
+		//
+		// /*
+		// * If first doesn't contain EPSILON add all the terminals to the
+		// * result and break to return it
+		// */
+		// if (!first.contains(Terminal.EPSILON)) {
+		// result.addAll(first);
+		// break;
+		// }
+		//
+		// result.addAll(first);
+		// }
+		//
+		// System.out.println("-first(" + sentence + ")");
+		// return result;
 	}
+
+	private Set<NonTerminal> following = new HashSet<NonTerminal>();
+
+	private Map<NonTerminal, Set<Terminal>> followings = new HashMap<NonTerminal, Set<Terminal>>();
 
 	private Set<Terminal> follows(NonTerminal nonTerm) {
 		Set<Terminal> result = new HashSet<Terminal>();
+
+		System.out.println("+follows(" + nonTerm + ")");
+
+		if (followings.get(nonTerm) != null) {
+			following.remove(nonTerm);
+			System.out.println("-follows(" + nonTerm + ")");
+			return followings.get(nonTerm);
+		}
+
+		following.add(nonTerm);
+
+		System.out.println("follows(" + nonTerm + ")");
 
 		/* Add the $ symbol to FOLLOW(StartSymbol) */
 		if (grammar.getStartSymbol().equals(nonTerm)) {
@@ -160,17 +198,24 @@ public class SyntaticTable {
 				result.remove(Terminal.EPSILON);
 
 				if (first.contains(Terminal.EPSILON) || s.size() == 0) {
-					result.addAll(follows(p.getVariable()));
+					if (!p.getVariable().equals(nonTerm)
+							&& !following.contains(p.getVariable()))
+						result.addAll(follows(p.getVariable()));
 				}
 			}
 		}
 
+		followings.put(nonTerm, result);
+
+		following.remove(nonTerm);
+		System.out.println("+follows(" + nonTerm + ")");
 		return result;
 	}
 
 	private void fillTable() {
 
 		for (Production p : grammar.getProductions()) {
+			System.out.println("fillTable to " + p);
 			Set<Terminal> first = first(p.getSentence());
 			for (Terminal t : first) {
 				if (!t.equals(Terminal.EPSILON))
@@ -204,7 +249,7 @@ public class SyntaticTable {
 		}
 
 		public void advance() {
-			Lexeme token = lexer.nextToken();
+			Lexeme token = lexer.nextLexeme();
 
 			current = token;
 		}
@@ -251,10 +296,13 @@ public class SyntaticTable {
 		Symbol x;
 		Terminal a;
 		Lexeme t;
+
 		do {
 			x = stack.peek();
 			t = stream.getToken();
 			a = (t == null ? Terminal.END : new Terminal(t.getTokenName()));
+
+			System.out.println("pilha = " + x + "\tlexeme = " + t);
 
 			if (x instanceof Terminal) {
 				if (x.equals(a)) {
@@ -284,6 +332,19 @@ public class SyntaticTable {
 		} while (!x.equals(Terminal.END));
 
 		return true;
+	}
+
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+
+		for (Map.Entry<Entry, Production> e : table.entrySet()) {
+			Entry entry = e.getKey();
+			Production prod = e.getValue();
+			builder.append("[" + entry.nonTerm + ", " + entry.term + "] = "
+					+ prod + "\n");
+		}
+
+		return builder.toString();
 	}
 
 	public static void main(String[] args) {

@@ -1,15 +1,17 @@
 package br.ufg.inf.compiler.main;
 
-import java.io.FileInputStream;
+import jargs.gnu.CmdLineParser;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import monq.jfa.ByteCharSource;
 import monq.jfa.CharSequenceCharSource;
 import monq.jfa.CharSource;
-
+import br.ufg.inf.compiler.lexical.Lexeme;
+import br.ufg.inf.compiler.lexical.Lexer;
+import br.ufg.inf.compiler.syntatic.SyntaticTable;
 import br.ufg.inf.compiler.xml.DOMBuilder;
-import jargs.gnu.CmdLineParser;
 
 /**
  * Classe principal, ponto de entrada do programa.
@@ -23,9 +25,10 @@ public class Main {
 	 * 
 	 */
 	private static void printUsage() {
-		System.err.println("Usage: java -jar compilador.jar [{-v,--verbose}] "
-				+ "{-g,--grammar} grammar\n[(-i,--input)] input "
-				+ "[(-o,--output) output]");
+		System.err
+				.println("\nUsage: java -jar compilador.jar [{-v,--verbose}] "
+						+ "{-g,--grammar} grammar\n[(-i,--input)] input "
+						+ "[(-o,--output) output]");
 	}
 
 	/**
@@ -57,43 +60,59 @@ public class Main {
 
 		String[] remaining = parser.getRemainingArgs();
 
-		if (grammarFile == null) {
-			printUsage();
-			System.exit(2);
-		}
-
-		if (inputFile == null) {
-			if (remaining == null || remaining.length == 0) {
-				printUsage();
-				System.exit(2);
-			} else {
-				inputFile = remaining[0];
-			}
-		}
-
-		if (outputFile == null) {
-			outputFile = inputFile + ".o";
-		}
+		// if (grammarFile == null) {
+		// printUsage();
+		// System.exit(2);
+		// }
+		//
+		// if (inputFile == null) {
+		// if (remaining == null || remaining.length == 0) {
+		// printUsage();
+		// System.exit(2);
+		// } else {
+		// inputFile = remaining[0];
+		// }
+		// }
+		//
+		// if (outputFile == null) {
+		// outputFile = inputFile + ".o";
+		// }
 
 		DOMBuilder builder = new DOMBuilder();
 
-		builder.parse(grammarFile);
+		builder.parse("data/grammar3.xml");
 
-		Compiler c = new Compiler(builder.getLexerSpec(), builder.getGrammar());
+		SyntaticTable table = new SyntaticTable(builder.getGrammar());
 
-		CharSource src = new ByteCharSource(inputFile);
-		int data;
-		try {
-			while ((data = src.read()) != -1) {
-				System.out.println("'" + (char) data + "'" + "\t" + data);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("EOF");
+		System.out.println("\n");
+		System.out.println(table);
 
-		// c.run(new CharSequenceCharSource("a+b"));
-		c.run(inputFile);
+		Lexer lexer = builder.getLexerSpec().getLexer(
+				new ByteCharSource("data/exemplo1.txt"));
+		
+//		Lexeme lexeme;
+//		while ((lexeme = lexer.nextToken()) != null) {
+//			System.out.println(lexeme);
+//		}
+		
+//		System.out.println(table.parse(lexer));
+
+		// Compiler c = new Compiler(builder.getLexerSpec(),
+		// builder.getGrammar());
+		//
+		// CharSource src = new ByteCharSource(inputFile);
+		// int data;
+		// try {
+		// while ((data = src.read()) != -1) {
+		// System.out.println("'" + (char) data + "'" + "\t" + data);
+		// }
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// System.out.println("EOF");
+		//
+		// c.run(new CharSequenceCharSource("a+ba+aa+b"));
+		// c.run("data/exemplo.src");
 	}
 }
