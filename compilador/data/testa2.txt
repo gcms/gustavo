@@ -1,0 +1,53 @@
+program testaTokenizer2 ( teste1, teste2, teste3 );
+	type curso = relacaoDeAlunos,
+		 somatorio = array{50 .. 100} of notas,
+		 conjunto = arvore,
+		 arvore = array{1 .. 40} of folhas,
+		 media = array{50 ..100} of notas;
+
+	var somatorio : array{45 .. 234} of integer,
+		nota : float,
+		nota1, nota2, n, media : double,
+		c : char,
+		curso : String,
+		arvore, somatorio : array{0 .. 17} of Elemento;
+	procedure avaliaCurso ( var nota1 : double );
+		type relacaoAvaliacoes = conceitoProfessores,
+		relacaoAlunos = array{1 .. 200} of conceitoAlunos;
+		var a : char, avalicao : boolean;
+		begin
+			avaliacao := relacaoAvaliacoes + relacaoAlunos;
+			procedure mostraCaracter ( ab );
+			function print ( 2 + a );
+
+			if ( avalicao <> true ) then
+				begin
+					a := ( b + curso );
+				end;
+			;
+			n := ( nota2 + 1 );
+			while ( nota > n ) do
+				begin
+					if ( a or b ) then
+						begin
+							a := c;
+						end;
+					else
+						begin
+							b := c;
+							if ( a = b ) then
+								begin
+		 							f := b;
+		 						end;
+		 					;
+						end;
+					;
+					nota := nota + 1;
+				end;
+			;
+		end;
+	;
+	begin
+		a := 1;
+	end
+.

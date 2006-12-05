@@ -1,10 +1,13 @@
 package br.ufg.inf.compiler.lexical;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import br.ufg.inf.compiler.main.SetupException;
 
+import monq.jfa.CharSequenceCharSource;
 import monq.jfa.CharSource;
 import monq.jfa.Nfa;
 import monq.jfa.ReSyntaxException;
@@ -14,13 +17,18 @@ import monq.jfa.ReSyntaxException;
  * usada posteriormente para gerar um analisador léxico, capaz de examinar uma
  * sequência de caracteres e convertê-la para uma sequência de tokens.
  * 
- * @author gustavomota
+ * @author gustavo
  * 
  */
 public class LexerSpec {
 
+	/** Mapa de especificação de tokens. */
 	private Map<String, Token> tokenSpec;
 
+	/** Lista ordenada de especificação. */
+	private List<Token> tokens;
+
+	/** Nfa usado para testar a validade da expressão regular. */
 	private Nfa nfa;
 
 	/**
@@ -28,6 +36,7 @@ public class LexerSpec {
 	 */
 	public LexerSpec() {
 		tokenSpec = new HashMap<String, Token>();
+		tokens = new LinkedList<Token>();
 
 		nfa = new Nfa(Nfa.NOTHING);
 	}
@@ -43,7 +52,11 @@ public class LexerSpec {
 	 */
 	public void addTokenRule(final String tokenName, String tokenRule)
 			throws ReSyntaxException {
-		tokenSpec.put(tokenName, new Token(tokenName, tokenRule));
+		Token token = new Token(tokenName, tokenRule);
+
+		tokenSpec.put(tokenName, token);
+		tokens.add(token);
+
 		nfa.or(tokenRule);
 	}
 
@@ -57,7 +70,7 @@ public class LexerSpec {
 	public Lexer getLexer(CharSource src) {
 		Lexer l = new Lexer(this, src);
 
-		for (Token e : tokenSpec.values()) {
+		for (Token e : tokens) {
 			try {
 				l.addTokenRule(e.getTokenName(), e.getTokenRule());
 			} catch (ReSyntaxException e1) {
@@ -108,5 +121,25 @@ public class LexerSpec {
 		}
 
 		return new Lexeme(string, spec);
+	}
+	
+	/**
+	 * Teste.
+	 * @param args
+	 * @throws ReSyntaxException 
+	 */
+	public static void main(String[] args) throws ReSyntaxException {
+		LexerSpec spec = new LexerSpec();
+		
+		spec.addTokenRule("TYPE", "type");
+		spec.addTokenRule("VAR", "var");
+		spec.addTokenRule("ID", "[a-z]+");
+		spec.addTokenRule("SPACE", "[ \r\n]");
+		
+		Lexer lexer = spec.getLexer(new CharSequenceCharSource("var ehehe type"));
+		
+		Lexeme l;
+		while ((l = lexer.nextLexeme()) != null)
+			System.out.println(l);
 	}
 }

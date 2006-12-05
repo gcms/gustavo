@@ -5,7 +5,7 @@ package br.ufg.inf.compiler.lexical;
  * de token consiste em um valor (string de caracteres lida) e uma especificação
  * do token, que identifica a que classe de cadeias este lexema pertence.
  * 
- * @author gustavomota
+ * @author gustavo
  * 
  */
 public class Lexeme {
@@ -54,6 +54,10 @@ public class Lexeme {
 	 */
 	public String getValue() {
 		return value;
+	}
+
+	public String toString() {
+		return getTokenName() + "(" + getValue() + ")";
 	}
 
 	@Override

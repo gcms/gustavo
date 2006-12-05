@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler>
+  <lexical>
+    <token-spec>
+      <!-- palavras reservadas -->
+      <token>
+        <name></name>
+        <regex>[  
+          ]+</regex>
+      </token>
+      <token>
+        <name>program</name>
+        <regex>program</regex>
+      </token>
+      <token>
+        <name>var</name>
+        <regex>var</regex>
+      </token>
+      <token>
+        <name>array</name>
+        <regex>array</regex>
+      </token>
+      <token>
+        <name>of</name>
+        <regex>of</regex>
+      </token>
+      <token>
+        <name>function</name>
+        <regex>function</regex>
+      </token>
+      <token>
+        <name>procedure</name>
+        <regex>procedure</regex>
+      </token>
+      <token>
+        <name>type</name>
+        <regex>type</regex>
+      </token>
+      <token>
+        <name>begin</name>
+        <regex>begin</regex>
+      </token>
+      <token>
+        <name>end</name>
+        <regex>end</regex>
+      </token>
+      <token>
+        <name>if</name>
+        <regex>if</regex>
+      </token>
+      <token>
+        <name>else</name>
+        <regex>else</regex>
+      </token>
+      <token>
+        <name>then</name>
+        <regex>then</regex>
+      </token>
+      <token>
+        <name>while</name>
+        <regex>while</regex>
+      </token>
+      <token>
+        <name>do</name>
+        <regex>do</regex>
+      </token>
+      <token>
+        <name>or</name>
+        <regex>or</regex>
+      </token>
+      <token>
+        <name>and</name>
+        <regex>and</regex>
+      </token>
+      <token>
+        <name>not</name>
+        <regex>not</regex>
+      </token>
+      <token>
+        <name>div</name>
+        <regex>div</regex>
+      </token>
+      <token>
+        <name>mod</name>
+        <regex>mod</regex>
+      </token>
+      <!-- simbolos -->
+      <token>
+        <name>open_paren</name>
+        <regex>\(</regex>
+      </token>
+      <token>
+        <name>close_paren</name>
+        <regex>\)</regex>
+      </token>
+      <token>
+        <name>open_bracket</name>
+        <regex>\[</regex>
+      </token>
+      <token>
+        <name>close_bracket</name>
+        <regex>\]</regex>
+      </token>
+      <token>
+        <name>virg</name>
+        <regex>,</regex>
+      </token>
+      <token>
+        <name>ponto_virg</name>
+        <regex>;</regex>
+      </token>
+      <token>
+        <name>dois_pontos</name>
+        <regex>:</regex>
+      </token>
+      <token>
+        <name>ponto_ponto</name>
+        <regex>\.\.</regex>
+      </token>
+      <token>
+        <name>ponto</name>
+        <regex>\.</regex>
+      </token>
+      <token>
+        <name>atribuicao</name>
+        <regex>:=</regex>
+      </token>
+      <token>
+        <name>rel_op</name>
+        <regex>(=|&lt;|&gt;|&lt;=|&gt;=|&lt;&gt;)</regex>
+      </token>
+      <token>
+        <name>igual</name>
+        <regex>=</regex>
+      </token>
+      <token>
+        <name>menor</name>
+        <regex>&lt;</regex>
+      </token>
+      <token>
+        <name>maior</name>
+        <regex>&gt;</regex>
+      </token>
+      <token>
+        <name>diferente</name>
+        <regex>&lt;&gt;</regex>
+      </token>
+      <token>
+        <name>menor_igual</name>
+        <regex>&lt;=</regex>
+      </token>
+      <token>
+        <name>maior_igual</name>
+        <regex>&gt;=</regex>
+      </token>
+      <token>
+        <name>mais</name>
+        <regex>\+</regex>
+      </token>
+      <token>
+        <name>menos</name>
+        <regex>-</regex>
+      </token>
+      <token>
+        <name>vezes</name>
+        <regex>\*</regex>
+      </token>
+      <token>
+        <name>numero</name>
+        <regex>[0-9]+</regex>
+      </token>
+      <token>
+        <name>identificador</name>
+        <regex>[a-zA-Z_]+[0-9a-zA-Z_]*</regex>
+      </token>
+    </token-spec>
+  </lexical>
+  <syntatic>
+    <grammar>
+      <start-symbol>PROGRAMA</start-symbol>
+      <rules>
+        <!-- PROGRAMA -->
+        <production>
+          <left-side>PROGRAMA</left-side>
+          <right-side>
+            program identificador
+              open_paren
+                LISTA_IDENTIFICADORES
+              close_paren ponto_virg
+              BLOCO ponto
+          </right-side>
+        </production>
+        <!-- BLOCO -->
+        <production>
+          <left-side>BLOCO</left-side>
+          <right-side>
+            DEFINICOES_TIPOS_OPC
+            DECLARACOES_VARS_OPC
+            DECLARACOES_SUBROTS_OPC
+            COMANDO_COMPOSTO
+          </right-side>
+        </production>
+        <!-- DEFINICOES_TIPOS_OPC -->
+        <production>
+          <left-side>DEFINICOES_TIPOS_OPC</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>DEFINICOES_TIPOS_OPC</left-side>
+          <right-side>
+            DEFINICOES_TIPOS
+          </right-side>
+        </production>
+        <!-- DEFINICOES_TIPOS -->
+        <production>
+          <left-side>DEFINICOES_TIPOS</left-side>
+          <right-side>
+            type DEFINICAO_TIPO ponto_virg OUTRAS_DEFINICOES_TIPO
+          </right-side>
+        </production>
+        <!-- OUTRAS_DEFINICOES_TIPO -->
+        <production>
+          <left-side>OUTRAS_DEFINICOES_TIPO</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTRAS_DEFINICOES_TIPO</left-side>
+          <right-side>
+            DEFINICAO_TIPO ponto_virg OUTRAS_DEFINICOES_TIPO
+          </right-side>
+        </production>
+        <!-- DEFINICAO_TIPO -->
+        <production>
+          <left-side>DEFINICAO_TIPO</left-side>
+          <right-side>identificador igual TIPO</right-side>
+        </production>
+        <!-- TIPO -->
+        <production>
+          <left-side>TIPO</left-side>
+          <right-side>identificador</right-side>
+        </production>
+        <production>
+          <left-side>TIPO</left-side>
+          <right-side>
+            array open_bracket INDICE OUTROS_INDICES close_bracket of
+            TIPO
+          </right-side>
+        </production>
+        <!-- INDICE -->
+        <production>
+          <left-side>INDICE</left-side>
+          <right-side>numero ponto_ponto numero</right-side>
+        </production>
+        <!-- OUTROS_INDICES -->
+        <production>
+          <left-side>OUTROS_INDICES</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_INDICES</left-side>
+          <right-side>virg INDICE OUTROS_INDICES</right-side>
+        </production>
+        <!-- DECLARACOES_VARS_OPC -->
+        <production>
+          <left-side>DECLARACOES_VARS_OPC</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>DECLARACOES_VARS_OPC</left-side>
+          <right-side>DECLARACOES_VARS</right-side>
+        </production>
+        <!-- DECLARACOES_VARS -->
+        <production>
+          <left-side>DECLARACOES_VARS</left-side>
+          <right-side>
+            var DECLARACAO_VARS ponto_virg OUTRAS_DECLARACOES_VARS
+          </right-side>
+        </production>
+        <!-- OUTRAS_DECLARACOES_VARS -->
+        <production>
+          <left-side>OUTRAS_DECLARACOES_VARS</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTRAS_DECLARACOES_VARS</left-side>
+          <right-side>
+            DECLARACAO_VARS ponto_virg OUTRAS_DECLARACOES_VARS
+          </right-side>
+        </production>
+        <!-- DECLARACAO_VARS -->
+        <production>
+          <left-side>DECLARACAO_VARS</left-side>
+          <right-side>LISTA_IDENTIFICADORES dois_pontos TIPO</right-side>
+        </production>
+        <!-- LISTA_IDENTIFICADORES -->
+        <production>
+          <left-side>LISTA_IDENTIFICADORES</left-side>
+          <right-side>identificador OUTROS_IDENTIFICADORES</right-side>
+        </production>
+        <!-- OUTROS_IDENTIFICADORES -->
+        <production>
+          <left-side>OUTROS_IDENTIFICADORES</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_IDENTIFICADORES</left-side>
+          <right-side>virg LISTA_IDENTIFICADORES</right-side>
+        </production>
+        <!-- DECLARACOES_SUBROTS_OPC -->
+        <production>
+          <left-side>DECLARACOES_SUBROTS_OPC</left-side>
+          <right-side>DECLARACOES_SUBROTS</right-side>
+        </production>
+        <!-- DECLARACOES_SUBROTS -->
+        <production>
+          <left-side>DECLARACOES_SUBROTS</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>DECLARACOES_SUBROTS</left-side>
+          <right-side>
+            DECLARACAO_PROCEDIMENTO ponto_virg DECLARACOES_SUBROTS
+          </right-side>
+        </production>
+        <production>
+          <left-side>DECLARACAO_SUBROTS</left-side>
+          <right-side>
+            DECLARACAO_FUNCAO ponto_virg DECLARACOES_SUBROTS
+          </right-side>
+        </production>
+        <!-- DECLARACAO_PROCEDIMENTO -->
+        <production>
+          <left-side>DECLARACAO_PROCEDIMENTO</left-side>
+          <right-side>
+            procedure identificador PARAMETROS_FORMAIS_OPC ponto_virg
+            BLOCO
+          </right-side>
+        </production>
+        <!-- PARAMETROS_FORMAIS_OPC -->
+        <production>
+          <left-side>PARAMETROS_FORMAIS_OPC</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>PARAMETROS_FORMAIS_OPC</left-side>
+          <right-side>PARAMETROS_FORMAIS</right-side>
+        </production>
+        <!-- PARAMETROS_FORMAIS -->
+        <production>
+          <left-side>PARAMETROS_FORMAIS</left-side>
+          <right-side>
+            open_paren
+              SECAO_PARAMETROS_FORMAIS
+              OUTROS_PARAMETROS_FORMAIS
+            close_paren
+          </right-side>
+        </production>
+        <!-- OUTROS_PARAMETROS_FORMAIS -->
+        <production>
+          <left-side>OUTROS_PARAMETROS_FORMAIS</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_PARAMETROS_FORMAIS</left-side>
+          <right-side>
+            ponto_virg
+              SECAO_PARAMETROS_FORMAIS
+              OUTROS_PARAMETROS_FORMAIS
+          </right-side>
+        </production>
+        <!-- SECAO_PARAMETROS_FORMAIS -->
+        <production>
+          <left-side>SECAO_PARAMETROS_FORMAIS</left-side>
+          <right-side>
+            VAR_OPC LISTA_IDENTIFICADORES dois_pontos identificador
+          </right-side>
+        </production>
+        <production>
+          <left-side>SECAO_PARAMETROS_FORMAIS</left-side>
+          <right-side>
+            function LISTA_IDENTIFICADORES dois_pontos identificador
+          </right-side>
+        </production>
+        <production>
+          <left-side>SECAO_PARAMETROS_FORMAIS</left-side>
+          <right-side>procedure LISTA_IDENTIFICADORES</right-side>
+        </production>
+        <!-- VAR_OPC -->
+        <production>
+          <left-side>VAR_OPC</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>VAR_OPC</left-side>
+          <right-side>var</right-side>
+        </production>
+        <!-- DECLARACAO_FUNCAO -->
+        <production>
+          <left-side>DECLARACAO_FUNCAO</left-side>
+          <right-side>
+            function identificador PARAMETROS_FORMAIS_OPC dois_pontos
+            identificador ponto_virg BLOCO
+          </right-side>
+        </production>
+        <!-- COMANDO_COMPOSTO -->
+        <production>
+          <left-side>COMANDO_COMPOSTO</left-side>
+          <right-side>
+            begin
+              COMANDO ponto_virg
+              OUTROS_COMANDOS
+            end
+          </right-side>
+        </production>
+        <!-- OUTROS_COMANDOS -->
+        <production>
+          <left-side>OUTROS_COMANDOS</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_COMANDOS</left-side>
+          <right-side>COMANDO ponto_virg OUTROS_COMANDOS</right-side>
+        </production>
+        <!-- COMANDO -->
+        <production>
+          <left-side>COMANDO</left-side>
+          <right-side>
+            identificador ATRIBUICAO_CHAMADA_PROCEDIMENTO
+          </right-side>
+        </production>
+        <production>
+          <left-side>COMANDO</left-side>
+          <right-side>COMANDO_COMPOSTO</right-side>
+        </production>
+        <production>
+          <left-side>COMANDO</left-side>
+          <right-side>COMANDO_CONDICIONAL</right-side>
+        </production>
+        <production>
+          <left-side>COMANDO</left-side>
+          <right-side>COMANDO_REPETITIVO</right-side>
+        </production>
+        <!-- ATRIBUICAO_CHAMADA_PROCEDIMENTO -->
+        <production>
+          <left-side>ATRIBUICAO_CHAMADA_PROCEDIMENTO</left-side>
+          <right-side>atribuicao EXPRESSAO</right-side>
+        </production>
+        <production>
+          <left-side>ATRIBUICAO_CHAMADA_PROCEDIMENTO</left-side>
+          <right-side>
+            open_bracket LISTA_EXPRESSOES close_bracket atribuicao
+            EXPRESSAO
+          </right-side>
+        </production>
+        <production>
+          <left-side>ATRIBUICAO_CHAMADA_PROCEDIMENTO</left-side>
+          <right-side>LISTA_EXPRESSOES_OPC</right-side>
+        </production>
+        <!-- ATRIBUICAO -->
+        <production>
+          <left-side>ATRIBUICAO</left-side>
+          <right-side>VARIAVEL atribuicao EXPRESSAO</right-side>
+        </production>
+        <!-- CHAMADA_PROCEDIMENTO -->
+        <production>
+          <left-side>CHAMADA_PROCEDIMENTO</left-side>
+          <right-side>identificador LISTA_EXPRESSOES_OPC</right-side>
+        </production>
+        <!-- LISTA_EXPRESSOES_OPC -->
+        <production>
+          <left-side>LISTA_EXPRESSOES_OPC</left-side>
+          <right-side>
+            open_paren LISTA_EXPRESSOES close_paren
+          </right-side>
+        </production>
+        <production>
+          <left-side>LISTA_EXPRESSOES_OPC</left-side>
+          <right-side></right-side>
+        </production>
+        <!-- LISTA_EXPRESSOES -->
+        <production>
+          <left-side>LISTA_EXPRESSOES</left-side>
+          <right-side>EXPRESSAO OUTRAS_EXPRESSOES</right-side>
+        </production>
+        <!-- COMANDO_CONDICIONAL -->
+        <production>
+          <left-side>COMANDO_CONDICIONAL</left-side>
+          <right-side>
+            if EXPRESSAO then COMANDO SENAO_OPC
+          </right-side>
+        </production>
+        <!-- SENAO_OPC -->
+        <production>
+          <left-side>SENAO_OPC</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>SENAO_OPC</left-side>
+          <right-side>else COMANDO</right-side>
+        </production>
+        <!-- COMANDO_REPETITIVO -->
+        <production>
+          <left-side>COMANDO_REPETITIVO</left-side>
+          <right-side>while EXPRESSAO do COMANDO</right-side>
+        </production>
+        <!-- LISTA_EXPRESSOES -->
+        <production>
+          <left-side>LISTA_EXPRESSOES</left-side>
+          <right-side>EXPRESSAO OUTRAS_EXPRESSOES</right-side>
+        </production>
+        <!-- OUTRAS_EXPRESSOES -->
+        <production>
+          <left-side>OUTRAS_EXPRESSOES</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTRAS_EXPRESSOES</left-side>
+          <right-side>EXPRESSAO OUTRAS_EXPRESSOES</right-side>
+        </production>
+        <!-- EXPRESSAO -->
+        <production>
+          <left-side>EXPRESSAO</left-side>
+          <right-side>EXPRESSAO_SIMPLES REL_EXPRESSAO_OPC</right-side>
+        </production>
+        <!-- REL_EXPRESSAO_OPC -->
+        <production>
+          <left-side>REL_EXPRESSAO_OPC</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>REL_EXPRESSAO_OPC</left-side>
+          <right-side>rel_op EXPRESSAO_SIMPLES</right-side>
+        </production>
+        <!-- RELACAO -->
+        <production>
+          <left-side>RELACAO</left-side>
+          <right-side>igual</right-side>
+        </production>
+        <production>
+          <left-side>RELACAO</left-side>
+          <right-side>diferente</right-side>
+        </production>
+        <production>
+          <left-side>RELACAO</left-side>
+          <right-side>menor</right-side>
+        </production>
+        <production>
+          <left-side>RELACAO</left-side>
+          <right-side>maior</right-side>
+        </production>
+        <production>
+          <left-side>RELACAO</left-side>
+          <right-side>menor_igual</right-side>
+        </production>
+        <production>
+          <left-side>RELACAO</left-side>
+          <right-side>maior_igual</right-side>
+        </production>
+        <!-- EXPRESSAO SIMPLES -->
+        <production>
+          <left-side>EXPRESSAO_SIMPLES</left-side>
+          <right-side>SINAL_OPC TERMO OUTROS_TERMOS</right-side>
+        </production>
+        <!-- SINAL_OPC -->
+        <production>
+          <left-side>SINAL_OPC</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>SINAL_OPC</left-side>
+          <right-side>mais</right-side>
+        </production>
+        <production>
+          <left-side>SINAL_OPC</left-side>
+          <right-side>menos</right-side>
+        </production>
+        <!-- TERMO -->
+        <production>
+          <left-side>TERMO</left-side>
+          <right-side>FATOR OUTROS_FATORES</right-side>
+        </production>
+        <!-- OUTROS_TERMOS -->
+        <production>
+          <left-side>OUTROS_TERMOS</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_TERMOS</left-side>
+          <right-side>mais TERMO</right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_TERMOS</left-side>
+          <right-side>menos TERMO</right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_TERMOS</left-side>
+          <right-side>or TERMO</right-side>
+        </production>
+        <!-- FATOR -->
+        <production>
+          <left-side>FATOR</left-side>
+          <right-side>identificador CHAMADA_VARIAVEL</right-side>
+        </production>
+        <production>
+          <left-side>FATOR</left-side>
+          <right-side>numero</right-side>
+        </production>
+        <production>
+          <left-side>FATOR</left-side>
+          <right-side>open_paren EXPRESSAO close_paren</right-side>
+        </production>
+        <production>
+          <left-side>FATOR</left-side>
+          <right-side>not FATOR</right-side>
+        </production>
+        <!-- CHAMADA_VARIAVEL -->
+        <production>
+          <left-side>CHAMADA_VARIAVEL</left-side>
+          <right-side>CHAMADA_FUNCAO</right-side>
+        </production>
+        <production>
+          <left-side>CHAMADA_VARIAVEL</left-side>
+          <right-side>VARIAVEL_CONT</right-side>
+        </production>
+        <!-- CHAMADA_FUNCAO -->
+        <production>
+          <left-side>CHAMADA_FUNCAO</left-side>
+          <right-side>
+            open_paren LISTA_EXPRESSOES close_paren
+          </right-side>
+        </production>
+        <!-- OUTROS_FATORES -->
+        <production>
+          <left-side>OUTROS_FATORES</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_FATORES</left-side>
+          <right-side>vezes FATOR</right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_FATORES</left-side>
+          <right-side>div FATOR</right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_FATORES</left-side>
+          <right-side>and FATOR</right-side>
+        </production>
+        <production>
+          <left-side>OUTROS_FATORES</left-side>
+          <right-side>mod FATOR</right-side>
+        </production>
+        <!-- VARIAVEL -->
+        <production>
+          <left-side>VARIAVEL</left-side>
+          <right-side>identificador VARIAVEL_CONT</right-side>
+        </production>
+        <!-- VARIAVEL_CONT -->
+        <production>
+          <left-side>VARIAVEL_CONT</left-side>
+          <right-side>
+            open_bracket LISTA_EXPRESSOES close_bracket
+          </right-side>
+        </production>
+      </rules>
+    </grammar>
+  </syntatic>
+</compiler>

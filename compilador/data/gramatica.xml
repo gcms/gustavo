@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<gramatica>
+<simbolo-inicial>programa</simbolo-inicial>
+<producoes>
+<programa>
+       <t>program</t>
+       <t>identificador</t>
+       <t>(</t>
+       <nt>lista_identificadores</nt>
+       <t>)</t>       <t>;</t>
+       <nt>bloco</nt>
+       <t>.</t>
+</programa>
+<bloco>
+       <nt>definicoes_tipos_opc</nt>
+       <nt>declaracoes_vars_opc</nt>
+       <nt>declaracoes_subrots_opc</nt>
+       <nt>comando_composto</nt>
+</bloco>
+
+<!--Declaracoes-->
+
+<definicoes_tipos_opc>
+       <r></r>
+       <r>
+               <nt>definicoes_tipos</nt>
+       </r>
+</definicoes_tipos_opc>
+
+<definicoes_tipos>
+       <t>type</t>
+       <nt>definicao_tipo</nt>
+       <t>;</t>
+       <nt>outras_definicoes_tipo</nt>
+</definicoes_tipos>
+
+<outras_definicoes_tipo>
+       <r></r>
+       <r>
+               <!-- duvida nisso -->
+               <nt>definicao_tipo</nt>
+               <t>;</t>
+               <nt>outras_definicoes_tipo</nt>
+       </r>
+</outras_definicoes_tipo>
+
+<definicao_tipo>
+       <t>identificador</t>
+       <t>=</t>
+       <nt>tipo</nt>
+</definicao_tipo>
+
+<tipo>
+       <r>
+               <t>identificador</t>
+       </r>
+       <r>
+               <t>array</t>
+               <t>[</t>
+               <nt>indice</nt>
+               <nt>outros_indices</nt>
+               <t>]</t>
+               <t>of</t>
+               <nt>tipo</nt>
+       </r>
+</tipo>
+
+<indice>
+       <t>numero</t>
+       <t>..</t>
+       <t>numero</t>
+</indice>
+
+<outros_indices>
+       <r></r>
+       <r>
+               <t>,</t>
+               <nt>indice</nt>
+               <nt>outros_indices</nt>
+       </r>
+</outros_indices>
+
+<declaracoes_vars_opc>
+       <r></r>
+       <r>
+               <nt>declaracoes_vars</nt>
+       </r>
+</declaracoes_vars_opc>
+
+<declaracoes_vars>
+       <t>var</t>
+       <nt>declaracao_vars</nt>
+       <t>;</t>
+       <nt>outras_declaracoes_vars</nt>
+</declaracoes_vars>
+
+<outras_declaracoes_vars>
+       <r></r>
+       <r>
+               <nt>declaracao_vars</nt>
+               <t>;</t>
+               <nt>outras_declaracoes_vars</nt>
+       </r>
+</outras_declaracoes_vars>
+
+<declaracao_vars>
+       <nt>lista_identificadores</nt>
+       <t>:</t>
+       <nt>tipo</nt>
+</declaracao_vars>
+
+<lista_identificadores>
+       <t>identificador</t>
+       <nt>outros_identificadores</nt>
+</lista_identificadores>
+
+<outros_identificadores>
+       <r></r>
+       <r>   <t>,</t>
+               <nt>lista_identificadores</nt>
+       </r>
+</outros_identificadores>
+
+<declaracoes_subrots_opc>
+       <r>
+               <nt>declaracoes_subrots</nt>
+       </r>
+</declaracoes_subrots_opc>
+
+<declaracoes_subrots>
+       <r></r>
+       <r>
+               <nt>declaracao_procedimento</nt>
+               <t>;</t>
+               <nt>declaracoes_subrots</nt>
+       </r>
+       <r>
+               <nt>declaracao_funcao</nt>
+               <t>;</t>
+               <nt>declaracoes_subrots</nt>
+       </r>
+</declaracoes_subrots>
+
+<declaracao_procedimento>
+       <t>procedure</t>
+       <t>identificador</t>
+       <nt>parametros_formais_opc</nt>
+       <t>;</t>
+       <nt>bloco</nt>
+</declaracao_procedimento>
+
+<parametros_formais_opc>
+       <r></r>
+       <r>
+               <nt>parametros_formais</nt>
+       </r>
+</parametros_formais_opc>
+
+<parametros_formais>
+       <t>(</t>
+       <nt>secao_parametros_formais</nt>
+       <nt>outros_parametros_formais</nt>
+       <t>)</t>
+</parametros_formais>
+
+<outros_parametros_formais>
+       <r></r>
+       <r>
+               <t>;</t>
+               <nt>secao_parametros_formais</nt>
+               <nt>outros_parametros_formais</nt>
+       </r>
+</outros_parametros_formais>
+
+<secao_parametros_formais>
+       <r>
+               <nt>var_opc</nt>
+               <nt>lista_identificadores</nt>
+               <t>:</t>
+               <t>identificador</t>
+       </r>
+       <r>
+               <t>function</t>
+               <nt>lista_identificadores</nt>
+               <t>:</t>
+               <t>identificador</t>
+       </r>
+       <r>
+               <t>procedure</t>
+               <nt>lista_identificadores</nt>
+       </r>
+</secao_parametros_formais>
+
+<var_opc>
+       <r></r>
+       <r>
+               <t>var</t>
+       </r>
+</var_opc>
+
+<declaracao_funcao>
+       <t>function</t>
+       <t>identificador</t>
+       <nt>parametros_formais_opc</nt>
+       <t>:</t>
+       <t>identificador</t>
+       <t>;</t>
+       <nt>bloco</nt>
+</declaracao_funcao>
+
+<!--Comandos-->
+<!--Todos os identificadores devem ser declarados antes de seu uso-->
+<!--Identificadores que devem ser considerados Pr�declarados
+       -"entrada"
+       -"saida"
+       -"inteiro"
+       -"booleano"
+       -"ler"
+       -"escrever"
+       -"sim"
+       -"nao"
+
+       -->
+
+<comando_composto>
+       <t>begin</t>
+       <nt>comando</nt>
+       <t>;</t>
+       <nt>outros_comandos</nt>
+       <t>end</t>
+</comando_composto>
+
+<outros_comandos>
+       <r></r>
+       <r>
+               <nt>comando</nt>
+               <t>;</t>
+               <nt>outros_comandos</nt>
+       </r>
+</outros_comandos>
+
+<comando>
+       <r>
+                       <t>identificador</t>
+                       <nt>atribuicao_chamada_procedimento</nt>
+       </r>
+       <r>
+               <nt>comando_composto</nt>
+       </r>
+       <r>
+               <nt>comando_condicional</nt>
+       </r>
+       <r>
+               <nt>comando_repetitivo</nt>
+       </r>
+</comando>
+
+<atribuicao_chamada_procedimento>
+       <r>
+               <t>:=</t>
+               <nt>expressao</nt>
+       </r>
+       <r>
+                       <t>[</t>
+                       <nt>lista_expressoes</nt>
+                       <t>]</t>
+                       <t>:=</t>
+                       <nt>expressao</nt>
+       </r>
+        <r>
+               <nt>lista_expressoes_opc</nt>
+        </r>
+</atribuicao_chamada_procedimento>
+
+<atribuicao>
+       <nt>variavel</nt>
+       <t>:=</t>
+       <nt>expressao</nt>
+</atribuicao>
+
+<chamada_procedimento>
+       <t>identificador</t>
+       <nt>lista_expressoes_opc</nt>
+</chamada_procedimento>
+
+       <lista_expressoes_opc >
+               <r>
+                       <t>(</t>
+                       <nt>lista_expressoes</nt>
+                       <t>)</t>
+               </r>
+               <r></r>
+       </lista_expressoes_opc>
+
+       <!--Definicao de lista_expressoes -->
+       <lista_expressoes >
+               <r>
+                       <nt>expressao</nt>
+                       <nt>outras_expressoes</nt>
+               </r>
+       </lista_expressoes>
+
+<comando_condicional>
+       <t>if</t>
+       <nt>expressao</nt>
+       <t>then</t>
+       <nt>comando</nt>
+       <nt>senao_opc</nt>
+</comando_condicional>
+
+<senao_opc>
+       <r></r>
+       <r>
+               <t>else</t>
+               <nt>comando</nt>
+       </r>
+</senao_opc>
+
+<comando_repetitivo>
+       <t>while</t>
+       <nt>expressao</nt>
+       <t>do</t>
+       <nt>comando</nt>
+</comando_repetitivo>
+
+<lista_expressoes>
+       <nt>expressao</nt>
+       <nt>outras_expressoes</nt>
+</lista_expressoes>
+
+<outras_expressoes>
+       <r></r>
+       <r>
+               <t>,</t>
+               <nt>expressao</nt>
+               <nt>outras_expressoes</nt>
+       </r>
+</outras_expressoes>
+
+
+<expressao>
+       <nt>expressao_simples</nt>
+       <nt>rel_expressao_opc</nt>
+</expressao>
+
+<rel_expressao_opc>
+       <r></r>
+       <r>
+               <nt>relacao</nt>
+               <nt>expressao_simples</nt>
+       </r>
+</rel_expressao_opc>
+
+
+<relacao>
+       <r>
+               <t>=</t>
+       </r>
+        <r>
+               <t>&lt;&gt;</t>
+       </r>
+       <r>
+               <t>&lt;</t>
+       </r>
+       <r>
+               <t>&gt;</t>
+       </r>
+       <r>
+               <t>&lt;=</t>
+       </r>
+       <r>
+               <t>&gt;=</t>
+       </r>
+</relacao>
+
+<expressao_simples>
+       <nt>sinal_opc</nt>
+       <nt>termo</nt>
+       <nt>outros_termos</nt>
+</expressao_simples>
+
+<sinal_opc>
+       <r></r>
+       <r>
+               <t>+</t>
+       </r>
+       <r>
+               <t>-</t>
+       </r>
+</sinal_opc>
+
+<termo>
+       <nt>fator</nt>
+       <nt>outros_fatores</nt>
+</termo>
+
+<outros_termos>
+       <r></r>
+       <r>
+               <t>+</t>
+               <nt>termo</nt>
+       </r>
+       <r>
+               <t>-</t>
+               <nt>termo</nt>
+       </r>
+       <r>
+               <t>or</t>
+               <nt>termo</nt>
+       </r>
+</outros_termos>
+
+<fator>
+       <r>     <t>identificador</t>
+              <nt>chamada-variavel</nt>
+        </r>
+       <r>
+               <t>numero</t>
+       </r>
+       <r>
+               <t>(</t>
+               <nt>expressao</nt>
+               <t>)</t>
+       </r>
+       <r>
+               <t>not</t>
+               <nt>fator</nt>
+       </r>
+</fator>
+
+<chamada-variavel>
+       <r>
+               <nt>chamada_funcao</nt>
+       </r>
+       <r>
+               <nt>variavel_cont</nt>
+       </r>
+</chamada-variavel>
+
+<chamada_funcao>
+       <t>(</t>
+       <nt>lista_expressoes</nt>
+        <t>)</t>
+</chamada_funcao>
+
+<outros_fatores>
+       <r></r>
+       <r>
+               <t>*</t>
+               <nt>fator</nt>
+       </r>
+       <r>
+               <t>div</t>
+               <nt>fator</nt>
+       </r>
+       <r>
+               <t>and</t>
+               <nt>fator</nt>
+       </r>
+        <r>
+               <t>mod</t>
+               <nt>fator</nt>
+       </r>
+</outros_fatores>
+
+<variavel>
+          <r>
+                     <t>identificador</t>
+                     <nt>variavel_cont</nt>
+               </r>
+</variavel>
+
+<variavel_cont>
+               <r>
+                       <t>[</t>
+                       <nt>lista_expressoes</nt>
+                       <t>]</t>
+               </r>
+               <r></r>
+</variavel_cont>
+
+</producoes>
+</gramatica>
+

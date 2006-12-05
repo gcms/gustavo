@@ -25,7 +25,7 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 	 * @param sentence
 	 */
 	public Sentence(Sentence sentence) {
-		this.symbols = new ArrayList<Symbol>(symbols);
+		this.symbols = new ArrayList<Symbol>(sentence.symbols);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 	 * @param j
 	 * @return nova sequencia
 	 */
-	public Collection<? extends Symbol> subSentence(int i, int j) {
+	public Sentence subSentence(int i, int j) {
 		return new Sentence(symbols.subList(i, j));
 	}
 
@@ -140,7 +140,7 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 			}
 		}
 
-		return null;
+		return new Sentence(new ArrayList<Symbol>());
 	}
 
 	/**

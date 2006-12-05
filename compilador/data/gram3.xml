@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--Especificacao de um subconjunto da linguagem Pascal, baseada em
+		"IMPLEMENTACAO DE LINGUAGENS DE PROGRAMACAO", de Tomasz Kowaltowski
+		Editora Guanabara Dois, 1983  -->
+
+
+<gramatica>	
+	
+<!-- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=	-->
+<!-- 		Analisador sintatico, essa tag deve sempre existir  			-->
+<!-- 		para a execucao das funcoes do analisador sintatico 			-->
+<!-- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=	-->
+		<prog inicial="true">
+			<r>
+ 				<t>programa</t> 
+				<t>identificador</t>
+				<t>(</t>
+				<nt>lista_identificadores</nt>
+				<t>)</t>
+				<t>;</t>
+				<nt>bloco</nt>
+				<t>.</t>
+			</r>
+		</prog>
+		
+		<bloco>
+			<r>
+				<nt>definicoes_tipos_opc</nt>
+				<nt>declaracoes_vars_opc</nt>
+				<nt>declaracoes_subrots_opc</nt>
+				<nt>comando_composto</nt>  			
+			</r>
+		</bloco>
+		
+		<!--Declaracoes-->
+		
+		<definicoes_tipos_opc>
+			<r>
+			       <t></t>
+			</r>
+			<r>
+				<t>tipo</t>
+				<nt>definicao_tipo</nt>
+				<nt>outras_definicoes_tipo</nt>
+				<t>;</t>
+			</r>
+		</definicoes_tipos_opc>
+		
+		<definicao_tipo>
+			<r>
+				<t>identificador</t>
+				<t>=</t>
+				<nt>tipos</nt>
+			</r>
+		</definicao_tipo>
+		
+		<outras_definicoes_tipo>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>,</t>
+				<nt>definicao_tipo</nt>
+				<nt>outras_definicoes_tipo</nt>
+			</r>
+		</outras_definicoes_tipo>
+		
+		<tipos>
+			<r>
+				<t>identificador</t>
+			</r>
+			<r>
+				<t>numero</t>
+			</r>			
+			<r>
+				<t>arranjo</t>
+				<t>{</t>
+				<nt>indice</nt>
+				<nt>outros_indices</nt>
+				<t>}</t>
+				<t>de</t>
+				<nt>tipos</nt>
+			</r>
+		</tipos>
+		
+		<indice>
+			<r>
+				<t>numero</t>
+				<t>.</t>
+				<t>.</t>
+				<t>numero</t>
+			</r>
+		</indice>
+		
+		<outros_indices>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>,</t>
+				<nt>indice</nt>
+				<nt>outros_indices</nt>
+			</r>
+		</outros_indices>
+		
+		<declaracoes_vars_opc>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>var</t>
+				<nt>declaracao_vars</nt>
+				<nt>outras_declaracoes_vars</nt>
+				<t>;</t>
+			</r>
+		</declaracoes_vars_opc>
+		
+		<declaracao_vars>
+			<r>
+				<nt>lista_identificadores</nt>
+				<t>:</t>
+				<nt>tipos</nt>
+			</r>
+		</declaracao_vars>
+		
+		<lista_identificadores>
+			<r>
+				<t>identificador</t>
+				<nt>outros_identificadores</nt>
+			</r>
+		</lista_identificadores>
+		
+		<outros_identificadores>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>,</t>
+				<t>identificador</t>
+				<nt>outros_identificadores</nt>
+			</r>
+		</outros_identificadores>
+		
+		<outras_declaracoes_vars>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>,</t>
+				<nt>declaracao_vars</nt>
+				<nt>outras_declaracoes_vars</nt>
+			</r>
+		</outras_declaracoes_vars>
+		
+		<declaracoes_subrots_opc>
+		        <r>
+			   	<t></t>
+			</r>
+			<r>
+				<nt>declaracao_procedimento</nt>
+				<t>;</t>
+				<nt>declaracoes_subrots_opc</nt>
+			</r>
+			<r>
+				<nt>declaracao_funcao</nt>
+				<t>;</t>
+				<nt>declaracoes_subrots_opc</nt>
+			</r>
+		</declaracoes_subrots_opc>
+		
+		<declaracao_procedimento>
+			<r>
+				<t>procedimento</t>
+				<t>identificador</t>
+				<nt>parametros_formais_opc</nt>
+				<t>;</t>
+				<nt>bloco</nt>
+				<t>;</t>
+			</r>
+		</declaracao_procedimento>
+		
+		<parametros_formais_opc>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>(</t>
+				<nt>secao_parametros_formais</nt>
+				<nt>outros_parametros_formais</nt>
+				<t>)</t>
+			</r>
+		</parametros_formais_opc>
+		
+		<outros_parametros_formais>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>;</t>
+				<nt>secao_parametros_formais</nt>
+				<nt>outros_parametros_formais</nt>
+			</r>
+		</outros_parametros_formais>
+		
+		<secao_parametros_formais>
+			<r>
+				<nt>var_opc</nt>
+				<nt>lista_identificadores</nt>
+				<t>:</t>
+				<t>identificador</t>
+			</r>
+			<r>
+				<t>funcao</t>
+				<nt>lista_identificadores</nt>
+				<t>:</t>
+				<t>identificador</t>
+			</r>
+			<r>
+				<t>procedimento</t>
+				<nt>lista_identificadores</nt>
+			</r>
+		</secao_parametros_formais>
+		
+		<var_opc>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>var</t>
+			</r>
+		</var_opc>
+		
+		<declaracao_funcao>
+			<r>
+				<t>funcao</t>
+				<t>identificador</t>
+				<nt>parametros_formais_opc</nt>
+				<t>:</t>
+				<t>identificador</t>
+				<t>;</t>
+				<nt>bloco</nt>
+				<t>;</t>
+			</r>
+		</declaracao_funcao>
+		
+		<!--Comandos-->
+		<!--Todos os identificadores devem ser declarados antes de seu uso-->
+		<!--Identificadores que devem ser considerados Pre-declarados
+			-"entrada"
+			-"saida"
+			-"inteiro"
+			-"booleano"
+			-"ler"
+			-"escrever"
+			-"sim"
+			-"nao"
+		
+			-->
+		
+		<comando_composto>
+			<r>
+				<t>inicio</t>
+				<nt>comando</nt>
+				<nt>outros_comandos</nt>
+				<t>fim</t>
+			</r>
+		</comando_composto>
+		
+		<comando>
+			<r>
+				<nt>atribuicao</nt>
+				<t>;</t>
+			</r>
+			<r>
+				<nt>chamada_procedimento</nt>
+				<t>;</t>	
+			</r>
+			<r>
+				<nt>chamada_funcao</nt>
+				<t>;</t>	
+			</r>		
+			<r>
+				<nt>comando_composto</nt>
+				<t>;</t>
+			</r>
+			<r>
+				<nt>comando_condicional</nt>
+				<t>;</t>
+			</r>
+			<r>
+				<nt>comando_repetitivo</nt>
+				<t>;</t>
+			</r>
+		</comando>
+		
+		<outros_comandos>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<nt>comando</nt>
+				<nt>outros_comandos</nt>
+			</r>
+		</outros_comandos>
+		
+		<atribuicao>
+			<r>
+				<nt>variavel</nt>
+				<t>:</t>
+				<t>=</t>
+				<nt>expressao</nt>
+			</r>
+		</atribuicao>
+		
+		<chamada_procedimento>
+			<r>
+				<t>procedimento</t>
+				<t>identificador</t>
+				<nt>lista_expressoes_opc</nt>
+			</r>
+		</chamada_procedimento>
+		
+		<comando_condicional>
+			<r>
+				<t>se</t>
+				<t>(</t>				
+				<nt>expressao</nt>
+				<t>)</t>
+				<t>entao</t>
+				<nt>comando</nt>
+				<nt>senao_opc</nt>
+			</r>
+		</comando_condicional>
+		
+		<senao_opc>
+			<r>
+			        <t></t>
+			</r>
+			<r>		
+				<t>senao</t>
+				<nt>comando</nt>
+			</r>
+		</senao_opc>
+		
+		<comando_repetitivo>
+			<r>
+				<t>enquanto</t>
+				<t>(</t>
+				<nt>expressao</nt>
+				<t>)</t>
+				<t>faca</t>
+				<nt>comando</nt>
+			</r>
+		</comando_repetitivo>
+		
+		<lista_expressoes_opc>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>(</t>
+				<nt>lista_expressoes</nt>
+				<t>)</t>
+			</r>
+		</lista_expressoes_opc>
+		
+		
+		<!--Os comandos de entrada e saida devem ser considerados como chamadas de procedimentos.
+			Deve-se supor que exista um arquivo padrao de entrada contendo apenas numeros inteiros
+			lidos pelo comando "leia(v1, ..., vn)", onde v1, ..., vn sao variaveis inteiras. 
+			Analogamente, existe o comando "escreva(e1, ..., em)", onde e1, ..., em sao expressoes 
+			inteiras -->
+		
+		<lista_expressoes>
+			<r>
+				<nt>expressao</nt>
+				<nt>outras_expressoes</nt>
+			</r>
+		</lista_expressoes>
+		
+		<outras_expressoes>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>,</t>
+				<nt>lista_expressoes</nt>
+			</r>
+		</outras_expressoes>
+		
+		<expressao>
+			<r>
+				<nt>expressao_simples</nt>
+				<nt>rel_expressao_opc</nt>
+			</r>
+		</expressao>
+		
+		<rel_expressao_opc>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<nt>relacao</nt>
+				<nt>expressao_simples</nt>
+			</r>
+		</rel_expressao_opc>
+		
+		
+		<relacao>
+			<r>
+				<t>=</t>
+			</r>
+			<r>
+				<t>&lt;&gt;</t>
+			</r>
+			<r>
+				<t>&lt;</t>
+			</r>
+			<r>
+				<t>&gt;</t>
+			</r>
+			<r>
+				<t>&gt;=</t>
+			</r>
+			<r>
+				<t>&lt;=</t>
+			</r>
+			
+		</relacao>
+		
+		<expressao_simples>
+			<r>
+				<nt>fator</nt>
+				<nt>outros_fatores</nt>
+				<nt>outros_termos</nt>
+			</r>
+		</expressao_simples>
+		
+		<termo>
+			<r>
+				<nt>fator</nt>
+				<nt>outros_fatores</nt>
+			</r>
+		</termo>
+		
+		<outros_termos>
+		        <r>
+			        <t></t>
+			</r>
+		
+		<r>
+			<t>+</t>
+			<nt>termo</nt>
+		</r>
+		<r>
+			<t>-</t>
+			<nt>termo</nt>
+		</r>
+		<r>
+			<t>or</t> 
+			<nt>termo</nt>
+		</r>
+		<!--<r>
+			<t>=</t>
+			<nt>termo</nt>
+		</r>
+		<r>
+			<t>&lt;&gt;</t>
+			<nt>termo</nt>
+		</r>
+		<r>
+			<t>&gt;</t>
+			<nt>termo</nt>
+		</r>
+		<r>
+			<t>&lt;</t>
+			<nt>termo</nt>
+		</r>
+		<r>
+			<t>&lt;=</t>
+			<nt>termo</nt>
+		</r>
+		<r>
+			<t>&gt;=</t>
+			<nt>termo</nt>
+		</r>
+		<r>
+		        <t></t>
+		</r>-->
+		</outros_termos>
+		
+		<fator>
+			<r>
+				<nt>variavel</nt>
+			</r>
+			<r>
+				<t>numero</t>
+			</r>
+			<r>
+				<nt>chamada_funcao</nt>
+			</r>
+			<r>
+				<t>(</t>
+				<nt>expressao</nt>
+				<t>)</t>
+			</r>
+			<r>
+				<t>nao</t>
+				<nt>fator</nt>
+			</r>
+		</fator>
+		
+		
+		<outros_fatores>
+			<r>
+			        <t></t>
+			</r>
+			<r>
+				<t>*</t>
+				<nt>fator</nt>
+			</r>
+			<r>
+				<t>/</t>
+				<nt>fator</nt>
+			</r>
+			<r>
+				<t>and</t>
+				<nt>fator</nt>
+			</r>
+		</outros_fatores>
+		
+		<variavel>
+		        <r>
+			        <t>identificador</t>
+				<nt>variavel_cont</nt>
+		        </r>
+		</variavel>
+		<variavel_cont>
+		        <r>
+			        <t>{</t>
+				<nt>lista_expressoes</nt>
+				<t>}</t>
+		       </r>
+		       <r>
+		                <t></t>
+		       </r>
+		</variavel_cont>
+	
+	        <chamada_funcao>
+		        <r>
+			        <t>funcao</t>
+				<t>identificador</t>
+				<nt>lista_expressoes_opc</nt>
+		       </r>
+	        </chamada_funcao>
+</gramatica>

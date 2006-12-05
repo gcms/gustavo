@@ -8,6 +8,7 @@ import java.util.Set;
 
 import br.ufg.inf.compiler.main.LexicalException;
 
+import monq.jfa.AbstractFaAction;
 import monq.jfa.CallbackException;
 import monq.jfa.CharSource;
 import monq.jfa.CompileDfaException;
@@ -23,7 +24,7 @@ import monq.jfa.ReSyntaxException;
  * pode ser usado para gerar uma sequencia de tokens, a partir de uma sequencia
  * de caracteres.
  * 
- * @author gustavomota
+ * @author gustavo
  * 
  */
 public class Lexer {
@@ -50,6 +51,8 @@ public class Lexer {
 
 	/** Thread onde o processamento e realizado. */
 	private Thread t;
+
+	private int priority = Integer.MAX_VALUE;
 
 	/**
 	 * Cria um novo analisador lexico, a partir de uma fonte de caracteres.
@@ -110,7 +113,12 @@ public class Lexer {
 	 */
 	void addTokenRule(final String tokenName, String tokenRule)
 			throws ReSyntaxException {
-		FaAction action = new FaAction() {
+		class MyAction extends AbstractFaAction {
+			private static final long serialVersionUID = -6948125824009493478L;
+
+			public MyAction() {
+				setPriority(Lexer.this.priority--);
+			}
 
 			public void invoke(StringBuffer arg0, int arg1, DfaRun arg2)
 					throws CallbackException {
@@ -125,11 +133,21 @@ public class Lexer {
 					Lexer.this.notifyAll();
 				}
 			}
+		}
+		;
 
-			public FaAction mergeWith(FaAction arg0) {
-				return null;
-			}
-		};
+		FaAction action;
+		if (tokenName == null || tokenName.equals("")) {
+			action = new MyAction() {
+				private static final long serialVersionUID = -7066473078024093880L;
+
+				public void invoke(StringBuffer arg0, int arg1, DfaRun arg2)
+						throws CallbackException {
+				}
+			};
+		} else {
+			action = new MyAction();
+		}
 
 		nfa.or(tokenRule, action);
 	}
@@ -144,14 +162,28 @@ public class Lexer {
 	 * @throws IOException
 	 */
 	private void run(CharSource src) throws CompileDfaException, IOException {
-		Dfa dfa = nfa.compile(DfaRun.UNMATCHED_THROW);
+		Dfa dfa = nfa.compile(DfaRun.UNMATCHED_THROW, new FaAction() {
+
+			public void invoke(StringBuffer arg0, int arg1, DfaRun arg2)
+					throws CallbackException {
+				// TODO Auto-generated method stub
+
+			}
+
+			public FaAction mergeWith(FaAction arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+		});
 
 		DfaRun run = new DfaRun(dfa, src);
 
 		try {
 			run.filter();
 		} catch (NomatchException e) {
-			throw new LexicalException(e);
+			throw new LexicalException("Lexer: Erro lexico\n"
+					+ e.getLocalizedMessage());
 		}
 	}
 
@@ -161,7 +193,7 @@ public class Lexer {
 	 * 
 	 * @return próximo token
 	 */
-	public Lexeme nextToken() {
+	public Lexeme nextLexeme() {
 		synchronized (this) {
 			/* inicia a thread the processamento (caso nao tenha iniciado) */
 			if (!started) {
@@ -195,7 +227,6 @@ public class Lexer {
 	 * 
 	 * Token tok;
 	 * 
-	 * while ((tok = t.nextToken()) != null) { System.out.println(tok); }
-	 *  }
+	 * while ((tok = t.nextToken()) != null) { System.out.println(tok); } }
 	 */
 }
