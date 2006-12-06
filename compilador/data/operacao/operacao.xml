@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler>
+  <lexical>
+    <token-spec>
+      <token>
+        <name></name>
+        <regex>[ \t\r\n]+</regex>
+      </token>
+      <token>
+        <name>program</name>
+        <regex>program</regex>
+      </token>
+      <token>
+        <name>var</name>
+        <regex>var</regex>
+      </token>
+      <token>
+        <name>begin</name>
+        <regex>begin</regex>
+      </token>
+      <token>
+        <name>end</name>
+        <regex>end</regex>
+      </token>
+      <token>
+        <name>if</name>
+        <regex>if</regex>
+      </token>
+      <token>
+        <name>then</name>
+        <regex>then</regex>
+      </token>
+      <token>
+        <name>while</name>
+        <regex>while</regex>
+      </token>
+      <token>
+        <name>do</name>
+        <regex>do</regex>
+      </token>
+      <token>
+      	<name>number</name>
+      	<regex>[0-9]+</regex>
+      </token>
+      <token>
+      	<name>colon</name>
+      	<regex>:</regex>
+      </token>
+      <token>
+      	<name>semicolon</name>
+      	<regex>;</regex>
+      </token>
+      <token>
+      	<name>comma</name>
+      	<regex>,</regex>
+      </token>
+      <token>
+      	<name>dot</name>
+      	<regex>\.</regex>
+      </token>
+      <token>
+      	<name>attrib</name>
+      	<regex>:=</regex>
+      </token>
+      <token>
+      	<name>close_paren</name>
+      	<regex>\)</regex>
+      </token>
+      <token>
+      	<name>open_paren</name>
+      	<regex>\(</regex>
+      </token>
+      <token>
+        <name>id</name>
+        <regex>[a-zA-Z_]+[a-zA-Z0-9_]*</regex>
+      </token>
+    </token-spec>
+  </lexical>
+  <syntatic>
+    <grammar>
+      <start-symbol>PROGRAM</start-symbol>
+      <rules>
+        <production>
+          <left-side>PROGRAM</left-side>
+          <right-side>program VAR_DECL_OPT BLOCK dot</right-side>
+        </production>
+        <production>
+          <left-side>VAR_DECL_OPT</left-side>
+          <right-side></right-side>
+        </production>
+        <production>
+          <left-side>VAR_DECL_OPT</left-side>
+          <right-side>var id DECL_OPT</right-side>
+        </production>
+        <production>
+       	  <left-side>DECL_OPT</left-side>
+       	  <right-side>semicolon</right-side>
+       	</production>
+        <production>
+       	  <left-side>DECL_OPT</left-side>
+       	  <right-side>comma id DECL_OPT</right-side>
+       	</production>
+        <production>
+       	  <left-side>BLOCK</left-side>
+       	  <right-side>begin COMMANDS_OPT end</right-side>
+       	</production>
+       	<!-- COMMANDS_OPT -->
+       	<production>
+       	  <left-side>COMMANDS_OPT</left-side>
+       	  <right-side></right-side>
+       	</production>
+       	<production>
+       	  <left-side>COMMANDS_OPT</left-side>
+          <right-side>COMMAND COMMANDS_OPT</right-side><!-- NOTE -->
+        </production>
+        <!-- COMMAND -->
+       	<production>
+       	  <left-side>COMMAND</left-side>
+       	  <right-side>COMMAND_ATTRIB</right-side>
+       	</production>
+       	<production>
+       	  <left-side>COMMAND</left-side>
+       	  <right-side>COMMAND_IF</right-side>
+       	</production>
+       	<production>
+       	  <left-side>COMMAND</left-side>
+       	  <right-side>COMMAND_WHILE</right-side>
+        </production>
+        <!-- COMMAND_ATTRIB -->
+       	<production>
+       	  <left-side>COMMAND_ATTRIB</left-side>
+       	  <right-side>id attrib EXPR semicolon</right-side>
+       	</production>
+       	<production>
+       	  <left-side>EXPR</left-side>
+       	  <right-side>id FUNCTION_CALL</right-side>
+       	</production>
+       	<production>
+       	  <left-side>EXPR</left-side>
+       	  <right-side>number</right-side>
+       	</production>
+       	<production>
+       	  <left-side>FUNCTION_CALL</left-side>
+       	  <right-side></right-side>
+       	</production>
+       	<production>
+       	  <left-side>FUNCTION_CALL</left-side>
+       	  <right-side>open_paren EXPR_LIST close_paren</right-side>
+       	</production>
+       	<production>
+       	  <left-side>EXPR_LIST</left-side>
+       	  <right-side></right-side>
+       	</production>       	
+       	<production>
+       	  <left-side>EXPR_LIST</left-side>
+       	  <right-side>EXPR EXPR_LIST_OPT</right-side>
+       	</production>
+       	<production>
+       	  <left-side>EXPR_LIST_OPT</left-side>
+       	  <right-side></right-side>
+       	</production>     
+       	<production>
+       	  <left-side>EXPR_LIST_OPT</left-side>
+       	  <right-side>comma EXPR EXPR_LIST_OPT</right-side>
+        </production>
+        <!-- COMMAND_IF -->
+       	<production>
+       	  <left-side>COMMAND_IF</left-side>     
+          <right-side>
+            if open_paren EXPR close_paren then BLOCK semicolon
+          </right-side>
+        </production>
+        <!-- COMMAND_WHILE -->
+        <production>
+          <left-side>COMMAND_WHILE</left-side>
+          <right-side>
+            while open_paren EXPR close_paren do BLOCK semicolon
+          </right-side>
+        </production>
+      </rules>
+    </grammar>
+  </syntatic>
+</compiler>

@@ -1,0 +1,13 @@
+program
+var x, y;
+begin
+    if (x) then
+	    begin
+		    x := 10;
+        end;
+
+    while (y) do
+        begin
+            x := read();
+        end;
+end.

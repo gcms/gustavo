@@ -72,14 +72,15 @@ public class SyntaticTable {
 							+ nonTerm + ", " + term + "]: "
 							+ getEntry(nonTerm, term) + " " + production);
 
-		System.out.println("installing [" + nonTerm + ", " + term + "] = "
-				+ production);
+		// System.out.println("installing [" + nonTerm + ", " + term + "] = "
+		// + production);
 		table.put(new Entry(nonTerm, term), production);
 	}
 
 	private Grammar grammar;
 
 	public SyntaticTable(Grammar grammar) {
+		System.out.println("Criando tabela sintática...");
 		this.grammar = grammar;
 		table = new HashMap<Entry, Production>();
 
@@ -88,34 +89,35 @@ public class SyntaticTable {
 
 	private Set<Terminal> first(Sentence sentence) {
 		Set<Terminal> result = new HashSet<Terminal>();
-		System.out.println("+first(" + sentence + ")");
+		// System.out.println("+first(" + sentence + ")");
 
 		if (sentence.size() == 0) {
 			result.add(Terminal.EPSILON);
-			System.out.println("-first(" + sentence + ")");
-			return result;
 		} else if (sentence.first() instanceof Terminal) {
 			result.add((Terminal) sentence.first());
 		} else {
-			NonTerminal n = (NonTerminal) sentence.first();
-			for (Production p : grammar.getProductionsBySymbol(n)) {
-				if (p.derivesEpsilon()) {
-					result.add(Terminal.EPSILON);
-				} else {
+			Set<NonTerminal> visited = new HashSet<NonTerminal>();
+			for (Symbol symb : sentence) {
+				if (visited.contains(symb))
+					continue;
+				if (symb instanceof NonTerminal) {
+					visited.add((NonTerminal) symb);
+				}
+
+				result.remove(Terminal.EPSILON);
+				for (Production p : grammar
+						.getProductionsBySymbol((NonTerminal) symb)) {
 					result.addAll(first(p.getSentence()));
 				}
+
+				if (!result.contains(Terminal.EPSILON)) {
+					break;
+				}
 			}
+
 		}
 
-		if (result.contains(Terminal.EPSILON)) {
-			Sentence next = sentence.subSentence(1, sentence.size());
-
-			result.remove(Terminal.EPSILON);
-			if (!next.isEmpty())
-				result.addAll(first(next));
-		}
-
-		System.out.println("-first(" + sentence + ")");
+		// System.out.println("-first(" + sentence + ") = " + result);
 		return result;
 		// assert (sentence.first() instanceof NonTerminal);
 		//
@@ -173,7 +175,7 @@ public class SyntaticTable {
 
 		following.add(nonTerm);
 
-		System.out.println("follows(" + nonTerm + ")");
+		// System.out.println("-follows(" + nonTerm + ")");
 
 		/* Add the $ symbol to FOLLOW(StartSymbol) */
 		if (grammar.getStartSymbol().equals(nonTerm)) {
@@ -208,14 +210,71 @@ public class SyntaticTable {
 		followings.put(nonTerm, result);
 
 		following.remove(nonTerm);
-		System.out.println("+follows(" + nonTerm + ")");
+		System.out.println("-follows(" + nonTerm + ") = " + result);
 		return result;
 	}
 
-	private void fillTable() {
+	public Map<NonTerminal, Set<Terminal>> following() {
+		Map<NonTerminal, Set<Terminal>> following = new HashMap<NonTerminal, Set<Terminal>>();
+		Map<NonTerminal, Set<Terminal>> aux = new HashMap<NonTerminal, Set<Terminal>>();
 
+		do {
+			aux.putAll(following);
+			for (NonTerminal v : grammar.getNonTerminals()) {
+				Set<Terminal> s = following.get(v);
+				if (s == null) {
+					s = new HashSet<Terminal>();
+				} else {
+					Set<Terminal> tmp = s;
+					s = new HashSet<Terminal>();
+					s.addAll(tmp);
+				}
+
+				if (grammar.getStartSymbol().equals(v)) {
+					s.add(Terminal.END);
+				}
+
+				Set<Production> rules = grammar.getProductionsWith(v);
+
+				for (Production r : rules) {
+					Sentence p = r.getSentence();
+
+					int start = 0;
+
+					do {
+						start = p.get(v, start);
+
+						if (start < 0)
+							continue;
+						start++;
+
+						Sentence beta = p.subSentence(start, p.size());
+
+						Set<Terminal> temp = first(beta);
+						s.addAll(temp);
+						if (temp.contains(Terminal.EPSILON)) {
+							s.remove(Terminal.EPSILON);
+							NonTerminal a = r.getVariable();
+							if (following.get(a) != null) {
+								s.addAll(following.get(a));
+							}
+						}
+
+					} while (start >= 0);
+				}
+				following.put(v, s);
+			}
+		} while (!aux.equals(following));
+
+		return following;
+	}
+
+	private void fillTable() {
+		Map<NonTerminal, Set<Terminal>> followings = following();
+
+		System.out.println("Preenchendo entradas na tabela...");
 		for (Production p : grammar.getProductions()) {
-			System.out.println("fillTable to " + p);
+			// System.out.println("fillTable to " + p);
 			Set<Terminal> first = first(p.getSentence());
 			for (Terminal t : first) {
 				if (!t.equals(Terminal.EPSILON))
@@ -223,7 +282,7 @@ public class SyntaticTable {
 			}
 
 			if (first.contains(Terminal.EPSILON)) {
-				for (Terminal t : follows(p.getVariable())) {
+				for (Terminal t : followings.get(p.getVariable())) {
 					if (!t.equals(Terminal.EPSILON))
 						setEntry(p.getVariable(), t, p);
 				}
@@ -290,6 +349,8 @@ public class SyntaticTable {
 	public boolean parse(TokenStream stream) {
 		Stack<Symbol> stack = new Stack<Symbol>();
 
+		System.out.println("Processando entrada...");
+
 		stack.push(Terminal.END);
 		stack.push(grammar.getStartSymbol());
 
@@ -302,7 +363,7 @@ public class SyntaticTable {
 			t = stream.getToken();
 			a = (t == null ? Terminal.END : new Terminal(t.getTokenName()));
 
-			System.out.println("pilha = " + x + "\tlexeme = " + t);
+			System.out.println("PILHA = " + x + ",\tENTRADA = " + t);
 
 			if (x instanceof Terminal) {
 				if (x.equals(a)) {
@@ -314,7 +375,7 @@ public class SyntaticTable {
 			} else {
 				assert (x instanceof NonTerminal);
 				Production p = getEntry((NonTerminal) x, a);
-				System.out.println("getEntry(" + x + ", " + a + ") = " + p);
+
 				if (p != null && p.getVariable().equals(x)) {
 					stack.pop();
 
@@ -323,7 +384,8 @@ public class SyntaticTable {
 						stack.push(it.next());
 					}
 
-					System.out.println(p);
+					System.out.println("\tTABELA[" + x + ", " + a + "] = ( "
+							+ p + " )\n");
 				} else {
 					return false;
 				}
