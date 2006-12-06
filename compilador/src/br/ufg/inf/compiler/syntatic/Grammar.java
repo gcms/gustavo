@@ -211,7 +211,7 @@ public class Grammar {
 	 * 
 	 * @return conjunto de não terminais desta gramática
 	 */
-	private Set<NonTerminal> getNonTerminals() {
+	Set<NonTerminal> getNonTerminals() {
 		Set<NonTerminal> result = new HashSet<NonTerminal>();
 		for (Production p : productions) {
 
@@ -381,5 +381,14 @@ public class Grammar {
 	 */
 	public NonTerminal getStartSymbol() {
 		return startSymbol;
+	}
+
+	public Set<Production> getProductionsWith(NonTerminal v) {
+		Set<Production> result = new HashSet<Production>();
+		for (Production p : getProductions()) {
+			if (p.getSentence().contains(v))
+				result.add(p);
+		}
+		return result;
 	}
 }

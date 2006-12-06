@@ -4,6 +4,8 @@ import jargs.gnu.CmdLineParser;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import monq.jfa.ByteCharSource;
 import monq.jfa.CharSequenceCharSource;
@@ -54,65 +56,57 @@ public class Main {
 			System.exit(2);
 		}
 
+		Boolean isVerbose = (Boolean) parser.getOptionValue(verbose);
 		String grammarFile = (String) parser.getOptionValue(grammar);
 		String inputFile = (String) parser.getOptionValue(input);
 		String outputFile = (String) parser.getOptionValue(output);
 
 		String[] remaining = parser.getRemainingArgs();
 
-		// if (grammarFile == null) {
-		// printUsage();
-		// System.exit(2);
-		// }
-		//
-		// if (inputFile == null) {
-		// if (remaining == null || remaining.length == 0) {
-		// printUsage();
-		// System.exit(2);
-		// } else {
-		// inputFile = remaining[0];
-		// }
-		// }
-		//
-		// if (outputFile == null) {
-		// outputFile = inputFile + ".o";
-		// }
+		if (grammarFile == null) {
+			printUsage();
+			System.exit(2);
+		}
+
+		if (inputFile == null) {
+			if (remaining == null || remaining.length == 0) {
+				printUsage();
+				System.exit(2);
+			} else {
+				inputFile = remaining[0];
+			}
+		}
+
+		if (outputFile == null) {
+			outputFile = inputFile + ".o";
+		}
+
+		PrintStream sysout = System.out;
+		if (isVerbose == null || !isVerbose) {
+			System.setOut(new PrintStream(new OutputStream() {
+				@Override
+				public void write(int arg0) throws IOException {
+					// TODO Auto-generated method stub
+
+				}
+			}));
+		}
 
 		DOMBuilder builder = new DOMBuilder();
 
-		builder.parse("data/grammar3.xml");
+		builder.parse(grammarFile);
 
-		SyntaticTable table = new SyntaticTable(builder.getGrammar());
-
-		System.out.println("\n");
-		System.out.println(table);
-
-		Lexer lexer = builder.getLexerSpec().getLexer(
-				new ByteCharSource("data/exemplo1.txt"));
-		
-//		Lexeme lexeme;
-//		while ((lexeme = lexer.nextToken()) != null) {
-//			System.out.println(lexeme);
-//		}
-		
-//		System.out.println(table.parse(lexer));
-
-		// Compiler c = new Compiler(builder.getLexerSpec(),
-		// builder.getGrammar());
+		// Lexer l = builder.getLexerSpec()
+		// .getLexer(new ByteCharSource(inputFile));
+		// Lexeme lexeme;
 		//
-		// CharSource src = new ByteCharSource(inputFile);
-		// int data;
-		// try {
-		// while ((data = src.read()) != -1) {
-		// System.out.println("'" + (char) data + "'" + "\t" + data);
+		// while ((lexeme = l.nextLexeme()) != null) {
+		// System.out.println(lexeme);
 		// }
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// System.out.println("EOF");
-		//
-		// c.run(new CharSequenceCharSource("a+ba+aa+b"));
-		// c.run("data/exemplo.src");
+
+		Compiler c = new Compiler(builder.getLexerSpec(), builder.getGrammar());
+		boolean result = c.run(inputFile);
+
+		sysout.println(result);
 	}
 }

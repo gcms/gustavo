@@ -45,11 +45,11 @@ public class Compiler {
 	 * @param src
 	 *            fonte de caracteres
 	 */
-	public void run(CharSource src) {
+	public boolean run(CharSource src) {
 		Lexer lexer = spec.getLexer(src);
 		SyntaticTable table = new SyntaticTable(grammar);
 
-		System.out.println(table.parse(lexer));
+		return table.parse(lexer);
 	}
 
 	/**
@@ -59,8 +59,8 @@ public class Compiler {
 	 *            nome do arquivo
 	 * @throws FileNotFoundException
 	 */
-	public void run(String filename) throws FileNotFoundException {
-		run(new ByteCharSource(filename));
+	public boolean run(String filename) throws FileNotFoundException {
+		return run(new ByteCharSource(filename));
 	}
 
 	/**
@@ -72,10 +72,10 @@ public class Compiler {
 	 *            arquivo de saída
 	 * @throws FileNotFoundException
 	 */
-	public void run(String inputFile, String outputFile)
+	public boolean run(String inputFile, String outputFile)
 			throws FileNotFoundException {
 		System.setOut(new PrintStream(new File(outputFile)));
 
-		run(inputFile);
+		return run(inputFile);
 	}
 }

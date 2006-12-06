@@ -2,6 +2,7 @@ package br.ufg.inf.compiler.syntatic;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 	 */
 	public Sentence(Sentence sentence) {
 		this.symbols = new ArrayList<Symbol>(sentence.symbols);
+	}
+
+	public Sentence(Symbol[] symbols) {
+		this.symbols = new ArrayList<Symbol>();
+		Collections.addAll(this.symbols, symbols);
 	}
 
 	/**
@@ -140,7 +146,7 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 			}
 		}
 
-		return new Sentence(new ArrayList<Symbol>());
+		return null;
 	}
 
 	/**
@@ -221,5 +227,13 @@ public class Sentence implements Iterable<Symbol>, Collection<Symbol> {
 			System.out.print(it.next());
 		}
 		System.out.println();
+	}
+
+	public int get(NonTerminal v, int start) {
+		for (int i = start; i < symbols.size(); i++)
+			if (symbols.get(i).equals(v))
+				return i;
+
+		return -1;
 	}
 }

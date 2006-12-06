@@ -182,6 +182,10 @@ public class DOMBuilder {
 			}
 
 			if (name != null && regex != null) {
+				regex = regex.replaceAll("\\\\n", "\n");
+				regex = regex.replaceAll("\\\\r", "\r");
+				regex = regex.replaceAll("\\\\t", "\t");
+				
 				try {
 					spec.addTokenRule(name, regex);
 				} catch (ReSyntaxException e) {
