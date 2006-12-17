@@ -366,12 +366,14 @@ static void
 view_2button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
 		gpointer user_data)
 {
+    /*
 	ContingVisitor *view_visitor;
-
+    
 	view_visitor = g_object_new(CONTING_TYPE_VISITOR_VIEW, NULL);
 	conting_drawing_accept(drawing, view_visitor);
 
 	g_object_unref(view_visitor);
+    */
 //	conting_one_line_edit(conting_drawing_get_one_line(drawing), drawing);
 }
 
@@ -1920,7 +1922,7 @@ conting_one_line_get_widget(ContingOneLine *self)
 {
     ContingOneLinePrivate *priv;
 
-    g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+    g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), NULL);
 
     priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
