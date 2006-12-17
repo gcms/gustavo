@@ -9,6 +9,14 @@
 #include <string.h>
 #include <assert.h>
 
+/* PROPERTIES ENUM */
+enum {
+    CONTING_DATA_PROP_0,
+    CONTING_DATA_N_BUS,
+    CONTING_DATA_N_BRANCH,
+    CONTING_DATA_TITLE
+};
+
 /* PARENT CLASS POINTER */
 static gpointer parent_class = NULL;
 
@@ -23,6 +31,9 @@ struct ContingDataPrivate_ {
 
 	GHashTable *drawing_data;
 	GHashTable *data_drawing;
+
+    const gchar *title;
+    guint n_bus, n_branch;
 
 	gboolean loaded;
 };
@@ -245,7 +256,21 @@ conting_data_load_file(ContingData *self, ContingFile *file,
 
 	priv->item_data = conting_file_get_item_data(file, filename);
 	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+        ContingItemType type;
 		assert(CONTING_IS_ITEM_DATA(n->data));
+
+        g_object_get(n->data, "type", &type, NULL);
+
+        switch (type) {
+            case CONTING_ITEM_TYPE_BUS:
+                priv->n_bus++;
+                break;
+            case CONTING_ITEM_TYPE_BRANCH:
+                priv->n_branch++;
+                break;
+            default:
+                break;
+        }
 	}
 
 	priv->loaded = TRUE;
@@ -379,6 +404,11 @@ conting_data_instance_init(GTypeInstance *self, gpointer g_class)
 
 	priv->data_drawing = g_hash_table_new(NULL, NULL);
 	priv->drawing_data = g_hash_table_new(NULL, NULL);
+
+    priv->n_bus = 0;
+    priv->n_branch = 0;
+
+    priv->loaded = FALSE;
 }
 
 static void
