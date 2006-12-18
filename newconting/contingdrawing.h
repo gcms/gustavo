@@ -89,6 +89,7 @@ struct ContingDrawingClass_ {
 GType conting_drawing_get_type(void);
 
 void conting_drawing_draw(ContingDrawing *self, cairo_t *cr);
+guint conting_drawing_id(ContingDrawing *self);
 
 #include "contingoneline.h"
 #include "contingcomponent.h"

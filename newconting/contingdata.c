@@ -239,6 +239,11 @@ void
 conting_data_clear(ContingData *self);
 
 void
+conting_data_load_items(ContingData *self, GList *items)
+{
+}
+
+void
 conting_data_load_file(ContingData *self, ContingFile *file,
 		const gchar *filename)
 {

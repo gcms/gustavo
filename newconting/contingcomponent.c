@@ -476,11 +476,15 @@ conting_component_event(ContingDrawing *self,
                 
                 if (IS_NEAR(pi.x, comp->p0.x)
                        || IS_NEAR(pi.x, comp->p1.x)) {
+					/*
                     conting_one_line_cursor(conting_drawing_get_one_line(self),
                             GDK_PLUS);
+							*/
                 } else {
+					/*
                     conting_one_line_cursor(conting_drawing_get_one_line(self),
                             GDK_LEFT_PTR);
+							*/
                 }
             } else if (comp->resize_vertical) {
                 ArtPoint pi;
@@ -490,11 +494,15 @@ conting_component_event(ContingDrawing *self,
 
                 if (IS_NEAR(pi.y, comp->p0.y)
                         || IS_NEAR(pi.y, comp->p1.y)) {
+					/*
                     conting_one_line_cursor(conting_drawing_get_one_line(self),
                             GDK_PLUS);
+							*/
                 } else {
+					/*
                     conting_one_line_cursor(conting_drawing_get_one_line(self),
                             GDK_LEFT_PTR);
+							*/
                 }
             }
             break;

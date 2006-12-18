@@ -366,14 +366,12 @@ static void
 view_2button_press(ContingDrawing *drawing, ContingDrawingEvent *event,
 		gpointer user_data)
 {
-    /*
 	ContingVisitor *view_visitor;
     
 	view_visitor = g_object_new(CONTING_TYPE_VISITOR_VIEW, NULL);
 	conting_drawing_accept(drawing, view_visitor);
 
 	g_object_unref(view_visitor);
-    */
 //	conting_one_line_edit(conting_drawing_get_one_line(drawing), drawing);
 }
 
@@ -557,6 +555,7 @@ conting_one_line_cursor(ContingOneLine *self, GdkCursorType type)
 }
 
 /* CALLBACK FUNCTION */
+/*
 static const gchar *
 conting_drawing_return_attr(ContingDrawingOperation *opr,
         ContingDrawing *drawing, gpointer user_data)
@@ -569,6 +568,7 @@ conting_drawing_return_attr(ContingDrawingOperation *opr,
 
     return conting_drawing_get_attr(drawing, attr_name);
 }
+*/
 
 
 /* PRIVATE METHOD */
@@ -607,6 +607,7 @@ conting_one_line_update_drawing(ContingOneLine *self, ContingDrawing *drawing)
 }
 
 /* PRIVATE METHOD */
+/*
 static void
 conting_one_line_draw(ContingOneLine *self, ContingDrawing *drawing)
 {
@@ -624,6 +625,7 @@ conting_one_line_draw(ContingOneLine *self, ContingDrawing *drawing)
 
     cairo_destroy(cr);
 }
+*/
 
 /* STATIC PUBLIC METHOD */
 cairo_t *

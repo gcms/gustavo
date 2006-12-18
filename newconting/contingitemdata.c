@@ -20,6 +20,49 @@ struct ContingItemDataPrivate_ {
 	ContingItemType type;
 	GTree *attrs;	/* <const gchar *><GValue *> */
 };
+
+
+/* PRETTY PRINTING */
+static void
+tree_traverse_print(const gchar *name, const GValue *value, gpointer user_data)
+{
+	g_print("\t%s = ", name);
+
+
+	switch (G_VALUE_TYPE(value)) {
+		case G_TYPE_INT:
+			g_print("%d\n", g_value_get_int(value));
+			break;
+		case G_TYPE_DOUBLE:
+			g_print("%lf\n", g_value_get_double(value));
+			break;
+		case G_TYPE_STRING:
+			g_print("%s\n", g_value_get_string(value));
+			break;
+		case G_TYPE_POINTER:
+		default:
+			g_print("%p\n", g_value_get_pointer(value));
+			break;
+	}
+
+}
+void
+conting_item_data_print(ContingItemData *self)
+{
+	ContingItemDataPrivate *priv;
+	GEnumValue* enum_value;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ITEM_DATA(self));
+
+	priv = CONTING_ITEM_DATA_GET_PRIVATE(self);
+
+	enum_value = g_enum_get_value(g_type_class_peek(CONTING_TYPE_ITEM_TYPE),
+			priv->type);
+
+	g_print("%s\n", enum_value->value_name);
+	conting_item_data_attr_foreach(self, tree_traverse_print, NULL);
+}
+
 void
 conting_item_data_set_attr_valist(ContingItemData *self,
 		const gchar *attr, va_list ap)
@@ -447,7 +490,10 @@ conting_item_type_get_type(void)
 	if (type == 0) {
 		static GEnumValue conting_item_type_enum[] = {
 			{ CONTING_ITEM_TYPE_BUS, "CONTING_ITEM_TYPE_BUS", "BUS" },
-			{ CONTING_ITEM_TYPE_BRANCH, "CONTING_ITEM_TYPE_BRANCH", "BRANCH" }
+			{ CONTING_ITEM_TYPE_BRANCH, "CONTING_ITEM_TYPE_BRANCH", "BRANCH" },
+			{ CONTING_ITEM_TYPE_FLOW_BUS, "CONTING_ITEM_TYPE_FLOW_BUS", "FLOW_BUS" },
+			{ CONTING_ITEM_TYPE_FLOW_BRANCH, "CONTING_ITEM_TYPE_FLOW_BRANCH", "FLOW_BRANCH" },
+			{ CONTING_ITEM_TYPE_FLOW_TRANS, "CONTING_ITEM_TYPE_FLOW_TRANS", "FLOW_TRANS" },
 		};
 		type = g_enum_register_static("ContingItemType",
 				conting_item_type_enum);
