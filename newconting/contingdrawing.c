@@ -661,7 +661,6 @@ conting_drawing_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
                           GHashTable *id_drawing)
 {
     ContingDrawingPrivate *priv;
-    xmlChar *id;
     xmlNodePtr class_node;
 
     g_return_if_fail(self != NULL && CONTING_IS_DRAWING(self));

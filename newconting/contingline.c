@@ -467,9 +467,9 @@ conting_line_link_moved(ContingComponent *comp,
 	}
 
 	g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(user_data)),
-			conting_drawing_id(user_data));
+			conting_drawing_id(CONTING_DRAWING(user_data)));
 	g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(comp)),
-			conting_drawing_id(comp));
+			conting_drawing_id(CONTING_DRAWING(comp)));
 	assert(conting_component_get_link_point(comp,
 				CONTING_DRAWING(user_data), &pi));
 
@@ -480,9 +480,9 @@ conting_line_link_moved(ContingComponent *comp,
 	conting_drawing_get_update_bounds(CONTING_DRAWING(user_data), &bounds);
 
 	g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(priv->comp0)),
-			conting_drawing_id(priv->comp0));
+			conting_drawing_id(CONTING_DRAWING(priv->comp0)));
 	g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(priv->comp1)),
-			conting_drawing_id(priv->comp1));
+			conting_drawing_id(CONTING_DRAWING(priv->comp1)));
 	if (priv->comp0 == comp) {
 		*(priv->link0) = pi;
 	} else if (priv->comp1 == comp) {
@@ -710,7 +710,7 @@ conting_line_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
                 if (xmlStrEqual(type, BAD_CAST "drawing")
                         && xmlStrEqual(name, BAD_CAST "comp0")) {
 					g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(self)),
-							conting_drawing_id(self));
+							conting_drawing_id(CONTING_DRAWING(self)));
 							
                     priv->comp0 = CONTING_COMPONENT(
                             conting_util_load_drawing(attr, id_drawing));
@@ -721,11 +721,11 @@ conting_line_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
         			g_signal_connect(G_OBJECT(priv->comp0), "delete",
 		        			G_CALLBACK(conting_line_link_deleted), self);
 					g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(priv->comp0)),
-							conting_drawing_id(priv->comp0));
+							conting_drawing_id(CONTING_DRAWING(priv->comp0)));
                 } else if (xmlStrEqual(type, BAD_CAST "drawing")
                         && xmlStrEqual(name, BAD_CAST "comp1")) {
 					g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(self)),
-							conting_drawing_id(self));
+							conting_drawing_id(CONTING_DRAWING(self)));
                     priv->comp1 = CONTING_COMPONENT(
                             conting_util_load_drawing(attr, id_drawing));
 			        g_signal_connect(G_OBJECT(priv->comp1), "move",
@@ -735,7 +735,7 @@ conting_line_place_xml(ContingSerializable *self, xmlNodePtr drawing_node,
         			g_signal_connect(G_OBJECT(priv->comp1), "delete",
 		        			G_CALLBACK(conting_line_link_deleted), self);
 					g_print("%s(%d)\n", g_type_name(G_OBJECT_TYPE(priv->comp1)),
-							conting_drawing_id(priv->comp1));
+							conting_drawing_id(CONTING_DRAWING(priv->comp1)));
                 } else if (xmlStrEqual(type, BAD_CAST "point")
                         && xmlStrEqual(name, BAD_CAST "link0")) {
                     conting_util_load_point(attr, &link0);
