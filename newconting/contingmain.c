@@ -34,6 +34,9 @@ static void
 show_number_clicked(GtkToolButton *button, gpointer user_data);
 
 static void
+show_voltage_clicked(GtkToolButton *button, gpointer user_data);
+
+static void
 hide_gen_clicked(GtkToolButton *button, gpointer user_data);
 
 static void
@@ -142,6 +145,12 @@ conting_main_get_view_toolbar(void)
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(show_number_clicked), NULL);
+
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/number.png"), "Show numbers");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(show_voltage_clicked), NULL);
 
 	toolbutton = gtk_tool_button_new(
 			gtk_image_new_from_file("images/gen.png"), "Hide generators");
@@ -486,31 +495,132 @@ number_label(ContingDrawingOperation *self, ContingDrawing *drawing,
 
     return name;
 }
+
+static void
+show_number(gboolean showing)
+{
+	static ContingDrawingOperation *opr = NULL;
+
+	if (opr == NULL) {
+		opr = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL,
+				"label-func", number_label,
+				"place", CONTING_DRAWING_OPERATION_LABEL_TOP,
+				"color-name", "purple",
+				NULL);
+	}
+
+    if (showing) {
+        conting_one_line_add_operation(oneline, opr);
+    } else {
+        conting_one_line_remove_operation(oneline, opr);
+    }
+}
+static void
+show_voltage(gboolean showing);
 /* SIGNAL CALLBACK */
 static void
 show_number_clicked(GtkToolButton *button, gpointer user_data)
 {
     static gboolean showing = FALSE;
-    static ContingDrawingOperation *opr = NULL;
 
-    if (opr == NULL) {
-		/*
-        opr = conting_drawing_operation_label_new_with_func(number_label, NULL);
-		*/
-        opr = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL,
-				"label-func", number_label,
+	showing = !showing;
+
+	if (showing)
+		show_voltage(FALSE);
+
+	show_number(showing);
+}
+
+/* TODO: almost the same thing of name_label, refactor it. */
+/* CALLBACK FUNCTION */
+static const gchar *
+voltage_label(ContingDrawingOperation *self, ContingDrawing *drawing,
+        gpointer user_data)
+{
+    ContingData *data;
+
+	GList *n;
+    ContingItemData *item_data;
+    gint number = 0;
+	gdouble voltage;
+
+    assert(oneline == conting_drawing_get_one_line(drawing));
+
+	/* TODO: is it good? is it safe? */
+	if (!CONTING_IS_BUS_BASE(drawing))
+		return "";
+
+    g_object_get(oneline, "data", &data, NULL);
+
+    item_data = conting_data_get(data, drawing);
+
+    if (item_data == NULL)
+        return "";
+	
+    conting_item_data_get_attr(item_data, "number", &number, NULL);
+    if (number == 0)
+        return "";
+
+	conting_item_data_get_attr(item_data, "voltage", &voltage, NULL);
+
+	n = conting_one_line_load_flow_items(oneline);
+	for (/* */; n != NULL; n = g_list_next(n)) {
+		ContingItemType type;
+		gint cur_number;
+
+		g_object_get(n->data, "type", &type, NULL);
+		if (type != CONTING_ITEM_TYPE_FLOW_BUS)
+			continue;
+
+		conting_item_data_get_attr(n->data, "number", &cur_number, NULL);
+
+		if (cur_number != 0 && cur_number == number) {
+    		static gchar name[256];
+			gdouble cur_voltage;	/* in pu */
+			gdouble cur_angle;
+			
+			conting_item_data_get_attr(n->data, "voltage", &cur_voltage, NULL);
+			conting_item_data_get_attr(n->data, "angle", &cur_angle, NULL);
+    		sprintf(name, "%.1lfkV %.1lf", voltage * cur_voltage, cur_angle);
+
+			return name;
+		}
+	}
+
+
+    return "";
+}
+
+static void
+show_voltage(gboolean showing)
+{
+	static ContingDrawingOperation *opr = NULL;
+
+	if (opr == NULL) {
+		opr = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LABEL,
+				"label-func", voltage_label,
 				"place", CONTING_DRAWING_OPERATION_LABEL_TOP,
-				"color-name", "purple",
+				"color-name", "green",
 				NULL);
-    }
+	}
 
     if (showing) {
-        showing = FALSE;
-        conting_one_line_remove_operation(oneline, opr);
-    } else {
-        showing = TRUE;
         conting_one_line_add_operation(oneline, opr);
+    } else {
+        conting_one_line_remove_operation(oneline, opr);
     }
+}
+/* SIGNAL CALLBACK */
+static void
+show_voltage_clicked(GtkToolButton *button, gpointer user_data)
+{
+    static gboolean showing = FALSE;
+
+	showing = !showing;
+	if (showing)
+		show_number(FALSE);
+
+	show_voltage(showing);
 }
 
 /* SIGNAL CALLBACK */

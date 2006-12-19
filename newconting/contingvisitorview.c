@@ -49,7 +49,7 @@ conting_visitor_view_visit_trans2(ContingVisitor *self, ContingTrans2 *trans2)
 			"max tap", &max_tap,
 			NULL);
 
-	sprintf(text, "Relacao: %lf", tap);
+	sprintf(text, "Tap: %lf", tap);
 	label = gtk_label_new(text);
 	gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
 

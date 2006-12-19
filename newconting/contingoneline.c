@@ -46,6 +46,7 @@ struct ContingOneLinePrivate_ {
     ArtDRect scrolling_area;
     ArtDRect selection_box;
 
+	GList *items;	/* used by load flow solution */
     ContingData *file_data;
 
     GSList *drawings;
@@ -62,6 +63,36 @@ struct ContingOneLinePrivate_ {
 
 	GdkColor bgcolor;
 };
+
+
+/* Load Flow */
+#include "contingloadflowfile.h"
+void
+conting_one_line_load_flow_run(ContingOneLine *self)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	if (priv->items)
+		g_list_free(priv->items);
+
+	priv->items = conting_load_flow_file_read("relat1.txt", "relat2.txt");
+}
+
+GList *
+conting_one_line_load_flow_items(ContingOneLine *self)
+{
+	ContingOneLinePrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_ONE_LINE(self), NULL);
+
+	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
+
+	return priv->items;
+}
 
 /* FRIEND METHOD */
 void conting_one_line_update(ContingOneLine *self, ArtDRect *bounds);
@@ -499,6 +530,9 @@ conting_one_line_set_view(ContingOneLine *self)
 	priv->state = CONTING_ONE_LINE_NONE;
 
 	conting_one_line_update(self, NULL);
+
+	if (!priv->items)	/* load flow solution */
+		conting_one_line_load_flow_run(self);
 }
 
 
@@ -2030,6 +2064,7 @@ conting_one_line_instance_init(GTypeInstance *self,
     priv->placing_drawing = NULL;
     priv->drawings = NULL;
 
+	priv->items = NULL;	/* used by load flow solution */
     priv->file_data = CONTING_DATA(g_object_new(CONTING_TYPE_DATA, NULL));
     assert(priv->file_data);
 
