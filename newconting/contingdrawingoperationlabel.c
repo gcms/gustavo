@@ -49,7 +49,7 @@ conting_drawing_operation_label_get_bounds(ContingDrawingOperation *self,
 	opr = (ContingDrawingOperationLabel *) self;
 
 	if (opr->label_func(self, drawing, opr->user_data)) {
-		bounds->x1 += 50;
+		bounds->x1 += 80;
 		bounds->y0 -= 50;
 	}
 }
