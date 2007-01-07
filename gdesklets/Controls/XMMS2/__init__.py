@@ -18,29 +18,10 @@ class IMusicPlayback(Interface):
 
 	get_playtime = Permission.READ
 
-#	get_icon	= Permission.READWRITE
-#	set_url		= Permission.WRITE
-#	set_browser	= Permission.WRITE
-#	launch		= Permission.WRITE
-#	interval	= Permission.WRITE
-#	get_items	= Permission.READ
-#	refresh		= Permission.READ
-#	status		= Permission.READ
-
 
 class XMMS2(Control, IMusicPlayback):
 
 	def __init__(self):
-#		self._parser	= xml.sax.make_parser()
-#		self._handler	= RSSreader.NewsHandler()
-#		self._browser	= "firefox"
-#		self._url		= ""
-#		self._icon		= ""
-#		self._interval	= 30 * 60 * 1000
-#		self._updated	= 0
-#		self._refresh	= 0
-#		self._status	= 0
-#		self._logos		= ["slashdot", "tomshardware", "anandtech"]
 		self._current		= -1
 		self._server		= None
 		self._artist		= ""
@@ -51,16 +32,16 @@ class XMMS2(Control, IMusicPlayback):
 		self._date			= None
 		self._genre			= None
 		self._playtime		= 0
+
+		# Stores the result of the currently queried media info and playtime
+		self._media_info_res = None
+		self._playtime_res	= None
+
 		Control.__init__(self)
 		self.__start()
+		#self._add_timer(500, self.__start)
 
 	
-#	def __set_url(self, value):		self._url = value
-#	def __set_browser(self, value):	self._browser = value
-#	def __set_interval(self, value):self._interval = value
-#	def __get_items(self):			return self._handler.item
-#	def __get_refresh(self):		return self._refresh
-#	def __get_status(self):			return self._status
 	def __set_server(self, value):	self._server = value
 	def __get_current(self):		return self._current
 	def __get_artist(self):			return self._artist
@@ -75,18 +56,22 @@ class XMMS2(Control, IMusicPlayback):
 
 	def __start(self):
 		def _medialib_get_info_cb(result):
+			if result != self._media_info_res:
+				return
 			prop = result.get_propdict()
-			self._artist = prop['artist']
-			self._title = prop['title']
-			self._album = prop['album']
-			self._tracknr = prop['tracknr']
-			self._duration = prop['duration']
-			self._date = prop['date']
-			self._genre = prop['genre']
+			self._artist = prop.get('artist')
+			self._title = prop.get('title')
+			self._album = prop.get('album')
+			self._tracknr = prop.get('tracknr')
+			self._duration = prop.get('duration')
+			self._date = prop.get('date')
+			self._genre = prop.get('genre')
 			self._update("get_current")
 			return
 
 		def _playback_playtime_cb(result):
+			if result != self._playtime_res:
+				return
 			self._playtime = result.get_uint()
 			self._update("get_playtime")
 			result.restart()
@@ -94,9 +79,12 @@ class XMMS2(Control, IMusicPlayback):
 
 		def _playback_current_id_cb(result):
 			self._current = result.get_uint()
-			self._xc.medialib_get_info(self._current, _medialib_get_info_cb)
+			
+			self._media_info_res = self._xc.medialib_get_info(self._current,
+														_medialib_get_info_cb)
 
-			self._xc.signal_playback_playtime(_playback_playtime_cb)
+			self._playtime_res = self._xc.signal_playback_playtime(
+					_playback_playtime_cb)
 			return
 
 	
