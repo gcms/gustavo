@@ -18,6 +18,8 @@ class IMusicPlayback(Interface):
 
 	get_playtime = Permission.READ
 
+	start = Permission.READWRITE
+
 
 class XMMS2(Control, IMusicPlayback):
 
@@ -32,13 +34,12 @@ class XMMS2(Control, IMusicPlayback):
 		self._date			= None
 		self._genre			= None
 		self._playtime		= 0
+		self._start			= False
 
 		# Stores the result of the currently queried media info and playtime
 		self._media_info_res = None
-		self._playtime_res	= None
 
 		Control.__init__(self)
-		self.__start()
 		#self._add_timer(500, self.__start)
 
 	
@@ -52,9 +53,16 @@ class XMMS2(Control, IMusicPlayback):
 	def __get_date(self):			return self._date
 	def __get_genre(self):			return self._genre
 	def __get_playtime(self):		return self._playtime
+	def __get_start(self):			return self._start
+	def __set_start(self, value):
+		if value:
+			self._start or self.__start()
+		else:
+			self._start and self.__stop()
 		
 
 	def __start(self):
+		print "__start()"
 		def _medialib_get_info_cb(result):
 			# if it's not the result of the current song, discard it
 			if result != self._media_info_res:
@@ -71,9 +79,6 @@ class XMMS2(Control, IMusicPlayback):
 			return
 
 		def _playback_playtime_cb(result):
-			#if it's not the result of the current song, discard it
-			if result != self._playtime_res:
-				return
 			self._playtime = result.get_uint()
 			self._update("get_playtime")
 			result.restart()
@@ -83,18 +88,21 @@ class XMMS2(Control, IMusicPlayback):
 			self._current = result.get_uint()
 			
 			self._media_info_res = self._xc.medialib_get_info(self._current,
-														_medialib_get_info_cb)
+					_medialib_get_info_cb)
 
-			self._playtime_res = self._xc.signal_playback_playtime(
-					_playback_playtime_cb)
 			return
 
 	
-		self._xc = xmmsclient.XMMS(self._server)
-		self._xc.connect()
+		self._xc = xmmsclient.XMMS("gDesklets-XMMS2")
+		try:
+			self._xc.connect(self._server, self.__stop)
+		except IOError:
+			self._start = False
+			return
 
 		self._xc.playback_current_id(_playback_current_id_cb)
 		self._xc.broadcast_playback_current_id(_playback_current_id_cb)
+		self._xc.signal_playback_playtime(_playback_playtime_cb)
 
 #		self._updated = 0
 #		self._refresh = 0
@@ -102,7 +110,16 @@ class XMMS2(Control, IMusicPlayback):
 #		self._update("status")
 #		gtk.gdk.threads_enter(self._loop, ())
 		thread.start_new_thread(self._loop, ())
+		self._start = True
+		self._update("start")
 #		self._add_timer(1000, self.__wait)
+
+	def __stop(self):
+		print "__stop()"
+		self._xc.exit_loop()
+		self._xc = None
+		self._start = False
+		self._update("start")
 
 	
 #	def __wait(self):
@@ -117,7 +134,12 @@ class XMMS2(Control, IMusicPlayback):
 #		return 0
 
 	def _loop(self):
-		self._xc.loop()
+		try:
+			self._xc.loop()
+		except Exception:
+			self._start = False
+			self._update("start")
+
 
 
 #	def __read_xml(self):
@@ -187,6 +209,9 @@ class XMMS2(Control, IMusicPlayback):
 
 	get_playtime = property(fget = __get_playtime,
 			doc = "Current playing time")
+
+	start 		= property(fget = __get_start, fset = __set_start,
+			doc = "Checks if the server started, and start/stop it")
 
 
 def get_class(): return XMMS2
