@@ -35,6 +35,7 @@ xc.connect()
 	
 #res = xc.signal_playback_playtime(pt_callback)
 res = xc.broadcast_playback_current_id(playback_current_id_cb)
+xc.playback_current_id(playback_current_id_cb)
 
 try :
 	xc.loop()
