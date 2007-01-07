@@ -56,6 +56,7 @@ class XMMS2(Control, IMusicPlayback):
 
 	def __start(self):
 		def _medialib_get_info_cb(result):
+			# if it's not the result of the current song, discard it
 			if result != self._media_info_res:
 				return
 			prop = result.get_propdict()
@@ -70,6 +71,7 @@ class XMMS2(Control, IMusicPlayback):
 			return
 
 		def _playback_playtime_cb(result):
+			#if it's not the result of the current song, discard it
 			if result != self._playtime_res:
 				return
 			self._playtime = result.get_uint()
