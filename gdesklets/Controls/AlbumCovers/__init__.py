@@ -22,6 +22,8 @@ class AudioScrobblerCovers(Control, IAlbumCovers):
 		self._medium = ""
 		self._large = ""
 
+		self._running_thread = None
+
 		Control.__init__(self)
 
 
@@ -30,11 +32,9 @@ class AudioScrobblerCovers(Control, IAlbumCovers):
 	def __set_album(self, value):	self._album = value
 
 	def __set_ready(self, value):
-		while not self._ready:
-			pass
 		self._ready = False
 
-		thread.start_new_thread(self._get_info, ())
+		self._running_thread = thread.start_new_thread(self._get_info, ())
 
 	def __get_ready(self):
 		return self._ready
@@ -52,6 +52,12 @@ class AudioScrobblerCovers(Control, IAlbumCovers):
 		except Exception, inst:
 			print inst
 
+		if self._running_thread != thread.get_ident():
+			return
+
+		lock = thread.allocate_lock()
+		lock.acquire()
+
 		print "result =", result
 		self._small = result.get('small')
 		self._medium = result.get('medium')
@@ -60,6 +66,8 @@ class AudioScrobblerCovers(Control, IAlbumCovers):
 
 		self._ready = True
 		self._update("ready")
+
+		lock.release()
 
 
 	artist = property(fset = __set_artist)
