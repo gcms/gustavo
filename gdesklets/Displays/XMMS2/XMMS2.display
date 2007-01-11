@@ -1,28 +1,36 @@
-<display width="9cm" height="3cm"
+<display width="9cm" height="8cm"
          window-flags="sticky, below">
 
     <control id="xmms2" interface="IMusicPlayback:bcf6y8ctfw4ty23x91hpqr5dq-2"/>
     <control id="cover" interface="IAlbumCovers:d2qe8sr4o2ozfw96tjdaphk31-2"/>
-
+    <control id="lyrc" interface="ILyrics:4b8aygma82579s3rix2juln9i-2"/>
+<group anchor="sw" x="0%" y="100%" id="maingroup" width="100%" height="3cm"
+	on-doubleclick="double_click()">
 	<frame width="100%" height="100%" color="#00000050"/>
-<group x="0.1cm" y="0.1cm">
+<!-- top group -->
+<group id="top" x="0.1cm" y="0.1cm" bg-color="#00000000">
+	<group id="img_frame" anchor="nw" width="2.8cm" height="2.8cm">
 	<image id="cover_img" anchor="nw" uri=""
 			image-width="2.8cm"/>
-    <label id="artist" anchor="nw" relative-to="cover_img, x" x="10pt" y="10pt"
+	</group>
+    <label id="artist" anchor="nw" relative-to="img_frame, x" x="10pt" y="10pt"
 			width="5.2cm"
 			font="Sans 16pt" color="white" value="Fetching data..."/>
     <label id="title" anchor="nw" relative-to="artist, y"
 			width="5.2cm"
 			font="Sans 16pt" color="gold" value=""/>
-	<frame id="bar" anchor="sw" relative-to="cover_img, xy" x="10pt" y="-10pt"
+	<frame id="bar" anchor="sw" relative-to="img_frame, xy" x="10pt" y="-10pt"
 			width="5.2cm" height="10pt" color="red"/>
-	<group anchor="sw" relative-to="cover_img, xy" x="10pt" y="-10pt">
+	<group anchor="sw" relative-to="img_frame, xy" x="10pt" y="-10pt">
 		<gauge id="mygauge" fill="0">
 			<group width="5.2cm" height="10pt" bg-color="red"/>
 		</gauge>
 	</group>
 	<label id="time" anchor="se" relative-to="bar, x" y="-10pt" value=""
 			font="Clean 14pt"/>
+</group>
+	<label id="lyrics" relative-to="top, y" y="0.1cm" value="" visible="false"
+		   font="Sans 10pt"/>
 </group>
     <script>
     <![CDATA[
@@ -59,12 +67,20 @@
 			Dsp.cover_img.uri = "gfx/noartist_140px.jpg"
 			Dsp.cover_img.visible = True
 
+			#cover
 			artist = xmms2.get_artist
 			album = xmms2.get_album
 			
 			cover.artist = artist
 			cover.album = album
 			cover.ready = False
+
+			#lyrics
+			print "LYRICS..."
+			Dsp.lyrics.value = ""
+			lyrc.artist = artist
+			lyrc.title = title
+			lyrc.lyrics	= None
 		
 		def ready_changed(ready):
 			if ready:
@@ -77,13 +93,31 @@
 			secs = playtime / 1000
 			Dsp.time.value = "%0.2d:%0.2d" % (secs / 60, secs % 60)
 			Dsp.mygauge.fill = float(playtime * 100) / float(xmms2.get_duration)
+
+		def lyrics_changed(lyrics):
+			print "lyrics_changed(%s)" % str(lyrics)
+			if lyrics:
+				Dsp.lyrics.value = lyrics
 			
 		
 		xmms2.bind("get_current", current_changed)
 		xmms2.bind("get_playtime", playtime_changed)
 		xmms2.bind("start", start_changed)
+		lyrc.bind("lyrics", lyrics_changed)
 		start()
 		cover.bind("ready", ready_changed)
+
+		expanded = False
+		def double_click():
+			global expanded
+			if expanded:
+				Dsp.maingroup.height = Unit(3, CM)
+				expanded = False
+			else:
+				Dsp.maingroup.height = Unit(100, PERCENT)
+				expanded = True
+
+			Dsp.lyrics.visible = expanded
 
 		def tick():
 			add_timer(500, tick)
