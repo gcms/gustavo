@@ -30,12 +30,17 @@
 			font="Clean 14pt"/>
 </group>
 	<label id="lyrics" relative-to="top, y" y="0.1cm" value="" visible="false"
-		   font="Sans 10pt"/>
+		   font="Sans 10pt" on-scroll="scroll_lyrics(self.event.direction)"/>
 </group>
     <script>
     <![CDATA[
 		artist = ""
 		title = ""
+		title_idx = 0
+
+		lyrics_lines = []
+		lyrics_idx = 0
+
 		def start():
 			Dsp.artist.value = "Trying to connect..."
 			Dsp.cover_img.uri = ""
@@ -83,6 +88,10 @@
 			lyrc.artist = artist
 			lyrc.title = title
 			lyrc.lyrics	= None
+
+			#scrolling
+			global title_idx
+			title_idx = 0
 		
 		def ready_changed(ready):
 			if ready:
@@ -100,6 +109,10 @@
 			print "lyrics_changed(%s)" % str(lyrics)
 			if lyrics:
 				Dsp.lyrics.value = lyrics
+				global lyrics_lines
+				lyrics_lines = lyrics.split("\n")
+				global lyrics_idx
+				lyrics_idx = 0
 			
 		
 		xmms2.bind("get_current", current_changed)
@@ -121,7 +134,36 @@
 
 			Dsp.lyrics.visible = expanded
 
+		def scroll_lyrics(direction):
+			global lyrics_idx
+
+			# 14 is the number of lines
+			if direction == 0:
+				lyrics_idx = max(0, lyrics_idx - 1)
+			elif direction == 1:
+				lyrics_idx = min(len(lyrics_lines) - 1 - 14, lyrics_idx + 1)
+
+			def conc(a, b):
+				return a + "\n" + b
+
+			global lyrics_lines
+			Dsp.lyrics.value = reduce(conc, lyrics_lines[lyrics_idx:])
+
+
 		def tick():
+			if len(title) > 23:
+				#23 = title width
+				global title
+				global title_idx
+
+				scroll = title + ' ' * max(10, 23 - len(title))
+				str = scroll[title_idx:title_idx + 23]
+				if len(str) < 23:
+					str = str + scroll[:23 - (len(scroll) - title_idx)]
+				Dsp.title.value = str
+
+				title_idx = (title_idx + 1) % len(scroll)
+
 			add_timer(500, tick)
 
 		tick()	
