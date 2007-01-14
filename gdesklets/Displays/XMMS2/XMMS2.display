@@ -147,7 +147,7 @@
 				return a + "\n" + b
 
 			global lyrics_lines
-			Dsp.lyrics.value = reduce(conc, lyrics_lines[lyrics_idx:])
+			Dsp.lyrics.value = reduce(conc, lyrics_lines[lyrics_idx:lyrics_idx+14])
 
 
 		def tick():
