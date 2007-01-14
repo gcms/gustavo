@@ -38,6 +38,8 @@
 		title = ""
 		def start():
 			Dsp.artist.value = "Trying to connect..."
+			Dsp.cover_img.uri = ""
+			Dsp.cover_img.visible = False
 			xmms2.start = True
 			if not xmms2.start:
 				add_timer(10000, start)
