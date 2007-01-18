@@ -30,7 +30,8 @@
 			font="Clean 14pt"/>
 </group>
 	<label id="lyrics" relative-to="top, y" y="0.1cm" value="" visible="false"
-		   font="Sans 10pt" on-scroll="scroll_lyrics(self.event.direction)"/>
+		   font="Sans 10pt" on-scroll="scroll_lyrics(self.event.direction)"
+		   wrap-at="8.8cm"/>
 </group>
     <script>
     <![CDATA[
