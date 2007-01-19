@@ -1,5 +1,6 @@
 from libdesklets.controls import Control, Interface, Permission
-import thread, threading
+import urllib
+import os, thread, threading
 
 import xmmsclient
 
@@ -13,6 +14,7 @@ class IMusicPlayback(Interface):
 	get_duration = Permission.READ
 	get_date = Permission.READ
 	get_genre = Permission.READ
+	get_albumart = Permission.READ
 
 	set_server	= Permission.WRITE
 
@@ -22,7 +24,7 @@ class IMusicPlayback(Interface):
 
 
 class XMMS2(Control, IMusicPlayback):
-
+	CLIENT_NAME = 'gDesklets-XMMS2'
 	def __init__(self):
 		self._current		= -1
 		self._server		= None
@@ -36,8 +38,14 @@ class XMMS2(Control, IMusicPlayback):
 		self._playtime		= 0
 		self._start			= False
 
+		self._albumart		= None
+
 		# Stores the result of the currently queried media info and playtime
 		self._media_info_res = None
+
+
+		self._confdir		= os.path.join(xmmsclient.userconfdir_get(),
+				'clients', XMMS2.CLIENT_NAME)
 
 		Control.__init__(self)
 		#self._add_timer(500, self.__start)
@@ -52,6 +60,7 @@ class XMMS2(Control, IMusicPlayback):
 	def __get_duration(self):		return self._duration
 	def __get_date(self):			return self._date
 	def __get_genre(self):			return self._genre
+	def __get_albumart(self):		return self._albumart
 	def __get_playtime(self):		return self._playtime
 	def __get_start(self):			return self._start
 	def __set_start(self, value):
@@ -63,6 +72,13 @@ class XMMS2(Control, IMusicPlayback):
 
 	def __start(self):
 		print "__start()"
+
+		try:
+			os.makedirs(self._confdir)
+			os.makedirs(os.path.join(self._confdir, 'albumart'))
+		except OSError, inst:
+			print inst
+
 		def _medialib_get_info_cb(result):
 			# if it's not the result of the current song, discard it
 			if result != self._media_info_res:
@@ -76,6 +92,26 @@ class XMMS2(Control, IMusicPlayback):
 			self._date = prop.get('date')
 			self._genre = prop.get('genre')
 			self._update("get_current")
+
+			pic_hash = prop.get('picture_front')
+			if pic_hash:
+				pic = os.path.join(self._confdir, 'albumart', pic_hash)
+				print pic
+				if os.path.isfile(pic):
+					self._albumart = urllib.pathname2url(pic)
+					self._update("get_albumart")
+				else:
+					def _pic_bindata_cb(result):
+						open(pic, 'w').write(result.get_bin())
+						self._albumart = urllib.pathname2url(pic)
+						self._update("get_albumart")
+
+					self._xc.bindata_retrieve(pic_hash, _pic_bindata_cb)
+			else:
+				self._albumart = None
+				self._update("get_albumart")
+
+
 			return
 
 		def _playback_playtime_cb(result):
@@ -93,12 +129,13 @@ class XMMS2(Control, IMusicPlayback):
 			return
 
 	
-		self._xc = xmmsclient.XMMS("gDesklets-XMMS2")
+		self._xc = xmmsclient.XMMS(XMMS2.CLIENT_NAME)
 		try:
 			self._xc.connect(self._server, self.__stop)
 		except IOError:
 			self._start = False
 			return
+
 
 		self._xc.playback_current_id(_playback_current_id_cb)
 		self._xc.broadcast_playback_current_id(_playback_current_id_cb)
@@ -203,6 +240,8 @@ class XMMS2(Control, IMusicPlayback):
 			doc = "Get the date of the current playing song")
 	get_genre	= property(fget = __get_genre,
 			doc = "Get the genre of the current playing song")
+	get_albumart= property(fget = __get_albumart,
+			doc = "Get the uri of the albumart of the current playing song")
 
 	set_server	= property(fset = __set_server,
 			doc = "Sets the XMMS2 server to connect")
