@@ -19,8 +19,6 @@ def playback_current_id_cb(result):
 	global media
 	media = xc.medialib_get_info(id, media_get_info_cb)
 	print "media = %s" % repr(media)
-	media = media.copy()
-	print "media.copy() = %s" % repr(media)
 
 def media_get_info_cb(result):
 	if result != media:
@@ -35,6 +33,13 @@ def media_get_info_cb(result):
 
 	print ""
 
+def plugin_list_cb(result):
+	for i in result.get_list():
+		print i.get('shortname'), i.get('description')
+
+def xform_media_browse_cb(result):
+	print result.get_type()
+	print result.get_dict()
 
 def sigint_callback(signal, frame) :
 	xc.exit_loop()
@@ -57,6 +62,9 @@ while True:
 #res = xc.signal_playback_playtime(pt_callback)
 res = xc.broadcast_playback_current_id(playback_current_id_cb)
 xc.playback_current_id(playback_current_id_cb)
+
+xc.plugin_list(xmmsclient.PLUGIN_TYPE_ALL, plugin_list_cb)
+xc.xform_media_browse("file:///fat16kb/music/", xform_media_browse_cb)
 
 try :
 	xc.loop()
