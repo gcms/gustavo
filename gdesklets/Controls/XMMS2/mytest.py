@@ -20,6 +20,17 @@ def playback_current_id_cb(result):
 	media = xc.medialib_get_info(id, media_get_info_cb)
 	print "media = %s" % repr(media)
 
+def cur_pic_bindata_cb(result):
+	global cur_result
+	global cur_pic
+
+	if result != cur_result:
+		return
+
+	open(cur_pic, 'w').write(result.get_bin())
+	import os
+	os.system("xv \"%s\"" % cur_pic)
+
 def media_get_info_cb(result):
 	if result != media:
 		print "result = %s" % repr(result)
@@ -30,6 +41,16 @@ def media_get_info_cb(result):
 
 	for k, v in prop:
 		print "[%s]\t%s = %s" % (k, v, unicode(prop.get(v)))
+
+	global cur_pic
+	global cur_result
+
+	cur_pic = prop.get('picture_front')
+	if cur_pic:
+		print cur_pic
+		cur_result = xc.bindata_retrieve(cur_pic, cur_pic_bindata_cb)
+	else:
+		print "no picture"
 
 	print ""
 
