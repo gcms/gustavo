@@ -1,0 +1,35 @@
+<display id="main" width="9cm" height="3cm" anchor="sw"
+         window-flags="sticky, below">
+
+    <control id="play" interface="IMusicPlayback:bcf6y8ctfw4ty23x91hpqr5dq-2"/>
+
+	<frame width="100%" height="100%" color="#00000050"/>
+	<!-- top group -->
+	<group id="top" bg-color="#00000000" x="0.1cm" y="0.1cm">
+		<group id="img_frame" anchor="nw" width="2.8cm" height="2.8cm">
+			<image id="cover_img" uri=""
+				   anchor="nw" image-width="2.8cm"/>
+		</group>
+    	<label id="artist"
+			   anchor="nw" relative-to="img_frame, x" x="10pt" y="10pt"
+			   width="5.2cm"
+			   font="Sans 16pt" color="white" value="Fetching data..."/>
+    	<label id="title" anchor="nw" relative-to="artist, y"
+			   width="5.2cm"
+			   font="Sans 16pt" color="gold" value=""/>
+		<!-- progress bar -->
+	    <frame id="bar"
+			   anchor="sw" relative-to="img_frame, xy" x="10pt" y="-10pt"
+			   width="5.2cm" height="10pt" color="red"/>
+		<group anchor="sw" relative-to="img_frame, xy" x="10pt" y="-10pt">
+			<gauge id="mygauge" fill="0">
+				<group width="5.2cm" height="10pt" bg-color="red"/>
+			</gauge>
+		</group>
+		<!-- /progress bar -->
+		<label id="time" anchor="se" relative-to="bar, x" y="-10pt" value=""
+			   font="Clean 14pt"/>
+	</group>
+	<!-- /top group -->
+    <script uri="script.py"/>
+</display>
