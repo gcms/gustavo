@@ -1,43 +1,48 @@
-<display width="9cm" height="8cm"
-         window-flags="sticky, below">
+<display id="main" width="9cm" height="3cm" anchor="sw"
+         window-flags="sticky, below"
+		 on-doubleclick="double_click()">
 
     <control id="xmms2" interface="IMusicPlayback:bcf6y8ctfw4ty23x91hpqr5dq-2"/>
     <control id="cover" interface="IAlbumCovers:d2qe8sr4o2ozfw96tjdaphk31-2"/>
     <control id="lyrc" interface="ILyrics:4b8aygma82579s3rix2juln9i-2"/>
-<group anchor="sw" x="0%" y="100%" id="maingroup" width="100%" height="3cm"
-	on-doubleclick="double_click()">
+
 	<frame width="100%" height="100%" color="#00000050"/>
-<!-- top group -->
-<group id="top" x="0.1cm" y="0.1cm" bg-color="#00000000">
-	<group id="img_frame" anchor="nw" width="2.8cm" height="2.8cm">
-	<image id="cover_img" anchor="nw" uri=""
-			image-width="2.8cm"/>
+	<!-- top group -->
+	<group id="top" bg-color="#00000000" x="0.1cm" y="0.1cm">
+		<group id="img_frame" anchor="nw" width="2.8cm" height="2.8cm">
+			<image id="cover_img" uri=""
+				   anchor="nw" image-width="2.8cm"/>
+		</group>
+    	<label id="artist"
+			   anchor="nw" relative-to="img_frame, x" x="10pt" y="10pt"
+			   width="5.2cm"
+			   font="Sans 16pt" color="white" value="Fetching data..."/>
+    	<label id="title" anchor="nw" relative-to="artist, y"
+			   width="5.2cm"
+			   font="Sans 16pt" color="gold" value=""/>
+		<!-- progress bar -->
+	    <frame id="bar"
+			   anchor="sw" relative-to="img_frame, xy" x="10pt" y="-10pt"
+			   width="5.2cm" height="10pt" color="red"/>
+		<group anchor="sw" relative-to="img_frame, xy" x="10pt" y="-10pt">
+			<gauge id="mygauge" fill="0">
+				<group width="5.2cm" height="10pt" bg-color="red"/>
+			</gauge>
+		</group>
+		<!-- /progress bar -->
+		<label id="time" anchor="se" relative-to="bar, x" y="-10pt" value=""
+			   font="Clean 14pt"/>
 	</group>
-    <label id="artist" anchor="nw" relative-to="img_frame, x" x="10pt" y="10pt"
-			width="5.2cm"
-			font="Sans 16pt" color="white" value="Fetching data..."/>
-    <label id="title" anchor="nw" relative-to="artist, y"
-			width="5.2cm"
-			font="Sans 16pt" color="gold" value=""/>
-	<frame id="bar" anchor="sw" relative-to="img_frame, xy" x="10pt" y="-10pt"
-			width="5.2cm" height="10pt" color="red"/>
-	<group anchor="sw" relative-to="img_frame, xy" x="10pt" y="-10pt">
-		<gauge id="mygauge" fill="0">
-			<group width="5.2cm" height="10pt" bg-color="red"/>
-		</gauge>
-	</group>
-	<label id="time" anchor="se" relative-to="bar, x" y="-10pt" value=""
-			font="Clean 14pt"/>
-</group>
+	<!-- /top group -->
 	<label id="lyrics" relative-to="top, y" y="0.1cm" value="" visible="false"
 		   font="Sans 10pt" wrap-at="8.8cm"
 		   on-scroll="scroll_lyrics(self.event.direction)"
 		   on-key-press="label_key_press(self.event.key)"/>
-</group>
     <script>
     <![CDATA[
 		artist = ""
 		title = ""
+		album = ""
 		title_idx = 0
 
 		lyrics_lines = []
@@ -66,6 +71,7 @@
 		def current_changed(current):
 			global artist
 			global title
+			global album
 
 			artist = xmms2.get_artist
 			title = xmms2.get_title
@@ -73,16 +79,13 @@
 			Dsp.artist.value = artist
 			Dsp.title.value = title
 
-			Dsp.cover_img.uri = "gfx/noartist_140px.jpg"
-			Dsp.cover_img.visible = True
+			Dsp.cover_img.uri = ""
+			Dsp.cover_img.visible = False
 
 			#cover
 			artist = xmms2.get_artist
 			album = xmms2.get_album
 			
-			cover.artist = artist
-			cover.album = album
-			cover.ready = False
 
 			#lyrics
 			print "LYRICS..."
@@ -102,6 +105,21 @@
 					Dsp.cover_img.visible = False
 				Dsp.cover_img.visible = True
 
+		def albumart_changed(albumart):
+			if albumart:
+				Dsp.cover_img.uri = albumart
+				Dsp.cover_img.visible = True
+			else:
+				global artist
+				global album
+
+				Dsp.cover_img.uri = ""
+				Dsp.cover_img.visible = False
+				cover.artist = artist
+				cover.album = album
+				cover.ready = False
+				
+
 		def playtime_changed(playtime):
 			secs = playtime / 1000
 			Dsp.time.value = "%0.2d:%0.2d" % (secs / 60, secs % 60)
@@ -110,16 +128,17 @@
 		def lyrics_changed(lyrics):
 			print "lyrics_changed(%s)" % str(lyrics)
 			if lyrics:
-				Dsp.lyrics.value = lyrics
 				global lyrics_lines
 				lyrics_lines = lyrics.split("\n")
 				global lyrics_idx
 				lyrics_idx = 0
+				Dsp.lyrics.value = get_curr_lyrics()
 			
 		
 		xmms2.bind("get_current", current_changed)
 		xmms2.bind("get_playtime", playtime_changed)
 		xmms2.bind("start", start_changed)
+		xmms2.bind("get_albumart", albumart_changed)
 		lyrc.bind("lyrics", lyrics_changed)
 		start()
 		cover.bind("ready", ready_changed)
@@ -128,13 +147,25 @@
 		def double_click():
 			global expanded
 			if expanded:
-				Dsp.maingroup.height = Unit(3, CM)
+				Dsp.main.height = Unit(3, CM)
+				#Dsp.maingroup.height = Unit(3, CM)
 				expanded = False
 			else:
-				Dsp.maingroup.height = Unit(100, PERCENT)
+				Dsp.main.height = Unit(8, CM)
+				#Dsp.maingroup.height = Unit(100, PERCENT)
 				expanded = True
 
 			Dsp.lyrics.visible = expanded
+
+		def get_curr_lyrics():
+			global lyrics_idx
+			global lyrics_lines
+			
+			def conc(a, b):
+				return a + "\n" + b
+
+			global lyrics_lines
+			return reduce(conc, lyrics_lines[lyrics_idx:lyrics_idx+14])
 
 		def label_key_press(key):
 			if key == "Down":
@@ -151,11 +182,8 @@
 			elif direction == 1:
 				lyrics_idx = min(len(lyrics_lines) - 1 - 14, lyrics_idx + 1)
 
-			def conc(a, b):
-				return a + "\n" + b
+			Dsp.lyrics.value = get_curr_lyrics()
 
-			global lyrics_lines
-			Dsp.lyrics.value = reduce(conc, lyrics_lines[lyrics_idx:lyrics_idx+14])
 
 
 		def tick():
