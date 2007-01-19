@@ -30,8 +30,9 @@
 			font="Clean 14pt"/>
 </group>
 	<label id="lyrics" relative-to="top, y" y="0.1cm" value="" visible="false"
-		   font="Sans 10pt" on-scroll="scroll_lyrics(self.event.direction)"
-		   wrap-at="8.8cm"/>
+		   font="Sans 10pt" wrap-at="8.8cm"
+		   on-scroll="scroll_lyrics(self.event.direction)"
+		   on-key-press="label_key_press(self.event.key)"/>
 </group>
     <script>
     <![CDATA[
@@ -134,6 +135,12 @@
 				expanded = True
 
 			Dsp.lyrics.visible = expanded
+
+		def label_key_press(key):
+			if key == "Down":
+				scroll_lyrics(1)
+			elif key == "Up":
+				scroll_lyrics(0)
 
 		def scroll_lyrics(direction):
 			global lyrics_idx
