@@ -9,9 +9,6 @@ retry_time = 10
 scroll_interval = 500
 
 
-artist = ""
-album = ""
-
 # used for title scrolling
 title = ""
 title_idx = 0
@@ -47,7 +44,6 @@ def start():
 			add_timer(int(retry_time) * 1000, start)
 
 def start_changed(started):
-	Dsp.artist.value = str(play.start)
 	if started:
 		Dsp.artist.value = "Connected."
 		Dsp.title.value = ""
@@ -67,16 +63,13 @@ def start_changed(started):
 
 
 def current_changed(current):
-	global artist
 	global title
-	global album
 
-	artist = play.get_artist or "Unknown"
-	title = play.get_title or "Unknown"
-	album = play.get_album or "Unknown"
+	artist = play.get_artist
+	title = play.get_title
 
-	Dsp.artist.value = artist
-	Dsp.title.value = title
+	Dsp.artist.value = artist or "Unknown"
+	Dsp.title.value = title or "Unknown"
 
 	# scrolling
 	global title_idx
@@ -118,6 +111,9 @@ def tick():
 	scroll_title()
 
 def scroll_title():
+	if not title:
+		return
+
 	global title_len
 	global title_space
 
