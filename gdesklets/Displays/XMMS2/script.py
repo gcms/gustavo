@@ -110,7 +110,11 @@ start()
 def tick():
 	scroll_title()
 
+	global scroll_interval
+	add_timer(scroll_interval, tick)
+
 def scroll_title():
+	global title
 	if not title:
 		return
 
@@ -121,7 +125,6 @@ def scroll_title():
 	title_len = int(title_len)
 	title_space = int(title_space)
 
-	global title
 	if len(title) > title_len:
 		#title_len = title width
 		global title
@@ -135,7 +138,5 @@ def scroll_title():
 
 		title_idx = (title_idx + 1) % len(scroll)
 
-	global scroll_interval
-	add_timer(scroll_interval, tick)
 
 tick()	
