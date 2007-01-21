@@ -72,8 +72,8 @@ def current_changed(current):
 	artist = play.get_artist
 	title = play.get_title
 
-	Dsp.artist.value = artist or "Unknown"
-	Dsp.title.value = title or "Unknown"
+	set_label(Dsp.artist, Dsp.topright.width, artist or "Unknown")
+	set_label(Dsp.title, Dsp.topright.width, title or "Unknown")
 
 	# scrolling
 	global title_idx
@@ -102,7 +102,7 @@ def get_time(playtime):
 
 def playtime_changed(playtime):
 	Dsp.time.value = get_time(playtime)
-	Dsp.mygauge.fill = float(playtime * 100) / float(play.get_duration)
+	Dsp.mygauge.fill = int(float(playtime * 100) / float(play.get_duration))
 
 play.bind("get_current", current_changed)
 play.bind("get_playtime", playtime_changed)
@@ -110,6 +110,13 @@ play.bind("start", start_changed)
 play.bind("get_albumart", albumart_changed)
 
 start()
+
+def set_label(label, max_width, value = None):
+	if value:
+		label.value = value
+
+	while label.width > max_width:
+		label.value = label.value[:-1]
 
 def tick():
 	scroll_title()
@@ -134,13 +141,15 @@ def scroll_title():
 
 
 	if title and len(title) > title_len:
-		title_idx, Dsp.title.value = scroll_text(title, title_idx,
+		title_idx, value = scroll_text(title, title_idx,
 				int(title_len), int(title_space))
+		set_label(Dsp.title, Dsp.topright.width, value)
 
 	global artist
 	global artist_idx
 	if artist and len(artist) > title_len:
-		artist_idx, Dsp.artist.value = scroll_text(artist, artist_idx,
+		artist_idx, value = scroll_text(artist, artist_idx,
 				int(title_len), int(title_space))
+		set_label(Dsp.artist, Dsp.topright.width, value)
 
 tick()	
