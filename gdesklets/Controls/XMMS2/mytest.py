@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import xmmsclient
 import sys
 import signal
@@ -86,6 +87,14 @@ xc.playback_current_id(playback_current_id_cb)
 
 xc.plugin_list(xmmsclient.PLUGIN_TYPE_ALL, plugin_list_cb)
 xc.xform_media_browse("file:///fat16kb/music/", xform_media_browse_cb)
+
+res = xc.playlist_set_next_rel(1)
+res.wait()
+print res.value()
+
+res = xc.playback_tickle()
+res.wait()
+print res.value()
 
 try :
 	xc.loop()
