@@ -115,7 +115,7 @@ def tick():
 	scroll_title()
 
 	global scroll_interval
-	add_timer(scroll_interval, tick)
+	add_timer(int(scroll_interval), tick)
 
 def scroll_text(text, idx, max_len, space):
 	scroll = text + ' ' * max(space, max_len - len(title))
