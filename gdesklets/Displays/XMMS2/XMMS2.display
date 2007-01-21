@@ -47,10 +47,12 @@
             <color label="Progress bar border color" bind="Dsp.bar.color"/>
             <color label="Progress bar fill color" bind="Dsp.fill.bg_color"/>
             <title label="Misc"/>
-            <float label="Title max length" digits="0" bind="title_len"
+            <float label="Title scroll length" digits="0" bind="title_len"
                    min="1"/>
             <float label="Title scroll space" digits="0" bind="title_space"
                    min="0"/>
+            <float label="Title display length" digits="0" bind="title_avg"
+                   min="1"/>
             <enum label="Playtime display" bind="playtime_display">
                 <item label="Current time" value="current"/>
                 <item label="Remaining time" value="remaining"/>
