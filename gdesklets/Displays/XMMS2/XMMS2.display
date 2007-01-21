@@ -46,19 +46,27 @@
             <color label="Title color" bind="Dsp.title.color"/>
             <color label="Progress bar border color" bind="Dsp.bar.color"/>
             <color label="Progress bar fill color" bind="Dsp.fill.bg_color"/>
-            <title label="Misc"/>
+            <title label="Text scrolling"/>
             <float label="Title scroll length" digits="0" bind="title_len"
                    min="1"/>
             <float label="Title scroll space" digits="0" bind="title_space"
                    min="0"/>
             <float label="Title display length" digits="0" bind="title_avg"
                    min="1"/>
+            <float label="Artist scroll length" digits="0" bind="artist_len"
+                   min="1"/>
+            <float label="Artist scroll space" digits="0" bind="artist_space"
+                   min="0"/>
+            <float label="Artist display length" digits="0" bind="artist_avg"
+                   min="1"/>
+            <float label="Scroll interval (miliseconds)" digits="0"
+                   bind="scroll_interval" min="100"/>
+
+            <title label="Misc"/>
             <enum label="Playtime display" bind="playtime_display">
                 <item label="Current time" value="current"/>
                 <item label="Remaining time" value="remaining"/>
             </enum>
-            <float label="Scroll interval (miliseconds)" digits="0"
-                   bind="scroll_interval" min="100"/>
         </page>
         <page label="Behaviour">
             <title label="Server connection"/>

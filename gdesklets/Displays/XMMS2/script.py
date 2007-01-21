@@ -3,6 +3,10 @@ title_len = 23
 title_space = 10
 title_avg = 30
 
+artist_len = 18
+artist_space = 5
+artist_avg = 25
+
 playtime_display = "current"	# "current" or "remaining"
 server = ""
 server_not_found = "retry"		# "retry" or "launch"
@@ -141,7 +145,8 @@ def scroll_text(text, idx, tlen, space):
 
 	return ((idx + 1) % len(scroll), result[:tlen])
 
-
+# TODO: add a callback to title/artist scrolling settings changed in order
+# to avoid errors
 def scroll_title():
 	global title
 	global title_idx
@@ -156,9 +161,11 @@ def scroll_title():
 
 	global artist
 	global artist_idx
-	if artist and len(artist) > title_len:
+	global artist_len
+	global artist_avg
+	if artist and len(artist) > artist_len:
 		artist_idx, value = scroll_text(artist, artist_idx,
-				int(title_avg), int(title_space))
+				int(artist_avg), int(artist_space))
 		set_label(Dsp.artist, Dsp.topright.width, value)
 
 tick()	
