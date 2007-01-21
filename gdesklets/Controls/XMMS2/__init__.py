@@ -22,8 +22,23 @@ class IMusicPlayback(Interface):
 
 	start = Permission.READWRITE
 
+class IMusicControl(Interface):
+	play	= Permission.WRITE
+	stop	= Permission.WRITE
+	pause	= Permission.WRITE
+	next	= Permission.WRITE
+	prev	= Permission.WRITE
+	seek	= Permission.WRITE
 
-class XMMS2(Control, IMusicPlayback):
+	set_server = Permission.WRITE
+	start = Permission.READWRITE
+
+
+class IMusic(IMusicPlayback, IMusicControl):
+	pass
+
+
+class XMMS2(Control, IMusic):
 	CLIENT_NAME = 'gDesklets-XMMS2'
 	def __init__(self):
 		self._current		= -1
@@ -251,6 +266,17 @@ class XMMS2(Control, IMusicPlayback):
 
 	start 		= property(fget = __get_start, fset = __set_start,
 			doc = "Checks if the server started, and start/stop it")
+
+	def __dummy(self, value):
+		pass
+
+	play		= property(fset = __dummy)
+	stop		= property(fset = __dummy)
+	pause		= property(fset = __dummy)
+	next		= property(fset = __dummy)
+	prev		= property(fset = __dummy)
+	seek		= property(fset = __dummy)
+
 
 
 def get_class(): return XMMS2
