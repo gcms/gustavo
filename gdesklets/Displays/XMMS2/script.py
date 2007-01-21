@@ -1,6 +1,8 @@
 # settings
 title_len = 23
 title_space = 10
+title_avg = 30
+
 playtime_display = "current"	# "current" or "remaining"
 server = ""
 server_not_found = "retry"		# "retry" or "launch"
@@ -124,13 +126,20 @@ def tick():
 	global scroll_interval
 	add_timer(int(scroll_interval), tick)
 
-def scroll_text(text, idx, max_len, space):
-	scroll = text + ' ' * max(space, max_len - len(title))
-	result = scroll[idx:idx + max_len]
-	if len(result) < max_len:
-		result = result + scroll[:max_len - (len(scroll) - idx)]
+#def scroll_text(text, idx, max_len, space):
+#	scroll = text + ' ' * max(space, max_len - len(title))
+#	result = scroll[idx:idx + max_len]
+#	if len(result) < max_len:
+#		result = result + scroll[:max_len - (len(scroll) - idx)]
+#
+#	return ((idx + 1) % len(scroll), result)
 
-	return ((idx + 1) % len(scroll), result)
+def scroll_text(text, idx, tlen, space):
+	scroll = text + ' ' * space
+
+	result = scroll[idx:] + scroll[:idx]
+
+	return ((idx + 1) % len(scroll), result[:tlen])
 
 
 def scroll_title():
@@ -142,14 +151,14 @@ def scroll_title():
 
 	if title and len(title) > title_len:
 		title_idx, value = scroll_text(title, title_idx,
-				int(title_len), int(title_space))
+				int(title_avg), int(title_space))
 		set_label(Dsp.title, Dsp.topright.width, value)
 
 	global artist
 	global artist_idx
 	if artist and len(artist) > title_len:
 		artist_idx, value = scroll_text(artist, artist_idx,
-				int(title_len), int(title_space))
+				int(title_avg), int(title_space))
 		set_label(Dsp.artist, Dsp.topright.width, value)
 
 tick()	
