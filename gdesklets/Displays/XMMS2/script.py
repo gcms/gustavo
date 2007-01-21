@@ -1,21 +1,23 @@
 # settings
 title_len = 23
 title_space = 10
-playtime_display = "current"
+playtime_display = "current"	# "current" or "remaining"
 server = ""
-server_not_found = "retry"
+server_not_found = "retry"		# "retry" or "launch"
 retry_time = 10
 
 scroll_interval = 500
 
 
-# used for title scrolling
+# used for text scrolling
+artist = ""
+artist_idx = 0
 title = ""
 title_idx = 0
 
 def launch():
 	global server
-	print "now launching"
+
 	iexec = get_control('IExec:8es4mvgrwsac7mp9lexx82qs9-2')
 	if server.strip():
 		iexec.command = "xmms2-launcher -i %s" % server.strip()
@@ -51,9 +53,10 @@ def start_changed(started):
 		Dsp.bar.visible = True
 		Dsp.mygauge.fill = 0
 		Dsp.mygauge.visible = True
+		Dsp.time.value = ""
 		Dsp.time.visible = True
 	else:
-		Dsp.artist.value = "Not connected"
+		Dsp.artist.value = "Disconnected."
 		Dsp.title.value = ""
 
 		Dsp.bar.visible = False
@@ -63,6 +66,7 @@ def start_changed(started):
 
 
 def current_changed(current):
+	global artist
 	global title
 
 	artist = play.get_artist
@@ -74,6 +78,8 @@ def current_changed(current):
 	# scrolling
 	global title_idx
 	title_idx = 0
+	global artist_idx
+	artist_idx = 0
 
 def albumart_changed(albumart):
 	if albumart:
@@ -95,8 +101,6 @@ def get_time(playtime):
 
 
 def playtime_changed(playtime):
-	secs = playtime / 1000
-	#Dsp.time.value = "%0.2d:%0.2d" % (secs / 60, secs % 60)
 	Dsp.time.value = get_time(playtime)
 	Dsp.mygauge.fill = float(playtime * 100) / float(play.get_duration)
 
@@ -113,30 +117,30 @@ def tick():
 	global scroll_interval
 	add_timer(scroll_interval, tick)
 
+def scroll_text(text, idx, max_len, space):
+	scroll = text + ' ' * max(space, max_len - len(title))
+	result = scroll[idx:idx + max_len]
+	if len(result) < max_len:
+		result = result + scroll[:max_len - (len(scroll) - idx)]
+
+	return ((idx + 1) % len(scroll), result)
+
+
 def scroll_title():
 	global title
-	if not title:
-		return
-
+	global title_idx
 	global title_len
 	global title_space
 
-	# eek, hack
-	title_len = int(title_len)
-	title_space = int(title_space)
 
-	if len(title) > title_len:
-		#title_len = title width
-		global title
-		global title_idx
+	if title and len(title) > title_len:
+		title_idx, Dsp.title.value = scroll_text(title, title_idx,
+				int(title_len), int(title_space))
 
-		scroll = title + ' ' * max(title_space, title_len - len(title))
-		str = scroll[title_idx:title_idx + title_len]
-		if len(str) < title_len:
-			str = str + scroll[:title_len - (len(scroll) - title_idx)]
-		Dsp.title.value = str
-
-		title_idx = (title_idx + 1) % len(scroll)
-
+	global artist
+	global artist_idx
+	if artist and len(artist) > title_len:
+		artist_idx, Dsp.artist.value = scroll_text(artist, artist_idx,
+				int(title_len), int(title_space))
 
 tick()	
