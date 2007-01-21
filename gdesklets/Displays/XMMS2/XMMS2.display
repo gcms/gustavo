@@ -11,27 +11,29 @@
             <image id="cover_img" uri=""
                    anchor="nw" image-width="2.8cm"/>
         </group>
-        <label id="artist"
-               anchor="nw" relative-to="img_frame, x" x="0.35cm" y="0.35cm"
-               width="5.2cm"
-               font="Sans 16pt" color="white" value="Fetching data..."/>
-        <label id="title" anchor="nw" relative-to="artist, y"
-               width="5.2cm"
-               font="Sans 16pt" color="gold" value=""/>
-        <!-- progress bar -->
-        <frame id="bar"
-               anchor="sw" relative-to="img_frame, xy" x="0.35cm" y="-0.35cm"
-               width="5.2cm" height="0.35cm" color="red"
-               border-width="0.05cm, 0.05cm, 0.05cm, 0.05cm"/>
-        <group anchor="sw" relative-to="img_frame, xy"
-               x="0.4cm" y="-0.4cm">
-            <gauge id="mygauge" fill="0">
-                <group id="fill" width="5.15cm" height="0.25cm" bg-color="red"/>
-            </gauge>
+        <group id="topright" anchor="nw" relative-to="img_frame, x"
+               x="0.35cm" y="0.35cm" width="5.2cm" height="2.1cm">
+               <!-- 2.1 = 2.8 - (0.35 + 0.35) -->
+            <label id="artist" anchor="nw"
+                   font="Sans 16pt" color="white" value="Fetching data..."/>
+            <label id="title" anchor="nw" relative-to="artist, y" width="1cm"
+                   font="Sans 16pt" color="gold" value=""/>
+            <!-- progress bar -->
+            <frame id="bar"
+                   anchor="sw" width="5.2cm" height="0.35cm" x="0" y="100%"
+                   border-width="0.05cm, 0.05cm, 0.05cm, 0.05cm"
+                   color="red"/>
+            <group anchor="sw" relative-to="bar, y" x="0.05cm" y="-0.05cm">
+                <gauge id="mygauge" fill="0">
+                    <group id="fill" width="5.15cm" height="0.25cm"
+                           bg-color="red"/>
+                    <!-- 5.15 = (5.2 - 0.05)   0.25 = (0.35 - 0.25 * 2) -->
+                </gauge>
+            </group>
+            <!-- /progress bar -->
+            <label id="time" anchor="se" relative-to="bar, x" y="-0.35cm"
+                   value="" font="Clean 14pt"/>
         </group>
-        <!-- /progress bar -->
-        <label id="time" anchor="se" relative-to="bar, x" y="-0.35cm" value=""
-               font="Clean 14pt"/>
     </group>
     <!-- /top group -->
     <script uri="script.py"/>
