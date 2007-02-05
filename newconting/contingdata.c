@@ -148,6 +148,18 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 
 	return g_hash_table_lookup(priv->drawing_data, drawing);
 }
+/* PUBLIC METHOD */
+ContingModel *
+conting_data_get_model(ContingData *self)
+{
+	ContingDataPrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	return priv->model;
+}
 
 /* PUBLIC METHOD */
 void
@@ -439,7 +451,8 @@ conting_data_read(ContingSerializable *self, xmlNodePtr node,
 		/* This method should be removed from the public interface.
 		 * The data from file should be loaded into the ContingModel
 		 * instead of the ContingData. */
-		conting_model_add_item(priv->model, obj);
+		if (obj != NULL && CONTING_IS_ITEM_DATA(obj))
+			conting_model_add_item(priv->model, CONTING_ITEM_DATA(obj));
 	}
 }
 

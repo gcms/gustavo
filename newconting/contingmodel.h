@@ -58,6 +58,9 @@ conting_model_get_bus(ContingModel *self, gint num);
 ContingItemData *
 conting_model_get_branch(ContingModel *self, gint x, gint y);
 
+void
+conting_model_add_item(ContingModel *self, ContingItemData *item);
+
 gboolean
 conting_model_loaded(ContingModel *self);
 

@@ -97,4 +97,12 @@ conting_one_line_get_default_operation_by_mode(ContingOneLine *self,
 
 #include "contingitemdata.h"
 ContingItemData * conting_drawing_get_item_data(ContingDrawing *drawing);
+
+
+void
+conting_one_line_load_flow_run_sync(ContingOneLine *self);
+#include "contingmodel.h"
+ContingModel *
+conting_one_line_load_flow_model(ContingOneLine *self);
+
 #endif /* CONTING_ONE_LINE_H */

@@ -145,7 +145,8 @@ conting_trans2_get_buses(ContingTrans2 *self,
 	 * That means, if conting_line_get_buses() applied on link0
 	 * returns bus1 and bus0 in this order */
 	g_return_if_fail(priv->link0 != NULL && CONTING_IS_LINE(priv->link0));
-	conting_line_get_buses(CONTING_LINE(priv->link0), bus1, bus0);
+	conting_line_get_buses(CONTING_LINE(priv->link0),
+			(ContingBusBase **) bus1, (ContingBusBase **) bus0);
 }
 
 

@@ -1,33 +1,29 @@
 #include <gtk/gtk.h>
 #include "contingsysteminfo.h"
 
-#include "contingloadflow.h"
-
 GtkDialog *
-conting_system_info_get_dialog(ContingData *data)
+conting_system_info_get_dialog(ContingModel *model)
 {
 	GtkWidget *dialog;
+	gchar buff[256];
 	
 	dialog = gtk_dialog_new_with_buttons("System information", NULL,
 			GTK_DIALOG_MODAL,
             GTK_STOCK_OK, GTK_RESPONSE_OK,
             NULL);
 
-	{
-		ContingLoadFlowConfig *cfg = conting_load_flow_config_new();
+	sprintf(buff, "Numero de barras: %4d\n",
+			g_list_length((GList *) conting_model_get_buses(model)));
+	gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox),
+			gtk_label_new(buff));
 
-		conting_load_flow_config_add_int(cfg, 3);
-		conting_load_flow_config_add_float(cfg, 3.2);
-		conting_load_flow_config_end_section(cfg);
+	sprintf(buff, "Numero de ramos: %4d\n",
+			g_list_length((GList *) conting_model_get_branches(model)));
+	gtk_box_pack_start_defaults(GTK_BOX(GTK_DIALOG(dialog)->vbox),
+			gtk_label_new(buff));
 
-		conting_load_flow_config_add_int(cfg, 1);
-		conting_load_flow_config_add_int(cfg, 2);
-		conting_load_flow_config_end_section(cfg);
+	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 
-		g_print("%s\n", conting_load_flow_config_get_text(cfg));
-
-		g_object_unref(cfg);
-	}
             
     g_signal_connect_swapped (dialog,
                              "response", 

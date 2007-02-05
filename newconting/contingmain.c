@@ -867,7 +867,7 @@ system_info_clicked(GtkToolButton *button,
 			"data", &data,
 			NULL);
 			
-	dialog = conting_system_info_get_dialog(data);
+	dialog = conting_system_info_get_dialog(conting_data_get_model(data));
 	
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(window));
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
