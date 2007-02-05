@@ -7,12 +7,20 @@
       <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
+          <drawing id="103"/>
+          <point>-3.000000 12.666667</point>
+        </node>
+        <node>
           <drawing id="17"/>
           <point>3.000000 -8.666667</point>
         </node>
         <node>
           <drawing id="3"/>
           <point>-3.000000 4.000000</point>
+        </node>
+        <node>
+          <drawing id="87"/>
+          <point>3.000000 12.000000</point>
         </node>
         <node>
           <drawing id="11"/>
@@ -22,46 +30,10 @@
           <drawing id="83"/>
           <point>3.000000 2.000000</point>
         </node>
-        <node>
-          <drawing id="89"/>
-          <point>3.000000 12.000000</point>
-        </node>
-        <node>
-          <drawing id="30"/>
-          <point>-3.000000 12.000000</point>
-        </node>
       </attribute>
     </class>
     <class name="ContingDrawing">
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 248.000000 391.666667</attribute>
-    </class>
-  </drawing>
-  <drawing id="2" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="7"/>
-          <point>-3.000000 -3.000000</point>
-        </node>
-        <node>
-          <drawing id="10"/>
-          <point>3.000000 -11.000000</point>
-        </node>
-        <node>
-          <drawing id="3"/>
-          <point>3.000000 -2.000000</point>
-        </node>
-        <node>
-          <drawing id="4"/>
-          <point>3.000000 12.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 300.333333 339.666667</attribute>
     </class>
   </drawing>
   <drawing id="3" class="ContingLine">
@@ -69,10 +41,12 @@
       <attribute type="drawing" name="comp0" id="1"/>
       <attribute type="drawing" name="comp1" id="2"/>
       <attribute type="point" name="link0">107.666667 149.000000</attribute>
-      <attribute type="point" name="link1">166.000000 103.000000</attribute>
+      <attribute type="point" name="link1">166.000000 88.333333</attribute>
       <attribute type="list" name="points">
         <point>107.666667 149.000000</point>
-        <point>166.000000 103.000000</point>
+        <point>107.666667 127.666666</point>
+        <point>165.666667 127.000000</point>
+        <point>166.000000 88.333333</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -83,102 +57,12 @@
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="32"/>
       <attribute type="drawing" name="comp1" id="2"/>
-      <attribute type="point" name="link0">67.000000 70.000000</attribute>
-      <attribute type="point" name="link1">152.000000 103.000000</attribute>
+      <attribute type="point" name="link0">65.666667 100.000000</attribute>
+      <attribute type="point" name="link1">152.000000 88.333333</attribute>
       <attribute type="list" name="points">
-        <point>67.000000 70.000000</point>
-        <point>140.000000 113.000000</point>
-        <point>152.000000 103.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 136.333333 239.666667</attribute>
-    </class>
-  </drawing>
-  <drawing id="5" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="8"/>
-          <point>3.000000 -7.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 261.333333 320.666667</attribute>
-    </class>
-  </drawing>
-  <drawing id="6" class="ContingTrans3">
-    <class name="ContingTrans3">
-      <attribute type="drawing" name="link0" id="8"/>
-      <attribute type="drawing" name="link1" id="9"/>
-      <attribute type="drawing" name="link2" id="7"/>
-    </class>
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-8.500000 -8.500000</attribute>
-      <attribute type="point" name="p1">8.500000 8.500000</attribute>
-      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="9"/>
-          <point>8.500000 -2.833333</point>
-        </node>
-        <node>
-          <drawing id="7"/>
-          <point>0.000000 8.500000</point>
-        </node>
-        <node>
-          <drawing id="8"/>
-          <point>-8.500000 -2.833333</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 303.333333 320.666667</attribute>
-    </class>
-  </drawing>
-  <drawing id="7" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="6"/>
-      <attribute type="drawing" name="comp1" id="2"/>
-      <attribute type="point" name="link0">167.000000 89.500000</attribute>
-      <attribute type="point" name="link1">167.000000 97.000000</attribute>
-      <attribute type="list" name="points">
-        <point>167.000000 89.500000</point>
-        <point>167.000000 97.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 136.333333 239.666667</attribute>
-    </class>
-  </drawing>
-  <drawing id="8" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="6"/>
-      <attribute type="drawing" name="comp1" id="5"/>
-      <attribute type="point" name="link0">158.500000 78.166667</attribute>
-      <attribute type="point" name="link1">128.000000 74.000000</attribute>
-      <attribute type="list" name="points">
-        <point>158.500000 78.166667</point>
-        <point>128.000000 74.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 136.333333 239.666667</attribute>
-    </class>
-  </drawing>
-  <drawing id="9" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="6"/>
-      <attribute type="drawing" name="comp1" id="36"/>
-      <attribute type="point" name="link0">175.500000 78.166667</attribute>
-      <attribute type="point" name="link1">175.000000 35.000000</attribute>
-      <attribute type="list" name="points">
-        <point>175.500000 78.166667</point>
-        <point>175.000000 35.000000</point>
+        <point>65.666667 100.000000</point>
+        <point>151.666667 101.666666</point>
+        <point>152.000000 88.333333</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -189,12 +73,12 @@
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="2"/>
       <attribute type="drawing" name="comp1" id="25"/>
-      <attribute type="point" name="link0">170.666667 221.666667</attribute>
+      <attribute type="point" name="link0">170.666666 207.000000</attribute>
       <attribute type="point" name="link1">269.999999 237.333333</attribute>
       <attribute type="list" name="points">
-        <point>170.666667 221.666667</point>
-        <point>198.666667 245.333333</point>
-        <point>266.000000 246.666667</point>
+        <point>170.666666 207.000000</point>
+        <point>171.333333 247.000000</point>
+        <point>270.000000 247.000000</point>
         <point>269.999999 237.333333</point>
       </attribute>
     </class>
@@ -210,8 +94,8 @@
       <attribute type="point" name="link1">116.000000 267.666667</attribute>
       <attribute type="list" name="points">
         <point>277.333333 237.333333</point>
-        <point>269.333333 253.333333</point>
-        <point>134.000000 253.333333</point>
+        <point>277.333333 254.333333</point>
+        <point>116.000000 255.000000</point>
         <point>116.000000 267.666667</point>
       </attribute>
     </class>
@@ -219,59 +103,14 @@
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 140.666667 121.000000</attribute>
     </class>
   </drawing>
-  <drawing id="12" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="64"/>
-      <attribute type="drawing" name="comp1" id="75"/>
-      <attribute type="point" name="link0">416.000000 214.000000</attribute>
-      <attribute type="point" name="link1">398.000000 168.000000</attribute>
-      <attribute type="list" name="points">
-        <point>416.000000 214.000000</point>
-        <point>398.000000 168.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 72.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="13" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="64"/>
-      <attribute type="drawing" name="comp1" id="40"/>
-      <attribute type="point" name="link0">407.000000 214.000000</attribute>
-      <attribute type="point" name="link1">379.000000 195.000000</attribute>
-      <attribute type="list" name="points">
-        <point>407.000000 214.000000</point>
-        <point>379.000000 195.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 72.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="14" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="64"/>
-      <attribute type="drawing" name="comp1" id="55"/>
-      <attribute type="point" name="link0">424.000000 214.000000</attribute>
-      <attribute type="point" name="link1">428.000000 143.000000</attribute>
-      <attribute type="list" name="points">
-        <point>424.000000 214.000000</point>
-        <point>428.000000 143.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 72.000000</attribute>
-    </class>
-  </drawing>
   <drawing id="15" class="ContingLine">
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="64"/>
       <attribute type="drawing" name="comp1" id="56"/>
-      <attribute type="point" name="link0">432.000000 214.000000</attribute>
+      <attribute type="point" name="link0">430.000000 214.666667</attribute>
       <attribute type="point" name="link1">473.000000 95.000000</attribute>
       <attribute type="list" name="points">
-        <point>432.000000 214.000000</point>
+        <point>430.000000 214.666667</point>
         <point>473.000000 95.000000</point>
       </attribute>
     </class>
@@ -284,12 +123,13 @@
       <attribute type="drawing" name="comp0" id="25"/>
       <attribute type="drawing" name="comp1" id="52"/>
       <attribute type="point" name="link0">412.000000 340.333333</attribute>
-      <attribute type="point" name="link1">491.000000 84.000000</attribute>
+      <attribute type="point" name="link1">491.000000 95.333333</attribute>
       <attribute type="list" name="points">
         <point>412.000000 340.333333</point>
-        <point>417.000000 345.000000</point>
-        <point>475.000000 337.000000</point>
-        <point>491.000000 84.000000</point>
+        <point>411.666667 346.000000</point>
+        <point>475.666667 346.000000</point>
+        <point>478.333333 95.333333</point>
+        <point>491.000000 95.333333</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -304,8 +144,8 @@
       <attribute type="point" name="link1">233.666667 376.666667</attribute>
       <attribute type="list" name="points">
         <point>400.000000 410.000000</point>
-        <point>399.000000 418.000000</point>
-        <point>233.000000 385.000000</point>
+        <point>399.666667 418.666667</point>
+        <point>233.666667 416.666667</point>
         <point>233.666667 376.666667</point>
       </attribute>
     </class>
@@ -317,13 +157,13 @@
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="19"/>
       <attribute type="drawing" name="comp1" id="52"/>
-      <attribute type="point" name="link0">489.000000 331.000000</attribute>
-      <attribute type="point" name="link1">497.000000 70.000000</attribute>
+      <attribute type="point" name="link0">490.333333 347.666667</attribute>
+      <attribute type="point" name="link1">497.000000 81.333333</attribute>
       <attribute type="list" name="points">
-        <point>489.000000 331.000000</point>
-        <point>502.000000 320.000000</point>
-        <point>514.000000 85.000000</point>
-        <point>497.000000 70.000000</point>
+        <point>490.333333 347.666667</point>
+        <point>508.333333 348.000000</point>
+        <point>510.333333 81.333333</point>
+        <point>497.000000 81.333333</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -337,17 +177,17 @@
       <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
-          <drawing id="18"/>
-          <point>3.000000 -3.000000</point>
-        </node>
-        <node>
           <drawing id="20"/>
           <point>-3.000000 10.000000</point>
+        </node>
+        <node>
+          <drawing id="18"/>
+          <point>3.000000 -3.000000</point>
         </node>
       </attribute>
     </class>
     <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 509.000000 352.000000</attribute>
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 510.333333 368.666667</attribute>
     </class>
   </drawing>
   <drawing id="20" class="ContingLine">
@@ -355,11 +195,11 @@
       <attribute type="drawing" name="comp0" id="25"/>
       <attribute type="drawing" name="comp1" id="19"/>
       <attribute type="point" name="link0">428.000000 286.333333</attribute>
-      <attribute type="point" name="link1">509.000000 290.000000</attribute>
+      <attribute type="point" name="link1">510.333333 306.666667</attribute>
       <attribute type="list" name="points">
         <point>428.000000 286.333333</point>
-        <point>439.000000 299.000000</point>
-        <point>509.000000 290.000000</point>
+        <point>428.333333 306.000000</point>
+        <point>510.333333 306.666667</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -370,42 +210,11 @@
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="65"/>
       <attribute type="drawing" name="comp1" id="25"/>
-      <attribute type="point" name="link0">437.000000 260.500000</attribute>
+      <attribute type="point" name="link0">435.666667 260.500000</attribute>
       <attribute type="point" name="link1">435.000000 280.333333</attribute>
       <attribute type="list" name="points">
-        <point>437.000000 260.500000</point>
+        <point>435.666667 260.500000</point>
         <point>435.000000 280.333333</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 72.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="22" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="23"/>
-          <point>-3.000000 5.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 468.000000 277.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="23" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="65"/>
-      <attribute type="drawing" name="comp1" id="22"/>
-      <attribute type="point" name="link0">445.500000 249.166667</attribute>
-      <attribute type="point" name="link1">468.000000 210.000000</attribute>
-      <attribute type="list" name="points">
-        <point>445.500000 249.166667</point>
-        <point>468.000000 210.000000</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -416,10 +225,10 @@
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="67"/>
       <attribute type="drawing" name="comp1" id="25"/>
-      <attribute type="point" name="link0">415.000000 259.500000</attribute>
+      <attribute type="point" name="link0">413.000000 260.833333</attribute>
       <attribute type="point" name="link1">413.000000 280.333333</attribute>
       <attribute type="list" name="points">
-        <point>415.000000 259.500000</point>
+        <point>413.000000 260.833333</point>
         <point>413.000000 280.333333</point>
       </attribute>
     </class>
@@ -434,18 +243,6 @@
       <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
-          <drawing id="21"/>
-          <point>-3.000000 -7.666667</point>
-        </node>
-        <node>
-          <drawing id="27"/>
-          <point>3.000000 2.333333</point>
-        </node>
-        <node>
-          <drawing id="10"/>
-          <point>3.000000 13.666667</point>
-        </node>
-        <node>
           <drawing id="16"/>
           <point>3.000000 -10.666667</point>
         </node>
@@ -454,12 +251,24 @@
           <point>3.000000 -0.666667</point>
         </node>
         <node>
-          <drawing id="11"/>
-          <point>3.000000 6.333333</point>
-        </node>
-        <node>
           <drawing id="24"/>
           <point>-3.000000 14.333333</point>
+        </node>
+        <node>
+          <drawing id="10"/>
+          <point>3.000000 13.666667</point>
+        </node>
+        <node>
+          <drawing id="21"/>
+          <point>-3.000000 -7.666667</point>
+        </node>
+        <node>
+          <drawing id="27"/>
+          <point>3.000000 2.333333</point>
+        </node>
+        <node>
+          <drawing id="11"/>
+          <point>3.000000 6.333333</point>
         </node>
       </attribute>
     </class>
@@ -509,12 +318,12 @@
       <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
-          <drawing id="17"/>
-          <point>3.000000 1.000000</point>
-        </node>
-        <node>
           <drawing id="81"/>
           <point>3.000000 -11.000000</point>
+        </node>
+        <node>
+          <drawing id="17"/>
+          <point>3.000000 1.000000</point>
         </node>
         <node>
           <drawing id="29"/>
@@ -541,23 +350,6 @@
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 23.000000 18.000000</attribute>
     </class>
   </drawing>
-  <drawing id="30" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="31"/>
-      <attribute type="drawing" name="comp1" id="1"/>
-      <attribute type="point" name="link0">31.000000 39.000000</attribute>
-      <attribute type="point" name="link1">124.666667 152.000000</attribute>
-      <attribute type="list" name="points">
-        <point>31.000000 39.000000</point>
-        <point>39.333334 48.666666</point>
-        <point>50.000000 61.333333</point>
-        <point>124.666667 152.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 111.333333 236.666667</attribute>
-    </class>
-  </drawing>
   <drawing id="31" class="ContingBus">
     <class name="ContingComponent">
       <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
@@ -565,12 +357,12 @@
       <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
-          <drawing id="33"/>
-          <point>3.000000 -7.000000</point>
+          <drawing id="103"/>
+          <point>3.000000 4.333333</point>
         </node>
         <node>
-          <drawing id="30"/>
-          <point>3.000000 10.000000</point>
+          <drawing id="33"/>
+          <point>3.000000 -7.000000</point>
         </node>
         <node>
           <drawing id="79"/>
@@ -589,12 +381,12 @@
       <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
-          <drawing id="33"/>
-          <point>-3.000000 1.000000</point>
+          <drawing id="85"/>
+          <point>3.000000 -11.666667</point>
         </node>
         <node>
-          <drawing id="86"/>
-          <point>3.000000 -11.666667</point>
+          <drawing id="33"/>
+          <point>-3.000000 1.000000</point>
         </node>
         <node>
           <drawing id="4"/>
@@ -603,7 +395,7 @@
       </attribute>
     </class>
     <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 200.333333 307.666667</attribute>
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 199.000000 337.666667</attribute>
     </class>
   </drawing>
   <drawing id="33" class="ContingLine">
@@ -611,10 +403,11 @@
       <attribute type="drawing" name="comp0" id="31"/>
       <attribute type="drawing" name="comp1" id="32"/>
       <attribute type="point" name="link0">68.000000 72.000000</attribute>
-      <attribute type="point" name="link1">106.000000 105.000000</attribute>
+      <attribute type="point" name="link1">104.666667 135.000000</attribute>
       <attribute type="list" name="points">
         <point>68.000000 72.000000</point>
-        <point>106.000000 105.000000</point>
+        <point>67.333334 134.333333</point>
+        <point>104.666667 135.000000</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -649,10 +442,10 @@
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="36"/>
       <attribute type="drawing" name="comp1" id="69"/>
-      <attribute type="point" name="link0">192.000000 145.000000</attribute>
+      <attribute type="point" name="link0">192.000000 130.333333</attribute>
       <attribute type="point" name="link1">153.000000 44.000000</attribute>
       <attribute type="list" name="points">
-        <point>192.000000 145.000000</point>
+        <point>192.000000 130.333333</point>
         <point>153.000000 44.000000</point>
       </attribute>
     </class>
@@ -660,117 +453,19 @@
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 113.333333 123.666667</attribute>
     </class>
   </drawing>
-  <drawing id="36" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="9"/>
-          <point>3.000000 -6.000000</point>
-        </node>
-        <node>
-          <drawing id="37"/>
-          <point>-3.000000 10.000000</point>
-        </node>
-        <node>
-          <drawing id="39"/>
-          <point>-3.000000 -10.666667</point>
-        </node>
-        <node>
-          <drawing id="35"/>
-          <point>-3.000000 0.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 305.333333 271.666667</attribute>
-    </class>
-  </drawing>
   <drawing id="37" class="ContingLine">
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="36"/>
       <attribute type="drawing" name="comp1" id="72"/>
-      <attribute type="point" name="link0">182.000000 145.000000</attribute>
+      <attribute type="point" name="link0">182.000000 130.333333</attribute>
       <attribute type="point" name="link1">96.000000 58.000000</attribute>
       <attribute type="list" name="points">
-        <point>182.000000 145.000000</point>
+        <point>182.000000 130.333333</point>
         <point>96.000000 58.000000</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 113.333333 123.666667</attribute>
-    </class>
-  </drawing>
-  <drawing id="38" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="39"/>
-          <point>3.000000 8.000000</point>
-        </node>
-        <node>
-          <drawing id="41"/>
-          <point>3.000000 -8.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 336.000000 237.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="39" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="36"/>
-      <attribute type="drawing" name="comp1" id="38"/>
-      <attribute type="point" name="link0">319.000000 210.666667</attribute>
-      <attribute type="point" name="link1">331.000000 182.000000</attribute>
-      <attribute type="list" name="points">
-        <point>319.000000 210.666667</point>
-        <point>331.000000 182.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 58.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="40" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="13"/>
-          <point>3.000000 -3.000000</point>
-        </node>
-        <node>
-          <drawing id="41"/>
-          <point>-3.000000 0.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 373.000000 264.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="41" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="38"/>
-      <attribute type="drawing" name="comp1" id="40"/>
-      <attribute type="point" name="link0">347.000000 182.000000</attribute>
-      <attribute type="point" name="link1">376.000000 203.000000</attribute>
-      <attribute type="list" name="points">
-        <point>347.000000 182.000000</point>
-        <point>376.000000 203.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 58.000000</attribute>
     </class>
   </drawing>
   <drawing id="42" class="ContingBus">
@@ -784,8 +479,12 @@
           <point>3.000000 0.000000</point>
         </node>
         <node>
-          <drawing id="45"/>
-          <point>3.000000 -3.000000</point>
+          <drawing id="169"/>
+          <point>-3.000000 -9.333333</point>
+        </node>
+        <node>
+          <drawing id="157"/>
+          <point>-3.000000 5.333333</point>
         </node>
       </attribute>
     </class>
@@ -801,8 +500,8 @@
       <attribute type="point" name="link1">341.000000 87.000000</attribute>
       <attribute type="list" name="points">
         <point>279.000000 103.666667</point>
-        <point>300.000000 94.000000</point>
-        <point>332.000000 93.000000</point>
+        <point>279.000000 93.333333</point>
+        <point>341.000000 93.333333</point>
         <point>341.000000 87.000000</point>
       </attribute>
     </class>
@@ -825,30 +524,13 @@
           <point>-3.000000 3.000000</point>
         </node>
         <node>
-          <drawing id="45"/>
-          <point>3.000000 11.000000</point>
+          <drawing id="169"/>
+          <point>3.000000 8.666667</point>
         </node>
       </attribute>
     </class>
     <class name="ContingDrawing">
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 394.000000 123.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="45" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="42"/>
-      <attribute type="drawing" name="comp1" id="44"/>
-      <attribute type="point" name="link0">344.000000 87.000000</attribute>
-      <attribute type="point" name="link1">386.000000 68.000000</attribute>
-      <attribute type="list" name="points">
-        <point>344.000000 87.000000</point>
-        <point>361.000000 73.000000</point>
-        <point>381.000000 73.000000</point>
-        <point>386.000000 68.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 58.000000</attribute>
     </class>
   </drawing>
   <drawing id="46" class="ContingLine">
@@ -886,10 +568,11 @@
       <attribute type="drawing" name="comp0" id="34"/>
       <attribute type="drawing" name="comp1" id="51"/>
       <attribute type="point" name="link0">450.000000 47.000000</attribute>
-      <attribute type="point" name="link1">552.000000 102.000000</attribute>
+      <attribute type="point" name="link1">560.000000 74.666667</attribute>
       <attribute type="list" name="points">
         <point>450.000000 47.000000</point>
-        <point>552.000000 102.000000</point>
+        <point>449.666667 72.000000</point>
+        <point>560.000000 74.666667</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -940,7 +623,7 @@
       </attribute>
     </class>
     <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 552.000000 159.000000</attribute>
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 560.000000 131.666667</attribute>
     </class>
   </drawing>
   <drawing id="52" class="ContingBus">
@@ -950,12 +633,12 @@
       <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
-          <drawing id="18"/>
-          <point>3.000000 -3.000000</point>
-        </node>
-        <node>
           <drawing id="16"/>
           <point>-3.000000 11.000000</point>
+        </node>
+        <node>
+          <drawing id="18"/>
+          <point>3.000000 -3.000000</point>
         </node>
         <node>
           <drawing id="54"/>
@@ -964,7 +647,7 @@
       </attribute>
     </class>
     <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 517.000000 91.000000</attribute>
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 517.000000 102.333333</attribute>
     </class>
   </drawing>
   <drawing id="53" class="ContingTrans2">
@@ -996,34 +679,14 @@
       <attribute type="drawing" name="comp0" id="53"/>
       <attribute type="drawing" name="comp1" id="52"/>
       <attribute type="point" name="link0">480.500000 75.000000</attribute>
-      <attribute type="point" name="link1">505.000000 64.000000</attribute>
+      <attribute type="point" name="link1">505.000000 75.333333</attribute>
       <attribute type="list" name="points">
         <point>480.500000 75.000000</point>
-        <point>505.000000 64.000000</point>
+        <point>505.000000 75.333333</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 9.000000 19.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="55" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="57"/>
-          <point>-3.000000 -5.000000</point>
-        </node>
-        <node>
-          <drawing id="14"/>
-          <point>3.000000 -4.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 421.000000 212.000000</attribute>
     </class>
   </drawing>
   <drawing id="56" class="ContingBus">
@@ -1055,10 +718,10 @@
       <attribute type="drawing" name="comp0" id="56"/>
       <attribute type="drawing" name="comp1" id="55"/>
       <attribute type="point" name="link0">432.000000 111.000000</attribute>
-      <attribute type="point" name="link1">401.000000 153.000000</attribute>
+      <attribute type="point" name="link1">397.666667 153.000000</attribute>
       <attribute type="list" name="points">
         <point>432.000000 111.000000</point>
-        <point>401.000000 153.000000</point>
+        <point>397.666667 153.000000</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
@@ -1084,28 +747,13 @@
           <point>3.000000 -4.000000</point>
         </node>
         <node>
-          <drawing id="59"/>
-          <point>-3.000000 -6.000000</point>
+          <drawing id="151"/>
+          <point>-3.000000 -11.333333</point>
         </node>
       </attribute>
     </class>
     <class name="ContingDrawing">
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 448.000000 65.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="59" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="58"/>
-      <attribute type="drawing" name="comp1" id="62"/>
-      <attribute type="point" name="link0">433.000000 55.000000</attribute>
-      <attribute type="point" name="link1">443.000000 25.000000</attribute>
-      <attribute type="list" name="points">
-        <point>433.000000 55.000000</point>
-        <point>443.000000 25.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 21.000000 7.000000</attribute>
     </class>
   </drawing>
   <drawing id="60" class="ContingLine">
@@ -1116,7 +764,8 @@
       <attribute type="point" name="link1">420.000000 55.000000</attribute>
       <attribute type="list" name="points">
         <point>341.000000 34.000000</point>
-        <point>345.000000 45.000000</point>
+        <point>341.000000 46.333333</point>
+        <point>419.666667 47.000000</point>
         <point>420.000000 55.000000</point>
       </attribute>
     </class>
@@ -1132,8 +781,8 @@
       <attribute type="point" name="link1">357.000000 24.000000</attribute>
       <attribute type="list" name="points">
         <point>426.000000 15.000000</point>
-        <point>423.000000 28.000000</point>
-        <point>358.000000 29.000000</point>
+        <point>426.333333 29.000000</point>
+        <point>357.000000 28.333333</point>
         <point>357.000000 24.000000</point>
       </attribute>
     </class>
@@ -1152,8 +801,8 @@
           <point>3.000000 10.000000</point>
         </node>
         <node>
-          <drawing id="59"/>
-          <point>3.000000 -7.000000</point>
+          <drawing id="151"/>
+          <point>3.000000 -2.333333</point>
         </node>
       </attribute>
     </class>
@@ -1181,125 +830,6 @@
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 371.000000 38.000000</attribute>
     </class>
   </drawing>
-  <drawing id="64" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="12"/>
-          <point>-3.000000 4.000000</point>
-        </node>
-        <node>
-          <drawing id="68"/>
-          <point>3.000000 5.000000</point>
-        </node>
-        <node>
-          <drawing id="15"/>
-          <point>-3.000000 -12.000000</point>
-        </node>
-        <node>
-          <drawing id="13"/>
-          <point>-3.000000 13.000000</point>
-        </node>
-        <node>
-          <drawing id="66"/>
-          <point>3.000000 -8.500000</point>
-        </node>
-        <node>
-          <drawing id="14"/>
-          <point>-3.000000 -4.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 417.000000 289.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="65" class="ContingTrans3">
-    <class name="ContingTrans3">
-      <attribute type="drawing" name="link0" id="66"/>
-      <attribute type="drawing" name="link1" id="23"/>
-      <attribute type="drawing" name="link2" id="21"/>
-    </class>
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-8.500000 -8.500000</attribute>
-      <attribute type="point" name="p1">8.500000 8.500000</attribute>
-      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="21"/>
-          <point>0.000000 8.500000</point>
-        </node>
-        <node>
-          <drawing id="23"/>
-          <point>8.500000 -2.833333</point>
-        </node>
-        <node>
-          <drawing id="66"/>
-          <point>-8.500000 -2.833333</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 434.000000 324.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="66" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="65"/>
-      <attribute type="drawing" name="comp1" id="64"/>
-      <attribute type="point" name="link0">426.500000 263.166667</attribute>
-      <attribute type="point" name="link1">426.500000 234.000000</attribute>
-      <attribute type="list" name="points">
-        <point>426.500000 263.166667</point>
-        <point>426.500000 234.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -1.000000 58.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="67" class="ContingTrans2">
-    <class name="ContingTrans2">
-      <attribute type="drawing" name="link0" id="68"/>
-      <attribute type="drawing" name="link1" id="24"/>
-    </class>
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-5.000000 -8.500000</attribute>
-      <attribute type="point" name="p1">5.000000 8.500000</attribute>
-      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="68"/>
-          <point>0.000000 -8.500000</point>
-        </node>
-        <node>
-          <drawing id="24"/>
-          <point>0.000000 8.500000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 412.000000 323.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="68" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="67"/>
-      <attribute type="drawing" name="comp1" id="64"/>
-      <attribute type="point" name="link0">413.000000 256.500000</attribute>
-      <attribute type="point" name="link1">413.000000 234.000000</attribute>
-      <attribute type="list" name="points">
-        <point>413.000000 256.500000</point>
-        <point>413.000000 234.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -1.000000 58.000000</attribute>
-    </class>
-  </drawing>
   <drawing id="69" class="ContingBus">
     <class name="ContingComponent">
       <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
@@ -1307,16 +837,16 @@
       <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
+          <drawing id="35"/>
+          <point>3.000000 2.000000</point>
+        </node>
+        <node>
           <drawing id="43"/>
           <point>-3.000000 -7.666667</point>
         </node>
         <node>
           <drawing id="70"/>
           <point>3.000000 13.000000</point>
-        </node>
-        <node>
-          <drawing id="35"/>
-          <point>3.000000 2.000000</point>
         </node>
         <node>
           <drawing id="71"/>
@@ -1353,7 +883,7 @@
       <attribute type="point" name="link1">213.000000 85.000000</attribute>
       <attribute type="list" name="points">
         <point>182.000000 77.000000</point>
-        <point>190.000000 99.000000</point>
+        <point>191.333334 99.333333</point>
         <point>207.000000 99.000000</point>
         <point>213.000000 85.000000</point>
       </attribute>
@@ -1417,41 +947,6 @@
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -19.000000 25.000000</attribute>
     </class>
   </drawing>
-  <drawing id="75" class="ContingBus">
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
-      <attribute type="point" name="p1">3.000000 20.000000</attribute>
-      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="12"/>
-          <point>3.000000 -4.000000</point>
-        </node>
-        <node>
-          <drawing id="76"/>
-          <point>-3.000000 -3.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 391.000000 237.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="76" class="ContingLine">
-    <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="77"/>
-      <attribute type="drawing" name="comp1" id="75"/>
-      <attribute type="point" name="link0">394.000000 155.000000</attribute>
-      <attribute type="point" name="link1">424.000000 186.000000</attribute>
-      <attribute type="list" name="points">
-        <point>394.000000 155.000000</point>
-        <point>424.000000 186.000000</point>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -30.000000 48.000000</attribute>
-    </class>
-  </drawing>
   <drawing id="77" class="ContingBus">
     <class name="ContingComponent">
       <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
@@ -1486,18 +981,18 @@
       </attribute>
     </class>
     <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 122.000000 257.333333</attribute>
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 122.000000 256.666666</attribute>
     </class>
   </drawing>
   <drawing id="79" class="ContingLine">
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="78"/>
       <attribute type="drawing" name="comp1" id="31"/>
-      <attribute type="point" name="link0">127.000000 257.333333</attribute>
+      <attribute type="point" name="link0">127.000000 256.666666</attribute>
       <attribute type="point" name="link1">140.666667 275.666667</attribute>
       <attribute type="list" name="points">
-        <point>127.000000 257.333333</point>
-        <point>138.000000 257.333333</point>
+        <point>127.000000 256.666666</point>
+        <point>140.000000 256.666667</point>
         <point>140.666667 275.666667</point>
       </attribute>
     </class>
@@ -1539,9 +1034,7 @@
     </class>
   </drawing>
   <drawing id="82" class="ContingGen">
-    <class name="ContingSymbol">
-      <attribute type="drawing" name="link0" id="83"/>
-    </class>
+    <class name="ContingSymbol"/>
     <class name="ContingComponent">
       <attribute type="point" name="p0">-5.000000 -5.000000</attribute>
       <attribute type="point" name="p1">5.000000 5.000000</attribute>
@@ -1554,17 +1047,17 @@
       </attribute>
     </class>
     <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 248.000000 411.000000</attribute>
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 246.000000 413.666667</attribute>
     </class>
   </drawing>
   <drawing id="83" class="ContingLine">
     <class name="ContingLine">
       <attribute type="drawing" name="comp0" id="82"/>
       <attribute type="drawing" name="comp1" id="1"/>
-      <attribute type="point" name="link0">248.000000 416.000000</attribute>
+      <attribute type="point" name="link0">246.000000 418.666667</attribute>
       <attribute type="point" name="link1">246.000000 394.666667</attribute>
       <attribute type="list" name="points">
-        <point>248.000000 416.000000</point>
+        <point>246.000000 418.666667</point>
         <point>246.000000 394.666667</point>
       </attribute>
     </class>
@@ -1572,51 +1065,30 @@
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
     </class>
   </drawing>
-  <drawing id="85" class="ContingLoad">
-    <class name="ContingSymbol">
-      <attribute type="drawing" name="link0" id="86"/>
-    </class>
-    <class name="ContingComponent">
-      <attribute type="point" name="p0">-3.000000 -3.000000</attribute>
-      <attribute type="point" name="p1">3.000000 3.000000</attribute>
-      <attribute type="affine" name="rotate">-1.000000 0.000000 -0.000000 -1.000000 0.000000 0.000000</attribute>
-      <attribute type="map" name="points">
-        <node>
-          <drawing id="86"/>
-          <point>3.000000 0.000000</point>
-        </node>
-      </attribute>
-    </class>
-    <class name="ContingDrawing">
-      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 220.000000 296.000000</attribute>
-    </class>
-  </drawing>
-  <drawing id="86" class="ContingLine">
+  <drawing id="85" class="ContingLine">
     <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="85"/>
+      <attribute type="drawing" name="comp0" id="84"/>
       <attribute type="drawing" name="comp1" id="32"/>
-      <attribute type="point" name="link0">217.000000 296.000000</attribute>
-      <attribute type="point" name="link1">203.333333 296.000000</attribute>
+      <attribute type="point" name="link0">218.333333 326.000000</attribute>
+      <attribute type="point" name="link1">202.000000 326.000000</attribute>
       <attribute type="list" name="points">
-        <point>217.000000 296.000000</point>
-        <point>203.333333 296.000000</point>
+        <point>218.333333 326.000000</point>
+        <point>202.000000 326.000000</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
     </class>
   </drawing>
-  <drawing id="88" class="ContingLoad">
-    <class name="ContingSymbol">
-      <attribute type="drawing" name="link0" id="89"/>
-    </class>
+  <drawing id="86" class="ContingLoad">
+    <class name="ContingSymbol"/>
     <class name="ContingComponent">
       <attribute type="point" name="p0">-3.000000 -3.000000</attribute>
       <attribute type="point" name="p1">3.000000 3.000000</attribute>
       <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
       <attribute type="map" name="points">
         <node>
-          <drawing id="89"/>
+          <drawing id="87"/>
           <point>3.000000 0.000000</point>
         </node>
       </attribute>
@@ -1625,9 +1097,9 @@
       <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 214.000000 408.000000</attribute>
     </class>
   </drawing>
-  <drawing id="89" class="ContingLine">
+  <drawing id="87" class="ContingLine">
     <class name="ContingLine">
-      <attribute type="drawing" name="comp0" id="88"/>
+      <attribute type="drawing" name="comp0" id="86"/>
       <attribute type="drawing" name="comp1" id="1"/>
       <attribute type="point" name="link0">217.000000 408.000000</attribute>
       <attribute type="point" name="link1">236.000000 394.666667</attribute>
@@ -1635,6 +1107,574 @@
         <point>217.000000 408.000000</point>
         <point>236.000000 408.000000</point>
         <point>236.000000 394.666667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="103" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="31"/>
+      <attribute type="drawing" name="comp1" id="1"/>
+      <attribute type="point" name="link0">148.000000 275.666667</attribute>
+      <attribute type="point" name="link1">235.333333 388.666667</attribute>
+      <attribute type="list" name="points">
+        <point>148.000000 275.666667</point>
+        <point>148.000000 364.666667</point>
+        <point>148.000000 374.666667</point>
+        <point>235.333333 374.666667</point>
+        <point>235.333333 388.666667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="12" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="64"/>
+      <attribute type="drawing" name="comp1" id="75"/>
+      <attribute type="point" name="link0">414.000000 214.666667</attribute>
+      <attribute type="point" name="link1">398.000000 168.000000</attribute>
+      <attribute type="list" name="points">
+        <point>414.000000 214.666667</point>
+        <point>398.000000 168.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 72.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="13" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="64"/>
+      <attribute type="drawing" name="comp1" id="40"/>
+      <attribute type="point" name="link0">405.000000 214.666667</attribute>
+      <attribute type="point" name="link1">379.000000 195.000000</attribute>
+      <attribute type="list" name="points">
+        <point>405.000000 214.666667</point>
+        <point>379.000000 195.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 72.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="14" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="64"/>
+      <attribute type="drawing" name="comp1" id="55"/>
+      <attribute type="point" name="link0">422.000000 214.666667</attribute>
+      <attribute type="point" name="link1">424.666667 143.000000</attribute>
+      <attribute type="list" name="points">
+        <point>422.000000 214.666667</point>
+        <point>424.666667 143.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 72.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="22" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="23"/>
+          <point>-3.000000 5.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 479.333333 317.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="23" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="65"/>
+      <attribute type="drawing" name="comp1" id="22"/>
+      <attribute type="point" name="link0">444.166667 249.166667</attribute>
+      <attribute type="point" name="link1">479.333333 250.000000</attribute>
+      <attribute type="list" name="points">
+        <point>444.166667 249.166667</point>
+        <point>479.333333 250.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 72.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="38" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="41"/>
+          <point>3.000000 -8.000000</point>
+        </node>
+        <node>
+          <drawing id="39"/>
+          <point>3.000000 8.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 336.000000 237.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="39" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="36"/>
+      <attribute type="drawing" name="comp1" id="38"/>
+      <attribute type="point" name="link0">319.000000 196.000000</attribute>
+      <attribute type="point" name="link1">331.000000 182.000000</attribute>
+      <attribute type="list" name="points">
+        <point>319.000000 196.000000</point>
+        <point>331.000000 182.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 58.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="40" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="41"/>
+          <point>-3.000000 0.000000</point>
+        </node>
+        <node>
+          <drawing id="13"/>
+          <point>3.000000 -3.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 373.000000 264.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="41" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="38"/>
+      <attribute type="drawing" name="comp1" id="40"/>
+      <attribute type="point" name="link0">347.000000 182.000000</attribute>
+      <attribute type="point" name="link1">376.000000 203.000000</attribute>
+      <attribute type="list" name="points">
+        <point>347.000000 182.000000</point>
+        <point>376.000000 203.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -3.000000 58.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="55" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="57"/>
+          <point>-3.000000 -5.000000</point>
+        </node>
+        <node>
+          <drawing id="14"/>
+          <point>3.000000 -4.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 417.666667 212.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="64" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="12"/>
+          <point>-3.000000 4.000000</point>
+        </node>
+        <node>
+          <drawing id="68"/>
+          <point>3.000000 5.000000</point>
+        </node>
+        <node>
+          <drawing id="13"/>
+          <point>-3.000000 13.000000</point>
+        </node>
+        <node>
+          <drawing id="15"/>
+          <point>-3.000000 -12.000000</point>
+        </node>
+        <node>
+          <drawing id="66"/>
+          <point>3.000000 -8.500000</point>
+        </node>
+        <node>
+          <drawing id="14"/>
+          <point>-3.000000 -4.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 415.000000 289.666667</attribute>
+    </class>
+  </drawing>
+  <drawing id="65" class="ContingTrans3">
+    <class name="ContingTrans3">
+      <attribute type="drawing" name="link0" id="66"/>
+      <attribute type="drawing" name="link1" id="23"/>
+      <attribute type="drawing" name="link2" id="21"/>
+    </class>
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-8.500000 -8.500000</attribute>
+      <attribute type="point" name="p1">8.500000 8.500000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="21"/>
+          <point>0.000000 8.500000</point>
+        </node>
+        <node>
+          <drawing id="66"/>
+          <point>-8.500000 -2.833333</point>
+        </node>
+        <node>
+          <drawing id="23"/>
+          <point>8.500000 -2.833333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 432.666667 324.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="66" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="65"/>
+      <attribute type="drawing" name="comp1" id="64"/>
+      <attribute type="point" name="link0">425.166667 263.166667</attribute>
+      <attribute type="point" name="link1">424.500000 234.666667</attribute>
+      <attribute type="list" name="points">
+        <point>425.166667 263.166667</point>
+        <point>424.500000 234.666667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -1.000000 58.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="67" class="ContingTrans2">
+    <class name="ContingTrans2">
+      <attribute type="drawing" name="link0" id="68"/>
+      <attribute type="drawing" name="link1" id="24"/>
+    </class>
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-5.000000 -8.500000</attribute>
+      <attribute type="point" name="p1">5.000000 8.500000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="68"/>
+          <point>0.000000 -8.500000</point>
+        </node>
+        <node>
+          <drawing id="24"/>
+          <point>0.000000 8.500000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 410.000000 324.333333</attribute>
+    </class>
+  </drawing>
+  <drawing id="68" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="67"/>
+      <attribute type="drawing" name="comp1" id="64"/>
+      <attribute type="point" name="link0">411.000000 257.833333</attribute>
+      <attribute type="point" name="link1">411.000000 234.666667</attribute>
+      <attribute type="list" name="points">
+        <point>411.000000 257.833333</point>
+        <point>411.000000 234.666667</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -1.000000 58.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="75" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="12"/>
+          <point>3.000000 -4.000000</point>
+        </node>
+        <node>
+          <drawing id="76"/>
+          <point>-3.000000 -3.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 391.000000 237.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="76" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="77"/>
+      <attribute type="drawing" name="comp1" id="75"/>
+      <attribute type="point" name="link0">394.000000 155.000000</attribute>
+      <attribute type="point" name="link1">424.000000 186.000000</attribute>
+      <attribute type="list" name="points">
+        <point>394.000000 155.000000</point>
+        <point>424.000000 186.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 -30.000000 48.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="84" class="ContingLoad">
+    <class name="ContingSymbol"/>
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -3.000000</attribute>
+      <attribute type="point" name="p1">3.000000 3.000000</attribute>
+      <attribute type="affine" name="rotate">-1.000000 0.000000 -0.000000 -1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="85"/>
+          <point>3.000000 0.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 221.333333 326.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="2" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="7"/>
+          <point>-3.000000 -3.000000</point>
+        </node>
+        <node>
+          <drawing id="10"/>
+          <point>3.000000 -11.000000</point>
+        </node>
+        <node>
+          <drawing id="3"/>
+          <point>3.000000 -2.000000</point>
+        </node>
+        <node>
+          <drawing id="4"/>
+          <point>3.000000 12.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 300.333333 325.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="5" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="8"/>
+          <point>3.000000 -7.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 260.666666 310.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="6" class="ContingTrans3">
+    <class name="ContingTrans3">
+      <attribute type="drawing" name="link0" id="8"/>
+      <attribute type="drawing" name="link1" id="9"/>
+      <attribute type="drawing" name="link2" id="7"/>
+    </class>
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-8.500000 -8.500000</attribute>
+      <attribute type="point" name="p1">8.500000 8.500000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="9"/>
+          <point>8.500000 -2.833333</point>
+        </node>
+        <node>
+          <drawing id="7"/>
+          <point>0.000000 8.500000</point>
+        </node>
+        <node>
+          <drawing id="8"/>
+          <point>-8.500000 -2.833333</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 303.333333 306.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="7" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="6"/>
+      <attribute type="drawing" name="comp1" id="2"/>
+      <attribute type="point" name="link0">167.000000 89.500000</attribute>
+      <attribute type="point" name="link1">167.000000 97.000000</attribute>
+      <attribute type="list" name="points">
+        <point>167.000000 89.500000</point>
+        <point>167.000000 97.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 136.333333 225.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="8" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="6"/>
+      <attribute type="drawing" name="comp1" id="5"/>
+      <attribute type="point" name="link0">158.500000 78.166667</attribute>
+      <attribute type="point" name="link1">127.333333 78.000000</attribute>
+      <attribute type="list" name="points">
+        <point>158.500000 78.166667</point>
+        <point>127.333333 78.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 136.333333 225.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="9" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="6"/>
+      <attribute type="drawing" name="comp1" id="36"/>
+      <attribute type="point" name="link0">175.500000 78.166667</attribute>
+      <attribute type="point" name="link1">175.000000 35.000000</attribute>
+      <attribute type="list" name="points">
+        <point>175.500000 78.166667</point>
+        <point>175.000000 35.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 136.333333 225.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="36" class="ContingBus">
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -20.000000</attribute>
+      <attribute type="point" name="p1">3.000000 20.000000</attribute>
+      <attribute type="affine" name="rotate">0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="9"/>
+          <point>3.000000 -6.000000</point>
+        </node>
+        <node>
+          <drawing id="35"/>
+          <point>-3.000000 0.000000</point>
+        </node>
+        <node>
+          <drawing id="37"/>
+          <point>-3.000000 10.000000</point>
+        </node>
+        <node>
+          <drawing id="39"/>
+          <point>-3.000000 -10.666667</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 305.333333 257.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="151" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="58"/>
+      <attribute type="drawing" name="comp1" id="62"/>
+      <attribute type="point" name="link0">459.333333 62.000000</attribute>
+      <attribute type="point" name="link1">459.333333 32.000000</attribute>
+      <attribute type="list" name="points">
+        <point>459.333333 62.000000</point>
+        <point>459.333333 32.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="157" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="156"/>
+      <attribute type="drawing" name="comp1" id="42"/>
+      <attribute type="point" name="link0">323.666667 125.333333</attribute>
+      <attribute type="point" name="link1">332.666667 139.000000</attribute>
+      <attribute type="list" name="points">
+        <point>323.666667 125.333333</point>
+        <point>332.666667 125.333333</point>
+        <point>332.666667 139.000000</point>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 0.000000 0.000000</attribute>
+    </class>
+  </drawing>
+  <drawing id="156" class="ContingLoad">
+    <class name="ContingSymbol">
+      <attribute type="drawing" name="link0" id="157"/>
+    </class>
+    <class name="ContingComponent">
+      <attribute type="point" name="p0">-3.000000 -3.000000</attribute>
+      <attribute type="point" name="p1">3.000000 3.000000</attribute>
+      <attribute type="affine" name="rotate">1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000</attribute>
+      <attribute type="map" name="points">
+        <node>
+          <drawing id="157"/>
+          <point>3.000000 0.000000</point>
+        </node>
+      </attribute>
+    </class>
+    <class name="ContingDrawing">
+      <attribute type="affine" name="affine">1.000000 0.000000 0.000000 1.000000 320.666667 125.333333</attribute>
+    </class>
+  </drawing>
+  <drawing id="169" class="ContingLine">
+    <class name="ContingLine">
+      <attribute type="drawing" name="comp0" id="42"/>
+      <attribute type="drawing" name="comp1" id="44"/>
+      <attribute type="point" name="link0">347.333333 139.000000</attribute>
+      <attribute type="point" name="link1">385.333333 126.000000</attribute>
+      <attribute type="list" name="points">
+        <point>347.333333 139.000000</point>
+        <point>347.333333 132.000000</point>
+        <point>385.333333 132.000000</point>
+        <point>385.333333 126.000000</point>
       </attribute>
     </class>
     <class name="ContingDrawing">
