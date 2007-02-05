@@ -1,0 +1,22 @@
+   1 0.0000100
+   2 0.0000100
+   3 0.0147000
+   4 0.0140000
+   5 0.8000000
+9999
+   1 5 
+   2 10 
+9999
+
+  
+
+
+a) Tolerancia para convergencia iteracoes P-teta
+b) Tolerancia para convergencia iteracoes Q-V
+c) Incremento para ajuste de taps de LTCs
+d) Margem para violacao de limites de tensao
+e) Fator multiplicativo para correcao de tensao pelo ajuste do tap
+f) No. de iteracoes reativas antes de atuar controles
+g) Limite maximo de iteracoes na rotina controle
+
+
