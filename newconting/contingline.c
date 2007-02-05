@@ -1134,11 +1134,9 @@ conting_line_answer(ContingDrawing *self,
 	assert(priv->placed);
 	assert(priv->points);
 
-	conting_drawing_get_i2w_affine(self, invert);
-	art_affine_invert(invert, invert);
 	pi.x = world_x;
 	pi.y = world_y;
-	art_affine_point(&pi, &pi, invert);
+	conting_drawing_w2i(self, &pi, &pi);
 
     /*
 	g_print("%lf %lf) -> (%lf, %lf)\n",
@@ -1169,7 +1167,12 @@ conting_line_answer(ContingDrawing *self,
 
 		d = fabs(m * ix + iy) / sqrt(m * m + 1);
 
-		if (d < TOLERANCE && fabs(ix) < fabs(dx) && fabs(iy) < fabs(dy)) {
+		if (d < TOLERANCE
+				&& ((pi.x <= p0->x && pi.x >= p1->x)
+					|| (pi.x >= p0->x && pi.x <= p1->x))
+				&& ((pi.y <= p0->y && pi.y >= p1->y)
+					|| (pi.y >= p0->y && pi.y <= p1->y))) {
+			/*fabs(ix) < fabs(dx) && fabs(iy) < fabs(dy)) {*/
 			priv->last_answer = n;
 			return TRUE;
 		}
