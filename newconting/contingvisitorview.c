@@ -166,7 +166,7 @@ conting_visitor_view_visit_bus(ContingVisitor *visitor,
 			gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
 			
 			label = gtk_label_new(NULL);
-			gtk_label_set_markup(GTK_LABEL(label), "<b>Tensão</b>");
+			gtk_label_set_markup(GTK_LABEL(label), "<b>Tensao</b>");
 			gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
 
 			sprintf(text, "MÃ³dulo: %.4f kV", base_voltage * voltage);
