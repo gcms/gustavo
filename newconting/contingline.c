@@ -1125,7 +1125,6 @@ conting_line_answer(ContingDrawing *self,
 	ContingLinePrivate *priv;
 	GList *n;
 	ArtPoint pi, *p0, *p1;
-	gdouble invert[6];
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), FALSE);
 

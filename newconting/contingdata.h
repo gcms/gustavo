@@ -84,4 +84,8 @@ const gchar *
 conting_data_get_raw_data(ContingData *self);
 
 
+#include "contingmodel.h"
+ContingModel *
+conting_data_get_model(ContingData *self);
+
 #endif /* CONTING_DATA_H */

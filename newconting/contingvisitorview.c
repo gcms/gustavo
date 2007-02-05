@@ -160,9 +160,13 @@ conting_visitor_view_visit_bus(ContingVisitor *visitor,
 			gtk_label_set_markup(GTK_LABEL(label), text);
 			gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
 
-			sprintf(text, "<b>%s</b>", name);
+			sprintf(text, "<b><u>%s</u></b>", name);
 			label = gtk_label_new(NULL);
 			gtk_label_set_markup(GTK_LABEL(label), text);
+			gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
+			
+			label = gtk_label_new(NULL);
+			gtk_label_set_markup(GTK_LABEL(label), "<b>Tensão</b>");
 			gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
 
 			sprintf(text, "MÃ³dulo: %.4f kV", base_voltage * voltage);
@@ -235,6 +239,53 @@ conting_visitor_view_visit_gen(ContingVisitor *visitor,
 		}
 	}
 }
+static void
+conting_visitor_view_visit_load(ContingVisitor *visitor,
+		ContingLoad *load)
+{
+	GtkDialog *dialog;
+	ContingOneLine *oneline;
+
+	gchar text[256];
+	GtkWidget *label;
+	
+	ContingItemData *item_data, *flow_data;
+	ContingModel *model;
+
+	oneline = conting_drawing_get_one_line(CONTING_DRAWING(load));
+	item_data = conting_drawing_get_item_data(CONTING_DRAWING(load));
+
+	model = conting_one_line_load_flow_model(oneline);
+	if (model != NULL && CONTING_IS_MODEL(model)) {
+		flow_data = conting_model_get_item(model, CONTING_ITEM_TYPE_FLOW_BUS,
+				GINT_TO_POINTER(conting_item_data_bus_number(item_data)));
+		if (flow_data != NULL && CONTING_IS_ITEM_DATA(flow_data)) {
+			gdouble active, reactive;
+
+			conting_item_data_get_attr(flow_data,
+					"load-active", &active,
+					"load-reactive", &reactive,
+					NULL);
+
+			dialog = get_dialog("Carga", oneline);
+
+			label = gtk_label_new(NULL);
+			gtk_label_set_markup(GTK_LABEL(label), "<b>Carga</b>");
+			gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
+
+			sprintf(text, "Ativa: %.4f MW", active);
+			label = gtk_label_new(text);
+			gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
+
+		
+			sprintf(text, "Reativa: %.4f MVAr", reactive);
+			label = gtk_label_new(text);
+			gtk_box_pack_start(GTK_BOX(dialog->vbox), label, TRUE, TRUE, 0);
+
+			gtk_widget_show_all(GTK_WIDGET(dialog));
+		}
+	}
+}
 
 static void
 conting_visitor_view_visitor_init(gpointer g_iface,
@@ -246,7 +297,7 @@ conting_visitor_view_visitor_init(gpointer g_iface,
 
 	visitor_class->visit_line = (gpointer) conting_visitor_view_visit_base;
 	visitor_class->visit_bus = conting_visitor_view_visit_bus;
-	visitor_class->visit_load = (gpointer) conting_visitor_view_visit_base;
+	visitor_class->visit_load = conting_visitor_view_visit_load;
 	visitor_class->visit_gen = conting_visitor_view_visit_gen;
 	
 	visitor_class->visit_trans2 = conting_visitor_view_visit_trans2;
