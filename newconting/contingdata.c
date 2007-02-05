@@ -5,17 +5,11 @@
 #include "contingload.h"
 #include "contingtrans2.h"
 #include "contingserializable.h"
+#include "contingmodel.h"
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 
-/* PROPERTIES ENUM */
-enum {
-    CONTING_DATA_PROP_0,
-    CONTING_DATA_N_BUS,
-    CONTING_DATA_N_BRANCH,
-    CONTING_DATA_TITLE
-};
 
 /* PARENT CLASS POINTER */
 static gpointer parent_class = NULL;
@@ -27,15 +21,12 @@ static gpointer parent_class = NULL;
 /* CLASS PRIVATE DATA TYPE AND STRUCTURE */
 typedef struct ContingDataPrivate_ ContingDataPrivate;
 struct ContingDataPrivate_ {
-	GList *item_data;
+	ContingModel *model;
 
 	GHashTable *drawing_data;
 	GHashTable *data_drawing;
 
-    const gchar *title;
-    guint n_bus, n_branch;
-
-	gboolean loaded;
+	gchar *raw_data;
 };
 
 /* PUBLIC METHOD */
@@ -43,14 +34,16 @@ GList *
 conting_data_get_unassoc(ContingData *self)
 {
 	ContingDataPrivate *priv;
-	GList *n, *result;
+	const GList *n;
+	GList *result;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
 	result = NULL;
-	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+	for (n = conting_model_get_buses(priv->model); n != NULL;
+			n = g_list_next(n)) {
 		if (!g_hash_table_lookup(priv->data_drawing, n->data)) {
 			result = g_list_append(result, n->data);
 		}
@@ -65,7 +58,6 @@ conting_data_get_branch(ContingData *self,
 		ContingItemData *bus0, ContingItemData *bus1)
 {
 	ContingDataPrivate *priv;
-	GList *n;
 	gint n0, n1;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
@@ -75,44 +67,11 @@ conting_data_get_branch(ContingData *self,
 	assert(conting_item_data_get_item_type(bus0) == CONTING_ITEM_TYPE_BUS);
 	assert(conting_item_data_get_item_type(bus1) == CONTING_ITEM_TYPE_BUS);
 
-	conting_item_data_get_attr(bus0,
-			"number", &n0,
-			NULL);
-	conting_item_data_get_attr(bus1,
-			"number", &n1,
-			NULL);
-/*
-	g_print("find link from \"%d\" to \"%d\"\n", n0, n1);
-    */
 
-	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
-		ContingItemData *item = n->data;
-		gint z, tap;
+	n0 = conting_item_data_bus_number(bus0);
+	n1 = conting_item_data_bus_number(bus1);
 
-		if (conting_item_data_get_item_type(item) != CONTING_ITEM_TYPE_BRANCH)
-			continue;
-
-		conting_item_data_get_attr(item,
-				"tap bus number", &tap,
-				"z bus number", &z,
-				NULL);
-
-        /*
-		g_print("branch between \"%d\" and \"%d\"\n", tap, z);
-        */
-
-		if ((n0 == tap && n1 == z) || (n0 == z && n1 == tap)) {
-            /*
-			g_print("FOUNd\n");
-            */
-			return item;
-		}
-	}
-    /*
-	g_print("NULL\n");
-    */
-
-	return NULL;
+	return conting_model_get_branch(priv->model, n0, n1);
 }
 
 static gboolean
@@ -152,8 +111,9 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 
 			dcomp0 = conting_data_get(self, CONTING_DRAWING(comp0));
 			dcomp1 = conting_data_get(self, CONTING_DRAWING(comp1));
-
+/*
 			g_print("dcomp0 = %p\tdcomp1 = %p\n", dcomp0, dcomp1);
+			*/
 
 			if (dcomp0 && dcomp1) {
 				return conting_data_get_branch(self, dcomp0, dcomp1);
@@ -238,9 +198,47 @@ conting_data_unassoc(ContingData *self, ContingDrawing *drawing)
 void
 conting_data_clear(ContingData *self);
 
+/*
 void
-conting_data_load_items(ContingData *self, GList *items)
+conting_data_load_list(ContingData *self, GList *list)
 {
+	ContingDataPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	conting_model_load_list(priv->model, list);
+}
+*/
+
+
+const gchar *
+conting_data_get_raw_data(ContingData *self)
+{
+	ContingDataPrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), NULL);
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+
+	return priv->raw_data;
+}
+
+/* TODO: Change it to contingmodel, it's just not done yet because we need
+ * to read/write from the data files. When the read/write code changes to model
+ * it should go along. */
+#include "contingstringfile.h"
+static void
+conting_data_load_raw_data(ContingData *self, const gchar *filename)
+{
+	ContingDataPrivate *priv;
+
+	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
+
+	priv = CONTING_DATA_GET_PRIVATE(self);
+	
+	priv->raw_data = conting_string_file_load(filename);
 }
 
 void
@@ -248,39 +246,15 @@ conting_data_load_file(ContingData *self, ContingFile *file,
 		const gchar *filename)
 {
 	ContingDataPrivate *priv;
-	GList *n;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	if (priv->item_data)
-		conting_data_clear(self);
+	conting_model_load_file(priv->model, file, filename);
 
-	assert(priv->item_data == NULL);
-
-	priv->item_data = conting_file_get_item_data(file, filename);
-	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
-        ContingItemType type;
-		assert(CONTING_IS_ITEM_DATA(n->data));
-
-        g_object_get(n->data, "type", &type, NULL);
-
-        switch (type) {
-            case CONTING_ITEM_TYPE_BUS:
-                priv->n_bus++;
-                break;
-            case CONTING_ITEM_TYPE_BRANCH:
-                priv->n_branch++;
-                break;
-            default:
-                break;
-        }
-	}
-
-	priv->loaded = TRUE;
+	conting_data_load_raw_data(self, filename);
 }
-
 gboolean
 conting_data_is_loaded(ContingData *self)
 {
@@ -290,33 +264,27 @@ conting_data_is_loaded(ContingData *self)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	return priv->loaded;
+	return conting_model_loaded(priv->model);
 }
 
 void
 conting_data_clear(ContingData *self)
 {
 	ContingDataPrivate *priv;
-	GList *n;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
-		ContingDrawing *drawing = g_hash_table_lookup(priv->data_drawing,
-				n->data);
-
-		g_hash_table_steal(priv->drawing_data, drawing);
-		g_hash_table_steal(priv->data_drawing, n->data);
-
-		g_object_unref(n->data);
+	if (priv->raw_data) {
+		g_free(priv->raw_data);
+		priv->raw_data = NULL;
 	}
 
-	g_list_free(priv->item_data);
-	priv->item_data = NULL;
+	conting_model_clear(priv->model);
 
-	priv->loaded = FALSE;
+	g_hash_table_remove_all(priv->drawing_data);
+	g_hash_table_remove_all(priv->data_drawing);
 }
 
 ContingError *
@@ -349,13 +317,14 @@ gboolean
 conting_data_check(ContingData *self, GList **error_list)
 {
 	ContingDataPrivate *priv;
-	GList *n;
+	const GList *n;
 
 	g_return_val_if_fail(self != NULL && CONTING_IS_DATA(self), FALSE);
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+	for (n = conting_model_get_buses(priv->model); n != NULL;
+			n = g_list_next(n)) {
 		ContingItemData *item_data = n->data;
 		ContingDrawing *drawing = g_hash_table_lookup(priv->data_drawing,
 				item_data);
@@ -379,16 +348,13 @@ static void
 conting_data_finalize(GObject *self)
 {
 	ContingDataPrivate *priv;
-	GList *n;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
-		g_object_unref(n->data);
-	}
-	g_list_free(priv->item_data);
+
+	g_object_unref(priv->model);
 
 	g_hash_table_destroy(priv->data_drawing);
 	g_hash_table_destroy(priv->drawing_data);
@@ -405,15 +371,12 @@ conting_data_instance_init(GTypeInstance *self, gpointer g_class)
 
 	priv = CONTING_DATA_GET_PRIVATE(self);
 
-	priv->item_data = NULL;
+	priv->model = conting_model_new_default();
 
 	priv->data_drawing = g_hash_table_new(NULL, NULL);
 	priv->drawing_data = g_hash_table_new(NULL, NULL);
 
-    priv->n_bus = 0;
-    priv->n_branch = 0;
-
-    priv->loaded = FALSE;
+	priv->raw_data = NULL;
 }
 
 static void
@@ -435,6 +398,12 @@ conting_data_read(ContingSerializable *self, xmlNodePtr node,
 		gchar *str;
 		ContingDrawing *drawing;
 
+		if (xmlStrEqual(item_node->name, BAD_CAST "raw")) {
+			priv->raw_data = xmlNodeListGetString(item_node->doc,
+					item_node->children, TRUE);
+			g_print(priv->raw_data);
+			continue;
+		}
 		if (!xmlStrEqual(item_node->name, BAD_CAST "class"))
 			continue;
 
@@ -467,7 +436,10 @@ conting_data_read(ContingSerializable *self, xmlNodePtr node,
 		conting_serializable_read(CONTING_SERIALIZABLE(obj), item_node,
 				id_drawing);
 
-		priv->item_data = g_list_append(priv->item_data, obj);
+		/* This method should be removed from the public interface.
+		 * The data from file should be loaded into the ContingModel
+		 * instead of the ContingData. */
+		conting_model_add_item(priv->model, obj);
 	}
 }
 
@@ -476,8 +448,8 @@ conting_data_write(ContingSerializable *self, xmlNodePtr node,
 		xmlNodePtr *result)
 {
 	ContingDataPrivate *priv;
-	xmlNodePtr class_node;
-	GList *n;
+	xmlNodePtr class_node, raw_node;
+	const GList *n;
 
 	g_return_if_fail(self != NULL && CONTING_IS_DATA(self));
 
@@ -486,9 +458,14 @@ conting_data_write(ContingSerializable *self, xmlNodePtr node,
 	class_node = xmlNewNode(NULL, BAD_CAST "data");
 	xmlNewProp(class_node, BAD_CAST "class",
 			BAD_CAST g_type_name(G_OBJECT_TYPE(self)));
+	
+	raw_node = xmlNewNode(NULL, BAD_CAST "raw");
+	xmlAddChild(raw_node, xmlNewText(BAD_CAST priv->raw_data));
+	xmlAddChild(class_node, raw_node);
 
 
-	for (n = priv->item_data; n != NULL; n = g_list_next(n)) {
+	for (n = conting_model_get_items(priv->model); n != NULL;
+			n = g_list_next(n)) {
 		xmlNodePtr item_node;
 		ContingDrawing *drawing;
 

@@ -102,7 +102,7 @@ conting_drawing_operation_label_draw(ContingDrawingOperation *self,
 
 		font = pango_font_description_new();
 		pango_font_description_set_size(font, 6 * PANGO_SCALE);
-		g_print("size = %d\n", pango_font_description_get_size(font));
+	/*	g_print("size = %d\n", pango_font_description_get_size(font)); */
 		pango_font_description_set_family_static(font, "Arial");
 		pango_font_description_set_style(font, PANGO_STYLE_NORMAL);
 

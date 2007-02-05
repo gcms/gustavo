@@ -168,6 +168,16 @@ conting_item_data_get_attr(ContingItemData *self,
 
 	va_end(ap);
 }
+gint
+conting_item_data_get_int(ContingItemData *self, const gchar *name)
+{
+	gint result = -1;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_ITEM_DATA(self), -1);
+	conting_item_data_get_attr(self, name, &result, NULL);
+
+	return result;
+}
 
 
 static gboolean

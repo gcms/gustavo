@@ -4,6 +4,7 @@
 #include "contingxml.h"
 #include "continggroup.h"
 #include "contingdata.h"
+#include "contingmodel.h"
 #include "contingitemdata.h"
 #include "continginfodialog.h"
 #include "contingline.h"
@@ -47,7 +48,11 @@ struct ContingOneLinePrivate_ {
     ArtDRect selection_box;
 
 	GList *items;	/* used by load flow solution */
+	ContingModel *load_flow_model;
+	gboolean load_flow_run;
+
     ContingData *file_data;
+	ContingModel *model;
 
     GSList *drawings;
     
@@ -67,23 +72,48 @@ struct ContingOneLinePrivate_ {
 
 /* Load Flow */
 #include "contingloadflowfile.h"
+#include "contingstringfile.h"
 void
-conting_one_line_load_flow_run(ContingOneLine *self)
+conting_one_line_load_flow_run_sync(ContingOneLine *self)
 {
 	ContingOneLinePrivate *priv;
+	GList *items;
+
+	gchar *argv[] = { CONTING_LOAD_FLOW_MAIN_PATH, NULL };
+	GError *error;
 
 	g_return_if_fail(self != NULL && CONTING_IS_ONE_LINE(self));
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
-	if (priv->items)
-		g_list_free(priv->items);
+	conting_string_file_store(CONTING_LOAD_FLOW_INPUT_PATH,
+			conting_data_get_raw_data(priv->file_data));
 
-	priv->items = conting_load_flow_file_read("relat1.txt", "relat2.txt");
+	/* RUN... */
+	error = NULL;
+	g_spawn_sync(CONTING_LOAD_FLOW_BASEDIR_PATH, argv, NULL, 0, NULL,
+			NULL, NULL, NULL, NULL, &error);
+	if (error != NULL) {
+		g_print("%s\n", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	items = conting_load_flow_file_read(CONTING_LOAD_FLOW_RELAT1_PATH,
+				CONTING_LOAD_FLOW_RELAT2_PATH);
+
+	if (items == NULL)
+		return;
+
+	conting_model_load_list(priv->load_flow_model, items);
+	
+	g_list_free(items);
+
+	priv->load_flow_run = TRUE;
 }
 
-GList *
-conting_one_line_load_flow_items(ContingOneLine *self)
+ContingModel *
+conting_one_line_load_flow_model(ContingOneLine *self)
 {
 	ContingOneLinePrivate *priv;
 
@@ -91,7 +121,13 @@ conting_one_line_load_flow_items(ContingOneLine *self)
 
 	priv = CONTING_ONE_LINE_GET_PRIVATE(self);
 
-	return priv->items;
+	/*
+	if (!priv->load_flow_run) {
+		conting_one_line_load_flow_run_sync(self);
+	}
+	*/
+
+	return priv->load_flow_model;
 }
 
 /* FRIEND METHOD */
@@ -531,8 +567,11 @@ conting_one_line_set_view(ContingOneLine *self)
 
 	conting_one_line_update(self, NULL);
 
-	if (!priv->items)	/* load flow solution */
-		conting_one_line_load_flow_run(self);
+	priv->load_flow_run = FALSE;
+	/* Do not automatically run it
+	if (!priv->item)
+		conting_one_line_load_flow_run_sync(self);
+		*/
 }
 
 
@@ -815,7 +854,9 @@ conting_one_line_load_data(ContingOneLine *self, const char *filename)
         return;
     }
 
+    conting_one_line_set_mode(self, CONTING_ONE_LINE_EDIT);
     conting_data_load_file(priv->file_data, file, filename);
+	conting_model_load_file(priv->model, file, filename);
     g_print("UNREF\n");
     g_object_unref(file);
 }
@@ -2066,6 +2107,9 @@ conting_one_line_instance_init(GTypeInstance *self,
 
 	priv->items = NULL;	/* used by load flow solution */
     priv->file_data = CONTING_DATA(g_object_new(CONTING_TYPE_DATA, NULL));
+    priv->model = conting_model_new_default();
+	priv->load_flow_model = conting_model_new_load_flow();
+	priv->load_flow_run = FALSE;
     assert(priv->file_data);
 
     priv->current_drawing = NULL;

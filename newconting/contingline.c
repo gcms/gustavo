@@ -207,7 +207,9 @@ conting_line_get_buses(ContingLine *self,
 	params[0] = comp1;
 	conting_drawing_find_link(CONTING_DRAWING(priv->comp1),
 			find_link_pred, params);
+	/*
 	g_print("comp0 = %p\tcomp1 = %p\n", *comp0, *comp1);
+	*/
 }
 
 static void
@@ -824,7 +826,7 @@ conting_line_create_point(ContingLine *self, const ArtPoint *pi)
 	new_p = g_new(ArtPoint, 1);
 	*new_p = *pi;
 
-	g_list_insert_before(priv->points, priv->last_answer, new_p);
+	priv->points = g_list_insert_before(priv->points, priv->last_answer, new_p);
 }
 
 static void
