@@ -58,6 +58,8 @@ void conting_item_data_get_attr(ContingItemData *self,
 void conting_item_data_get_attr_valist(ContingItemData *self,
 		const gchar *fist_attr, va_list ap);
 
+gint conting_item_data_get_int(ContingItemData *self, const gchar *name);
+
 typedef void (*ContingItemDataAttrFunc)(const gchar *name, const GValue *value,
 		gpointer user_data);
 

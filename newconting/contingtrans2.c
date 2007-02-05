@@ -136,7 +136,6 @@ conting_trans2_get_buses(ContingTrans2 *self,
 		ContingBus **bus0, ContingBus **bus1)
 {
 	ContingTrans2Private *priv;
-	ContingDrawing *stub;
 
 	g_return_if_fail(self != NULL && CONTING_IS_TRANS2(self));
 

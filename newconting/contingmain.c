@@ -13,10 +13,15 @@
 #include "continggen.h"
 #include "contingload.h"
 
+#include "contingmodel.h"
+
+
 #include "contingsysteminfo.h"
 
 static ContingOneLine *oneline;
 static GtkWidget *window;
+
+static GtkWidget *menu_modes[CONTING_ONE_LINE_MODE_NUMBER];
 
 
 /* SIGNAL CALLBACKS */
@@ -41,6 +46,18 @@ hide_gen_clicked(GtkToolButton *button, gpointer user_data);
 
 static void
 hide_load_clicked(GtkToolButton *button, gpointer user_data);
+
+static void
+run_load_flow_clicked(GtkToolButton *button, gpointer user_data);
+
+static void
+oneline_mode_changed(ContingOneLine *oneline, ContingOneLineMode mode,
+		gpointer user_data)
+{
+	puts("oneline_mode_changed");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_modes[mode]), 
+			TRUE);
+}
 
 /**
  * Creates the toolbar for editing mode.
@@ -135,34 +152,46 @@ conting_main_get_view_toolbar(void)
 
     
 	toolbutton = gtk_tool_button_new_from_stock(GTK_STOCK_BOLD);
-    gtk_tool_button_set_label(GTK_TOOL_BUTTON(toolbutton), "Show names");
+    gtk_tool_button_set_label(GTK_TOOL_BUTTON(toolbutton), "Mostrar nomes");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(show_name_clicked), NULL);
     
 	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/number.png"), "Show numbers");
+			gtk_image_new_from_file("images/number.png"), "Mostrar n�meros");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(show_number_clicked), NULL);
 
+	/*
 	toolbutton = gtk_tool_button_new(
 			gtk_image_new_from_file("images/number.png"), "Show numbers");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(show_voltage_clicked), NULL);
+			*/
 
 	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/gen.png"), "Hide generators");
+			gtk_image_new_from_file("images/gen.png"), "Esconder geradores");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(hide_gen_clicked), NULL);
 
 	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/load.png"), "Hide loads");
+			gtk_image_new_from_file("images/load.png"), "Esconder cargas");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(hide_load_clicked), NULL);
+    
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
+            gtk_separator_tool_item_new(), -1);
+
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/run.png"), "Executar LoadFlow");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(run_load_flow_clicked), NULL);
+
 
     g_object_ref(toolbar);
     return toolbar;
@@ -408,6 +437,101 @@ hide_load_clicked(GtkToolButton *button, gpointer user_data)
 	conting_one_line_operation_update(oneline, default_opr);
 }
 
+#include "contingconfigdialog.h"
+#include "contingconfig.h"
+#include "contingloadflow.h"
+
+/* SIGNAL CALLBACK */
+static void
+run_load_flow_clicked(GtkToolButton *button, gpointer user_data)
+{
+	GtkDialog *dialog;
+	ContingConfig *config;
+	GHashTable *values;
+	ContingLoadFlowConfig *cfg;
+
+	config = g_object_new(CONTING_TYPE_CONFIG, NULL);
+	conting_config_new_group(config, "Convergencia");
+		conting_config_add_item(config,
+				g_param_spec_double("p-theta",
+					"Convergencia iterações P-teta",
+					"Tolerancia para convergencia iterações P-teta",
+					0, 1, 0.0000100,
+					G_PARAM_READABLE | G_PARAM_WRITABLE));
+		conting_config_add_item(config,
+				g_param_spec_double("q-v",
+					"Convergencia iterações Q-V",
+					"Tolerancia para convergencia iterações Q-V",
+					0, 1, 0.0000100,
+					G_PARAM_READABLE | G_PARAM_WRITABLE));
+		conting_config_add_item(config,
+				g_param_spec_double("ltc",
+					"Incremento para ajuste de taps de LTCs",
+					"Incremento para ajuste de taps de LTCs",
+					0, 1, 0.0100000,
+					G_PARAM_READABLE | G_PARAM_WRITABLE));
+		conting_config_add_item(config,
+				g_param_spec_double("violation",
+					"Margem para violação de limites de tensão",
+					"Margem para violação de limites de tensão",
+					0, 1, 0.0500000,
+					G_PARAM_READABLE | G_PARAM_WRITABLE));
+		conting_config_add_item(config,
+				g_param_spec_double("factor",
+					"Fator multiplicativo para correção de tensão",
+					"Fator multiplicativo para correção de tensão"
+				    "pelo ajuste do tap",
+					0, 1, 0.9900000,
+					G_PARAM_READABLE | G_PARAM_WRITABLE));
+	conting_config_new_group(config, "Iterações");
+		conting_config_add_item(config,
+				g_param_spec_int("reativa",
+					"Iterações reativas antes de atuar controles",
+					"Número de iterações reativas antes de atuar controles",
+					0, 100, 2,
+					G_PARAM_READABLE | G_PARAM_WRITABLE));
+		conting_config_add_item(config,
+				g_param_spec_int("controle",
+					"Iterações na rotina de controle",
+					"Limite máximo de iterações na rotina controle",
+					0, 100, 10,
+					G_PARAM_READABLE | G_PARAM_WRITABLE));
+   
+	dialog = conting_config_dialog_new(config);
+	gtk_dialog_run(dialog);
+
+
+	values = conting_config_dialog_get_values(CONTING_CONFIG_DIALOG(dialog));
+	g_hash_table_ref(values);
+
+	gtk_widget_destroy(GTK_WIDGET(dialog));
+	/* HELPER MACROS */
+#define values_get(h, n, t) g_value_get_ ##t(g_hash_table_lookup(h, n))
+#define cfg_set(c, t, v) conting_load_flow_config_add_ ##t(c, v)
+#define cfg_set_values(c, h, t, n) cfg_set(c, t, values_get(h, n, t))
+
+	cfg = conting_load_flow_config_new();
+	cfg_set_values(cfg, values, double, "p-theta");
+	cfg_set_values(cfg, values, double, "q-v");
+	cfg_set_values(cfg, values, double, "ltc");
+	cfg_set_values(cfg, values, double, "violation");
+	cfg_set_values(cfg, values, double, "factor");
+    conting_load_flow_config_end_section(cfg);
+
+	cfg_set_values(cfg, values, int, "reativa");
+	cfg_set_values(cfg, values, int, "controle");
+    conting_load_flow_config_end_section(cfg);
+
+	g_hash_table_unref(values);
+
+	conting_string_file_store(CONTING_LOAD_FLOW_CONFIG_PATH,
+			conting_load_flow_config_get_text(cfg));
+	g_object_unref(cfg);
+
+
+	conting_one_line_load_flow_run_sync(oneline);
+}
+
 /**
  * Returns the string to be used as a label to drawing.
  */
@@ -539,10 +663,11 @@ voltage_label(ContingDrawingOperation *self, ContingDrawing *drawing,
 {
     ContingData *data;
 
-	GList *n;
-    ContingItemData *item_data;
+	ContingModel *model;
+    ContingItemData *item_data, *flow_data;
     gint number = 0;
-	gdouble voltage;
+	gdouble voltage, cur_voltage, cur_angle;
+	static gchar name[256];
 
     assert(oneline == conting_drawing_get_one_line(drawing));
 
@@ -563,32 +688,22 @@ voltage_label(ContingDrawingOperation *self, ContingDrawing *drawing,
 
 	conting_item_data_get_attr(item_data, "voltage", &voltage, NULL);
 
-	n = conting_one_line_load_flow_items(oneline);
-	for (/* */; n != NULL; n = g_list_next(n)) {
-		ContingItemType type;
-		gint cur_number;
+	model = conting_one_line_load_flow_model(oneline);
 
-		g_object_get(n->data, "type", &type, NULL);
-		if (type != CONTING_ITEM_TYPE_FLOW_BUS)
-			continue;
+	flow_data = conting_model_get_item(model, CONTING_ITEM_TYPE_FLOW_BUS,
+			GINT_TO_POINTER(number));
 
-		conting_item_data_get_attr(n->data, "number", &cur_number, NULL);
+	if (flow_data == NULL)
+		return "";
 
-		if (cur_number != 0 && cur_number == number) {
-    		static gchar name[256];
-			gdouble cur_voltage;	/* in pu */
-			gdouble cur_angle;
-			
-			conting_item_data_get_attr(n->data, "voltage", &cur_voltage, NULL);
-			conting_item_data_get_attr(n->data, "angle", &cur_angle, NULL);
-    		sprintf(name, "%.1lfkV %.1lf", voltage * cur_voltage, cur_angle);
+	conting_item_data_get_attr(flow_data,
+			"voltage", &cur_voltage,
+			"angle", &cur_angle,
+			NULL);
 
-			return name;
-		}
-	}
+    sprintf(name, "%.1lfkV %.1lf", voltage * cur_voltage, cur_angle);
 
-
-    return "";
+    return name;
 }
 
 static void
@@ -883,6 +998,8 @@ main(int argc, char *argv[]) {
 
 
     oneline = CONTING_ONE_LINE(g_object_new(CONTING_TYPE_ONE_LINE, NULL));
+	g_signal_connect(G_OBJECT(oneline), "change-mode",
+			G_CALLBACK(oneline_mode_changed), NULL);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_size_request(GTK_WIDGET(window), 400, 400);
@@ -940,12 +1057,15 @@ main(int argc, char *argv[]) {
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
     g_signal_connect(G_OBJECT(submenu), "activate",
             G_CALLBACK(mode_menu_activate), (gpointer) CONTING_ONE_LINE_EDIT);
+	menu_modes[CONTING_ONE_LINE_EDIT] = submenu;
 
 	submenu = gtk_radio_menu_item_new_with_mnemonic(group, "_Caso base");
 	group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(submenu));
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), submenu);
     g_signal_connect(G_OBJECT(submenu), "activate",
             G_CALLBACK(mode_menu_activate), (gpointer) CONTING_ONE_LINE_VIEW);
+	menu_modes[CONTING_ONE_LINE_VIEW] = submenu;
+
 	/* */
 	menu = gtk_menu_item_new_with_mnemonic("_Ferramentas");
 	gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu);

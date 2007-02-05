@@ -36,6 +36,9 @@ void
 conting_data_load_file(ContingData *self, ContingFile *file,
 	   	const gchar *filename);
 
+void
+conting_data_load_list(ContingData *self, GList *list);
+
 #include "contingdrawing.h"
 #include "contingitemdata.h"
 
@@ -76,6 +79,9 @@ conting_error_free(ContingError *err);
 gboolean
 conting_data_check(ContingData *self, GList **error_list);
 
+
+const gchar *
+conting_data_get_raw_data(ContingData *self);
 
 
 #endif /* CONTING_DATA_H */
