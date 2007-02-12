@@ -231,6 +231,12 @@ conting_drawing_get_w2i_affine_impl(ContingDrawing *self,
     art_affine_invert(affine, priv->affine);
 }
 
+void
+conting_drawing_get_i2w_affine_absolute(ContingDrawing *self,
+		gdouble affine[6])
+{
+	conting_drawing_get_i2w_affine_impl(self, affine);
+}
 
 void
 conting_drawing_get_i2w_affine(ContingDrawing *self,

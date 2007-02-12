@@ -106,10 +106,16 @@ conting_main_get_edit_toolbar(void)
             G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_TRANS3);
     
 	toolbutton = gtk_tool_button_new(
-			gtk_image_new_from_file("images/gen.png"), "Generator");
+			gtk_image_new_from_file("images/gen.png"), "Gerador");
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
 	g_signal_connect(G_OBJECT(toolbutton), "clicked",
 			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_GEN);
+    
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/gen.png"), "Compensador estatico");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_CE);
     
 	toolbutton = gtk_tool_button_new(
 			gtk_image_new_from_file("images/load.png"), "Load");

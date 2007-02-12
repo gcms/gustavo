@@ -27,6 +27,7 @@ typedef struct ContingVisitorClass_ ContingVisitorClass;
 #include "contingtrans3.h"
 #include "contingload.h"
 #include "continggen.h"
+#include "contingce.h"
 
 struct ContingVisitorClass_ {
 	GTypeInterface parent;
@@ -37,6 +38,7 @@ struct ContingVisitorClass_ {
 	void (*visit_trans3)(ContingVisitor *self, ContingTrans3 *trans3);
 	void (*visit_load)(ContingVisitor *self, ContingLoad *load);
 	void (*visit_gen)(ContingVisitor *self, ContingGen *gen);
+	void (*visit_ce)(ContingVisitor *self, ContingCE *gen);
 };
 
 GType
