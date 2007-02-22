@@ -3,9 +3,9 @@ CFLAGS=-Wall -fbounds-checking -g `pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --c
 LIBS=`pkg-config gtk+-2.0 libart-2.0 libxml-2.0 --libs` -lm
 
 all: build
-	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingce.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o contingvisitor.o contingvisitorcolor.o contingdrawingoperationdefault.o contingsysteminfo.o contingvisitorview.o contingloadflowfile.o contingmodel.o contingsettings.o contingstringpool.o contingstringfile.o contingloadflow.o contingconfig.o contingconfigdialog.o -o main
+	$(CC) $(LIBS) contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingce.o contingcs.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o contingvisitor.o contingvisitorcolor.o contingdrawingoperationdefault.o contingsysteminfo.o contingvisitorview.o contingloadflowfile.o contingmodel.o contingsettings.o contingstringpool.o contingstringfile.o contingloadflow.o contingconfig.o contingconfigdialog.o -o main
 
-build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingce.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o contingvisitor.o contingvisitorcolor.o contingdrawingoperationdefault.o contingsysteminfo.o contingvisitorview.o contingloadflowfile.o contingmodel.o contingsettings.o contingstringpool.o contingstringfile.o contingloadflow.o contingconfig.o contingconfigdialog.o FluxoCA
+build: contingoneline.o contingdrawing.o contingcomponent.o contingline.o contingutil.o continggroup.o contingtrans2.o contingtrans3.o contingbus.o contingmain.o contingxml.o contingdata.o contingitemdata.o contingfile.o continginfodialog.o contingsymbol.o continggen.o contingce.o contingcs.o contingload.o contingfilecdf.o contingfilepeco.o contingbusbase.o contingserializable.o contingdrawingoperation.o contingdrawingoperationlabel.o contingvisitor.o contingvisitorcolor.o contingdrawingoperationdefault.o contingsysteminfo.o contingvisitorview.o contingloadflowfile.o contingmodel.o contingsettings.o contingstringpool.o contingstringfile.o contingloadflow.o contingconfig.o contingconfigdialog.o FluxoCA
 
 contingutil.o: contingutil.c
 	$(CC) $(CFLAGS) -c contingutil.c -o contingutil.o
@@ -64,6 +64,7 @@ clean:
 	rm -f contingsymbol.o
 	rm -f continggen.o
 	rm -f contingce.o
+	rm -f contingcs.o
 	rm -f contingload.o
 	rm -f contingbusbase.o
 	rm -f contingserializable.o

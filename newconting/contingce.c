@@ -10,30 +10,24 @@ static gpointer parent_class = NULL;
 static void
 conting_ce_draw(ContingDrawing *self, cairo_t *cr)
 {
-    ContingSymbol *symb;
-    ContingComponent *comp;
+	ContingSymbol *symb;
+	ContingComponent *comp;
 	GdkColor *color;
-
-    ArtPoint pw0, pw1;
-    GdkRectangle rect;
+	ArtPoint pw0, pw1;
 	gdouble affine[6];
 
-    g_return_if_fail(self != NULL && CONTING_IS_CE(self));
+	g_return_if_fail(self != NULL && CONTING_IS_CE(self));
 
-    symb = CONTING_SYMBOL(self);
-    comp = CONTING_COMPONENT(self);
+	symb = CONTING_SYMBOL(self);
+	comp = CONTING_COMPONENT(self);
 
 	g_object_get(self, "color", &color, NULL);
 
-    pw0 = comp->p0;
-    pw1 = comp->p1;
-
-    rect.x = (pw0.x < pw1.x ? pw0.x : pw1.x);
-    rect.y = (pw0.y < pw1.y ? pw0.y : pw1.y);
-    rect.width = fabs(pw1.x - pw0.x);
-    rect.height = fabs(pw1.y - pw0.y);
+	pw0 = comp->p0;
+	pw1 = comp->p1;
 
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+
 
 	cairo_move_to(cr, pw0.x, pw0.y);
 	cairo_line_to(cr, pw0.x, pw1.y);
@@ -47,27 +41,30 @@ conting_ce_draw(ContingDrawing *self, cairo_t *cr)
 			(gdouble) color->blue / (gdouble) G_MAXUINT16);
 	cairo_stroke(cr);
 
+
 	cr = conting_drawing_get_cairo_absolute(self);
 	conting_drawing_get_i2w_affine_absolute(self, affine);
 	cairo_transform(cr, (cairo_matrix_t *) affine);
 	cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
 	
-    cairo_select_font_face(cr, "Arial",
-            CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    {
-        PangoLayout *layout;
-        PangoFontDescription *font;
+	cairo_set_source_rgb(cr,
+			(gdouble) color->red / (gdouble) G_MAXUINT16,
+			(gdouble) color->green / (gdouble) G_MAXUINT16,
+			(gdouble) color->blue / (gdouble) G_MAXUINT16);
+	{
+		PangoLayout *layout;
+		PangoFontDescription *font;
 
-        layout = pango_cairo_create_layout(cr);
+		layout = pango_cairo_create_layout(cr);
 
-        font = pango_font_description_new();
-        pango_font_description_set_size(font, 4 * PANGO_SCALE);
-    /*  g_print("size = %d\n", pango_font_description_get_size(font)); */
-        pango_font_description_set_family_static(font, "Arial");
-        pango_font_description_set_style(font, PANGO_STYLE_NORMAL);
+		font = pango_font_description_new();
+		pango_font_description_set_size(font, 4 * PANGO_SCALE);
+		/*  g_print("size = %d\n", pango_font_description_get_size(font)); */
+		pango_font_description_set_family_static(font, "Arial");
+		pango_font_description_set_style(font, PANGO_STYLE_NORMAL);
 
-        pango_layout_set_font_description(layout, font);
-        pango_layout_set_text(layout, "CE", 2);
+		pango_layout_set_font_description(layout, font);
+		pango_layout_set_text(layout, "CE", 2);
 
 		cairo_move_to(cr, pw0.x + 1, pw0.y + 2);
 		pango_cairo_update_layout(cr, layout);
@@ -75,8 +72,6 @@ conting_ce_draw(ContingDrawing *self, cairo_t *cr)
 
 		g_object_unref(layout);
 	}
-
-
 	cairo_stroke(cr);
 
 	cairo_destroy(cr);
@@ -88,10 +83,8 @@ static void
 conting_ce_accept(ContingDrawing *self, ContingVisitor *visitor)
 {
 	g_return_if_fail(self != NULL && CONTING_IS_CE(self));
-
-	conting_visitor_visit_ce(visitor, CONTING_CE(self));
+		conting_visitor_visit_ce(visitor, CONTING_CE(self));
 }
-
 
 static void
 conting_ce_instance_init(GTypeInstance *self,

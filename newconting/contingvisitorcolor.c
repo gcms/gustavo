@@ -287,6 +287,8 @@ conting_visitor_color_visitor_init(gpointer g_iface,
 	visitor_class->visit_bus = (gpointer) conting_visitor_color_visit_bus;
 	visitor_class->visit_load = (gpointer) conting_visitor_color_visit_bus;
 	visitor_class->visit_gen = (gpointer) conting_visitor_color_visit_bus;
+	visitor_class->visit_ce = (gpointer) conting_visitor_color_visit_bus;
+	visitor_class->visit_cs = (gpointer) conting_visitor_color_visit_bus;
 	
 	visitor_class->visit_trans2 = conting_visitor_color_visit_trans2;
 	visitor_class->visit_trans3 = conting_visitor_color_visit_trans3;

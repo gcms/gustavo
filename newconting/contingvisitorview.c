@@ -299,6 +299,8 @@ conting_visitor_view_visitor_init(gpointer g_iface,
 	visitor_class->visit_bus = conting_visitor_view_visit_bus;
 	visitor_class->visit_load = conting_visitor_view_visit_load;
 	visitor_class->visit_gen = conting_visitor_view_visit_gen;
+	visitor_class->visit_ce = (gpointer) conting_visitor_view_visit_base;
+	visitor_class->visit_cs = (gpointer) conting_visitor_view_visit_base;
 	
 	visitor_class->visit_trans2 = conting_visitor_view_visit_trans2;
 	visitor_class->visit_trans3 = (gpointer) conting_visitor_view_visit_base;
