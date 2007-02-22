@@ -119,7 +119,10 @@ conting_data_get(ContingData *self, ContingDrawing *drawing)
 				return conting_data_get_branch(self, dcomp0, dcomp1);
 			}
 		}
-	} else if (CONTING_IS_GEN(drawing) || CONTING_IS_LOAD(drawing)) {
+	} else if (CONTING_IS_GEN(drawing)
+			|| CONTING_IS_LOAD(drawing)
+			|| CONTING_IS_CE(drawing)
+			|| CONTING_IS_CS(drawing)) {
 		ContingComponent *bus;
 		ContingDrawing *linked;
 

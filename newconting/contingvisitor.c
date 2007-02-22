@@ -81,4 +81,12 @@ conting_visitor_visit_ce(ContingVisitor *self, ContingCE *gen)
 
 	CONTING_VISITOR_GET_CLASS(self)->visit_ce(self, gen);
 }
+void
+conting_visitor_visit_cs(ContingVisitor *self, ContingCS *gen)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_VISITOR(self));
+	g_return_if_fail(gen != NULL && CONTING_IS_CS(gen));
+
+	CONTING_VISITOR_GET_CLASS(self)->visit_cs(self, gen);
+}
 

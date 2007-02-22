@@ -36,6 +36,8 @@ conting_visitor_draw_visitor_init(gpointer g_iface,
 	visitor_class->visit_bus = conting_visit_simple;
 	visitor_class->visit_load = conting_visit_simple;
 	visitor_class->visit_gen = conting_visit_simple
+	visitor_class->visit_ce = conting_visit_simple
+	visitor_class->visit_cs = conting_visit_simple
 	
 	visitor_class->visit_trans2 = conting_visit_simple;
 	visitor_class->visit_trans3 = conting_visit_simple;
