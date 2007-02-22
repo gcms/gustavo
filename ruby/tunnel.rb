@@ -50,10 +50,16 @@ class LocalServer
 		sock.write(data)
 	end
 
+	def select(ids)
+		ios = @id_sock.values_at(*ids) - [nil]
+		read_ios = (IO.select(ios, nil, nil, 0) || [[]])[0]
+		@id_sock.select {|k, v| read_ios.include?(v)}.collect {|e| e.first}
+	end
+
 	def read_ids(ids)
 		result = {}
 
-		ios = @id_sock.empty? ? [] : @id_sock.values_at(*ids)
+		ios = @id_sock.values_at(*ids) - [nil]
 
 #		puts "@id_sock = #{@id_sock.inspect}"
 #		puts "select ios = #{ios.inspect}"
@@ -76,7 +82,12 @@ class LocalServer
 	end
 
 	def read(id)
-		read_ids([id])
+		@id_sock[id].recv_nonblock(8096)
+	rescue Errno::EAGAIN
+		nil
+	rescue Exception => e
+		close(@id_sock[id])
+		e
 	end
 
 	def read_all
@@ -127,8 +138,8 @@ class Proxy
 	private :request
 
 	def method_missing(name, *params)
-#		puts "calling #{name}()"
 		result = request(Request.new(name, *params)).result
+		puts "#{name}(#{params.inspect}) = #{result.inspect}"
 
 		if result.is_a?(Exception)
 			raise result
@@ -150,18 +161,36 @@ class RemoteServer
 			loop do
 				begin
 #					puts "@id_sock = #{@id_sock.inspect}"
-					read = @id_sock.empty? ? {} \
-						: @proxy.read_ids(@id_sock.keys)
+#					read = @id_sock.empty? ? {} \
+#						: @proxy.read_ids(@id_sock.keys)
+					
+					selected = @id_sock.empty? ? [] \
+						: @proxy.select(@id_sock.keys)
 
-					read.each do |id, data|
-						if data.is_a?(Exception) or data.empty?
-							@id_sock[id].close
-							@id_sock.delete(id)
-						else
-							puts "data to   #{id}: #{data.length}"
-							@id_sock[id].write(data)
-						end
+					selected.each do |id|
+						Thread.start {
+							data = @proxy.read(id)
+							if data.is_a?(Exception) or data.empty?
+								@id_sock[id].close
+								@id_sock.delete(id)
+							else
+#								puts "data to   #{id}: #{data.length}"
+#								puts "\"#{data}\""
+								@id_sock[id].write(data)
+							end
+						}
 					end
+
+
+#					read.each do |id, data|
+#						if data.is_a?(Exception) or data.empty?
+#							@id_sock[id].close
+#							@id_sock.delete(id)
+#						else
+#							puts "data to   #{id}: #{data.length}"
+#							@id_sock[id].write(data)
+#						end
+#					end
 				rescue Exception => e
 #					puts "Shouldn't happen: #{e}"
 #					puts "\t#{e.backtrace}"
@@ -185,7 +214,7 @@ class RemoteServer
 							begin
 								data = s.recv_nonblock(8096)
 
-								puts "data from #{id}: #{data.length}"
+#								puts "data from #{id}: #{data.length}"
 								if data.empty?
 									@id_sock.delete(id)
 									@proxy.close(id)
@@ -226,3 +255,15 @@ def start(port)
 	end
 end
 =end
+
+def start(localport, host, port)
+	puts "start(#{localport}, #{host}, #{port})"
+	Thread.start { LocalServer.new(8080, '/hello', host, port).start }
+	RemoteServer.new('http://localhost:8080/hello', localport).start
+end
+
+def parse_start(localport, host, port)
+	start(localport.to_i, host, port.to_i)
+end
+
+parse_start(*ARGV)
