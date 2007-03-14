@@ -29,6 +29,9 @@ typedef struct ContingVisitorClass_ ContingVisitorClass;
 #include "continggen.h"
 #include "contingce.h"
 #include "contingcs.h"
+#include "contingground.h"
+#include "contingcshunt.h"
+#include "contingrshunt.h"
 
 struct ContingVisitorClass_ {
 	GTypeInterface parent;
@@ -41,6 +44,9 @@ struct ContingVisitorClass_ {
 	void (*visit_gen)(ContingVisitor *self, ContingGen *gen);
 	void (*visit_ce)(ContingVisitor *self, ContingCE *gen);
 	void (*visit_cs)(ContingVisitor *self, ContingCS *gen);
+	void (*visit_ground)(ContingVisitor *self, ContingGround *gen);
+	void (*visit_c_shunt)(ContingVisitor *self, ContingCShunt *cs);
+	void (*visit_r_shunt)(ContingVisitor *self, ContingRShunt *cs);
 };
 
 GType
@@ -54,6 +60,9 @@ void conting_visitor_visit_load(ContingVisitor *self, ContingLoad *load);
 void conting_visitor_visit_gen(ContingVisitor *self, ContingGen *gen);
 void conting_visitor_visit_ce(ContingVisitor *self, ContingCE *gen);
 void conting_visitor_visit_cs(ContingVisitor *self, ContingCS *gen);
+void conting_visitor_visit_ground(ContingVisitor *self, ContingGround *gen);
+void conting_visitor_visit_c_shunt(ContingVisitor *self, ContingCShunt *cs);
+void conting_visitor_visit_r_shunt(ContingVisitor *self, ContingRShunt *cs);
 
 #include "contingvisitorcolor.h"
 

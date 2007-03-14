@@ -53,9 +53,46 @@ gboolean conting_util_bounds_contains(const ArtDRect *b1, const ArtDRect *b2) {
 	return b1->x0 <= b2->x0 && b1->y0 <= b2->y0
 		&& b1->x1 >= b2->x1 && b1->y1 >= b2->y1;
 }
+
 void conting_util_bounds_add_point(ArtDRect *dr, const ArtPoint *p) {
 	dr->x0 = MIN(dr->x0, p->x);
 	dr->y0 = MIN(dr->y0, p->y);
 	dr->x1 = MAX(dr->x1, p->x);
 	dr->y1 = MAX(dr->y1, p->y);
+}
+
+gdouble
+conting_util_points_distance(const ArtPoint *p0, const ArtPoint *p1)
+{
+	return sqrt(pow(p0->x - p1->x, 2) + pow(p0->y - p1->y, 2));
+}
+#include <assert.h>
+gboolean
+conting_util_points_max(const ArtPoint *pi0, ArtPoint *pi1, gdouble max_d)
+{
+	gdouble d;
+	gdouble affine[6];
+
+	d = sqrt(pow(pi0->y - pi1->y, 2) + pow(pi0->x - pi1->x, 2));
+
+	if (d <= max_d) {
+		return FALSE;
+	}
+
+	art_affine_rotate(affine,
+			180 * atan2(pi0->y - pi1->y, pi1->x - pi0->x) / M_PI);
+
+	pi1->x = pi1->y = 0;
+	pi1->x += max_d;
+
+	art_affine_point(pi1, pi1, affine);
+
+	pi1->x = pi1->x + pi0->x;
+	pi1->y = -pi1->y + pi0->y;
+
+
+	d = sqrt(pow(pi0->y - pi1->y, 2) + pow(pi0->x - pi1->x, 2));
+	g_print("max_d = %lf\td = %lf\n", max_d, d);
+
+	return TRUE;
 }

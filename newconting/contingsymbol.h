@@ -28,11 +28,14 @@ struct ContingSymbol_ {
 typedef struct ContingSymbolClass_ ContingSymbolClass;
 struct ContingSymbolClass_ {
     ContingComponentClass parent;
+
+	void (*get_link_point)(ContingSymbol *self, ArtPoint *p);
 };
 
 GType conting_symbol_get_type(void);
 
-
+void
+conting_symbol_get_link_point(ContingSymbol *self, ArtPoint *p);
 
 
 #endif /* CONTING_SYMBOL_H */
