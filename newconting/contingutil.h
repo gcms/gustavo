@@ -24,4 +24,7 @@ gboolean conting_util_bounds_contains(const ArtDRect *b1, const ArtDRect *b2);
 
 void conting_util_bounds_add_point(ArtDRect *dr, const ArtPoint *p);
 
+gdouble conting_util_points_distance(const ArtPoint *p0, const ArtPoint *p1);
+gboolean conting_util_points_max(const ArtPoint *p0, ArtPoint *p1, gdouble d);
+
 #endif /* CONTING_UTIL_H */

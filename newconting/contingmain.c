@@ -45,6 +45,9 @@ static void
 hide_gen_clicked(GtkToolButton *button, gpointer user_data);
 
 static void
+show_flow_clicked(GtkToolButton *button, gpointer user_data);
+
+static void
 hide_load_clicked(GtkToolButton *button, gpointer user_data);
 
 static void
@@ -129,6 +132,24 @@ conting_main_get_edit_toolbar(void)
 	g_signal_connect(G_OBJECT(toolbutton), "clicked",
 			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_LOAD);
 
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/gen.png"), "Terra");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_GROUND);
+	
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/gen.png"), "Condensador Shunt");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_C_SHUNT);
+    
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/gen.png"), "Reator Shunt");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolbutton), -1);
+	g_signal_connect(G_OBJECT(toolbutton), "clicked",
+			G_CALLBACK(toolbutton_clicked), (gpointer) CONTING_TYPE_R_SHUNT);
+    
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
             gtk_separator_tool_item_new(), -1);
     
@@ -204,6 +225,12 @@ conting_main_get_view_toolbar(void)
     g_signal_connect(G_OBJECT(toolbutton), "clicked",
             G_CALLBACK(run_load_flow_clicked), NULL);
 
+	toolbutton = gtk_tool_button_new(
+			gtk_image_new_from_file("images/load.png"), "Mostrar fluxos");
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), toolbutton, -1);
+    g_signal_connect(G_OBJECT(toolbutton), "clicked",
+            G_CALLBACK(show_flow_clicked), NULL);
+    
 
     g_object_ref(toolbar);
     return toolbar;
@@ -422,6 +449,27 @@ hide_gen_clicked(GtkToolButton *button, gpointer user_data)
 	 * when it changes. */
 	conting_one_line_operation_update(oneline, default_opr);
 }
+
+/* SIGNAL CALLBACK */
+static void
+show_flow_clicked(GtkToolButton *button, gpointer user_data)
+{
+	static ContingDrawingOperation *opr = NULL;
+	static gboolean show = FALSE;
+
+	if (opr == NULL) {
+		opr = g_object_new(CONTING_TYPE_DRAWING_OPERATION_LOAD, NULL);
+	}
+
+	if (show) {
+		show = FALSE;
+		conting_one_line_remove_operation(oneline, opr);
+	} else {
+		show = TRUE;
+		conting_one_line_add_operation(oneline, opr);
+	}
+}
+
 /* SIGNAL CALLBACK */
 static void
 hide_load_clicked(GtkToolButton *button, gpointer user_data)

@@ -44,6 +44,50 @@ struct ContingLinePrivate_ {
 
 	GdkColor color;
 };
+const GList *
+conting_line_get_points(ContingLine *self)
+{
+	ContingLinePrivate *priv;
+
+	g_return_val_if_fail(self != NULL && CONTING_IS_LINE(self), NULL);
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	return priv->points;
+}
+void
+conting_line_get_limits(ContingLine *self, ArtDRect *p1, ArtDRect *p2)
+{
+	ContingLinePrivate *priv;
+	GList *node, *next;
+	ArtPoint *p, *p_next;
+
+	g_return_if_fail(self != NULL && CONTING_IS_LINE(self));
+
+	priv = CONTING_LINE_GET_PRIVATE(self);
+
+	node = g_list_first(priv->points);
+	next = g_list_next(node);
+
+	p = node->data;
+	p_next = next->data;
+
+	p1->x0 = p->x;
+	p1->y0 = p->y;
+	p1->x1 = p_next->x;
+	p1->y1 = p_next->y;
+
+	node = g_list_last(priv->points);
+	next = g_list_previous(node);
+
+	p = node->data;
+	p_next = next->data;
+
+	p2->x0 = p->x;
+	p2->y0 = p->y;
+	p2->x1 = p_next->x;
+	p2->y1 = p_next->y;
+}
 
 void
 conting_line_set_shift_mask(ContingLine *self, gboolean shift_mask)

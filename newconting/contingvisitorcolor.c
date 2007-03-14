@@ -137,9 +137,14 @@ conting_visitor_color_visit_line(ContingVisitor *self, ContingLine *line)
 
 	if (CONTING_IS_BUS(comp0)) {
 		item_data = conting_drawing_get_item_data(CONTING_DRAWING(comp0));
-	} else {
-		assert(CONTING_IS_BUS(comp1));
+	} else if CONTING_IS_BUS(comp1) {
 		item_data = conting_drawing_get_item_data(CONTING_DRAWING(comp1));
+	} else {
+		item_data = NULL;
+
+		conting_drawing_accept(CONTING_DRAWING(comp0), self);
+		g_object_get(comp0, "color", &color, NULL);
+		g_object_set(line, "color", &color, NULL);
 	}
 
 	g_return_if_fail(item_data != NULL && CONTING_IS_ITEM_DATA(item_data));
@@ -178,6 +183,11 @@ conting_visitor_color_visit_bus(ContingVisitor *self,
 	color_by_voltage(self, &color, voltage);
 
 	g_object_set(drawing, "color", &color, NULL);
+}
+static void
+conting_visitor_color_visit_c_shunt(ContingVisitor *self,
+        ContingCShunt *cshunt)
+{
 }
 
 static void
@@ -292,6 +302,8 @@ conting_visitor_color_visitor_init(gpointer g_iface,
 	
 	visitor_class->visit_trans2 = conting_visitor_color_visit_trans2;
 	visitor_class->visit_trans3 = conting_visitor_color_visit_trans3;
+
+	visitor_class->visit_c_shunt = conting_visitor_color_visit_c_shunt;
 }
 
 static void

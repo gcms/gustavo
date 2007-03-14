@@ -42,5 +42,8 @@ conting_line_set_shift_mask(ContingLine *self, gboolean shift_mask);
 void
 conting_line_create_point(ContingLine *self, const ArtPoint *pi);
 
+void conting_line_get_limits(ContingLine *self, ArtDRect *p1, ArtDRect *p2);
+const GList *conting_line_get_points(ContingLine *self);
+
 
 #endif /* CONTING_LINE_H */

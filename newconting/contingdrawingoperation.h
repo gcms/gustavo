@@ -59,4 +59,9 @@ void conting_drawing_operation_get_bounds(ContingDrawingOperation *self,
 void conting_drawing_operation_draw(ContingDrawingOperation *self,
 		ContingDrawing *drawing);
 
+/* ContingDrawingOperationLoad */
+#define CONTING_TYPE_DRAWING_OPERATION_LOAD (conting_drawing_operation_load_get_type())
+GType conting_drawing_operation_load_get_type(void);
+
+
 #endif /* CONTING_DRAWING_OPERATION_H */

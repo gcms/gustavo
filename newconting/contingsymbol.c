@@ -133,8 +133,11 @@ conting_symbol_link(ContingComponent *self,
         return FALSE;
     }
 
+	conting_symbol_get_link_point(symb, &pi);
+	/*
 	pi.y = comp->p0.y + (comp->p1.y - comp->p0.y) / 2.0;
 	pi.x = comp->p1.x;
+	*/
 	symb->link0 = drawing;
 
 	/* pw is the paramter */
@@ -230,6 +233,27 @@ conting_symbol_read(ContingSerializable *self, xmlNodePtr drawing_node,
 
 }
 
+void
+conting_symbol_get_link_point(ContingSymbol *self, ArtPoint *p)
+{
+	g_return_if_fail(self != NULL && CONTING_IS_SYMBOL(self));
+
+	CONTING_SYMBOL_GET_CLASS(self)->get_link_point(self, p);
+}
+
+static void
+conting_symbol_get_link_point_impl(ContingSymbol *self, ArtPoint *p)
+{
+	ContingComponent *comp;
+
+	g_return_if_fail(self != NULL && CONTING_IS_SYMBOL(self));
+
+	comp = CONTING_COMPONENT(self);
+
+	p->x = comp->p1.x;
+	p->y = comp->p0.y + (comp->p1.y - comp->p0.y) / 2.0;
+}
+
 
 static void
 conting_symbol_instance_init(GTypeInstance *self, gpointer g_class)
@@ -264,6 +288,7 @@ conting_symbol_class_init(gpointer g_class, gpointer class_data)
 {
 	ContingDrawingClass *drawing_class;
 	ContingComponentClass *component_class;
+	ContingSymbolClass *symbol_class;
 	GObjectClass *gobject_class;
 
 	drawing_class = CONTING_DRAWING_CLASS(g_class);
@@ -272,6 +297,9 @@ conting_symbol_class_init(gpointer g_class, gpointer class_data)
 	component_class = CONTING_COMPONENT_CLASS(g_class);
 	component_class->link_deleted = conting_symbol_link_deleted;
 	component_class->link = conting_symbol_link;
+
+	symbol_class = CONTING_SYMBOL_CLASS(g_class);
+	symbol_class->get_link_point = conting_symbol_get_link_point_impl;
 
 	parent_class = g_type_class_peek_parent(g_class);
 
