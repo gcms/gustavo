@@ -1,0 +1,20 @@
+<% if @despesa.nome -%>
+Nome: <%= @despesa.nome %><br/>
+<% end -%>
+Data: <%= h data_tag(@despesa.data) %><br/>
+Valor: <%= h valor_tag(@despesa.valor) %><br/>
+<% @despesa.tags.each do |tag| -%>
+<%= link_to tag.nome, :action => :tag, :id => tag %>&nbsp;
+<% end -%>
+<br/><br/>
+
+<% if @despesa.descricao -%>
+Descrição:<br/>
+<%= @despesa.descricao %>
+<br/><br/>
+<% end -%>
+
+<% if @despesa.vendedor -%>
+Vendedor: <%= h @despesa.vendedor.nome %>
+<br/><br/>
+<% end -%>

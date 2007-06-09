@@ -1,0 +1,41 @@
+<%= render :partial => 'lista_despesas' %>
+<br/><br/>
+
+<%= error_messages_for 'despesa', 'vendedor' %>
+<% form_for :despesa, :url => { :action => :despesa_nova } do |form| %>
+<fieldset>
+  <legend>Nova Despesa</legend>
+
+  <p>
+    <label for="despesa_valor">Valor:</label><br/>
+    <%= form.text_field :valor %>
+  </p>
+  <p>
+    <label for="despesa_data">Data:</label><br/>
+    <%= form.text_field :data, :value => @despesa.data.strftime("%d/%m/%Y") %>
+  </p>
+
+  <p>
+    <label>Vendedor:</label><br/>
+    <%= collection_select(:despesa, :vendedor_id, @vendedores, :id, :nome,
+        :include_blank => true) %><br/>
+    <%= text_field_tag :novo_vendedor %> <%= submit_tag 'Novo' %>
+  </p>
+
+  <p>
+    <label for="tags">Tags:</label><br/>
+    <%= text_field_tag :tags %>
+  </p>
+
+  <p>
+    <label for="despesa_nome">Nome:</label><br/>
+    <%= form.text_field :nome %>
+  </p>
+  <p>
+    <label for="despesa_descricao">Descrição:</label><br/>
+    <%= form.text_area :descricao, :rows => 3 %>
+  </p>
+
+  <%= submit_tag 'Adicionar' %>
+</fieldset>
+<% end -%>
