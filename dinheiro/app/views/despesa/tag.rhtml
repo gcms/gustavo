@@ -1,0 +1,27 @@
+<% form_for :tag, :url => { :action => :tag_modificar, :id => @tag } do |form| %>
+<fieldset>
+  <legend><%= @tag.nome %></legend>
+  <p>
+    <%= h(@percentual) %>
+  </p>
+  <% @primeiros.each do |vendedor, quantidade| -%>
+  <%= h(vendedor.nome) %> <%= h quantidade %><br/>
+  <% end -%>
+
+  <br/><br/>
+
+  <% @primeiros_por_custo.each do |vendedor, valor| -%>
+  <%= h(vendedor.nome) %> <%= h valor_tag(valor) %><br/>
+  <% end -%>
+
+  <p>
+    <label for="tag_descricao">Descrição:</label>
+    <%= form.text_area :descricao, :rows => 5 %><br/>
+  </p>
+  <p>
+    <%= submit_tag 'Modificar' %>
+  </p>
+</fieldset>
+<% end -%>
+
+<%= link_to 'Voltar', :action => :index %>

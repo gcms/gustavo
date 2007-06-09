@@ -1,0 +1,43 @@
+<% form_tag({ :action => :filter }, { :method => :get }) do -%>
+De: <%= select_date @inicio, :prefix => 'inicio' %>
+Até: <%= select_date @fim, :prefix => 'fim' %>
+<%= submit_tag 'Filtar' %>
+<% end -%>
+
+<div style="border-style: solid; border-width: 1pt;">
+<table cellpadding="5">
+  <% if @despesas.empty? -%>
+  <tr><td colspan="4"><center><i>Nenhuma entrada</i></center></td></tr>
+  <% else -%>
+  <tr>
+    <th></th>
+    <th>Data e Valor</th>
+    <th>Vendedor</th>
+   <th>Tags</th>
+  </tr>
+  <% end -%>
+<% @despesas.each do |despesa| -%>
+<tr bgcolor="<%= cycle('#d0d0d0', '#ffffff') %>">
+  <td align="right">
+    <%= link_to h("X"), {:action => :despesa_remover, :id => despesa},
+                         :method => :post %>
+  </td>
+  <td>
+    <%= link_to h(data_valor_tag(despesa)), :action => :despesa, :id => despesa %>
+  </td>
+  <td>
+    <%= h(despesa.vendedor.nome) if despesa.vendedor %>
+  </td>
+  <td>
+    <% despesa.tags.each do |tag| -%>
+    <%= link_to tag.nome, :action => :tag, :id => tag %>&nbsp;
+    <% end -%>
+  </td>
+</tr>
+<% end -%>
+<tr>
+  <td></td>
+  <td align="right"><%= h(valor_tag(@despesas.sum {|d| d.valor.to_d})) %></td>
+</tr>
+</table>
+</div>
