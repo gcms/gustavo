@@ -1,4 +1,8 @@
+require_dependency 'sparklines'
+
 class DespesaController < ApplicationController
+  helper :sparklines
+  
   def index
     today = Time.now.beginning_of_month.to_date
     @despesas = Despesa.find(:all, :order => 'data DESC, id DESC',

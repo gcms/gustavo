@@ -1,9 +1,9 @@
 <% form_for :tag, :url => { :action => :tag_modificar, :id => @tag } do |form| %>
 <fieldset>
   <legend><%= @tag.nome %></legend>
-  <p>
-    <%= h(@percentual) %>
-  </p>
+
+  <div class="tag-box">  
+  <div class="estatisticas">
   <% @primeiros.each do |vendedor, quantidade| -%>
   <%= h(vendedor.nome) %> <%= h quantidade %><br/>
   <% end -%>
@@ -13,7 +13,17 @@
   <% @primeiros_por_custo.each do |vendedor, valor| -%>
   <%= h(vendedor.nome) %> <%= h valor_tag(valor) %><br/>
   <% end -%>
-
+  </div>
+  
+  <div class="grafico" align="center">
+  <%= sparkline_tag [@percentual, 100], { :type => 'pie', :diameter => 200 }, { :class => 'grafico-imagem' }  %>
+  <p align="center">
+    <font color="red"/><%= h(@percentual) %></font>
+  </p>
+  </div>
+  </div>
+  
+</div>
   <p>
     <label for="tag_descricao">Descrição:</label>
     <%= form.text_area :descricao, :rows => 5 %><br/>
