@@ -1,0 +1,82 @@
+<display id="main" width="9cm" height="3cm" anchor="sw"
+         window-flags="sticky, below">
+
+    <control id="play" interface="IMusicPlayback:bcf6y8ctfw4ty23x91hpqr5dq-2"/>
+
+    <frame width="100%" height="100%" color="#00000050"
+           border-width="0.05cm, 0.05cm, 0.05cm, 0.05cm"/>
+    <!-- top group -->
+    <group id="top" bg-color="#00000000" x="0.1cm" y="0.1cm">
+        <group id="img_frame" anchor="nw" width="2.8cm" height="2.8cm">
+            <image id="cover_img" uri=""
+                   anchor="nw" image-width="2.8cm"/>
+        </group>
+        <group id="topright" anchor="nw" relative-to="img_frame, x"
+               x="0.35cm" y="0.35cm" width="5.2cm" height="2.1cm">
+               <!-- 2.1 = 2.8 - (0.35 + 0.35) -->
+            <label id="artist" anchor="nw"
+                   font="Sans 16pt" color="white" value="Fetching data..."/>
+            <label id="title" anchor="nw" relative-to="artist, y" width="1cm"
+                   font="Sans 16pt" color="gold" value=""/>
+            <!-- progress bar -->
+            <frame id="bar"
+                   anchor="sw" width="5.2cm" height="0.35cm" x="0" y="100%"
+                   border-width="0.05cm, 0.05cm, 0.05cm, 0.05cm"
+                   color="red"/>
+            <group anchor="sw" relative-to="bar, y" x="0.05cm" y="-0.05cm">
+                <gauge id="mygauge" fill="0">
+                    <group id="fill" width="5.15cm" height="0.25cm"
+                           bg-color="red"/>
+                    <!-- 5.15 = (5.2 - 0.05)   0.25 = (0.35 - 0.25 * 2) -->
+                </gauge>
+            </group>
+            <!-- /progress bar -->
+            <label id="time" anchor="se" relative-to="bar, x" y="-0.35cm"
+                   value="" font="Clean 14pt"/>
+        </group>
+    </group>
+    <!-- /top group -->
+    <script uri="script.py"/>
+    <prefs>
+        <page label="Appearance">
+            <title label="Font and Color"/>
+            <font label="Artist font" bind="Dsp.artist.font"/>
+            <color label="Artist color" bind="Dsp.artist.color"/>
+            <font label="Title font" bind="Dsp.title.font"/>
+            <color label="Title color" bind="Dsp.title.color"/>
+            <color label="Progress bar border color" bind="Dsp.bar.color"/>
+            <color label="Progress bar fill color" bind="Dsp.fill.bg_color"/>
+            <title label="Text scrolling"/>
+            <float label="Title scroll length" digits="0" bind="title_len"
+                   min="1"/>
+            <float label="Title scroll space" digits="0" bind="title_space"
+                   min="0"/>
+            <float label="Title display length" digits="0" bind="title_avg"
+                   min="1"/>
+            <float label="Artist scroll length" digits="0" bind="artist_len"
+                   min="1"/>
+            <float label="Artist scroll space" digits="0" bind="artist_space"
+                   min="0"/>
+            <float label="Artist display length" digits="0" bind="artist_avg"
+                   min="1"/>
+            <float label="Scroll interval (miliseconds)" digits="0"
+                   bind="scroll_interval" min="100"/>
+
+            <title label="Misc"/>
+            <enum label="Playtime display" bind="playtime_display">
+                <item label="Current time" value="current"/>
+                <item label="Remaining time" value="remaining"/>
+            </enum>
+        </page>
+        <page label="Behaviour">
+            <title label="Server connection"/>
+            <string label="Server" bind="server"/>
+            <enum label="Server not found" bind="server_not_found">
+                <item label="Retry connecting" value="retry"/>
+                <item label="Start server" value="launch"/>
+            </enum>
+            <float label="Retry after (seconds)" digits="0" bind="retry_time"
+                   min="1"/>
+        </page>
+    </prefs>
+</display>
