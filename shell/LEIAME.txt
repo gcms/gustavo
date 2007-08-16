@@ -1,0 +1,32 @@
+Para compilar, use o make
+
+para executar
+
+./newshell
+
+
+Suporte para redirecionamento de I/O:
+cat -n < /etc/passwd > passwd_numerado
+
+
+Pipes
+ls | cat -n
+
+Job Control
+comandos terminados com '&' sao executados em background
+jobs lista os jobs existentes
+fg faz um job em background ou parado executar em foreground
+bg faz um job parado executar em background
+
+Historico
+history lista os ultimos 100 comandos executados
+ao fim da sessao sao salvos em ~/.newshell_history
+
+Aliases
+Eh possivel criar aliases usando o comando alias, por exemplo
+
+alias asdf ls
+
+cria um alias para ls, chamado asdf, asdf / ira executar ls /
+
+Gustavo Cipriano Mota Sousa <gustavomota@inf.ufg.br>
