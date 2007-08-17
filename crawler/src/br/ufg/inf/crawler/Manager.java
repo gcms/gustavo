@@ -1,3 +1,4 @@
+package br.ufg.inf.crawler;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;

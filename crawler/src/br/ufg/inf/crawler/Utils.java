@@ -1,3 +1,4 @@
+package br.ufg.inf.crawler;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 
