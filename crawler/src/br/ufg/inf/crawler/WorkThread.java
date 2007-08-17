@@ -1,3 +1,4 @@
+package br.ufg.inf.crawler;
 import java.io.IOException;
 import java.net.URL;
 

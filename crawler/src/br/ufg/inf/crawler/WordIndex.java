@@ -1,3 +1,4 @@
+package br.ufg.inf.crawler;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
