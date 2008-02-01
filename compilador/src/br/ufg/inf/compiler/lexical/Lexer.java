@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-import br.ufg.inf.compiler.main.LexicalException;
 
 import monq.jfa.AbstractFaAction;
 import monq.jfa.CallbackException;
@@ -214,6 +213,14 @@ public class Lexer {
 			/* retorna token no inicio da fila, e o remove dela */
 			return tokenList.poll();
 		}
+	}
+	
+	/**
+	 * Obtém a especificação léxica utilizada por este analisador.
+	 * @return specificacao lexica
+	 */
+	public LexerSpec getLexerSpec() {
+		return manager;
 	}
 	/*
 	 * public static void main(String[] args) throws CompileDfaException,

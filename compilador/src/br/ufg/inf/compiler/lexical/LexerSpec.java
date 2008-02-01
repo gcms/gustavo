@@ -81,6 +81,17 @@ public class LexerSpec {
 
 		return l;
 	}
+	
+	/**
+	 * Cria um analisador léxico para a sequencia de caracteres especificada.
+	 * 
+	 * @param src
+	 *            sequencia de caracteres
+	 * @return um novo analisador léxico
+	 */	
+	public Lexer getLexer(CharSequence seq) {
+		return getLexer(new CharSequenceCharSource(seq));
+	}
 
 	/**
 	 * Checa se a string é o nome de um token válido
