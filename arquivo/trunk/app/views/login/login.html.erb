@@ -1,0 +1,11 @@
+<h1>Usuario#login</h1>
+
+<% if flash[:notice] %>
+  <%= flash[:notice] %>
+<% end -%>
+
+<% form_tag do %>
+  <%= text_field_tag :nome %>
+  <%= password_field_tag :senha %>
+  <%= submit_tag 'Entrar' %>
+<% end -%>

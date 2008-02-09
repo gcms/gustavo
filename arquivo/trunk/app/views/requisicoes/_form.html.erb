@@ -1,0 +1,61 @@
+<%= error_messages_for :requisicao %>
+
+
+<% form_for([:empresa, @requisicao]) do |f| %>
+  <p>
+    <b>Departamento</b><br />
+    <%= f.select :departamento_id,
+        @empresa.departamentos.collect {|d| [d.nome, d.id]},
+        :include_blank => 'Todos departamentos' %>
+  </p>
+  <p>
+    <b>Emergencial</b>
+    <%= f.check_box :emergencial %>
+  </p>
+  <p>
+    <b>Com transporte?</b>
+    <%= f.check_box :transporte %>
+  </p>
+  <p>
+    <b>Endereço</b><br />
+    <%= select_tag 'unidade_id',
+        options_from_collection_for_select(unidade_vazia + @empresa.unidades,
+        :id, :nome, 0)%>
+  </p>
+  <%= observe_field :unidade_id,
+      :update => 'endereco',
+      :url => { :action => :get_endereco },
+      :with => "'id=' + value" %>
+
+  <p id="endereco">
+    <%= render :partial => "endereco" %>
+  </p>
+
+<div id="itens-div">
+  <%= render :partial => 'itens' %>
+</div>
+
+<% end %>
+
+<div style="border: solid gray 1px;">
+<h5>Requisição de materiais</h5>
+<% remote_form_for(:item, @item, :url => {:action => :add_item}) do |f| -%>
+<table>
+  <tr><th>Quantidade</th><th>Material</th><th></th></tr>
+  <tr>
+    <td>
+      <%= f.text_field :qtd %>
+    </td>
+    <td>
+      <%= f.select :material_id,
+          Material.find(:all).collect {|m| [m.nome, m.id]} %>
+    </td>
+    <td>
+      <%= f.submit 'Adicionar' %>
+    </td>
+  </tr>
+</table>
+<% end -%>
+</div>
+<%= button_to_function 'Salvar', "document.forms[0].submit();" %>
+ou <%= link_to 'Voltar', empresa_requisicoes_path %>

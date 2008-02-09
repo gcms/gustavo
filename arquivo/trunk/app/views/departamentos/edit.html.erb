@@ -1,0 +1,17 @@
+<h1>Editing departamento</h1>
+
+<%= error_messages_for :departamento %>
+
+<% form_for([:empresa, @departamento]) do |f| %>
+  <p>
+    <b>Nome</b><br />
+    <%= f.text_field :nome %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', [:empresa, @departamento] %> |
+<%= link_to 'Back', edit_empresa_path %>

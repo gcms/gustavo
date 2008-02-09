@@ -1,0 +1,6 @@
+<% unless @requisicao.itens.empty? %>
+<table border="1">
+  <tr><th>Quantidade</th><th>Material</th><th></th></tr>
+  <%= render :partial => 'item', :collection => @requisicao.itens %>
+</table>
+<% end -%>

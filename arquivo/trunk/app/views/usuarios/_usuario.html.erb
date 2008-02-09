@@ -1,0 +1,17 @@
+<% form_for([:empresa, @usuario]) do |f| %>
+  <p>
+    <label>Nome</label>
+    <%= f.text_field :nome %>
+  </p>
+  <p>
+    <label>Senha</label>
+    <%= f.text_field :senha %>
+  </p>
+  <p>
+    <label>Nível</label>
+    <%= f.select :nivel, Usuario::NIVEIS.invert.sort %>
+  </p>
+  <p>
+    <%= f.submit button_name %>
+  </p>
+<% end %>

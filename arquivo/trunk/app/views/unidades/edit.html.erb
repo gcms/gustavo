@@ -1,0 +1,10 @@
+<h1>Editing unidade</h1>
+
+<%= error_messages_for :unidade %>
+
+
+<%= render :partial => "unidade",
+  :locals => { :button_name => 'Update' } %>
+
+<%= link_to 'Show', [:empresa, @unidade] %> |
+<%= link_to 'Back', edit_empresa_path %>

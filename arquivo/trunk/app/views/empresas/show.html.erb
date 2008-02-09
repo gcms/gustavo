@@ -1,0 +1,7 @@
+<% if @usuario.admin? -%>
+   <h3>Cadastro</h3>
+   <%= link_to 'Administração', edit_empresa_path %>
+<% end -%>
+
+<h3>Material</h3>
+<%= link_to 'Requisição', empresa_requisicoes_url %>
