@@ -1,0 +1,41 @@
+<h1>Requisições pendentes</h1>
+
+<style>
+  table { border: solid black 2px; width: 500px; }
+  table tr th { background-color: lightgray; }
+</style>
+
+<% if @requisicoes.empty? -%>
+  <i>Nenhuma requisição</i>
+<% else -%>
+  <% for requisicao in @requisicoes %>
+    <table>
+      <tr>
+        <th colspan="2"><%= h requisicao.pedido %></th>
+      </tr>
+      <tr>
+        <td>Data:</td>
+        <td><%= h requisicao.data.strftime("%d/%m/%Y") %></td>
+      </tr>
+      <tr>
+        <td>Usuario:</td>
+        <td><%= h requisicao.usuario.nome %></td>
+      </tr>
+      <tr>
+        <td align="center" bgcolor="lightgray" colspan="2">
+          <%= link_to 'Editar', [:edit, :empresa, requisicao] %>
+<!--          <%= link_to 'Edit', [:edit, :empresa, requisicao] %> -->
+          <%= link_to 'Cancelar', [:empresa, requisicao],
+              :confirm => 'Are you sure?', :method => :delete %>
+          <%= link_to 'Confirmar',
+              :action => :confirm, :id => requisicao %>
+      </td>
+      </tr>
+    </table>
+<br />
+<% end %>
+<% end -%>
+
+<br />
+
+<%= link_to 'Nova requisição', new_empresa_requisicao_path %>

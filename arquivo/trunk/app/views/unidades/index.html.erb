@@ -1,0 +1,24 @@
+<h1>Listing unidades</h1>
+
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>Empresa</th>
+    <th>Endereco</th>
+  </tr>
+
+<% for unidade in @unidades %>
+  <tr>
+    <td><%=h unidade.nome %></td>
+    <td><%=h unidade.empresa %></td>
+    <td><%=h unidade.endereco %></td>
+    <td><%= link_to 'Show', unidade %></td>
+    <td><%= link_to 'Edit', edit_unidade_path(unidade) %></td>
+    <td><%= link_to 'Destroy', unidade, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New unidade', new_unidade_path %>

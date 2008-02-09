@@ -1,0 +1,15 @@
+<h1>Admin</h1>
+
+<h3>Usuarios</h3>
+<% @empresa.usuarios.each do |usuario| -%>
+<p>
+  <%= usuario.nome %>
+  <%= link_to '(editar)', edit_usuario_path(usuario) %>
+  <%= link_to 'X', usuario, :confirm => 'Are you sure?', :method => :delete %>
+</p>
+<%- end %>
+<%= link_to 'Cadastrar usuario', new_usuario_path %>
+
+<h3>Unidades</h3>
+
+<h3>Departamentos</h3>

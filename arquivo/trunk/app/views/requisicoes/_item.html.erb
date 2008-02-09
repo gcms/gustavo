@@ -1,0 +1,12 @@
+<tr>
+  <td>
+    <%= h item.qtd %>
+  </td>
+  <td>
+    <%= h (item.material && item.material.nome) %>
+  </td>
+  <td>
+    <%= link_to_remote 'X',
+        :url => {:action => :delete_item, :id => item.index } %>
+  </td>
+</tr>

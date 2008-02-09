@@ -1,0 +1,60 @@
+<h3>Usuários</h3>
+<table>
+<tr>
+  <th>nome</th><th>nível</th><th></th>
+</tr>
+<% @empresa.usuarios.each do |usuario| -%>
+<tr>
+  <td><%= h usuario.nome %></td>
+  <td><%= h usuario.nivel_s %></td>
+  <td>
+    <%= link_to '(edit)', edit_empresa_usuario_path(usuario) %>
+    <%= link_to 'X', empresa_usuario_path(usuario),
+        :confirm => 'Remover?', :method => :delete %>
+  </td>
+</tr>
+<% end -%>
+</table>
+
+<%= link_to 'Cadastrar usuario', new_empresa_usuario_path %>
+<h3>Departamentos</h3>
+<table>
+<tr>
+  <th>nome</th><th></th>
+</tr>
+<% @empresa.departamentos.each do |departamento| -%>
+<tr>
+  <td><%= h departamento.nome %></td>
+  <td>
+    <%= link_to '(edit)', edit_empresa_departamento_path(departamento) %>
+    <%= link_to 'X', empresa_departamento_path(departamento),
+        :confirm => 'Remover?', :method => :delete %>
+  </td>
+</tr>
+<% end -%>
+</table>
+
+<%= link_to 'Cadastrar departamento', new_empresa_departamento_path %>
+
+<h3>Unidades</h3>
+<table>
+<tr>
+  <th>nome</th><th></th>
+</tr>
+<% @empresa.unidades.each do |unidade| -%>
+<tr>
+  <td><%= h unidade.nome %></td>
+  <td>
+    <%= link_to '(edit)', edit_empresa_unidade_path(unidade) %>
+    <%= link_to 'X', empresa_unidade_path(unidade),
+        :confirm => 'Remover?', :method => :delete %>
+  </td>
+</tr>
+<% end -%>
+</table>
+
+<%= link_to 'Cadastrar Unidade', new_empresa_unidade_path %>
+
+<p>
+  <%= link_to 'Voltar', root_path %>
+</p>

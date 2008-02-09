@@ -1,0 +1,37 @@
+<p>
+  <b>Pedido:</b>
+  <%=h @requisicao.pedido %>
+</p>
+
+<p>
+  <b>Data:</b>
+  <%=h @requisicao.data %>
+</p>
+
+<p>
+  <b>Usuario:</b>
+  <%=h @requisicao.usuario.nome %>
+</p>
+
+<p>
+  <b>Departamento:</b>
+  <%=h (@requisicao.departamento && @requisicao.departamento.nome) %>
+</p>
+
+<p>
+  <b>Endereco:</b>
+  <%=h (@requisicao.endereco && @requisicao.endereco.logradouro) %>
+</p>
+
+<% unless @requisicao.itens.empty? -%>
+<table border="1">
+<tr><th>Quantidade</th><th>Material</th>
+<% @requisicao.itens.each do |item| -%>
+  <tr><td><%= h item.qtd %></td><td><%= h item.material.nome %></td</tr>
+<% end -%>
+</table>
+<% end -%>
+
+
+<%= link_to 'Edit', [:edit, :empresa, @requisicao] %> |
+<%= link_to 'Back', empresa_requisicoes_path %>

@@ -1,0 +1,8 @@
+<h1>Editing usuario</h1>
+
+<%= error_messages_for :usuario %>
+
+<%= render :partial => "usuario",
+  :locals => { :button_name => "Update" } %>
+
+<%= link_to 'Back', edit_empresa_path %>

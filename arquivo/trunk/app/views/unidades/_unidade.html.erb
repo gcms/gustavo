@@ -1,0 +1,15 @@
+<% form_for([:empresa, @unidade]) do |f| %>
+  <p>
+    <b>Nome</b><br />
+    <%= f.text_field :nome %>
+  </p>
+
+  <p>
+    <b>Endereco</b><br />
+    <%= text_area :endereco, :logradouro, :rows => 4 %>
+  </p>
+
+  <p>
+    <%= f.submit button_name %>
+  </p>
+<% end %>
