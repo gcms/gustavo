@@ -50,10 +50,10 @@ ActiveRecord::Schema.define(:version => 8) do
     t.string   "estado",          :null => false
     t.boolean  "emergencial",     :null => false
     t.boolean  "transporte",      :null => false
+    t.integer  "unidade_id"
     t.integer  "usuario_id",      :null => false
     t.integer  "empresa_id",      :null => false
     t.integer  "departamento_id"
-    t.integer  "endereco_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

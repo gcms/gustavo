@@ -1,0 +1,11 @@
+<fieldset>
+<legend>Nova requisição de material<legend>
+
+
+<%= render :partial => 'requisicao_form' %>
+
+<br />
+<%= button_to_function 'Criar', 'document.forms[0].submit();' %>
+ou <%= link_to 'Voltar', empresa_requisicoes_path %>
+
+</fieldset>

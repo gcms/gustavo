@@ -1,0 +1,44 @@
+<h1>Adicionar itens a requisição</h1>
+
+<%= render :partial => 'requisicoes/requisicao', :object => @requisicao %>
+
+<table class="material-table">
+<tr class="title-line">
+  <th>Quantidade</th>
+  <th>Material</th>
+  <th></th>
+  <th></th>
+</tr>
+
+<% @itens.each do |item| -%>
+<tr>
+  <td class="main-column"><%= item.qtd %></td>
+  <td class="main-column"><%= item.material.nome %></td>
+  <td>
+    <%= link_to 'Editar', [:edit, :empresa, @requisicao, item] %>
+  </td>
+  <td>
+    <%= link_to 'Remover', [:empresa, @requisicao, item],
+        :confirm => 'Are you sure?', :method => :delete %>
+  </td>
+</tr>
+<% end -%>
+
+<tr><td colspan="4">&nbsp;</td></tr>
+
+<% form_for([:empresa, @requisicao, @item]) do |f| -%>
+<tr>
+  <td class="main-column">
+    <%= f.text_field :qtd %>
+  </td>
+  <td class="main-column">
+    <%= f.collection_select :material_id, Material.find(:all), :id, :nome %>
+  </td>
+  <td colspan="2">
+    <%= f.submit 'Adicionar' %>
+  </td>
+<% end -%>
+</table>
+
+<br />
+<%= link_to 'Voltar', [:edit, :empresa, @requisicao] %>

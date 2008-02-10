@@ -1,3 +1,5 @@
+<%= error_messages_for :requisicao %>
+
 <p>
   <b>Pedido:</b>
   <%=h @requisicao.pedido %>
@@ -20,7 +22,7 @@
 
 <p>
   <b>Endereco:</b>
-  <%=h (@requisicao.endereco && @requisicao.endereco.logradouro) %>
+  <%=h (@requisicao.unidade && @requisicao.unidade.nome) %>
 </p>
 
 <% unless @requisicao.itens.empty? -%>
@@ -35,3 +37,5 @@
 
 <%= link_to 'Edit', [:edit, :empresa, @requisicao] %> |
 <%= link_to 'Back', empresa_requisicoes_path %>
+
+<%= button_to 'Gerar Ordem de Serviço', [:confirm, :empresa, @requisicao] %>
