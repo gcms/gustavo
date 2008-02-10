@@ -1,0 +1,47 @@
+fieldset {
+  margin-top: 1em;
+  padding: 1em 2em;
+
+  width: 28em;
+}
+fieldset legend {
+  font-size: 15pt;
+}
+
+.requisicao-item-table {
+  border: solid black 2px;
+  width: 28em;
+}
+.requisicao-item-table tr th {
+  background-color: lightgray;
+}
+
+.material-table {
+  border: solid black 2px;
+  border-spacing: 0;
+  width: 28em;
+}
+
+.material-table .title-line {
+  vertical-align: middle;
+  background-color: lightgray;
+}
+
+.material-table .main-column {
+  text-align: center;
+  width: 8em;
+}
+
+.material-table .main-column #item_qtd,
+.material-table .main-column #item_material_id {
+  width: 7em;
+}
+.material-table #item_submit {
+  width: 9em;
+}
+
+.ordem-table {
+  padding: 0em 1em;
+  border: solid black 2px;
+  width: 20em;
+}

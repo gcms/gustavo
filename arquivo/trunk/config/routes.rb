@@ -1,11 +1,23 @@
 ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'home'
 
-  map.resource :empresa, :has_many => :requisicoes
+#  map.resource :empresa, :has_many => :requisicoes
 
-  map.resource :empresa, :has_many => :usuarios
-  map.resource :empresa, :has_many => :unidades
-  map.resource :empresa, :has_many => :departamentos
+#  map.resource :empresa, :has_many => :usuarios
+#  map.resource :empresa, :has_many => :unidades
+#  map.resource :empresa, :has_many => :departamentos
+
+  map.resource :empresa do |empresa|
+    empresa.resources :usuarios
+    empresa.resources :unidades
+    empresa.resources :departamentos
+
+    empresa.resources :requisicoes,
+        :member => { :confirm => :post, :ordem => :get } do |requisicao|
+      requisicao.resources :itens
+    end
+  end
+
 
 #  map.resources :empresas, :has_many => :usuarios
 #  map.resources :empresas, :has_many => :departamentos

@@ -1,0 +1,40 @@
+<% form_for([:empresa, @requisicao]) do |f| %>
+  <p>
+    <b>Departamento</b><br />
+    <%= f.collection_select :departamento_id,
+        @empresa.departamentos, :id, :nome,
+        :include_blank => 'Todos departamentos' %>
+  </p>
+
+  <p>
+    <b>Emergencial</b>
+    <%= f.check_box :emergencial %>
+  </p>
+
+  <p>
+    <b>Com transporte?</b>
+    <%= f.check_box :transporte %>
+
+    <%= observe_field :requisicao_transporte,
+        :url => { :action => :transporte_changed },
+        :with => 'transporte' %>
+  </p>
+
+  <p>
+    <b>Endereço:</b><br />
+    <%= f.collection_select :unidade_id,
+        @empresa.unidades, :id, :nome,
+        { :include_blank => true},
+        { :disabled => !@requisicao.transporte } %>
+
+    <%= observe_field :requisicao_unidade_id,
+        :update => 'endereco',
+        :url => { :action => :get_endereco },
+        :with => "'id=' + value" %>
+
+  </p>
+
+  <div id="endereco">
+    <%= render :partial => 'endereco' %>
+  </div>
+<% end %>

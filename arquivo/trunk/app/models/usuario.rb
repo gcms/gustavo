@@ -4,10 +4,12 @@ class Usuario < ActiveRecord::Base
   NIVEIS = { :admin => 'Administração', :user => 'Usuário'}
 
   symbolize :nivel
-  validates_inclusion_of :nivel, :in => NIVEIS.keys
+  validates_inclusion_of :nivel, :in => NIVEIS.keys + [ :super_admin ]
 
-  validates_presence_of :nome, :senha, :empresa_id
+  validates_presence_of :nome, :senha
   validates_uniqueness_of :nome
+
+  validates_presence_of :empresa_id, :if => { |u| !u.super_admin? }
 
   def self.autenticar(nome, senha)
     usuario = find_by_nome(nome)
@@ -21,6 +23,10 @@ class Usuario < ActiveRecord::Base
 
   def admin?
     nivel == :admin
+  end
+
+  def super_admin?
+    nivel == :super_admin
   end
 
   def nivel_s

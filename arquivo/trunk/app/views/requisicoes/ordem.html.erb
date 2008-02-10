@@ -1,0 +1,65 @@
+<table class="ordem-table">
+  <tr>
+    <th>Ordem de Serviço</th>
+  </tr>
+  <tr>
+    <td><%= @requisicao.pedido %></td>
+  </tr>
+</table>
+<br />
+<table class="ordem-table">
+  <tr>
+    <th colspan="2">Resumo do Pedido</th>
+  </tr>
+  <tr>
+    <td>Data de Abertura:</td>
+    <td><%= @requisicao.data.strftime("%d/%m/%Y") %></td>
+  </tr>
+  <tr><td colspan="2">&nbsp;</td></tr>
+  <tr>
+    <td colspan="2">Qtde. Material</td>
+  </tr>
+
+  <% @requisicao.resumo_qtd.each do |material, qtd| -%>
+  <tr style="background-color: lightgray; border-spacing: 0pt;">
+    <td><%= qtd %></td><td><%= h material.nome %></td>
+  </tr>
+  <% end -%>
+
+  <tr><td colspan="2">&nbsp;</td></tr>
+
+  <tr>
+    <td>Usuário:</td>
+    <td><%= h @requisicao.usuario.nome %></td>
+  </tr>
+
+  <tr>
+    <td>Empresa:</td>
+    <td><%= h @requisicao.empresa.nome %></td>
+  </tr>
+
+  <tr><td colspan="2">&nbsp;</td></tr>
+
+  <tr>
+    <td>Com transporte:</td>
+    <td><%= @requisicao.transporte ? 'SIM' : 'NÃO' %></td>
+  </tr>
+
+<% if @requisicao.transporte? %>
+  <tr>
+    <td>Filial:</td>
+    <td><%= h @requisicao.unidade.nome %></td>
+  </tr>
+
+  <tr>
+    <td>Endereço da Filial:</td>
+    <td><%= h @requisicao.unidade.endereco.logradouro %></td>
+  </tr>
+<% end -%>
+
+</table>
+
+<br />
+
+<%= button_to_function 'Imprimir', '' %>
+ou <%= link_to 'Voltar', empresa_requisicao_path(@requisicao) %>
