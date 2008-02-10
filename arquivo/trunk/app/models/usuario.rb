@@ -9,7 +9,7 @@ class Usuario < ActiveRecord::Base
   validates_presence_of :nome, :senha
   validates_uniqueness_of :nome
 
-  validates_presence_of :empresa_id, :if => { |u| !u.super_admin? }
+  validates_presence_of :empresa_id, :if => Proc.new { |u| !u.super_admin? }
 
   def self.autenticar(nome, senha)
     usuario = find_by_nome(nome)
