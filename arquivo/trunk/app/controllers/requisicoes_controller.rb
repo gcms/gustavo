@@ -1,8 +1,7 @@
 class RequisicoesController < ApplicationController
   # GET /requisicoes
   def index
-    @requisicoes = @empresa.requisicoes.find(:all,
-      :conditions => { :estado => :pendente })
+    @requisicoes = @empresa.requisicoes.find_all_by_estado(:pendente)
   end
 
   # GET /requisicoes/new
@@ -26,6 +25,7 @@ class RequisicoesController < ApplicationController
     else
       logger.info @requisicao.errors.inspect
       logger.info "estado is '#{@requisicao.estado}'"
+
       render :action => :new
     end
   end
@@ -58,9 +58,7 @@ class RequisicoesController < ApplicationController
   def confirm
     @requisicao = @empresa.requisicoes.find(params[:id])
 
-    @requisicao.estado = :confirmado
-
-    if @requisicao.save
+    if @requisicao.confirmar(@usuario)
       redirect_to :action => :ordem, :id => @requisicao
     else
       render :action => :show
@@ -71,7 +69,7 @@ class RequisicoesController < ApplicationController
     @requisicao = @empresa.requisicoes.find(params[:id])
 
     # Verifica se pendente
-    if @requisicao.pendente?
+    unless @requisicao.confirmado?
       redirect_to empresa_requisicao_path(@requisicao)
     end
   end
@@ -94,5 +92,4 @@ class RequisicoesController < ApplicationController
 
     render :partial => 'endereco'
   end
-
 end

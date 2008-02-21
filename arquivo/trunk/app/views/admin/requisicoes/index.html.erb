@@ -1,0 +1,18 @@
+Mostrar requisições
+<% form_tag({:action => :index }, { :method => :get }) do -%>
+  <br />Empresa:
+  <%= select_tag :empresa_id,
+      options_for_select_from_collection(Empresa.find(:all), :id, :nome,
+      :include_blank => 'Todas', :selected => @empresa_id) %>
+
+  <br />Emergencial:
+  <%= check_box_tag :emergencial, '1', @emergencial %>
+
+  <br /><%= submit_tag 'Filtrar' %>
+<% end -%>
+
+<br />
+
+<div id="requisicoes">
+  <%= render :partial => 'requisicoes' %>
+</div>

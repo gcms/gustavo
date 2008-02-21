@@ -1,0 +1,18 @@
+    <table class="requisicao-item-table">
+      <tr>
+        <th colspan="2">
+          <%= h @requisicao.pedido %>
+        </th>
+      </tr>
+      <tr><th colspan="2">Histórico</th></tr>
+      <% @requisicao.eventos.each do |evento| -%>
+        <tr>
+          <td><%= evento.tipo %></td>
+          <td>
+            <%= h evento.usuario.nome %>
+            <%= h evento.data.strftime("%d/%m/%Y %H:%M") %>
+          </td>
+        </tr>
+      <% end -%>
+    </table>
+<br />

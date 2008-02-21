@@ -23,7 +23,6 @@ class LoginController < ApplicationController
   def logout
     session[:usuario_id] = nil
 
-    redirect_to :action => :login
-    # redirect_to uri_principal
+    redirect_to root_path
   end
 end

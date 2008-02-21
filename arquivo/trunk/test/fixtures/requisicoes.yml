@@ -1,17 +1,2 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  pedido: 1
-  data: 2008-02-03 00:37:22
-  usuario: 
-  empresa: 
-  departamento: 
-  endereco: 
-
-two:
-  pedido: 1
-  data: 2008-02-03 00:37:22
-  usuario: 
-  empresa: 
-  departamento: 
-  endereco: 

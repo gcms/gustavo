@@ -22,38 +22,30 @@ class UnidadesController < ApplicationController
   end
 
   # POST /unidades
-  # POST /unidades.xml
   def create
     @unidade = @empresa.unidades.build(params[:unidade])
-    @unidade.endereco = Endereco.new(params[:endereco])
+    @endereco = @unidade.endereco = Endereco.new(params[:endereco])
 
-    Unidade.transaction do
-      if @unidade.save && @unidade.endereco.save
-        flash[:notice] = 'Unidade was successfully created.'
-        redirect_to([:empresa, @unidade])
-      else
-        render :action => "new"
-      end
+    if @unidade.save
+      flash[:notice] = 'Unidade was successfully created.'
+      redirect_to([:empresa, @unidade])
+    else
+      render :action => "new"
     end
   end
 
   # PUT /unidades/1
-  # PUT /unidades/1.xml
   def update
     @unidade = @empresa.unidades.find(params[:id])
+    @endereco = @unidade.endereco
 
-    respond_to do |format|
-      Unidade.transaction do
-        if @unidade.update_attributes(params[:unidade]) \
-          && @unidade.endereco.update_attributes(params[:endereco])
-          flash[:notice] = 'Unidade was successfully updated.'
-          format.html { redirect_to([@empresa, @unidade]) }
-          format.xml  { head :ok }
-        else
-          format.html { render :action => "edit" }
-          format.xml  { render :xml => @unidade.errors, :status => :unprocessable_entity }
-        end
-      end
+
+    if @unidade.update_attributes(params[:unidade]) \
+        & @unidade.endereco.update_attributes(params[:endereco])
+      flash[:notice] = 'Unidade was successfully updated.'
+      redirect_to([@empresa, @unidade])
+    else
+      render :action => "edit"
     end
   end
 
@@ -62,6 +54,6 @@ class UnidadesController < ApplicationController
     @unidade = @empresa.unidades.find(params[:id])
     @unidade.destroy
 
-    format.html { redirect_to(edit_empresa_path) }
+    redirect_to(edit_empresa_path)
   end
 end
