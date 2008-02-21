@@ -20,7 +20,7 @@ class EmpresasController < ApplicationController
     logger.info "#{@usuario.empresa.id} != #{@empresa.id}"
     if @usuario.empresa != @empresa; raise 'Erro de logica'; end
 
-    if !@usuario.admin?
+    unless @usuario.admin?
       redirect_to root_path
     end
   end

@@ -3,7 +3,9 @@ class ItensController < ApplicationController
 
   def index
     @itens = @requisicao.itens.find(:all)
-    @item = Item.new
+    @item ||= Item.new
+
+    render :action => "index" # necessário, pois é chamado em create()
   end
 
   def create
@@ -13,8 +15,7 @@ class ItensController < ApplicationController
       flash[:notice] = 'Item adicionado.'
       redirect_to empresa_requisicao_itens_path(@requisicao)
     else
-      @itens = @requisicao.itens.find(:all)
-      render :action => "index"
+      index
     end
   end
 

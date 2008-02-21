@@ -1,5 +1,6 @@
 class Requisicao < ActiveRecord::Base
   has_many :itens, :dependent => :destroy
+  has_many :eventos
 
   belongs_to :unidade
   belongs_to :usuario
@@ -7,16 +8,20 @@ class Requisicao < ActiveRecord::Base
   belongs_to :departamento
 
   ESTADOS = {
-    :novo => 'Novo',
     :pendente => 'Pendente',
     :confirmado => 'Confirmado',
     :enviado => 'Enviado',
     :recebido => 'Recebido'
   }
 
-  # criado em before_create, por isso validacao apensa no update
+  # valores são criados em before_create(), apos a validação,
+  # por isso essa  validação deve ocorrer apenas no update
   validates_presence_of :pedido, :data, :estado, :on => :update
+
+  # valor boolean
   validates_inclusion_of :emergencial, :transporte, :in => [ true, false ]
+
+  # quando definido transporte a unidade deve ser definida
   validates_presence_of :unidade_id, :if => :transporte?
   validates_presence_of :usuario_id, :empresa_id
 
@@ -35,32 +40,42 @@ class Requisicao < ActiveRecord::Base
 
   def before_create
     self.data = Time.now
-    self.pedido = empresa.codigo + usuario.codigo \
-      + data.strftime('%d%m%Y%H%M%S')
+    self.pedido = data.strftime('%d%m%Y%H%M%S') \
+        + empresa.codigo + usuario.codigo
     self.estado = :pendente
 
-    logger.info "self.estado = #{self.estado}"
+    eventos.build(:tipo => :criacao, :data => data,
+                  :usuario => usuario)
   end
-
 
   def pendente?
     estado == :pendente
   end
 
+  def confirmar(usuario)
+    if pendente?
+      Requisicao.transaction do
+        self.estado = :confirmado
+        e = eventos.build(:tipo => :confirmacao, :data => Time.now,
+                          :usuario => usuario)
+        e.save && save
+      end
+    else
+      confirmado?
+    end
+  end
+
+  def confirmado?
+    estado == :confirmado
+  end
+
   def resumo_qtd
     itens.group_by { |item| item.material }.collect do |material, item_array|
       [ material, item_array.sum { |item| item.qtd } ]
-    end.sort { |a, b| a[0].id <=> b[0].id } #ordena pelo material_id
+    end.sort_by { |pair| pair.first.id } #ordena pelo material_id
   end
 
-#  def add_item(novo_item)
-#    itens.each do |item|
-#      if item.material == novo_item.material
-#        item.qtd += novo_item.qtd
-#        return
-#      end
-#    end
-#
-#    itens << novo_item
-#  end
+  def method_missing(name, *params, &block)
+    eventos.find_by_tipo(name) || super
+  end
 end

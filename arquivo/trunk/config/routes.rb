@@ -1,12 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'home'
 
-#  map.resource :empresa, :has_many => :requisicoes
-
-#  map.resource :empresa, :has_many => :usuarios
-#  map.resource :empresa, :has_many => :unidades
-#  map.resource :empresa, :has_many => :departamentos
-
   map.resource :empresa do |empresa|
     empresa.resources :usuarios
     empresa.resources :unidades
@@ -18,17 +12,12 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
 
+  map.namespace :admin do |admin|
+    admin.root :controller => :home
+    admin.resources :requisicoes,
+        :collection => { :index => :any }
+  end
 
-#  map.resources :empresas, :has_many => :usuarios
-#  map.resources :empresas, :has_many => :departamentos
-#  map.resources :empresas, :has_many => :unidades
-#  map.resources :empresas, :has_many => :requisicoes
-
-#  map.resources :requisicoes, :has_many => :itens
-
-#  map.resources :requisicoes, :has_many => :itens
-
-#  map.resources :usuario
 
   # The priority is based upon order of creation: first created -> highest priority.
 

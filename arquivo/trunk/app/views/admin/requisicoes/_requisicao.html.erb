@@ -1,0 +1,27 @@
+    <table class="requisicao-item-table">
+      <tr>
+        <th colspan="2">
+          <%= link_to h(requisicao.pedido),
+              admin_requisicao_path(requisicao) %>
+        </th>
+      </tr>
+      <tr>
+        <td>Data:</td>
+        <td><%= h requisicao.data.strftime("%d/%m/%Y") %></td>
+      </tr>
+      <tr>
+        <td>Usuario:</td>
+        <td><%= h requisicao.usuario.nome %></td>
+      </tr>
+<!--
+      <tr>
+        <td align="center" bgcolor="lightgray" colspan="2">
+          <%= link_to 'Editar', [:edit, :empresa, requisicao] %>
+          <%= link_to 'Cancelar', [:empresa, requisicao],
+              :confirm => 'Are you sure?', :method => :delete %>
+          <%= link_to 'Confirmar', empresa_requisicao_path(requisicao) %>
+      </td>
+      </tr>
+-->
+    </table>
+<br />

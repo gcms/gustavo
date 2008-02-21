@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AdminControllerTest < ActionController::TestCase
+class EventoTest < ActiveSupport::TestCase
   # Replace this with your real tests.
   def test_truth
     assert true
