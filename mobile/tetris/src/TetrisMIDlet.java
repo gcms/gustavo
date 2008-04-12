@@ -3,10 +3,10 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 public class TetrisMIDlet extends MIDlet {
-    private TetrisGame game;
+    private TetrisCanvas canvas;
 
     public TetrisMIDlet() {
-        game = new TetrisGame();
+        canvas = new TetrisCanvas();
     }
 
     protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
@@ -20,7 +20,7 @@ public class TetrisMIDlet extends MIDlet {
     }
 
     protected void startApp() throws MIDletStateChangeException {
-        Display.getDisplay(this).setCurrent(game);
+        Display.getDisplay(this).setCurrent(canvas);
     }
 
 }
