@@ -25,4 +25,9 @@ public class Point {
         this.y = y;
     }
 
+    public void set(int x, int y) {
+        setX(x);
+        setY(y);
+    }
+
 }

@@ -5,10 +5,10 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 public class TetrisCanvas extends Canvas {
-    private TetrisBoard board;
+    private TetrisGame board;
 
     public TetrisCanvas() {
-        board = new TetrisBoard(10, 20);
+        board = new TetrisGame(10, 20);
 
         board.start();
 

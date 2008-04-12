@@ -1,6 +1,6 @@
 import java.util.Enumeration;
 
-public class TetrisBoard {
+public class TetrisGame {
     private int[][] cells;
 
     private int width;
@@ -13,7 +13,7 @@ public class TetrisBoard {
 
     private PieceModel current;
 
-    public TetrisBoard(int width, int height) {
+    public TetrisGame(int width, int height) {
         this.width = width;
         this.height = height;
 
