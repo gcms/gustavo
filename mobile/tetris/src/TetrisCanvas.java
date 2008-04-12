@@ -4,10 +4,10 @@ import java.util.TimerTask;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
-public class TetrisGame extends Canvas {
+public class TetrisCanvas extends Canvas {
     private TetrisBoard board;
 
-    public TetrisGame() {
+    public TetrisCanvas() {
         board = new TetrisBoard(10, 20);
 
         board.start();
