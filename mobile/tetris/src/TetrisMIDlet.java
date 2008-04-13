@@ -10,7 +10,7 @@ public class TetrisMIDlet extends MIDlet {
     }
 
     protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
-        // TODO Auto-generated method stub
+        canvas.stop();
 
     }
 
@@ -21,6 +21,7 @@ public class TetrisMIDlet extends MIDlet {
 
     protected void startApp() throws MIDletStateChangeException {
         Display.getDisplay(this).setCurrent(canvas);
+        canvas.start();
     }
 
 }

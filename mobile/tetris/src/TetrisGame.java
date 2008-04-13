@@ -20,41 +20,41 @@ public class TetrisGame {
         cells = new int[width][height];
     }
 
-    public int get(int x, int y) {
-        return cells[x][y];
-    }
-
-    public void set(int x, int y, int ch) {
-        cells[x][y] = ch;
-    }
-
     public void tick() {
         if (conflict(current, currentX, currentY + 1)) {
-            copyCurrent();
-
-            newPiece();
+            place(current, currentX, currentY);
+            score();
+            nextPiece();
         } else {
             currentY++;
         }
     }
 
-    private void copyCurrent() {
-        for (Enumeration e = current.getPoints().elements(); e
-                .hasMoreElements();) {
+    private void place(PieceModel model, int dx, int dy) {
+        for (Enumeration e = model.getPoints().elements(); e.hasMoreElements();) {
             Point p = (Point) e.nextElement();
 
-            int x = p.getX() + currentX;
-            int y = p.getY() + currentY;
+            int x = p.getX() + dx;
+            int y = p.getY() + dy;
+
             cells[x][y] = current.getColor();
         }
+    }
 
+    private void score() {
+        int score = 0;
         // verificar linhas
         outer: for (int i = height - 1; i >= 0; i--) {
+            // cada linha...
+
             for (int j = 0; j < width; j++) {
+                // se não está completa, passa pra próxima linhas
                 if (cells[j][i] == 0)
                     continue outer;
             }
+            score++; // +1 linha
 
+            // desloca as linhas
             for (int k = i; k > 0; k--) {
                 for (int j = 0; j < width; j++) {
                     cells[j][k] = cells[j][k - 1];
@@ -64,10 +64,25 @@ public class TetrisGame {
             for (int j = 0; j < width; j++) {
                 cells[j][0] = 0;
             }
+
+            // as linhas foram desloacadas,
+            // então é necessário reajustar o indice
             i++;
-
         }
-
+        
+        if (score > 0) {
+            score(score);
+        }
+    }
+    
+    private int scoreGeral;
+    
+    private void score(int score) {
+        scoreGeral += (width * score) * (score + 10) / 10;
+    }
+    
+    public int getScore() {
+        return scoreGeral;
     }
 
     public void left() {
@@ -100,10 +115,10 @@ public class TetrisGame {
     }
 
     public void start() {
-        newPiece();
+        nextPiece();
     }
 
-    private void newPiece() {
+    private void nextPiece() {
         current = nextModel();
 
         currentX = width / 2 - current.getWidth() / 2;

@@ -1,68 +1,76 @@
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.game.GameCanvas;
 
-public class TetrisCanvas extends Canvas {
-    private TetrisGame board;
+public class TetrisCanvas extends GameCanvas implements Runnable {
+
+    private boolean running;
+    private TetrisGame game;
 
     public TetrisCanvas() {
-        board = new TetrisGame(10, 20);
+        super(true);
 
-        board.start();
-
-        new Timer().schedule(new TimerTask() {
-            public void run() {
-                System.out.println("run()");
-                synchronized (board) {
-                    board.tick();
-                }
-                System.out.println("ticked()");
-                repaint();
-
-            }
-        }, 0, 800);
+        game = new TetrisGame(10, 20);
+        game.start();
     }
 
-    protected void paint(Graphics g) {
-        board.draw(new TetrisCanvasDrawer(g, Math.min(getWidth() / 10,
+    public void start() {
+        running = true;
+        new Thread(this).start();
+    }
+
+    public void stop() {
+        running = false;
+    }
+
+    public void run() {
+        Graphics g = getGraphics();
+
+        int frame = 0;
+
+        while (running) {
+
+            if (frame == 0)
+                game.tick();
+            
+            frame = (frame + 1) % 8;
+
+            int states = getKeyStates();
+            if ((states & LEFT_PRESSED) != 0) {
+                game.left();
+            } else if ((states & RIGHT_PRESSED) != 0) {
+                game.right();
+            } else if ((states & UP_PRESSED) != 0) {
+                game.rotate();
+            } else if ((states & DOWN_PRESSED) != 0) {
+                game.down();
+            }
+
+            long start = System.currentTimeMillis();
+            render(g);
+            flushGraphics();
+            long duration = System.currentTimeMillis() - start;
+            
+
+            try {
+                Thread.sleep(Math.max(100 - duration, 0));
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    protected void render(Graphics g) {
+
+        g.setColor(0xffffff);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        game.draw(new TetrisCanvasDrawer(g, Math.min(getWidth() / 10,
                 getHeight() / 20)));
-    }
+        
+        g.drawString("" + game.getScore(), getWidth(), getHeight(),
+                Graphics.BOTTOM | Graphics.RIGHT);
 
-    protected void keyPressed(int keyCode) {
-        doKey(keyCode);
-    }
-
-    protected void keyRepeated(int keyCode) {
-        doKey(keyCode);
-    }
-
-    private void doKey(int keyCode) {
-        int gc = getGameAction(keyCode);
-
-        if (gc != 0) {
-            synchronized (board) {
-                doAction(gc);
-            }
-            repaint();
-        }
-    }
-
-    private void doAction(int action) {
-        switch (action) {
-            case UP:
-                board.rotate();
-                break;
-            case LEFT:
-                board.left();
-                break;
-            case RIGHT:
-                board.right();
-                break;
-            case DOWN:
-                board.down();
-                break;
-        }
     }
 }
