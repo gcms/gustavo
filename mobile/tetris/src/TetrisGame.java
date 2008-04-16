@@ -19,7 +19,7 @@ public class TetrisGame {
     }
 
     public int getScore() {
-        return getBoard().getScore();
+        return getBoard().getScore() * (level + 10) / 10;
     }
 
     public TetrisGame(byte[] data) throws IOException {

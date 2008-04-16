@@ -129,7 +129,7 @@ public class TetrisMIDlet extends MIDlet implements CommandListener {
                             + cal.get(Calendar.YEAR);
 
                     scoresForm.append("" + ++index + ". " + dateStr + ": "
-                            + score);
+                            + score + "\n");
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
