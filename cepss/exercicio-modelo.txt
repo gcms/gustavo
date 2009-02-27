@@ -1,0 +1,24 @@
+Crie um modelo de diário de classe com as seguintes características:
+
+1. O diário deve conter linhas para adicionar os nomes dos alunos, e colunas
+com os dias de aula.
+
+2. Utilize a validação para permitir apenas os valores P ou F nos campos
+reservados à presença do aluno.
+
+3. Após as colunas quem indicam a presença ou falta do aluno em um determinado
+dia, inclua uma coluna que represente o total de faltas dos alunos.
+
+4. Crie uma fórmula que calcule a quantidade de faltas do aluno. Dica: utilize
+a função CONT.SE()
+
+5. Considerando que uma outra planilha, na mesma pasta de trabalho contém as
+informações ilustradas abaixo, elabore uma fórmula que verifique se o aluno
+foi aprovado ou reprovado.
+
+       A             B
+    ---------------------------
+ 1 | Média | Faltas permitidas |
+    ---------------------------
+ 2 |  7,0  |        25%        |
+    ---------------------------
