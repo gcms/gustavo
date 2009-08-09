@@ -1,0 +1,27 @@
+O que é informática
+
+   - processamento de dados em informações de forma automática
+
+   - dados x informação
+   - Exemplos:
+        pesquisa eleitoral
+        folha de pagamento
+        calculo de expressões
+
+   o processamento poderia ser feito de forma manual.. quando estamos tratando de pequenas qtds de dados
+   quando a quantidade é grande...
+
+para isso é necessário um equipamento que possibilite a realização deste processamento de forma automática
+
+Mas como o computador é capaz de fazer isso?
+Sistema computacional: Hardware e Software
+	
+   o computador (máquina) não é inteligente, é apenas capaz de calcular de forma muito rápida
+
+   para realizar alguma coisa é necessário as instruções
+
+Hardware e Software
+
+
+   para realizar o processamento destes dados, eles devem ser fornecidos (entrada)
+e seus resultados retornados (saida)
