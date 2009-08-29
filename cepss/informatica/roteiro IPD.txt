@@ -18,10 +18,15 @@ Sistema computacional: Hardware e Software
 	
    o computador (máquina) não é inteligente, é apenas capaz de calcular de forma muito rápida
 
-   para realizar alguma coisa é necessário as instruções
+   para realizar alguma coisa é necessário as instruções (precisa ser programado)
 
 Hardware e Software
 
+	O hardware permite "executar" os programas.
+		Da mesma forma que um aparelho de som, possui a capacidade de tocar cds de música,
+		os computadores possuem a capacidade de executar os programas
 
+
+Periféricos
    para realizar o processamento destes dados, eles devem ser fornecidos (entrada)
 e seus resultados retornados (saida)
