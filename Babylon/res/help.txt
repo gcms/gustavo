@@ -1,0 +1,20 @@
+	if ( it->attrib.size() >= 8 ) {
+		        if ( it->attrib[ 2 ] > '1' || it->attrib[ 3 ] != '0' ) {
+		            /* noun */
+        		    human_attrib = _( "n." ) ;
+		        } else if ( it->attrib[ 6 ] == '1' ) {
+        		    /* adverb */
+		            human_attrib = _( "a." ) ;
+		        } else if ( it->attrib[ 6 ] != '0' || it->attrib[ 9 ] != '0' ) {
+		            /* verb */
+		            human_attrib = _( "v." ) ;
+		        } else if ( it->attrib[ 7 ] != '0' ) {
+		            /* adverb */
+		            human_attrib = _( "a." ) ;
+		        } else if ( it->attrib[ 8 ] == '1' ) {
+		            /* adjective */
+		            human_attrib = _( "adv." ) ;
+		        } else
+		            human_attrib = ""; //it->attrib ;
+			}
+
