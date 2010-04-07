@@ -1,4 +1,4 @@
-package br.ufg.inf.scholar
+package br.ufg.inf.references
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,11 +12,11 @@ class Main {
     static void main(String[] args) {
         Client client = new Client()
 
-        List results = client.executeQuery('allintitle:model-driven')
+        List results = client.executeQuery('allintitle:"model based"')
         results.sort { -it.links.qtd }
         results.each { println it.dump() }
 
-        new File('/home/gustavo/model-driven.txt').text = results.join('\n\n')
+        new File('/home/gustavo/modelbased.txt').text = results.collect { it.dump() }.join('\n\n')
     }
 
 }

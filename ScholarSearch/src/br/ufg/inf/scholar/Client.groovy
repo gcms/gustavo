@@ -1,4 +1,4 @@
-package br.ufg.inf.scholar
+package br.ufg.inf.references
 
 import org.apache.http.client.HttpClient
 import org.apache.http.impl.client.DefaultHttpClient
@@ -6,7 +6,8 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.HttpResponse
 import org.xml.sax.InputSource
 import org.lobobrowser.html.parser.InputSourceImpl
-
+import br.ufg.inf.references.google.GoogleScholarPageParser
+import br.ufg.inf.references.google.GoogleScholarResultParser
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,24 +18,23 @@ import org.lobobrowser.html.parser.InputSourceImpl
  */
 class Client {
     HttpClient client
-    PageParser pageParser
+    PageProcessor pageProcessor
 
     public Client() {
         client = new DefaultHttpClient()
-        pageParser = new PageParser()
+        pageProcessor = new PageProcessor(new GoogleScholarPageParser(), new GoogleScholarResultParser())
     }
 
     public List getResults(String url) {
-        HttpGet get = new HttpGet(url)
-        getResults(get)
+        getResults(new HttpGet(url))
     }
 
     public List getResults(HttpGet get) {
         HttpResponse response = client.execute(get)
         String charset = response.entity.contentEncoding?.value ?: System.getProperty('file.encoding')
-        InputSource is = new InputSourceImpl(response.entity.content, 'http://scholar.google.com/', charset)
+        InputSource is = new InputSourceImpl(response.entity.content, get.URI.toString(), charset)
 
-        pageParser.parsePage(is)
+        pageProcessor.parsePage(is)
     }
 
     public List executeQuery(String query) {
@@ -42,14 +42,14 @@ class Client {
         int num = 100
         int start = 0
         while (true) {
-            URI uri = new URI("http://scholar.google.com/scholar?hl=en&as_subj=eng&q=${query}&num=${num}&start=${start}")
+            URI uri = new URI("http://scholar.google.com/scholar?hl=en&as_subj=eng&q=${URLEncoder.encode(query)}&num=${num}&start=${start}")
             HttpGet get = new HttpGet(uri) ///scholar?q=allintitle:+%22model-driven%22&hl=en&as_subj=eng&start=10&
 
             List itens = getResults(get)
 
             itens.each { println "${it.title} (${it.links.qtd})" }
             result.addAll(itens)
-            if (itens.size() < 10)
+            if (itens.size() < num)
                 break
 
             start += num

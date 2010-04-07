@@ -1,4 +1,4 @@
-package br.ufg.inf.scholar
+package br.ufg.inf.references
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,8 +11,11 @@ class Result {
     String type
     String title
     String url
+
     List authors
+
     Publication publication
+
     String description
-    Links links
+    List links
 }
