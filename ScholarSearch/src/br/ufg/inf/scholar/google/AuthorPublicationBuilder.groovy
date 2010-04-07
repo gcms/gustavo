@@ -1,6 +1,7 @@
-package br.ufg.inf.scholar
+package br.ufg.inf.references.google
 
 import java.util.regex.Matcher
+import br.ufg.inf.references.Publication
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,11 +10,11 @@ import java.util.regex.Matcher
  * Time: 11:29:28
  * To change this template use File | Settings | File Templates.
  */
-class InformationBuilder {
+class AuthorPublicationBuilder {
     List authors
     Publication publication
 
-    public InformationBuilder() {}
+    public AuthorPublicationBuilder() {}
 
     public void parseAuthorLine(String line) {
         String[] parts = line.split('-', 2)
@@ -34,6 +35,14 @@ class InformationBuilder {
         publication = new Publication(name: name, year: year?.trim()?.toInteger())
     }
 
+    private List getItems(String publicationPart) {
+        (publicationPart.split("[,-]") as List).collect { it.trim() }
+    }
+
+    private boolean isYear(String texto) {
+        texto.isInteger() && texto.toInteger() > 1800 && texto.toInteger() < 2020 // FIXME
+    }
+
     public String getYear(String text) {
         List itens = getItems(text)
         String year = itens.find { isYear(it) }
@@ -52,15 +61,6 @@ class InformationBuilder {
 
         return null
     }
-
-    private boolean isYear(String texto) {
-        texto.isNumber() && texto.toInteger() > 1800 && texto.toInteger() < 2020 // FIXME
-    }
-
-    private List getItems(String publicationPart) {
-        (publicationPart.split("[,-]") as List).collect { it.trim() }
-    }
-
 
     public String getName(String text) {
         List itens = getItems(text)
