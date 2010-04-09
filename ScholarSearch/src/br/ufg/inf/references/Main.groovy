@@ -12,11 +12,10 @@ class Main {
     static void main(String[] args) {
         Client client = new Client()
 
-        List results = client.executeQuery('allintitle:"model based"')
-        results.sort { -it.links.qtd }
+        List results = client.executeQuery('allintitle:MDE')
         results.each { println it.dump() }
 
-        new File('/home/gustavo/modelbased.txt').text = results.collect { it.dump() }.join('\n\n')
+        new File('/home/gustavo/MDE.txt').text = results.collect { it.dump() }.join('\n\n')
     }
 
 }

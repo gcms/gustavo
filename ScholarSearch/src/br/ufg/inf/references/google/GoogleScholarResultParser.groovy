@@ -10,6 +10,9 @@ import br.ufg.inf.references.Result
 import br.ufg.inf.references.Publication
 import br.ufg.inf.references.Link
 import br.ufg.inf.references.ResultParser
+import org.apache.log4j.Logger
+import org.apache.xml.serialize.XMLSerializer
+import org.apache.xml.serialize.OutputFormat
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,14 +21,34 @@ import br.ufg.inf.references.ResultParser
  * Time: 11:02:32
  * To change this template use File | Settings | File Templates.
  */
-class GoogleScholarResultParser implements ResultParser{
+class GoogleScholarResultParser implements ResultParser {
+    private static Logger log = Logger.getLogger(GoogleScholarResultParser)
     private XPath xpath = XPathFactory.newInstance().newXPath()
 
     public Result parse(Node node) {
-        new Result(type: parseType(node), title: parseTitle(node), url: parseURL(node),
+        new Result(html: getHTML(node),
+                type: parseType(node), title: parseTitle(node), url: parseURL(node),
                 authors: parseAuthors(node), publication: parsePublication(node),
                 description: parseDescription(node), links: parseLinks(node))
     }
+
+    public String getHTML(Node node) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream()
+        OutputFormat outputformat = new OutputFormat()
+        outputformat.omitXMLDeclaration = true
+        outputformat.setIndent(4)
+        outputformat.setIndenting(true)
+        outputformat.setPreserveSpace(false)
+
+        XMLSerializer serializer = new XMLSerializer()
+        serializer.setOutputFormat(outputformat)
+        serializer.setOutputByteStream(stream)
+        serializer.asDOMSerializer()
+        serializer.serialize(node)
+        def html =stream.toString()
+        println html
+        html
+     }
 
     public String parseType(Node node) {
             xpath.evaluate("h3/span[@class='gs_ctc']", node) ?:
@@ -33,7 +56,9 @@ class GoogleScholarResultParser implements ResultParser{
     }
 
     public String parseTitle(Node node) {
-            xpath.evaluate("h3/a", node) ?: parseTitleFromContent(node)
+        String title = xpath.evaluate("h3/a", node) ?: parseTitleFromContent(node)
+        println "Title: ${title}"
+        title
     }
 
     private String parseTitleFromContent(Node node) {
@@ -82,10 +107,14 @@ class GoogleScholarResultParser implements ResultParser{
         Node authorsLine = xpath.evaluate("font/span[@class='gs_a']", node, XPathConstants.NODE)
         Node linksLine = xpath.evaluate("font/span[@class='gs_fl']", node, XPathConstants.NODE)
 
-        font.removeChild(authorsLine)
-        font.removeChild(linksLine)
+        println "Authors: ${authorsLine?.textContent}"
+        if (authorsLine)
+            font.removeChild(authorsLine)
+
+        println "Links :${linksLine?.textContent}"
+        if (linksLine)
+            font.removeChild(linksLine)
 
         font.textContent
     }
-
 }
