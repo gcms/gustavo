@@ -13,6 +13,7 @@ import br.ufg.inf.references.ResultParser
 import org.apache.log4j.Logger
 import org.apache.xml.serialize.XMLSerializer
 import org.apache.xml.serialize.OutputFormat
+import br.ufg.inf.references.Utils
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,21 +34,7 @@ class GoogleScholarResultParser implements ResultParser {
     }
 
     public String getHTML(Node node) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream()
-        OutputFormat outputformat = new OutputFormat()
-        outputformat.omitXMLDeclaration = true
-        outputformat.setIndent(4)
-        outputformat.setIndenting(true)
-        outputformat.setPreserveSpace(false)
-
-        XMLSerializer serializer = new XMLSerializer()
-        serializer.setOutputFormat(outputformat)
-        serializer.setOutputByteStream(stream)
-        serializer.asDOMSerializer()
-        serializer.serialize(node)
-        def html =stream.toString()
-        println html
-        html
+        Utils.instance.nodeToHTML(node)
      }
 
     public String parseType(Node node) {

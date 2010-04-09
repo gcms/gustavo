@@ -1,4 +1,7 @@
-package br.ufg.inf.references
+package br.ufg.inf.references.google
+
+import br.ufg.inf.references.google.GoogleScholarClient
+import br.ufg.inf.references.Client
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +13,7 @@ package br.ufg.inf.references
 class Main {
 
     static void main(String[] args) {
-        Client client = new Client()
+        Client client = new GoogleScholarClient()
 
         List results = client.executeQuery('allintitle:MDE')
         results.each { println it.dump() }
