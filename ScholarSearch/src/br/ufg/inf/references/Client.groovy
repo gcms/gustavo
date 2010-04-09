@@ -6,10 +6,13 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.HttpResponse
 import org.xml.sax.InputSource
 import org.lobobrowser.html.parser.InputSourceImpl
-import br.ufg.inf.references.google.GoogleScholarPageParser
-import br.ufg.inf.references.google.GoogleScholarResultParser
-import br.ufg.inf.references.google.GoogleScholarSiteDirector
+
 import org.apache.log4j.Logger
+import org.lobobrowser.html.UserAgentContext
+import javax.xml.parsers.DocumentBuilder
+import org.lobobrowser.html.parser.DocumentBuilderImpl
+import org.lobobrowser.html.test.SimpleUserAgentContext
+import org.w3c.dom.Document
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,17 +25,20 @@ class Client {
     private static Logger log = Logger.getLogger(Client)
 
     HttpClient client
+
+    UserAgentContext context
+    DocumentBuilder dbi
+
     PageProcessor pageProcessor
     SiteDirector siteDirector
 
     public Client(SiteDirector siteDirector, PageParser pageParser, ResultParser resultParser) {
         client = new DefaultHttpClient()
+        context = new ScriptSetupSimpleUserAgentContext() //new SimpleUserAgentContext()
+        dbi = new DocumentBuilderImpl(context)
+
         this.siteDirector = siteDirector
         pageProcessor = new PageProcessor(pageParser, resultParser)
-    }
-
-    public Client() {
-        this(new GoogleScholarSiteDirector(), new GoogleScholarPageParser(), new GoogleScholarResultParser())
     }
 
     private InputSource executeRequest(URI uri) {
@@ -45,13 +51,23 @@ class Client {
 
     public List getResultsFromURI(URI uri) {
         InputSource response = executeRequest(uri)
-        pageProcessor.parsePage(response)
+        Document document = dbi.parse(response)
+        pageProcessor.parsePage(document)
     }
 
     public List executeQuery(String query) {
-        siteDirector.collectPages(query) { URI uri ->
+        siteDirector.collectPages(query) {URI uri ->
             println "Getting results from '${uri}'"
             getResultsFromURI(uri)
         }
+    }
+}
+
+
+class ScriptSetupSimpleUserAgentContext extends SimpleUserAgentContext {
+    boolean scriptEnabled
+    
+    public boolean isScriptingEnabled() {
+        scriptEnabled
     }
 }

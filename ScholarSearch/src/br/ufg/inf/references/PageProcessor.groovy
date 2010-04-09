@@ -21,23 +21,16 @@ import br.ufg.inf.references.google.GoogleScholarResultParser
  * To change this template use File | Settings | File Templates.
  */
 class PageProcessor {
-    UserAgentContext context
-    DocumentBuilder dbi
     PageParser pageParser
     ResultParser resultParser
 
     public PageProcessor(PageParser pageParser, ResultParser resultParser) {
-        context = new SimpleUserAgentContext();
-        dbi = new DocumentBuilderImpl(context)
+
         this.pageParser = pageParser
         this.resultParser = resultParser
     }
 
-    List parsePage(InputSource is) {
-        Document document = dbi.parse(is)
-
-        //println document.dump()
-
+    List parsePage(Document document) {
         NodeList resultNodes = pageParser.getResults(document)
 
         List result = []       
