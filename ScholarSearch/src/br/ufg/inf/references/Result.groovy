@@ -18,4 +18,5 @@ class Result {
 
     String description
     List links
+    String html
 }
