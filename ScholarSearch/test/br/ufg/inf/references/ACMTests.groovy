@@ -3,9 +3,7 @@ package br.ufg.inf.references
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Document
-import javax.xml.xpath.XPathFactory
-import javax.xml.xpath.XPath
-import javax.xml.xpath.XPathConstants
+
 import br.ufg.inf.references.acm.ACMPageParser
 import br.ufg.inf.references.acm.ACMResultParser
 
@@ -27,14 +25,12 @@ class ACMTests extends GroovyTestCase {
 
         assertEquals 20, results.size()
 
-        Result first = results.first()
+        SearchResult first = results.first()
         assertEquals 'Colored graph transformation rules for model-driven engineering of multi-target systems', first.title
         assertTrue first.authors.contains('Adrian Stanciulescu')
         assertEquals 3, first.authors.size()
         assertEquals 2008, first.publication.year
-        assertEquals 'Proceedings of the third international workshop on graph and model transformations', first.publication.name
+        assertTrue first.publication.name.contains('Proceedings of the third international workshop on Graph and model transformations')
         assertTrue first.description.startsWith('Multi-target systems are')
-
-
     }
 }

@@ -5,14 +5,13 @@ import javax.xml.xpath.XPathFactory
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import javax.xml.xpath.XPathConstants
-import br.ufg.inf.references.Result
+import br.ufg.inf.references.SearchResult
 
 import br.ufg.inf.references.Publication
 import br.ufg.inf.references.Link
 import br.ufg.inf.references.ResultParser
 import org.apache.log4j.Logger
-import org.apache.xml.serialize.XMLSerializer
-import org.apache.xml.serialize.OutputFormat
+
 import br.ufg.inf.references.Utils
 
 /**
@@ -26,8 +25,8 @@ class GoogleScholarResultParser implements ResultParser {
     private static Logger log = Logger.getLogger(GoogleScholarResultParser)
     private XPath xpath = XPathFactory.newInstance().newXPath()
 
-    public Result parse(Node node) {
-        new Result(html: getHTML(node),
+    public SearchResult parse(Node node) {
+        new SearchResult(html: getHTML(node),
                 type: parseType(node), title: parseTitle(node), url: parseURL(node),
                 authors: parseAuthors(node), publication: parsePublication(node),
                 description: parseDescription(node), links: parseLinks(node))
@@ -102,6 +101,6 @@ class GoogleScholarResultParser implements ResultParser {
         if (linksLine)
             font.removeChild(linksLine)
 
-        font.textContent
+        font.textContent.replaceAll('\\s+', ' ').trim()
     }
 }

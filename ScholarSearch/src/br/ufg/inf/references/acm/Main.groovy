@@ -17,7 +17,13 @@ class Main {
         Client client = new ACMClient()
 
         List results = client.executeQuery('model driven')
-        results.each { println it.title }
+        results.collect {
+            """
+${it.title} - ${it.authors.join(', ')}
+${it.publication.name}, ${it.publication.year}
+${it.description}
+"""
+        }.each { println it }
     }
 
 }

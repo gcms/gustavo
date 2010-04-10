@@ -1,7 +1,7 @@
 package br.ufg.inf.references.acm
 
 import br.ufg.inf.references.ResultParser
-import br.ufg.inf.references.Result
+import br.ufg.inf.references.SearchResult
 import br.ufg.inf.references.Utils
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
@@ -19,20 +19,25 @@ import br.ufg.inf.references.Publication
  */
 class ACMResultParser implements ResultParser {
     XPath xpath = XPathFactory.newInstance().newXPath()
-    Result parse(Node node) {
-        new Result(html: Utils.instance.nodeToHTML(node), title: parseTitle(node),
-        authors: parseAuthors(node), publication: parsePublication(node))
+    SearchResult parse(Node node) {
+        new SearchResult(html: Utils.instance.nodeToHTML(node),
+                title: parseTitle(node), description: parseDescription(node),
+                authors: parseAuthors(node), publication: parsePublication(node))
     }
 
     public String parseTitle(Node node) {
-        xpath.evaluate("td[2]//A", node)
+        xpath.evaluate("td[2]//A", node).trim()
+    }
+
+    private String parseDescription(Node node) {
+        xpath.evaluate("td[2]//div[@class='abstract2']//p", node).trim()
     }
 
     public List parseAuthors(Node node) {
         NodeList list = xpath.evaluate("td[2]//div[@class='authors']//a", node, XPathConstants.NODESET)
 
         List result = []
-        list.each { Node author -> result.add(author.textContent) }
+        list.each { Node author -> result.add(author.textContent.trim()) }
         result
     }
 
@@ -47,6 +52,6 @@ class ACMResultParser implements ResultParser {
     }
 
     private String parseName(Node node) {
-        ''
+        xpath.evaluate("td[2]//col//div[@class='addinfo']", node).replaceAll('\\s+', ' ').trim()
     }
 }
