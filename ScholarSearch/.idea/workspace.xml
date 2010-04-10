@@ -16,29 +16,16 @@
   </component>
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="06554385-dbf3-4b8b-9974-412fd11de3b4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/br/ufg/inf/references/Client.groovy" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/Client.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/acm-firstpage.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarClient.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ScholarSearch.iml" afterPath="$PROJECT_DIR$/ScholarSearch.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMResultParser.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy" afterPath="$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMResultParser.groovy" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMResultParser.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/br/ufg/inf/references/Result.groovy" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/SearchResult.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMPageParser.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMClient.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/Main.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/br/ufg/inf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/br/ufg/inf/references/PageProcessor.groovy" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/PageProcessor.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/br/ufg/inf/references/Main.groovy" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/google/Main.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarResultParser.groovy" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarResultParser.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/br/ufg/inf/references" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMSiteDirector.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/Utils.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/acm" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/Main.groovy" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/acm/Main.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/br/ufg/inf/references/ResultParser.groovy" afterPath="$PROJECT_DIR$/src/br/ufg/inf/references/ResultParser.groovy" />
     </list>
-    <ignored path="ScholarSearch.iws" />
     <ignored path=".idea/workspace.xml" />
+    <ignored path="ScholarSearch.iws" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,114 +82,48 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ACMResultParser.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMResultParser.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="0" selection-start="1464" selection-end="1464" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ACMSiteDirector.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMSiteDirector.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="14" selection-start="1081" selection-end="1081" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Client.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/Client.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="12" selection-start="1750" selection-end="1750" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ACMClient.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMClient.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="79" selection-start="366" selection-end="366" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Main.groovy" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/Main.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="39" selection-start="477" selection-end="477" vertical-scroll-proportion="0.34615386">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GoogleScholarSiteDirector.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarSiteDirector.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="2" selection-start="299" selection-end="786" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ACMPageParser.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMPageParser.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="10" selection-start="591" selection-end="591" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="acm-firstpage.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/res/acm-firstpage.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="845" column="44" selection-start="57154" selection-end="57154" vertical-scroll-proportion="-3.8">
+            <state line="948" column="56" selection-start="61958" selection-end="61958" vertical-scroll-proportion="-3.4">
               <folding>
-                <element signature="tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#0;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#td#0;tag#tr#0;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#td#1;tag#tr#0;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#1;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#td#1;tag#tr#1;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#2;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#div#3;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#0;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#td#0;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#0;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#div#0;tag#td#0;tag#tr#0;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
                 <element signature="tag#td#0;tag#tr#1;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#2;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#3;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#4;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#5;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#tr#6;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#td#0;tag#tr#6;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#td#0;tag#tr#0;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#7;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-                <element signature="tag#A#0;tag#td#0;tag#tr#0;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#7;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Utils.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/Utils.groovy">
+      <file leaf-file-name="ACMTests.groovy" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="0" selection-start="1016" selection-end="1016" vertical-scroll-proportion="0.0">
+            <state line="21" column="24" selection-start="657" selection-end="657" vertical-scroll-proportion="0.58536583">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ACMTests.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy">
+      <file leaf-file-name="SearchResult.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/SearchResult.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="98" selection-start="1045" selection-end="1045" vertical-scroll-proportion="0.0">
+            <state line="11" column="29" selection-start="240" selection-end="240" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Main.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/Main.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="24" column="27" selection-start="587" selection-end="587" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ACMResultParser.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMResultParser.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="28" column="28" selection-start="949" selection-end="949" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -218,22 +139,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarSiteDirector.groovy" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/Result.groovy" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarClient.groovy" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/Main.groovy" />
-        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/google/Main.groovy" />
-        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarResultParser.groovy" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMClient.groovy" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/Utils.groovy" />
         <option value="$PROJECT_DIR$/res/acm-firstpage.xml" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMPageParser.groovy" />
-        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/acm/Main.groovy" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/PageProcessor.groovy" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/Client.groovy" />
-        <option value="$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy" />
-        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMResultParser.groovy" />
         <option value="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMSiteDirector.groovy" />
+        <option value="$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy" />
+        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarResultParser.groovy" />
+        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMResultParser.groovy" />
+        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/google/Main.groovy" />
+        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/acm/Main.groovy" />
+        <option value="$PROJECT_DIR$/src/br/ufg/inf/references/SearchResult.groovy" />
       </list>
     </option>
   </component>
@@ -264,10 +185,10 @@
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
-      <showMembers />
+      <showMembers ProjectPane="false" />
       <showModules />
       <showLibraryContents />
-      <hideEmptyPackages />
+      <hideEmptyPackages ProjectPane="false" />
       <abbreviatePackageNames />
       <autoscrollToSource />
       <autoscrollFromSource ProjectPane="true" />
@@ -275,7 +196,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
+      <pane id="Favorites" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -312,21 +233,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="references" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ScholarSearch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ScholarSearch" />
+              <option name="myItemId" value="br" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
+              <option name="myItemId" value="ufg" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inf" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -348,55 +263,19 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="references" />
+              <option name="myItemId" value="br" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Client.groovy" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ScholarSearch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ScholarSearch" />
+              <option name="myItemId" value="ufg" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
+              <option name="myItemId" value="inf" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="references" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="google" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ScholarSearch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ScholarSearch" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="references" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="acm" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -416,7 +295,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Favorites" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -428,21 +307,22 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="br.ufg.inf.references.acm" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.ACMTests.testeXML">
     <configuration default="false" name="Main" type="Application" factoryName="Application" temporary="true">
       <extension name="coverage" enabled="false" merge="false">
         <pattern>
@@ -490,7 +370,13 @@
         <value defaultName="moduleWithDependencies" />
       </option>
       <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="33992" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -695,7 +581,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="214" y="28" width="1244" height="1001" extended-state="0" />
+    <frame x="665" y="25" width="1244" height="1001" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32979977" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -712,7 +598,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34401348" sideWeight="0.5583039" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.43345112" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43345112" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32979977" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -731,7 +617,7 @@
     <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
     <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Incluído versão inicial p/ suporte ACM" />
+    <option name="LAST_COMMIT_MESSAGE" value="Leitura de outros campos da ACM." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -747,6 +633,7 @@
     <MESSAGE value="Pequenas correções.&#10;Inclusão de HTML no resultado." />
     <MESSAGE value="Inclusão de bibliotecas faltando no último commit." />
     <MESSAGE value="Incluído versão inicial p/ suporte ACM" />
+    <MESSAGE value="Leitura de outros campos da ACM." />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -790,57 +677,24 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/google/Main.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="67" selection-start="494" selection-end="494" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarResultParser.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="29" selection-start="1258" selection-end="1258" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/cobra.jar!/org/lobobrowser/html/test/SimpleUserAgentContext.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="19" selection-start="2306" selection-end="2306" vertical-scroll-proportion="0.33259425" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarPageParser.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="5" selection-start="453" selection-end="649" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/java-6-sun-1.6.0.15/jre/lib/rt.jar!/org/w3c/dom/Document.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="17" selection-start="153" selection-end="153" vertical-scroll-proportion="0.13761468">
-          <folding />
-        </state>
+        <state line="5" column="17" selection-start="153" selection-end="153" vertical-scroll-proportion="0.13761468" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/PageProcessor.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="9" selection-start="913" selection-end="913" vertical-scroll-proportion="0.44444445">
-          <folding />
-        </state>
+        <state line="32" column="9" selection-start="913" selection-end="913" vertical-scroll-proportion="0.44444445" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMSiteDirector.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="14" selection-start="1081" selection-end="1081" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/Client.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="12" selection-start="1750" selection-end="1750" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/Utils.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="0" selection-start="1016" selection-end="1016" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarSiteDirector.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="2" selection-start="299" selection-end="786" vertical-scroll-proportion="0.0" />
+        <state line="53" column="12" selection-start="1750" selection-end="1750" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMClient.groovy">
@@ -848,67 +702,75 @@
         <state line="13" column="79" selection-start="366" selection-end="366" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarSiteDirector.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="2" selection-start="299" selection-end="786" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMPageParser.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="10" selection-start="591" selection-end="591" vertical-scroll-proportion="0.0">
+        <state line="21" column="10" selection-start="591" selection-end="591" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/Utils.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="0" selection-start="1016" selection-end="1016" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/Publication.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="11" selection-start="219" selection-end="219" vertical-scroll-proportion="0.33707866">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/res/acm-firstpage.xml">
+    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/google/GoogleScholarResultParser.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="845" column="44" selection-start="57154" selection-end="57154" vertical-scroll-proportion="-3.8">
-          <folding>
-            <element signature="tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#0;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#td#0;tag#tr#0;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#td#1;tag#tr#0;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#1;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#td#1;tag#tr#1;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#2;tag#col#0;tag#col#0;tag#table#0;tag#td#0;tag#tr#2;tag#table#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#div#3;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#0;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#td#0;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#0;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#div#0;tag#td#0;tag#tr#0;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#td#0;tag#tr#1;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#2;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#3;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#4;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#5;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#tr#6;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#td#0;tag#tr#6;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#td#0;tag#tr#0;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#7;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-            <element signature="tag#A#0;tag#td#0;tag#tr#0;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#7;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="98" selection-start="1045" selection-end="1045" vertical-scroll-proportion="0.0">
+        <state line="104" column="55" selection-start="3512" selection-end="3512" vertical-scroll-proportion="-13.56">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMResultParser.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="0" selection-start="1464" selection-end="1464" vertical-scroll-proportion="0.0">
+        <state line="28" column="28" selection-start="949" selection-end="949" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/ACMSiteDirector.groovy">
+    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/google/Main.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="14" selection-start="1081" selection-end="1081" vertical-scroll-proportion="0.0">
+        <state line="18" column="42" selection-start="452" selection-end="494" vertical-scroll-proportion="0.5730337">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/acm/Main.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="39" selection-start="477" selection-end="477" vertical-scroll-proportion="0.34615386">
+        <state line="24" column="27" selection-start="587" selection-end="587" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/acm-firstpage.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="948" column="56" selection-start="61958" selection-end="61958" vertical-scroll-proportion="-3.4">
+          <folding>
+            <element signature="tag#td#0;tag#tr#1;tag#col#0;tag#col#0;tag#col#0;tag#table#0;tag#td#1;tag#tr#1;tag#table#0;tag#td#0;tag#body#0;tag#html#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufg/inf/references/SearchResult.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="29" selection-start="240" selection-end="240" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/br/ufg/inf/references/ACMTests.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="24" selection-start="657" selection-end="657" vertical-scroll-proportion="0.58536583">
           <folding />
         </state>
       </provider>

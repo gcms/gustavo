@@ -10,5 +10,5 @@ import org.w3c.dom.Node
  * To change this template use File | Settings | File Templates.
  */
 interface ResultParser {
-    Result parse(Node node)
+    SearchResult parse(Node node)
 }
