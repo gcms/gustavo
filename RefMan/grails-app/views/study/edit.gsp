@@ -40,6 +40,7 @@
           <label for="authorsString">Authors:</label>
           <g:textField name="authorsString" value="${searchResult.authorsString}"/>
         </p>
+        <g:hiddenField name="id" value="${searchResult.id}"/>
         <g:submitButton name="save" value="Save"/>
       </form>
     </fieldset>
