@@ -26,9 +26,10 @@ class GoogleScholarResultParser implements ResultParser {
 
     public SearchResult parse(Node node) {
         new SearchResult(html: getHTML(node),
-                /*type: parseType(node),*/ title: parseTitle(node), url: parseURL(node),
+                /*type: parseType(node),*/ title: parseTitle(node).trim(), url: parseURL(node)?.trim(),
                 authors: parseAuthors(node), publication: parsePublication(node),
-                description: parseDescription(node), links: parseLinks(node))
+                links: parseLinks(node), citationCount: parseCitationCount(node),
+                description: parseDescription(node))
     }
 
     public String getHTML(Node node) {
@@ -41,9 +42,7 @@ class GoogleScholarResultParser implements ResultParser {
     }
 
     public String parseTitle(Node node) {
-        String title = xpath.evaluate("h3/a", node) ?: parseTitleFromContent(node)
-        println "Title: ${title}"
-        title
+        xpath.evaluate("h3/a", node) ?: parseTitleFromContent(node)
     }
 
     private String parseTitleFromContent(Node node) {
@@ -87,16 +86,27 @@ class GoogleScholarResultParser implements ResultParser {
         links
     }
 
+    private int parseCitationCount(Node node) {
+        String linksText = xpath.evaluate("font/span[@class='gs_fl']", node)
+        //println "LinksText: ${linksText}"
+
+        def m = linksText =~ /Cited by (\d+)/
+        if (m.find())
+            return m.group(1).toInteger()
+
+        return -1
+    }
+
     private String parseDescription(Node node) {
         Node font = xpath.evaluate("font", node, XPathConstants.NODE)
         Node authorsLine = xpath.evaluate("font/span[@class='gs_a']", node, XPathConstants.NODE)
         Node linksLine = xpath.evaluate("font/span[@class='gs_fl']", node, XPathConstants.NODE)
 
-        println "Authors: ${authorsLine?.textContent}"
+        //println "Authors: ${authorsLine?.textContent}"
         if (authorsLine)
             font.removeChild(authorsLine)
 
-        println "Links :${linksLine?.textContent}"
+        //println "Links :${linksLine?.textContent}"
         if (linksLine)
             font.removeChild(linksLine)
 

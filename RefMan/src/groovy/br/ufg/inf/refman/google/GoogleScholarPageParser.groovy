@@ -6,6 +6,7 @@ import org.w3c.dom.NodeList
 import javax.xml.xpath.XPath
 import javax.xml.xpath.XPathFactory
 import javax.xml.xpath.XPathConstants
+import br.ufg.inf.utils.XMLUtils
 
 /**
  * Created by IntelliJ IDEA.
