@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: gustavo
-  Date: 10/04/2010
-  Time: 13:54:12
+  Date: 12/04/2010
+  Time: 09:00:40
   To change this template use File | Settings | File Templates.
 --%>
 
@@ -10,12 +10,12 @@
 <html>
   <head><title>Simple GSP page</title></head>
   <body>
-    <g:each var="${result}" in="${results}">
+    <g:each var="${query}" in="${results}">
       <p>
-        ${result.title} - ${result.authors.join(', ')} - ${result.publication}<br/>
-        ${result.html}
+        ${query.engine.name}
+        <g:link action="view" id="${query.id}">${query.name}</g:link>
+        (<g:link action="delete" id="${query.id}">X</g:link>)
       </p>
-      <hr/>
     </g:each>
   </body>
 </html>

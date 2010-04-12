@@ -22,7 +22,8 @@ class ACMResultParser implements ResultParser {
     SearchResult parse(Node node) {
         new SearchResult(html: XMLUtils.instance.nodeToHTML(node),
                 title: parseTitle(node), description: parseDescription(node),
-                authors: parseAuthors(node), publication: parsePublication(node))
+                authors: parseAuthors(node), publication: parsePublication(node),
+                citationCount: parseCitationCount(node))
     }
 
     public String parseTitle(Node node) {
@@ -53,5 +54,13 @@ class ACMResultParser implements ResultParser {
 
     private String parseName(Node node) {
         xpath.evaluate("td[2]//col//div[@class='addinfo']", node).replaceAll('\\s+', ' ').trim()
+    }
+
+    private int parseCitationCount(Node node) {
+        def m = node.textContent =~ ~/Citation Count: (\d+)/
+        if (m.find()) {
+            return m.group(1).toInteger()
+        }
+        return -1
     }
 }

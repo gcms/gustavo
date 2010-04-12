@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="web" name="GrailsWeb">
+      <configuration>
+        <webroots>
+          <root url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/web-app" relative="/" />
+        </webroots>
+        <sourceRoots />
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/console-0.2.2">
+      <sourceFolder url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/grails-app/services" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2">
       <sourceFolder url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2/src/groovy" isTestSource="false" />
     </content>

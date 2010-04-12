@@ -14,7 +14,7 @@ import br.ufg.inf.refman.SearchResult
  * To change this template use File | Settings | File Templates.
  */
 class ACMPageParserTests extends GroovyTestCase {
-    void testeXML() {
+    void testeGeral() {
         DocumentBuilder dbi = DocumentBuilderFactory.newInstance().newDocumentBuilder()
         Document doc = dbi.parse(new FileInputStream('res/acm-firstpage.xml'))
 
@@ -31,5 +31,8 @@ class ACMPageParserTests extends GroovyTestCase {
         assertEquals 2008, first.publication.year
         assertTrue first.publication.name.contains('Proceedings of the third international workshop on Graph and model transformations')
         assertTrue first.description.startsWith('Multi-target systems are')
+        assertEquals 0, first.citationCount
+
+        assertTrue results.every { it.citationCount >= 0 }
     }
 }
