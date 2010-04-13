@@ -8,12 +8,17 @@ package br.ufg.inf.refman
  * To change this template use File | Settings | File Templates.
  */
 class Study {
+    static constraints = {
+        //publication(nullable: true)
+        description(nullable: true)
+    }
+
     String title
     String authorsString
-    Publication publication
+    //Publication publication
 
     String description
 
     static hasMany = [results:SearchResult]
-    List results
+    List results = []
 }

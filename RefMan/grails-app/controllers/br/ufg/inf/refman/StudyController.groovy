@@ -34,4 +34,10 @@ class StudyController {
         params.each { k, v -> session.searchResult[k] = v }
         redirect(action: edit)
     }
+
+    def save = {
+        Study study = new Study(params)
+        study.results = session.selectedResults.collect { SearchResult.get(it) }
+        study.save(flush: true)
+    }
 }
