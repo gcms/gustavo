@@ -3,12 +3,15 @@ package br.ufg.inf.refman
 class StudyController {
     SearchResultService searchResultService
 
-    def index = { }
+    def index = {
+        [studies: Study.list()]
+    }
 
     def newStudy = {
         SearchResult searchResult = SearchResult.get(params.id)
 
         session.searchResult = new HashMap(searchResult.properties)
+        println session.searchResult.id
         session.similarResults = searchResultService.getSimilarResults(searchResult).collect { it.id.toString() }
         session.selectedResults = []
 
@@ -22,22 +25,24 @@ class StudyController {
     }
 
     def addItem = {
-        session.similarResults.remove(params.id)
-        session.selectedResults.add(params.id)
+        session.similarResults.remove(params.item)
+        session.selectedResults.add(params.item)
         params.each { k, v -> session.searchResult[k] = v }
         redirect(action: edit)
     }
 
     def removeItem = {
-        session.selectedResults.remove(params.id)
-        session.similarResults.add(params.id)
+        session.selectedResults.remove(params.item)
+        session.similarResults.add(params.item)
         params.each { k, v -> session.searchResult[k] = v }
         redirect(action: edit)
     }
 
     def save = {
-        Study study = new Study(params)
-        study.results = session.selectedResults.collect { SearchResult.get(it) }
+        List results = (session.selectedResults + [session.searchResult.id]).collect { SearchResult.get(it) }
+        results.each { println it }
+        Study study = new Study(session.searchResult, results)
         study.save(flush: true)
+        redirect(action: index)
     }
 }
