@@ -30,7 +30,7 @@ class SearchResult {
     String publicationName
     Integer publicationYear
 
-    static transients = [ 'authors', 'publication' ]
+    static transients = [ 'normalizedTitle', 'authors', 'publication' ]
 
     public Publication getPublication() {
         new Publication(year: publicationYear, name: publicationName)
@@ -57,14 +57,14 @@ class SearchResult {
         authorsString.tokenize(',').collect { it.trim() }
     }
 
-    public int calculateDistance(SearchResult searchResult) {
-        LevenshteinDistance.calcule(title, searchResult.title)
+    public double calculateDistanceToLengthRation(SearchResult searchResult) {
+        int distance = LevenshteinDistance.calcule(normalizedTitle, searchResult.normalizedTitle)
+
+        distance / searchResult.normalizedTitle.length() + distance / normalizedTitle.length()
     }
 
-    public double calculateDistanceToLengthRation(SearchResult searchResult) {
-        int distance = calculateDistance(searchResult)
-
-        distance / searchResult.title.length() + distance / title.length()
+    public String getNormalizedTitle() {
+        title.toLowerCase().tokenize('\\W+').join(' ')
     }
     //String type
 }
