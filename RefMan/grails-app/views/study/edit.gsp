@@ -18,13 +18,13 @@
     <script type="text/javascript">
       function removeItem(id) {
         var form = document.forms['study-form'];
-        form.action = 'removeItem/' + id;
+        form.action = 'removeItem?item=' + id;
         form.submit();
       }
 
       function addItem(id) {
         var form = document.forms['study-form'];
-        form.action = 'addItem/' + id;
+        form.action = 'addItem?item=' + id;
         form.submit();
       }
     </script>

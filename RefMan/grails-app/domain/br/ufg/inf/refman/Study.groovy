@@ -13,6 +13,17 @@ class Study {
         description(nullable: true)
     }
 
+    public Study() {}
+    public Study(Map params, Collection results) {
+        this.properties = params
+        results.each { addResult(it) }
+    }
+
+    public void addResult(SearchResult result) {
+        result.study = this
+        results.add(result)
+    }
+
     String title
     String authorsString
     //Publication publication
@@ -20,5 +31,5 @@ class Study {
     String description
 
     static hasMany = [results:SearchResult]
-    List results = []
+    Set results = [] as Set
 }

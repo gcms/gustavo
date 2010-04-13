@@ -18,10 +18,15 @@ class SearchResult {
         publicationName(nullable: true)
         publicationYear(nullable: true)
         html(nullable: false)
+        study(nullable: true)
     }
 
     static belongsTo = QueryResult
     QueryResult queryResult
+    Study study
+//    static mapping = {
+//        study column: 'studyId'
+//    }
 
     String title
     String url
@@ -67,4 +72,8 @@ class SearchResult {
         title.toLowerCase().tokenize('\\W+').join(' ')
     }
     //String type
+    public String toString() {
+        "${title} - ${authorsString}"
+    }
+
 }

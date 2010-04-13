@@ -8,7 +8,13 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-  <head><title>Query Result</title></head>
+  <head>
+    <title>Query Result</title>
+    <style>
+      .normal {}
+      .selected { font-weight: bold; }
+    </style>
+  </head>
   <body>
     <p>Name:<br/>${query.name}</p>
     <p>Description:<br/>${query.description}</p>
