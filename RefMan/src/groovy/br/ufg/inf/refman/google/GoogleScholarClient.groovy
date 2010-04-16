@@ -11,6 +11,7 @@ import br.ufg.inf.refman.Client
  */
 class GoogleScholarClient extends Client {    
     public GoogleScholarClient() {
-        super(new GoogleScholarSiteDirector(), new GoogleScholarPageParser(), new GoogleScholarResultParser())
+        super(new GoogleScholarURLBuilder(), new GoogleScholarSiteDirector(),
+                new GoogleScholarPageParser(), new GoogleScholarResultParser())
     }
 }

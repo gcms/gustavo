@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder
 import org.lobobrowser.html.parser.DocumentBuilderImpl
 import org.lobobrowser.html.test.SimpleUserAgentContext
 import org.w3c.dom.Document
+import br.ufg.inf.refman.query.URLBuilder
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,14 +27,17 @@ class Client {
     UserAgentContext context
     DocumentBuilder dbi
 
+    URLBuilder queryBuilder
     PageProcessor pageProcessor
     SiteDirector siteDirector
 
-    public Client(SiteDirector siteDirector, PageParser pageParser, ResultParser resultParser) {
+    public Client(URLBuilder queryBuilder, SiteDirector siteDirector,
+                  PageParser pageParser, ResultParser resultParser) {
         client = new DefaultHttpClient()
         context = new ScriptSetupSimpleUserAgentContext() //new SimpleUserAgentContext()
         dbi = new DocumentBuilderImpl(context)
 
+        this.queryBuilder = queryBuilder
         this.siteDirector = siteDirector
         pageProcessor = new PageProcessor(pageParser, resultParser)
     }
@@ -52,11 +56,15 @@ class Client {
         pageProcessor.parsePage(document)
     }
 
-    public List executeQuery(String query) {
-        siteDirector.collectPages(query) {URI uri ->
+    public List executeQuery(String url) {
+        siteDirector.collectPages(url) {URI uri ->
             println "Getting results from '${uri}'"
             getResultsFromURI(uri)
         }
+    }
+
+    public String buildURL(String query) {
+        queryBuilder.buildURL(query)
     }
 }
 

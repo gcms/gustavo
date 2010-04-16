@@ -11,6 +11,10 @@ class Engine {
     String name
     String clientClassName
 
+    static constraints = {
+        name(unique: true)
+    }
+
     public Class getClientClass() {
         clientClassName ? Class.forName(clientClassName, true, Thread.currentThread().contextClassLoader) : null
     }
@@ -19,7 +23,10 @@ class Engine {
         clientClassName = clientClass.name
     }
 
-    public Client newClient() {
-        clientClass.newInstance()
+    static transients = ['client']
+    Client client
+
+    public Client getClient() {
+        client ?: (client = clientClass.newInstance())
     }
 }

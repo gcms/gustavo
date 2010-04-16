@@ -1,6 +1,7 @@
 package br.ufg.inf.refman.google
 
 import br.ufg.inf.refman.SiteDirector
+import br.ufg.inf.utils.url.QueryURI
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,15 +12,17 @@ import br.ufg.inf.refman.SiteDirector
  */
 class GoogleScholarSiteDirector implements SiteDirector {
 
-    public List collectPages(String query, Closure closure) {
+    public List collectPages(String url, Closure closure) {
         List result = []
         int num = 100
         int start = 0
 
+        QueryURI queryURI = new QueryURI(url)
         while (true) {
-            String url = "http://scholar.google.com/scholar?hl=en&as_subj=eng&q=${URLEncoder.encode(query)}&num=${num}&start=${start}"
+            queryURI.setQueryParam('start', start)
+            queryURI.setQueryParam('num', num)
 
-            List itens = closure(new URI(url))
+            List itens = closure(queryURI.getURI())
             result.addAll(itens)
             if (itens.size() < num)
                 break

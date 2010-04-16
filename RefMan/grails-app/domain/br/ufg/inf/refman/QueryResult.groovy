@@ -9,6 +9,8 @@ class QueryResult {
     String name
     String description
 
+    Date date = new Date()
+
     static hasMany = [results:SearchResult]
     List results = []
 

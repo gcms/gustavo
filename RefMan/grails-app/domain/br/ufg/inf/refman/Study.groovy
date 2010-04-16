@@ -9,7 +9,7 @@ package br.ufg.inf.refman
  */
 class Study {
     static constraints = {
-        //publication(nullable: true)
+        year(nullable: true)
         description(nullable: true)
     }
 
@@ -26,9 +26,10 @@ class Study {
 
     String title
     String authorsString
-    //Publication publication
-
+    Integer year
     String description
+
+//    int citationCount
 
     static hasMany = [results:SearchResult]
     Set results = [] as Set

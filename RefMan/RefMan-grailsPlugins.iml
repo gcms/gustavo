@@ -4,7 +4,7 @@
     <facet type="web" name="GrailsWeb">
       <configuration>
         <webroots>
-          <root url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/web-app" relative="/" />
+          <root url="file://C:/Documents and Settings/gustavo/.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/web-app" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>
@@ -12,12 +12,12 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/console-0.2.2">
-      <sourceFolder url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/grails-app/controllers" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/grails-app/services" isTestSource="false" />
+    <content url="file://C:/Documents and Settings/gustavo/.grails/1.2.2/projects/RefMan/plugins/console-0.2.2">
+      <sourceFolder url="file://C:/Documents and Settings/gustavo/.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://C:/Documents and Settings/gustavo/.grails/1.2.2/projects/RefMan/plugins/console-0.2.2/grails-app/services" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2">
-      <sourceFolder url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2/src/groovy" isTestSource="false" />
+    <content url="file://C:/Documents and Settings/gustavo/.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2">
+      <sourceFolder url="file://C:/Documents and Settings/gustavo/.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2/src/groovy" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -25,11 +25,11 @@
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2/lib" />
+          <root url="file://C:/Documents and Settings/gustavo/.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../../.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2/lib" recursive="false" />
+        <jarDirectory url="file://C:/Documents and Settings/gustavo/.grails/1.2.2/projects/RefMan/plugins/tomcat-1.2.2/lib" recursive="false" />
       </library>
     </orderEntry>
   </component>
