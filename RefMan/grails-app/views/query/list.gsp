@@ -14,7 +14,7 @@
       <p>
         ${query.engine.name}
         <g:link action="view" id="${query.id}">${query.name}</g:link>
-        (<g:link action="delete" id="${query.id}">X</g:link>)
+        (<g:remoteLink action="delete" method="POST" id="${query.id}">X</g:remoteLink>)
       </p>
     </g:each>
   </body>

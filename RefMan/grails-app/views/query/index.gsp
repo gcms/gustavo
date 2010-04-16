@@ -14,6 +14,9 @@
     <g:select id="engine" name="engine" optionKey="id" optionValue="name" from="${engines}"/>
     <g:textField id="query" name="query"/>
     <g:submitButton name="submit" value="Search"/>
+    <p>
+      <g:textField id="url" name="url"/>
+    </p>    
   </g:form>
 </body>
 </html>

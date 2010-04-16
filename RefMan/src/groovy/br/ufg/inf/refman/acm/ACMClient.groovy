@@ -11,6 +11,6 @@ import br.ufg.inf.refman.Client
  */
 class ACMClient extends Client {
     public ACMClient() {
-        super(new ACMSiteDirector(), new ACMPageParser(), new ACMResultParser())
+        super(new ACMURLBuilder(), new ACMSiteDirector(), new ACMPageParser(), new ACMResultParser())
     }
 }

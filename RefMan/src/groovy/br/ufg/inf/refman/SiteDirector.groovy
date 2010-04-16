@@ -8,5 +8,5 @@ package br.ufg.inf.refman
  * To change this template use File | Settings | File Templates.
  */
 interface SiteDirector {
-    public List collectPages(String query, Closure closure)
+    public List collectPages(String url, Closure closure)
 }

@@ -31,16 +31,21 @@
   </head>
   <body>
     <fieldset title="New Publication">
-      <form id="study-form" action="save" method="POST">
+      <form id="study-form" action="${fields.action}" method="POST">
         <p>
           <label for="title">Title:</label>
-          <g:textField name="title" value="${searchResult.title}"/>
+          <g:textField name="title" value="${fields.title}"/>
         </p>
         <p>
           <label for="authorsString">Authors:</label>
-          <g:textField name="authorsString" value="${searchResult.authorsString}"/>
+          <g:textField name="authorsString" value="${fields.authorsString}"/>
         </p>
-        <g:hiddenField name="id" value="${searchResult.id}"/>
+        <p>
+          <label for="year">Year:</label>
+          <g:textField name="year" value="${fields.year}"/>
+        </p>
+        <g:hiddenField name="id" value="${fields.id}"/>
+        <g:hiddenField name="citationCount" value="${fields.citationCount}"/>
         <g:submitButton name="save" value="Save"/>
       </form>
     </fieldset>

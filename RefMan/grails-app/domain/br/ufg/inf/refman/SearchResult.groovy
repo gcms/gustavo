@@ -24,9 +24,6 @@ class SearchResult {
     static belongsTo = QueryResult
     QueryResult queryResult
     Study study
-//    static mapping = {
-//        study column: 'studyId'
-//    }
 
     String title
     String url
@@ -69,7 +66,8 @@ class SearchResult {
     }
 
     public String getNormalizedTitle() {
-        title.toLowerCase().tokenize('\\W+').join(' ')
+        List parts = title.toLowerCase().split('\\W+')
+        parts.join(' ')
     }
     //String type
     public String toString() {

@@ -10,14 +10,14 @@ class QueryService {
     private String lastKey
     private List lastResults
 
-    List getResults(Engine engine, String query) {
-        String key = getKey(engine, query)
+    List getResults(Engine engine, String url) {
+        String key = getKey(engine, url)
 
         if (key == lastKey)
             return lastResults
 
         lastKey = key
-        lastResults = engine.newClient().executeQuery(query)
+        lastResults = engine.client.executeQuery(url)
     }
 
     private String getKey(Engine engine, String query) {
