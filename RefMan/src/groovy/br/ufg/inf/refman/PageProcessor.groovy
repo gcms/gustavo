@@ -4,6 +4,7 @@ import org.w3c.dom.Document
 
 import org.w3c.dom.NodeList
 import org.w3c.dom.Node
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,6 +14,7 @@ import org.w3c.dom.Node
  * To change this template use File | Settings | File Templates.
  */
 class PageProcessor {
+    private static Logger log = Logger.getLogger(PageProcessor)
     PageParser pageParser
     ResultParser resultParser
 
@@ -24,11 +26,10 @@ class PageProcessor {
 
     List parsePage(Document document) {
         NodeList resultNodes = pageParser.getResults(document)
+        log.debug "Nodes obtained: ${resultNodes.length}"
 
-        List result = []       
-        resultNodes.eachWithIndex {Node node, index ->
-            result.add(resultParser.parse(node))
+        resultNodes.collect {Node node ->
+            resultParser.parse(node)
         }        
-        result
     }
 }

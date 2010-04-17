@@ -9,9 +9,13 @@ package br.ufg.inf.refman
  */
 class Study {
     static constraints = {
+        title(nullable: false, blank: false)
         year(nullable: true)
         description(nullable: true)
     }
+
+    static hasMany = [results:SearchResult, authors:String]
+    static transients = [ 'authorsString' ]
 
     public Study() {}
     public Study(Map params, Collection results) {
@@ -24,13 +28,20 @@ class Study {
         results.add(result)
     }
 
-    String title
-    String authorsString
+    String title        
+    List authors = []
     Integer year
     String description
 
     int citationCount = -1
 
-    static hasMany = [results:SearchResult]
     Set results = [] as Set
+
+    public void setAuthorsString(String authorsString) {
+        authors = (authorsString.split(',') as List).collect { it.trim() }
+    }
+
+    public String getAuthorsString() {
+        authors.join(', ')
+    }
 }

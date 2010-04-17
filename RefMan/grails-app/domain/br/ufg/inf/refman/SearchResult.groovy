@@ -46,7 +46,7 @@ class SearchResult {
         }
     }
 
-    int citationCount
+    int citationCount = -1
 
     String description
     List links = []
