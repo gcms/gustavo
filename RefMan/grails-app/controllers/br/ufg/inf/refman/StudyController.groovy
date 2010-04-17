@@ -52,18 +52,22 @@ class StudyController {
     def save = {
         List results = getResults(session.selectedResults + [session.fields.id])
         Study study = new Study(session.fields, results)
+        study.citationCount = params.citationCount.toInteger()
         study.save(flush: true)
 
-        redirect(action: index)
+        redirect(action: view, id: study.id)
     }
 
     def update = {
         Study study = Study.get(params.id)
+        study.properties = params
+        study.citationCount = params.citationCount.toInteger()
+      
         study.results.removeAll(getResults(session.similarResults))
         study.results.addAll(getResults(session.selectedResults))
         study.save(flush: true)
 
-        redirect(action: index)
+        redirect(action: view, id: study.id)
     }
 
     def view = {

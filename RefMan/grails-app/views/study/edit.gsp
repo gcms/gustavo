@@ -10,11 +10,6 @@
 <html>
   <head>
     <title>Simple GSP page</title>
-    <style>
-      fieldset input {
-        width: 400pt;
-      }
-    </style>
     <script type="text/javascript">
       function removeItem(id) {
         var form = document.forms['study-form'];
@@ -44,21 +39,23 @@
           <label for="year">Year:</label>
           <g:textField name="year" value="${fields.year}"/>
         </p>
+        <p>
+          <label for="citationCount">Cited by:</label>
+          <g:textField name="citationCount" value="${fields.citationCount}"/>
+        </p>
         <g:hiddenField name="id" value="${fields.id}"/>
-        <g:hiddenField name="citationCount" value="${fields.citationCount}"/>
         <g:submitButton name="save" value="Save"/>
       </form>
     </fieldset>
 
-    Selected
-    <hr/>
+    <p><b>Selected</b></p>
     <g:each var="result" in="${selectedResults}">
       <g:render template="study" var="result" model="[result: result, i: result.id]"/>
       <a href="#" onclick="removeItem(${result.id});">Remove</a>
     </g:each>
 
-    Not-selected
     <hr/>
+    <p><b>Not-selected</b></p>
     <g:each var="result" in="${similarResults}">
       <g:render template="study" var="result" model="[result: result, i: result.id]"/>
       <a href="#" onclick="addItem(${result.id});">Add</a>

@@ -16,7 +16,9 @@
     </style>
   </head>
   <body>
-    <p>Name:<br/>${query.name}</p>
+    <p>Engine: ${query.engine.name}</p>
+    <p>Name: ${query.name}</p>
+    <p>Date: ${query.date}</p>
     <p>Description:<br/>${query.description}</p>
     <g:render template="searchResults" var="results" model="[results: query.results]"/>
   </body>
