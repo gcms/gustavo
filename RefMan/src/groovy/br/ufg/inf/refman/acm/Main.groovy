@@ -15,7 +15,7 @@ class Main {
     static void main(String[] args) {
         Client client = new ACMClient()
 
-        List results = client.executeQuery('model driven')
+        List results = client.executeURL('model driven')
         results.collect {
             """
 ${it.title} - ${it.authors.join(', ')}

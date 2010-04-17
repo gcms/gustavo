@@ -51,16 +51,20 @@ class Client {
     }
 
     public List getResultsFromURI(URI uri) {
+        println "Getting results from '${uri}'"
         InputSource response = executeRequest(uri)
         Document document = dbi.parse(response)
         pageProcessor.parsePage(document)
     }
 
-    public List executeQuery(String url) {
-        siteDirector.collectPages(url) {URI uri ->
-            println "Getting results from '${uri}'"
+    public List executeURL(String url) {
+        siteDirector.collectPages(url) {URI uri ->            
             getResultsFromURI(uri)
         }
+    }
+
+    public List executeQuery(String query) {
+        executeURL(buildURL(query))
     }
 
     public String buildURL(String query) {
@@ -70,7 +74,7 @@ class Client {
 
 
 class ScriptSetupSimpleUserAgentContext extends SimpleUserAgentContext {
-    boolean scriptEnabled
+    boolean scriptEnabled = true
     
     public boolean isScriptingEnabled() {
         scriptEnabled

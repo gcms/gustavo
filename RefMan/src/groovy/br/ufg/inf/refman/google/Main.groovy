@@ -14,7 +14,7 @@ class Main {
     static void main(String[] args) {
         Client client = new GoogleScholarClient()
 
-        List results = client.executeQuery('allintitle:"model based software engineering"')
+        List results = client.executeURL('allintitle:"model based software engineering"')
         results.each { println it.dump() }
 
         new File('/home/gustavo/MDE.txt').text = results.collect { it.dump() }.join('\n\n')

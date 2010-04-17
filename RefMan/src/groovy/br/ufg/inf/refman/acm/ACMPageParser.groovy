@@ -19,8 +19,6 @@ class ACMPageParser implements PageParser {
 
     NodeList getResults(Document document) {
         //println XMLUtils.instance.nodeToHTML(document)
-        NodeList list = xpath.evaluate("//body/td/table/tr[@valign='top']", document, XPathConstants.NODESET)
-        println list.length
-        list
+        xpath.evaluate("//body/td/table/tr[@valign='top']", document, XPathConstants.NODESET)        
     }
 }

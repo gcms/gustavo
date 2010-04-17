@@ -17,7 +17,7 @@ class QueryService {
             return lastResults
 
         lastKey = key
-        lastResults = engine.client.executeQuery(url)
+        lastResults = engine.client.executeURL(url)
     }
 
     private String getKey(Engine engine, String query) {
