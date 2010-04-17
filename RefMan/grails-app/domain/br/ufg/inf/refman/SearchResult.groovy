@@ -1,6 +1,7 @@
 package br.ufg.inf.refman
 
 import br.ufg.inf.utils.LevenshteinDistance
+import br.ufg.inf.utils.Normalizer
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,8 +67,7 @@ class SearchResult {
     }
 
     public String getNormalizedTitle() {
-        List parts = title.toLowerCase().split('\\W+')
-        parts.join(' ')
+        Normalizer.normalize(title)
     }
     //String type
     public String toString() {
