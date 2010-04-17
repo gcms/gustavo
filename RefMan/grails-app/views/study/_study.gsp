@@ -11,7 +11,10 @@
   <a href="#" onclick="document.getElementById('html${i}').style.display = 'block';">Show details</a>
   <a href="#" onclick="document.getElementById('html${i}').style.display = 'none';">Hide details</a>
   <div style="display: none;" id="html${i}">
-    <b>Search: ${result.queryResult.engine.name} - ${result.queryResult.name}</b><br/>
-    ${result.html}
+    <p>Engine: ${result.queryResult.engine.name}</p>
+    <p>Query: <g:link controller="query" action="view" id="${result.queryResult.id}">${result.queryResult.name}</g:link></p>
+    <div style="border: solid black 1px;">
+      ${result.html}
+    </div>
   </div>
 </p>

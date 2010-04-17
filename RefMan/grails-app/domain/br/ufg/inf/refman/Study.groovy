@@ -29,7 +29,7 @@ class Study {
     Integer year
     String description
 
-//    int citationCount
+    int citationCount = -1
 
     static hasMany = [results:SearchResult]
     Set results = [] as Set
