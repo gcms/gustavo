@@ -13,6 +13,7 @@ import org.lobobrowser.html.parser.DocumentBuilderImpl
 import org.lobobrowser.html.test.SimpleUserAgentContext
 import org.w3c.dom.Document
 import br.ufg.inf.refman.query.URLBuilder
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,6 +23,8 @@ import br.ufg.inf.refman.query.URLBuilder
  * To change this template use File | Settings | File Templates.
  */
 class Client {
+    private static Logger log = Logger.getLogger(Client)
+
     HttpClient client
 
     UserAgentContext context
@@ -51,9 +54,13 @@ class Client {
     }
 
     public List getResultsFromURI(URI uri) {
-        println "Getting results from '${uri}'"
+        log.debug "Getting results from '${uri}'..."
         InputSource response = executeRequest(uri)
+
+        log.debug "Parsing HTML..."
         Document document = dbi.parse(response)
+
+        log.debug "Extracting data..."
         pageProcessor.parsePage(document)
     }
 
@@ -74,7 +81,7 @@ class Client {
 
 
 class ScriptSetupSimpleUserAgentContext extends SimpleUserAgentContext {
-    boolean scriptEnabled = true
+    boolean scriptEnabled = false
     
     public boolean isScriptingEnabled() {
         scriptEnabled
