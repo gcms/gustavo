@@ -8,6 +8,7 @@ import javax.xml.xpath.XPathFactory
 import br.ufg.inf.utils.XMLUtils
 import javax.xml.xpath.XPathConstants
 import br.ufg.inf.refman.Publication
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,9 +18,12 @@ import br.ufg.inf.refman.Publication
  * To change this template use File | Settings | File Templates.
  */
 class IEEEResultParser implements ResultParser {
+    private static Logger log = Logger.getLogger(IEEEResultParser)
+
     private XPath xpath = XPathFactory.newInstance().newXPath()
     
     public SearchResult parse(Node node) {
+        println XMLUtils.instance.nodeToHTML(node)
         new SearchResult(html: XMLUtils.instance.nodeToHTML(node),
                 title: parseTitle(node), authors: parseAuthors(node),
                 description: parseDescription(node), publication: parsePublication(node))
@@ -35,7 +39,6 @@ class IEEEResultParser implements ResultParser {
 
     private String getAuthorsLine(Node node) {
         Node p = xpath.evaluate("div[@class='header']//div[@class='detail']/p", node, XPathConstants.NODE)
-        //println p.firstChild
 
         p.firstChild.textContent.trim()
     }
