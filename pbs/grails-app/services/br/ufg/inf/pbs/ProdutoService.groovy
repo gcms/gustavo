@@ -30,7 +30,7 @@ class ProdutoService {
             pai.adicioneProdutoFilho(filho)
             pai.save()
         } else {
-            filho.save()
+            atividade.projeto.adicioneProduto(filho)
         }
 
         atividade.incluirVersao(filho)

@@ -12,10 +12,11 @@ class Atividade {
     static hasMany = [filhos: Atividade]
     static belongsTo = [Workflow, Atividade]
 
-    static transients = [ 'subAtividades', 'todasSubAtividades' ]
+    static transients = [ 'subAtividades', 'todasSubAtividades', 'projeto' ]
 
     String nome
 
+    Workflow workflow
     Atividade pai
     List filhos = []
 
@@ -32,10 +33,20 @@ class Atividade {
     void adicioneAtividade(Atividade atividade) {
         filhos.add(atividade)
         atividade.pai = this
+        workflow.adicioneAtividade(atividade)
     }
 
     void incluirVersao(Produto produto) {
         assert versao == null
         versao = produto.novaVersao(this)
+    }
+
+    void definaWorkflow(Workflow workflow) {
+        this.workflow = workflow
+        filhos.each { it.definaWorkflow(workflow) }
+    }
+
+    Projeto getProjeto() {
+        workflow.projeto
     }
 }

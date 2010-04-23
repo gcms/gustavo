@@ -3,6 +3,8 @@ package br.ufg.inf.pbs
 class AtividadeController {
     ProdutoService produtoService
 
+    static layout = 'atividade'    
+
     def view = {
         [atividade: Atividade.get(params.id)]
     }
