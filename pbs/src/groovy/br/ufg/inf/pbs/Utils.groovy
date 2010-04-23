@@ -9,7 +9,7 @@ package br.ufg.inf.pbs
  */
 class Utils {
     static Projeto obtenhaProdutoInicializado() {
-        Projeto projeto = new Projeto(nome: 'PBS Workflow')
+        Projeto projeto = new Projeto(nome: 'PBS')
 
         Workflow workflow = new Workflow(nome: 'Desenvolvimento')
         projeto.adicioneWorkflow(workflow)

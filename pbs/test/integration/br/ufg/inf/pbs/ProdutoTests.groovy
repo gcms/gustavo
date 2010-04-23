@@ -24,6 +24,7 @@ class ProdutoTests extends GrailsUnitTestCase {
 
         //
         Produto produto = new Produto(nome: 'Especificação de Requisitos de Software')
+        projeto.adicioneProduto(produto)
         produto.save(flush: true)
 
         requisitos.incluirVersao(produto)
@@ -44,10 +45,11 @@ class ProdutoTests extends GrailsUnitTestCase {
 
         Workflow wf = projeto.workflows.first()
         //
-        Produto ers = new Produto(nome: 'Especificação de Requisitos de Software')
+        Produto ers = new Produto(nome: 'Especificação de Requisitos de Software', projeto: projeto)
+        projeto.adicioneProduto(ers)
         ers.save(flush: true)
 
-        Atividade requisitos = wf.atividades.find { it.nome == 'Requisitos'}
+        Atividade requisitos = wf.todasAtividades.find { it.nome == 'Requisitos'}
         requisitos.incluirVersao(ers)
         requisitos.save(flush: true)
         //

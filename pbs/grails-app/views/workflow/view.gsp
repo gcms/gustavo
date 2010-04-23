@@ -10,12 +10,14 @@
 <html>
   <head><title>Simple GSP page</title></head>
   <body>
+  Projeto <g:link controller="projeto" action="view" id="${workflow.projeto.id}">${workflow.projeto.nome}</g:link>
+  <hr/>
     <h3>${workflow.nome}</h3>
-    <g:cadaAtividade nivel="nivel" atividade="atividade" atividades="${workflow.atividades}">
+    <g:cadaItem nivel="nivel" item="atividade" items="${workflow.atividades}">
       <g:repeat times="${nivel}">
         &nbsp;&nbsp;&nbsp;&nbsp;
       </g:repeat>
       <g:link controller="atividade" action="view" id="${atividade.id}">${atividade.nome}</g:link><br/>
-    </g:cadaAtividade>
+    </g:cadaItem>
   </body>
 </html>

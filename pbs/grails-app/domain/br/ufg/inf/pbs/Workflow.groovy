@@ -6,20 +6,21 @@ class Workflow {
         nome(blank: false)
     }
 
-    static hasMany = [atividades: Atividade]
+    static hasMany = [todasAtividades: Atividade]
     static belongsTo = Projeto
-    static transients = [ 'todasAtividades' ]
+    static transients = [ 'atividades' ]
 
     String nome
     Projeto projeto
 
-    List atividades = []
+    List todasAtividades = []
 
     void adicioneAtividade(Atividade atividade) {
-        atividades.add(atividade)
+        todasAtividades.add(atividade)
+        atividade.workflow = this
     }
 
-    public List getTodasAtividades() {
-        atividades.collect { [it] + it.todasSubAtividades }.flatten()
-    }
+    public List getAtividades() {
+        todasAtividades.findAll { it.pai == null }
+    }    
 }

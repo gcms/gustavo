@@ -10,6 +10,7 @@
 <html>
   <head><title>Simple GSP page</title></head>
   <body>
+
     <h3>${atividade.nome}</h3>
     <g:if test="${atividade.versao}">
       <g:set var="versao" value="${atividade.versao}"/>
@@ -21,7 +22,7 @@
     </g:if>
     <g:else>
       <p>
-        <i>Ainda não foi definido um artefato para esta atividade.</i>
+        <i>Ainda não foi definido um produto para esta atividade.</i>
       </p>
       
       Esta atividade

@@ -10,6 +10,7 @@
 <html>
   <head><title>Simple GSP page</title></head>
   <body>
+    <h3>Projetos</h3>
     <g:each var="projeto" in="${projetos}">
       <p>
         <g:link action="view" id="${projeto.id}">${projeto.nome}</g:link>

@@ -10,9 +10,21 @@
 <html>
   <head><title>Simple GSP page</title></head>
   <body>
-    <h3>${projeto.nome}</h3>
+    <h1>${projeto.nome}</h1>
+
+    <h4>Workflows</h4>
     <g:each var="workflow" in="${projeto.workflows}">
       <g:link controller="workflow" action="view" id="${workflow.id}">${workflow.nome}</g:link>
     </g:each>
+    <hr/>
+
+    <h4>PBS</h4>
+  
+    <g:cadaItem item="produto" nivel="nivel" items="${projeto.produtos}">
+      <g:repeat times="${nivel}">
+        &nbsp;&nbsp;&nbsp;&nbsp;
+      </g:repeat>
+      <g:link controller="produto" action="view" id="${produto.id}">${produto.nome}</g:link><br/>
+    </g:cadaItem>
   </body>
 </html>

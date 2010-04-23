@@ -10,12 +10,13 @@ class Produto {
     static hasMany = [versoes: Versao, filhos: Produto]
     static mappedBy = [filhos: 'pai']
     static transients = ['versaoInicial', 'ultimaVersao']
-    static belongsTo = Produto
+    static belongsTo = [/*Projeto,*/ Produto]
 
     String nome
     List versoes = []
 
     Produto pai
+    Projeto projeto
     List filhos = []
 
     public Versao getVersaoInicial() {
@@ -29,6 +30,7 @@ class Produto {
     void adicioneProdutoFilho(Produto produto) {
         filhos.add(produto)
         produto.pai = this
+        projeto.adicioneProduto(produto)
     }
 
     Versao novaVersao(Atividade atividade) {
