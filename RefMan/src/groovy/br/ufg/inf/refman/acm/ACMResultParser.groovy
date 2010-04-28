@@ -35,11 +35,9 @@ class ACMResultParser implements ResultParser {
     }
 
     public List parseAuthors(Node node) {
-        NodeList list = xpath.evaluate("td[2]//div[@class='authors']//a", node, XPathConstants.NODESET)
+        String authorsString = xpath.evaluate("td[2]//div[@class='authors']", node)
 
-        List result = []
-        list.each { Node author -> result.add(author.textContent.trim()) }
-        result
+        authorsString.replaceAll('\\s+', ' ').tokenize(',').collect { it.trim() }
     }
 
     public Publication parsePublication(Node node) {

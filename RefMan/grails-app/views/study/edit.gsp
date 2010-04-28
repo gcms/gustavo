@@ -26,7 +26,7 @@
   </head>
   <body>
     <fieldset title="New Publication">
-      <form id="study-form" action="${fields.action}" method="POST">
+      <form id="study-form" action="${fields.acao}" method="POST">
         <p>
           <label for="title">Title:</label>
           <g:textField name="title" value="${fields.title}" size="${fields.title.length()}"/>
@@ -48,21 +48,22 @@
       </form>
     </fieldset>
 
-  <!--
+
   <g:set var="query" value="${'allintitle:' + fields.normalizedTitle.replaceAll(' ', '.')}"/>
-  <iframe src="http://scholar.google.com/scholar?q=${query}" width="100%" height="300px"/>
-  -->
+  <iframe src="http://scholar.google.com/scholar?q=${query}" width="100%" height="300px"></iframe>
+  <!--
+
   <g:set var="query" value="${fields.normalizedTitle.replaceAll(' ', '.')}"/>
   <iframe src="http://www.google.com/search?q=${query}" width="100%" height="300px"/>
-
-    <p><b>Selected</b></p>
+  -->
+    <p><b>Search results</b></p>
     <g:each var="result" in="${selectedResults}">
       <g:render template="study" var="result" model="[result: result, i: result.id]"/>
       <a href="#" onclick="removeItem(${result.id});">Remove</a>
     </g:each>
 
     <hr/>
-    <p><b>Not-selected</b></p>
+    <p><b>Similar results</b></p>
     <g:each var="result" in="${similarResults}">
       <g:render template="study" var="result" model="[result: result, i: result.id]"/>
       <a href="#" onclick="addItem(${result.id});">Add</a>

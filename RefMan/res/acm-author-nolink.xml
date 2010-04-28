@@ -1,0 +1,1148 @@
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <LINK href="http://www.acm.org/DL" rel="toc"/>
+        <LINK type="text/css" href="css/dl.css" rel="STYLESHEET"/>
+        <title>Results (page 1): (Title:Model and Title:driven and Title:development and Title:secure and Title:XML)</title>
+        <meta
+            content="www.acm.org - The premier society in computing brings you the Computer Portal." name="description"/>
+        <meta content="computer,internet" name="keywords"/>
+        <style type="text/css">&lt;!--
+    body {margin-left: 0em; margin-top: 0}
+    a:link {text-decoration: underline; 	Color: #006699;}
+    a:visited  { color: #990033; text-decoration: underline;}
+    a:hover {color: red; text-decoration: none}
+    a.dLink1:link {color:#336699}
+    a.dLink1:visited {color:#666666}
+	a.isblack:link {text-decoration: underline; 	Color: #000000;}
+    a.isblack:visited  { color: #000000; text-decoration: underline;}
+    a.isblack:hover {color: #000000; text-decoration: none}
+    h1 {font-size: 140%; margin-bottom: 0}
+	ul {margin-top: .25em; list-style-type: disc}
+	ol {margin-top: .25em;}
+	li {padding-bottom: .25em}
+    h2 {color: white; background-color: #069;
+        font-size: 100%; padding-left: 1em;
+		margin: 0}
+	h3 {color: black; background-color: yellow;
+    	font-size: 100%;
+		margin: 0}
+	 h4 {color: black; background-color: #99c5e8;
+        font-size: 100%;
+		margin: 0}
+    hr {color: #39176d;}
+    form {margin-top: 10}
+    form.xrs {margin-top: 0}
+
+	a {text-decoration: none; }
+
+	input {font-size: 1em;}
+	.chevron {color: #ff0000;}
+	.light-blue {color:#336699;}
+	.black {color:#000000;}
+
+	/* ### standard text styles, smallest to largest ### */
+
+	.footer-link-text {font-family: Arial, Helvetica, sans-serif;
+		color:#336699; font-size: .75em; line-height: 1.33em;
+		text-indent: -.75 em; margin-left: 2em; margin-right: .75em;}
+
+	.footer-copy-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: .75em; line-height: 1.3em;
+		margin-left: .75em; margin-right: .75em;}
+
+	.small-link-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: .83em; padding-bottom : 2px;
+	  	padding-top : 2px;}
+
+	.smallerer-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: .65em;}
+	.smaller-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: .75em;}
+	.small-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: .83em;}
+	.small-textb {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: .83em; font-weight: bold;}
+	.medium-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: 1em;}
+	.mediumb-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: 1em; font-weight: bold;}
+	.large-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: 1.3em;}
+	.instr-text {font-family: Arial, Helvetica, sans-serif;
+		color:#666666; font-size: .83em;}
+
+	.list-link-text {font-family: Arial, Helvetica, sans-serif;
+		color:#336699; font-size: .83em; line-height: 1.3em;}
+	.list-link-btext {font-family: Arial, Helvetica, sans-serif;
+		color:#000000; font-size: .83em; line-height: 1.3em;}
+
+	.searchbox-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000066; font-size: 1em; font-weight: bold;}
+	.footer-header-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000066; font-size: 1em; font-weight: bold;
+		margin-left: .75em; margin-right: .75em;}
+	.medium-link-text {font-family: Arial, Helvetica, sans-serif;
+		color:#000066; font-size: 1em; font-weight: bold; line-height: 1em;
+		text-indent: -1.25em; margin-left: 2em; margin-right: .75em;}
+
+
+	.small-copy-text {font-family: Times, Times New Roman, serif;
+		color:#000066; font-size: .75em; line-height: 1.2em;
+		margin-left: .75em; margin-right: .75em;}
+
+	.medium-copy-text {font-family: Times, Times New Roman, serif;
+		color:#000066; font-size: 1em; line-height: 1.2em;
+		margin-left: .75em; margin-right: .75em;}
+
+	.large-copy-text {font-family: Times, Times New Roman, serif;
+		color:#000066; font-size: 1.3em; line-height: 1.5em;
+		margin-left: .75em; margin-right: .75em;}
+
+	.medium-header-text {font-family: Times, Times New Roman, serif;
+		color:#ff0000; font-size: 1em;
+		margin-left: .75em; margin-right: .75em;}
+
+	.large-header-text {font-family: Times, Times New Roman, serif;
+		color:#ff0000; font-size: 1.5em;
+		margin-left: .75em; margin-right: .75em;}
+
+		#side {
+			width: 10px;
+			float: left;
+			margin-left: -1px;
+			padding: 2px;
+			}
+
+		#content {
+			padding: 2px;
+			margin-left: 25px;
+
+
+		        }
+  --&gt;</style>
+        <script language="JavaScript">
+	&lt;!--
+	function surfto(f,g) {
+		myindex=document.forms[f].elements[g].selectedIndex;
+		if (document.forms[f].elements[g].options[myindex].value != "no") {
+	    location=document.forms[f].elements[g].options[myindex].value;
+		}
+		return true;
+	}
+	function newwin() {
+		if (document.picksort.chkwin.checked)
+	 	   location=document.picksort.chkwin.value + "&amp;sepwin=1";
+		else
+			location=document.picksort.chkwin.value;
+	}
+	//--&gt;
+	</script>
+    </head>
+    <body onload="window.focus(); " bgcolor="#ffffff">
+        <div style="margin-left: 5px" align="center">
+            <table cellpadding="0" border="0" cellspacing="0" width="100%">
+                <tr>
+                    <td>
+                        <table cellpadding="0" border="0"
+                            cellspacing="0" width="100%">
+                            <tr valign="top">
+                                <td class="small-link-text" width="1%"
+                                    align="center" background="http://portal.acm.org/images/horiz-bar.jpg">
+                                    <img
+                                    src="http://portal.acm.org/images/logo_acm_portal2.jpg"
+                                    height="54" usemap="#PORT"
+                                    border="0" alt="ACM Portal" width="263"/>
+                                </td>
+                                <td class="small-link-text" width="99%" align="left">
+                                    <table cellpadding="0" border="0" cellspacing="0">
+                                    <tr>
+                                    <td> </td>
+                                    <td class="small-link-text">
+                                    <a
+                                    href="https://campus.acm.org/Public/login_genpubqj.cfm?rdr=http://portal.acm.org/results.cfm?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;DL=ACM&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;promo=QJPUB&amp;offering=200&amp;form_type=PUB&amp;CFID=88256700&amp;CFTOKEN=47174228" class="small-link-text">Subscribe</a>
+                                    <span class="small-link-text"> (Full Service)</span>   </td>
+                                    <td class="small-link-text">
+                                    <a
+                                    href="https://portal.acm.org/poplogin.cfm?dl=ACM&amp;coll=ACM&amp;want_href=results%2Ecfm%3Fquery%3D%2528Title%253AModel%2520and%2520Title%253Adriven%2520and%2520Title%253Adevelopment%2520and%2520Title%253Asecure%2520and%2520Title%253AXML%2529%26querydisp%3D%2528Title%253AModel%2520and%2520Title%253Adriven%2520and%2520Title%253Adevelopment%2520and%2520Title%253Asecure%2520and%2520Title%253AXML%2529%26srt%3Dscore%20dsc%26short%3D0%26coll%3DACM%26dl%3DACM%26parser%3DInternet%26CFID%3D88256700%26CFTOKEN%3D47174228&amp;CFID=88256700&amp;CFTOKEN=47174228" class="small-link-text">Register</a>
+                                    <span
+                                    class="small-link-text"> (Limited Service, <font color="Red">Free</font>)</span>   </td>
+                                    <td valign="bot" class="small-link-text">
+                                    <a
+                                    href="https://portal.acm.org/poplogin.cfm?dl=ACM&amp;coll=ACM&amp;want_href=results%2Ecfm%3Fquery%3D%2528Title%253AModel%2520and%2520Title%253Adriven%2520and%2520Title%253Adevelopment%2520and%2520Title%253Asecure%2520and%2520Title%253AXML%2529%26querydisp%3D%2528Title%253AModel%2520and%2520Title%253Adriven%2520and%2520Title%253Adevelopment%2520and%2520Title%253Asecure%2520and%2520Title%253AXML%2529%26srt%3Dscore%20dsc%26short%3D0%26coll%3DACM%26dl%3DACM%26parser%3DInternet%26CFID%3D88256700%26CFTOKEN%3D47174228&amp;CFID=88256700&amp;CFTOKEN=47174228" class="small-link-text">Login</a>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    <table cellpadding="0" border="0"
+                                    cellspacing="0" width="100%">
+                                    <form
+                                    action="results.cfm?coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228"
+                                    method="post" name="qiksearch">
+                                    <tr>
+                                    <td height="5">
+                                    <img
+                                    src="http://portal.acm.org/images/blanks.gif"
+                                    height="1"
+                                    border="0"
+                                    alt="" width="1"/>
+                                    </td>
+                                    </tr>
+                                    <input value="Internet"
+                                    type="hidden" name="parser"/>
+                                    <tr>
+                                    <td class="small-link-text"> </td>
+                                    <td class="small-link-text">
+
+                                    <b>Search:</b>   <input
+                                    value="acm"
+                                    type="Radio"
+                                    checked="checked"
+                                    name="whichDL"/>The ACM Digital Library   <input
+                                    value="guide"
+                                    type="Radio" name="whichDL"/>The Guide
+
+
+							<br/>
+                                    <input value=""
+                                    class="pubdescr"
+                                    type="Text"
+                                    name="query"
+                                    size="60"/>  
+							<input
+                                    src="http://portal.acm.org/images/search_small.jpg"
+                                    border="0"
+                                    type="Image"
+                                    alt="Search" name="Go"/>
+                                    <script
+                                    type="text/javascript" src="js/wz_tooltip/wz_tooltip.js"/>
+                                    </td>
+                                    </tr>
+                                    </form>
+                                    </table>
+                                </td>
+                                <!-- top nav END -->
+                            </tr>
+                        </table>
+                        <table cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td height="12">
+                                    <img
+                                    src="http://portal.acm.org/images/blanks.gif"
+                                    height="1" border="0" alt="" width="1"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <map name="PORT">
+                            <area coords="1,1,55,60" shape="rect"
+                                href="http://www.acm.org/" alt="ACM Home Page">
+                                <area
+                                    href="portal.cfm?coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228"
+                                    shape="rect" coords="65,1,300,78"/>
+                            </area>
+                        </map>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="margin-bottom: 10px" class="small-text">
+                            <table cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding-bottom: 5px;" class="small-text">
+                                    <p
+                                    style="margin-bottom: 0px">Searching within <strong>The ACM Digital Library</strong> with <strong>Advanced Search</strong>: (Title:Model and Title:driven and Title:development and Title:secure and Title:XML)  (<a
+                                    href="?coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228" title="start a new search">start a new search</a>)</p>
+                                    <p
+                                    style="margin-bottom: 0px; margin-top: 4px" class="small-text">
+
+Found <b>2</b> of <b>277,226</b>
+                                    </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <script language="javascript">
+//----------------------------------------------
+var ie4 = false; if(document.all) { ie4 = true; }
+function getObject(id) { if (ie4) { return document.all[id]; } else { return document.getElementById(id); } }
+function toggle(link, divId) { var lText = link.innerHTML; var d = getObject(divId);
+ if (lText.match("arrow-down")) { link.innerHTML = '&lt;img src="gifs/arrow-right.gif" border="0" width="7" height="7" alt="show"&gt;&amp;nbsp;'+divId; d.style.display = 'none'; }
+ else { link.innerHTML = '&lt;img src="gifs/arrow-down.gif" border="0" width="7" height="7" alt="hide"&gt;&amp;nbsp;&lt;strong&gt;'+divId+'&lt;/strong&gt;'; d.style.display = 'block'; } }
+</script>
+                        <style type="text/css">
+#navigation a
+{
+background: #fb0 url("left-tab.gif") left top no-repeat;
+color: #000;
+text-decoration: none;
+padding-left: 10px
+}
+
+#navigation a span
+{
+background: url("right-tab.gif") right top no-repeat;
+padding-right: 10px
+}
+
+#navigation a, #navigation a span
+{
+display: block;
+float: left
+}
+
+/* Commented backslash hack hides rule from IE5-Mac \*/
+#navigation a, #navigation a span
+{
+float: none
+}
+/* End IE5-Mac hack */
+
+#navigation a:hover
+{
+color: #fff;
+background: #26a url("left-tab-hover.gif") left top no-repeat;
+text-decoration: none;
+padding-left: 10px
+}
+
+#navigation a:hover span
+{
+background: url("right-tab-hover.gif") right top no-repeat;
+padding-right: 10px
+}
+
+#navigation
+{
+list-style: none;
+padding: 0;
+margin: 0
+}
+
+#navigation li
+{
+float: left;
+display: block;
+margin: 0;
+padding: 0
+}
+
+#navigation a.activeTab, a.activeTab:hover, a.activeTab:visited {
+  background: #26a url("left-tab-hover.gif") left top no-repeat;
+  color: #FFF;
+}
+#navigation a span.activeTab
+{
+background: url("right-tab-hover.gif") right top no-repeat;
+padding-right: 10px
+}
+</style>
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <col width="20%">
+                                <col width="80%">
+                                    <tr>
+                                    <td class="small-text">
+                                    <strong>REFINE YOUR SEARCH</strong>
+                                    </td>
+                                    <td valign="top" class="small-text">
+                                    <ul id="navigation">
+                                    <li>
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM" class="activeTab">
+                                    <span class="activeTab">Search Results</span>
+                                    </a>
+                                    </li>
+                                    <li style="margin-left: 25px"> </li>
+                                    <li>   </li>
+                                    <li>
+                                    <a href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dim=3214&amp;dimoreprod=3214&amp;dimgroup=3214&amp;dimtab=3214">
+                                    <span>Related SIGs</span>
+                                    </a>
+                                    </li>
+                                    <li>
+                                    <a href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dim=3220&amp;dimoreprod=3220&amp;dimgroup=3220&amp;dimtab=3220">
+                                    <span>Related Conferences</span>
+                                    </a>
+                                    </li>
+                                    </ul>
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td valign="top"
+                                    class="small-text" height="2"/>
+                                    <td class="small-text"
+                                    height="2" valign="top" bgcolor="#2166a4"/>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td style="padding-top: 3px;">
+                                    <div style="border: 1px solid #000000; background: #FFFFFF;">
+                                    <table cellpadding="2"
+                                    style="background: #2266aa; color:#000000; "
+                                    border="0"
+                                    cellspacing="0" width="99%">
+                                    <tr>
+                                    <td class="small-text">
+                                    <a
+                                    id="Refine by Keywords_link"
+                                    onclick="toggle(this, 'Refine by Keywords');"
+                                    title="show/hide"
+                                    style="text-decoration: none; color: #FFFFFF; " href="javascript: void(0);">
+                                    <img
+                                    src="gifs/arrow-down.gif"
+                                    height="7"
+                                    border="0"
+                                    alt="hide" width="7"/> <strong>Refine by Keywords</strong>
+                                    </a>
+                                    </td>
+                                    <td
+                                    class="small-text" align="right"/>
+                                    </tr>
+                                    </table>
+                                    <div
+                                    id="Refine by Keywords" style="margin-left: 3px">
+                                    <form
+                                    action="results.cfm?coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228"
+                                    method="post"
+                                    style="margin-bottom: 0px" name="qiksearch2">
+                                    <input value=""
+                                    class="pubdescr"
+                                    type="Text"
+                                    name="query" size="20"/>
+                                    <input
+                                    src="http://portal.acm.org/images/search_small.jpg"
+                                    border="0"
+                                    type="Image"
+                                    alt="Search"
+                                    align="right" name="Go"/>
+                                    </form>
+                                    <br/>
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=4&amp;dim=3212" class="small-text">Discovered Terms</a>
+                                    <br/>
+                                    <div
+                                    style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+                                    </div>
+                                    <noscript/>
+                                    </div>
+                                    <div
+                                    style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+                                    <div style="border: 1px solid #000000; background: #FFFFFF;">
+                                    <table cellpadding="2"
+                                    style="background: #2266aa; color:#000000; "
+                                    border="0"
+                                    cellspacing="0" width="99%">
+                                    <tr>
+                                    <td class="small-text">
+                                    <a
+                                    id="Refine by People_link"
+                                    onclick="toggle(this, 'Refine by People');"
+                                    title="show/hide"
+                                    style="text-decoration: none; color: #FFFFFF; " href="javascript: void(0);">
+                                    <img
+                                    src="gifs/arrow-down.gif"
+                                    height="7"
+                                    border="0"
+                                    alt="hide" width="7"/> <strong>Refine by People</strong>
+                                    </a>
+                                    </td>
+                                    <td
+                                    class="small-text" align="right"/>
+                                    </tr>
+                                    </table>
+                                    <div
+                                    id="Refine by People" style="margin-left: 3px">
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=3&amp;dim=4" class="small-text">Names</a>
+                                    <br/>
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=3&amp;dim=3208" class="small-text">Institutions</a>
+                                    <br/>
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=3&amp;dim=2" class="small-text">Authors</a>
+                                    <br/>
+                                    <div
+                                    style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+                                    </div>
+                                    <noscript/>
+                                    </div>
+                                    <div
+                                    style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+                                    <div style="border: 1px solid #000000; background: #FFFFFF;">
+                                    <table cellpadding="2"
+                                    style="background: #2266aa; color:#000000; "
+                                    border="0"
+                                    cellspacing="0" width="99%">
+                                    <tr>
+                                    <td class="small-text">
+                                    <a
+                                    id="Refine by Publications_link"
+                                    onclick="toggle(this, 'Refine by Publications');"
+                                    title="show/hide"
+                                    style="text-decoration: none; color: #FFFFFF; " href="javascript: void(0);">
+                                    <img
+                                    src="gifs/arrow-down.gif"
+                                    height="7"
+                                    border="0"
+                                    alt="hide" width="7"/> <strong>Refine by Publications</strong>
+                                    </a>
+                                    </td>
+                                    <td
+                                    class="small-text" align="right"/>
+                                    </tr>
+                                    </table>
+                                    <div
+                                    id="Refine by Publications" style="margin-left: 3px">
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=6&amp;dim=3221" class="small-text">Publication Year</a>
+                                    <br/>
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=6&amp;dim=1" class="small-text">Publication Names</a>
+                                    <br/>
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=6&amp;dim=3224" class="small-text">ACM Publications</a>
+                                    <br/>
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=6&amp;dim=3225" class="small-text">All Publications</a>
+                                    <br/>
+                                    <div
+                                    style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+                                    </div>
+                                    <noscript/>
+                                    </div>
+                                    <div
+                                    style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+                                    <div style="border: 1px solid #000000; background: #FFFFFF;">
+                                    <table cellpadding="2"
+                                    style="background: #2266aa; color:#000000; "
+                                    border="0"
+                                    cellspacing="0" width="99%">
+                                    <tr>
+                                    <td class="small-text">
+                                    <a
+                                    id="Refine by Conferences_link"
+                                    onclick="toggle(this, 'Refine by Conferences');"
+                                    title="show/hide"
+                                    style="text-decoration: none; color: #FFFFFF; " href="javascript: void(0);">
+                                    <img
+                                    src="gifs/arrow-down.gif"
+                                    height="7"
+                                    border="0"
+                                    alt="hide" width="7"/> <strong>Refine by Conferences</strong>
+                                    </a>
+                                    </td>
+                                    <td
+                                    class="small-text" align="right"/>
+                                    </tr>
+                                    </table>
+                                    <div
+                                    id="Refine by Conferences" style="margin-left: 3px">
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=5&amp;dim=3207" class="small-text">Sponsors</a>
+                                    <br/>
+                                    <a
+                                    href="?within=&amp;CFID=88256700&amp;CFTOKEN=47174228&amp;adv=1&amp;COLL=ACM&amp;qrycnt=47&amp;Go.x=39&amp;Go.y=12&amp;termzone=Title&amp;allofem=Model+driven+development+secure+XML&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;dl=ACM&amp;dimgroup=5&amp;dim=3206" class="small-text">Proceeding Series</a>
+                                    <br/>
+                                    <div
+                                    style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+                                    </div>
+                                    <noscript/>
+                                    </div>
+                                    <div
+                                    style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+                                    </td>
+                                    </tr>
+                                </col>
+                            </col>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+        <div style="margin-top: 5px; margin-bottom:0px" class="small-text"/>
+        <div style="margin-top: 5px" class="small-text">
+            <br/>
+            <strong>ADVANCED SEARCH</strong>
+            <br/>
+            <img src="http://portal.acm.org/gifs/advsearch.gif"
+                height="16" border="0" alt="Advanced search."
+                width="16"/> 
+
+								<a href="advsearch.cfm?coll=ACM&amp;dl=ACM&amp;query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;qrycnt=2&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;CFID=88256700&amp;CFTOKEN=47174228">Advanced Search</a>
+            <br/>
+            <br/>
+            <strong>FEEDBACK</strong>
+            <br/>
+            <img src="http://portal.acm.org/images/feedback.gif"
+                height="19" border="0"
+                alt="Please provide us with feedback." width="20"/> <a href="feedback.cfm?CFID=88256700&amp;CFTOKEN=47174228">Please provide us with feedback</a>
+            <br/>
+            <br/>
+
+				Found <b>2</b> of <b>277,226</b>
+        </div>
+        <br/>
+        <td>
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td style="padding-left: 5px" colspan="3">
+                        <table class="small-text" border="0"
+                            width="100%" align="left">
+                            <tr valign="top">
+                                <td>
+			Results 1 - 2 of 2
+			<div style="margin-top: 5px; margin-bottom: 5px">
+                                    <a href="https://portal.acm.org/poplogin.cfm?dl=ACM&amp;coll=ACM&amp;comp_id=COMPONENT034&amp;want_href=results%2Ecfm%3Fquery%3D%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29%26backfrombind%3D1%26within%3D%26CFID%3D88256700%26CFTOKEN%3D47174228%26adv%3D1%26COLL%3DACM%26qrycnt%3D47%26DL%3DACM%26Go%2Ex%3D39%26Go%2Ey%3D12%26termzone%3DTitle%26allofem%3DModel%2Bdriven%2Bdevelopment%2Bsecure%2BXML%26anyofem%3D%26noneofem%3D%26peoplezone%3DName%26people%3D%26peoplehow%3Dand%26keyword%3D%26keywordhow%3DAND%26affil%3D%26affilhow%3DAND%26pubin%3D%26pubinhow%3Dand%26pubby%3D%26pubbyhow%3DOR%26since%5Fyear%3D%26before%5Fyear%3D%26pubashow%3DOR%26sponsor%3D%26sponsorhow%3DAND%26confdate%3D%26confdatehow%3DOR%26confloc%3D%26conflochow%3DOR%26isbnhow%3DOR%26isbn%3D%26doi%3D%26ccs%3D%26subj%3D%26query%3D%2528Title%253AModel%2520and%2520Title%253Adriven%2520and%2520Title%253Adevelopment%2520and%2520Title%253Asecure%2520and%2520Title%253AXML%2529&amp;CFID=88256700&amp;CFTOKEN=47174228">
+                                    <img
+                                    src="http://portal.acm.org/images/binder.gif"
+                                    border="0" hspace="3" alt="Save to Binder"/>Save results to a Binder</a>
+                                    <img border="0" name="saved" src="http://portal.acm.org/images/blanks.gif"/>
+                                    </div>
+                                </td>
+                                <td align="right">
+                                    <form action="" method="post"
+                                    style="margin-top: 0px; margin-bottom: 0px"
+                                    name="picksort">
+Sort by
+		<select
+                                    onchange="surfto('picksort',0)" name="selsort">
+                                    <option
+                                    value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;srt=score%20dsc&amp;short=0&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228" selected="selected">relevance</option>
+                                    <option value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;srt=meta%5Ftitle%20asc&amp;short=0&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228">title</option>
+                                    <option value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;srt=meta%5Fpublication%20asc&amp;short=0&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228">publication</option>
+                                    <option value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;srt=meta%5Fpublished%5Fdate%20dsc&amp;short=0&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228">publication date</option>
+                                    <option value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;srt=meta%5Fpublisher%5Fname%20asc&amp;short=0&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228">publisher</option>
+                                    <option value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;srt=CitedCount&amp;short=0&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228">citation count</option>
+                                    <option value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;srt=DownloadCount6&amp;short=0&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228">downloads (6 Weeks)</option>
+                                    <option value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;srt=DownloadCount&amp;short=0&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228">downloads (12 Months)</option>
+                                    </select>
+	in
+	  		<select
+                                    onchange="surfto('picksort',1)" name="seldisp">
+                                    <option
+                                    value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;start=1&amp;slide=1&amp;srt=score%20dsc&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228" selected="selected">expanded form</option>
+                                    <option value="results.cfm?query=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;querydisp=%28Title%3AModel%20and%20Title%3Adriven%20and%20Title%3Adevelopment%20and%20Title%3Asecure%20and%20Title%3AXML%29&amp;start=1&amp;slide=1&amp;srt=score%20dsc&amp;short=1&amp;coll=ACM&amp;dl=ACM&amp;source_disp=&amp;source_query=Owner%3AACM&amp;since_month=&amp;since_year=&amp;before_month=&amp;before_year=&amp;termshow=matchboolean&amp;range_query=&amp;zadv=1&amp;CFID=88256700&amp;CFTOKEN=47174228">condensed form</option>
+                                    </select>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <td align="right" colspan="2" nowrap="nowrap"/>
+                            </tr>
+                            <tr valign="top">
+                                <td/>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <td class="small-text" valign="top"
+                        style="padding-left: 5px" align="center">
+                        <strong>1</strong>
+                        <br/>
+                        <img
+                            src="http://portal.acm.org/images/ACM_mini.jpg"
+                            height="24" border="0" vspace="7" alt="" width="25"/>
+                    </td>
+                    <td style="padding-bottom: 15px">
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <col width="10%">
+                                <col width="1%">
+                                    <col width="89%">
+                                    <tr>
+                                    <td colspan="3">
+                                    <A target="_self"
+                                    href="citation.cfm?id=1754239.1754251&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228" class="medium-text">Model driven development of secure XML data warehouses: a case study</A>
+                                    <div class="authors">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												Belén Vela,
+
+
+
+
+
+
+
+
+
+
+
+
+												Carlos Blanco,
+
+
+
+
+
+
+
+
+
+
+
+
+												Eduardo Fernández-Medina,
+
+
+
+
+
+
+
+
+
+
+
+
+												Esperanza Marcos
+
+
+
+
+
+
+
+		 					</div>
+                                    </td>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td class="small-text" nowrap="nowrap">
+
+
+
+							March 2010
+
+					</td>
+                                    <td/>
+                                    <td>
+                                    <div class="addinfo">
+                                    <strong>EDBT '10: </strong>Proceedings of the 2010 EDBT/ICDT Workshops
+
+
+
+					</div>
+                                    </td>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td class="small-text"
+                                    colspan="3" nowrap="nowrap">
+
+                                    <strong>Publisher:</strong> ACM
+
+
+
+									<a
+                                    target="_blank"
+                                    class="small-link-text"
+                                    title="Request Permissions" href="rightslink.cfm?id=1754251&amp;parent_id=1754239">
+                                    <img
+                                    src="images/RL_Reprint_2.gif"
+                                    height="16"
+                                    border="0"
+                                    alt="Request Permissions" width="17"/> Request Permissions</a>   
+
+						</td>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td valign="top"
+                                    class="smaller-text" colspan="3">
+                                    <table cellpadding="0"
+                                    border="0"
+                                    cellspacing="0" width="100%">
+                                    <tr valign="top">
+                                    <col width="35%">
+                                    <col width="65%">
+                                    <td class="smaller-text">
+
+                                    <table
+                                    border="0" cellpadding="0">
+
+                                    <tr valign="top">
+
+                                    <td
+                                    class="smaller-text" nowrap="nowrap">
+																Full text available:</td>
+
+                                    <td
+                                    valign="top"
+                                    class="smaller-text" nowrap="nowrap">
+
+                                    <A
+                                    target="_blank"
+                                    href="ft_gateway.cfm?id=1754251&amp;type=pdf&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228" title="Pdf">
+
+                                    <img
+                                    src="http://portal.acm.org/imagetypes/pdf_logo.gif"
+                                    style="margin-right: 2px"
+                                    border="0"
+                                    alt="Pdf" align="middle"/>Pdf</A>
+																			 (309.29 KB)
+
+
+
+																</td>
+                                    </tr>
+                                    </table>
+                                    </td>
+                                    <td class="smaller-text">
+
+                                    <table
+                                    border="0" cellpadding="0">
+
+                                    <tr valign="top">
+
+                                    <td
+                                    class="smaller-text" nowrap="nowrap">Additional Information:</td>
+
+                                    <td class="smaller-text">
+
+                                    <img
+                                    src="http://portal.acm.org/images/doc_blank.gif"
+                                    height="16"
+                                    border="0"
+                                    alt=""
+                                    align="texttop" width="1"/>
+
+                                    <A
+                                    target="_self"
+                                    href="citation.cfm?id=1754239.1754251&amp;jmp=cit&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228#CIT">full citation</A>, <A
+                                    target="_self"
+                                    href="citation.cfm?id=1754239.1754251&amp;jmp=abstract&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228#abstract">abstract</A>, <A
+                                    target="_self" href="citation.cfm?id=1754239.1754251&amp;jmp=references&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228#references"> references</A>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    </td>
+                                    </col>
+                                    </col>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td
+                                    class="small-text"
+                                    colspan="3"
+                                    nowrap="nowrap" style="padding-top: 5px">
+                                    <strong>Bibliometrics</strong>:  Downloads (6 Weeks): 7,    Downloads (12 Months): 7,    Downloads (Overall): 7,     Citation Count: 0</td>
+                                    </tr>
+                                    <tr>
+                                    <td height="5">
+                                    <img
+                                    src="http://portal.acm.org/images/blanks.gif"
+                                    height="1"
+                                    border="0"
+                                    alt="" width="1"/>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    </td>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td colspan="3">
+                                    <div class="abstract2">
+                                    <br/>
+                                    <p>Data Warehouses (DWs) are currently considered to be the cornerstone of Business Intelligence (BI) systems. Security is a key issue in DWs since the business information that they manage is crucial and highly sensitive, and should be carefully protected. ...</p>
+                                    <br/>
+                                    <b>Keywords</b>: MDA, XML, model driven development, secure XML data warehouse
+
+
+
+						</div>
+                                    </td>
+                                    </tr>
+                                    </col>
+                                </col>
+                            </col>
+                        </table>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <td class="small-text" valign="top"
+                        style="padding-left: 5px" align="center">
+                        <strong>2</strong>
+                        <br/>
+                        <img
+                            src="http://portal.acm.org/images/ACM_mini.jpg"
+                            height="24" border="0" vspace="7" alt="" width="25"/>
+                    </td>
+                    <td style="padding-bottom: 15px">
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <col width="10%">
+                                <col width="1%">
+                                    <col width="89%">
+                                    <tr>
+                                    <td colspan="3">
+                                    <A target="_self"
+                                    href="citation.cfm?id=1168092.1168095&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228" class="medium-text">Model driven development of secure XML databases</A>
+                                    <div class="authors">
+                                    <a
+                                    href="author_page.cfm?id=81319503347&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228">Belén Vela</a>,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												<a
+                                    href="author_page.cfm?id=81319491750&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228">Eduardo Fernández-Medina</a>,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												<a
+                                    href="author_page.cfm?id=81100340311&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228">Esperanza Marcos</a>,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												<a href="author_page.cfm?id=81100286659&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228">Mario Piattini</a>
+                                    </div>
+                                    </td>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td class="small-text" nowrap="nowrap">
+
+
+
+							September 2006
+
+					</td>
+                                    <td/>
+                                    <td>
+                                    <div class="addinfo">
+                                    <strong>SIGMOD Record</strong>
+                                    <font size="-2">, Volume 35 Issue 3</font>
+                                    </div>
+                                    </td>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td class="small-text"
+                                    colspan="3" nowrap="nowrap">
+                                    <strong>Publisher:</strong> ACM
+
+						</td>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td valign="top"
+                                    class="smaller-text" colspan="3">
+                                    <table cellpadding="0"
+                                    border="0"
+                                    cellspacing="0" width="100%">
+                                    <tr valign="top">
+                                    <col width="35%">
+                                    <col width="65%">
+                                    <td class="smaller-text">
+
+                                    <table
+                                    border="0" cellpadding="0">
+
+                                    <tr valign="top">
+
+                                    <td
+                                    class="smaller-text" nowrap="nowrap">
+																Full text available:</td>
+
+                                    <td
+                                    valign="top"
+                                    class="smaller-text" nowrap="nowrap">
+
+                                    <A
+                                    target="_blank"
+                                    href="ft_gateway.cfm?id=1168095&amp;type=pdf&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228" title="Pdf">
+
+                                    <img
+                                    src="http://portal.acm.org/imagetypes\pdf_logo.gif"
+                                    style="margin-right: 2px"
+                                    border="0"
+                                    alt="Pdf" align="middle"/>Pdf</A>
+																			 (152.96 KB)
+
+
+
+																</td>
+                                    </tr>
+                                    </table>
+                                    </td>
+                                    <td class="smaller-text">
+
+                                    <table
+                                    border="0" cellpadding="0">
+
+                                    <tr valign="top">
+
+                                    <td
+                                    class="smaller-text" nowrap="nowrap">Additional Information:</td>
+
+                                    <td class="smaller-text">
+
+                                    <img
+                                    src="http://portal.acm.org/images/doc_blank.gif"
+                                    height="16"
+                                    border="0"
+                                    alt=""
+                                    align="texttop" width="1"/>
+
+                                    <A
+                                    target="_self"
+                                    href="citation.cfm?id=1168092.1168095&amp;jmp=cit&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228#CIT">full citation</A>, <A
+                                    target="_self"
+                                    href="citation.cfm?id=1168092.1168095&amp;jmp=abstract&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228#abstract">abstract</A>, <A
+                                    target="_self"
+                                    href="citation.cfm?id=1168092.1168095&amp;jmp=references&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228#references"> references</A>, <A
+                                    target="_self" href="citation.cfm?id=1168092.1168095&amp;jmp=indexterms&amp;coll=ACM&amp;dl=ACM&amp;CFID=88256700&amp;CFTOKEN=47174228#indexterms"> index terms</A>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    </td>
+                                    </col>
+                                    </col>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td
+                                    class="small-text"
+                                    colspan="3"
+                                    nowrap="nowrap" style="padding-top: 5px">
+                                    <strong>Bibliometrics</strong>:  Downloads (6 Weeks): 22,    Downloads (12 Months): 104,    Downloads (Overall): 520,     Citation Count: 2</td>
+                                    </tr>
+                                    <tr>
+                                    <td height="5">
+                                    <img
+                                    src="http://portal.acm.org/images/blanks.gif"
+                                    height="1"
+                                    border="0"
+                                    alt="" width="1"/>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    </td>
+                                    </tr>
+                                    <tr valign="top">
+                                    <td colspan="3">
+                                    <div class="abstract2">
+                                    <br/>
+                                    <p>In this paper, we propose a methodological approach for the model driven development of secure XML databases (DB). This proposal is within the framework of MIDAS, a model driven methodology for the development of Web Information Systems based on the ...</p>
+                                    </div>
+                                    </td>
+                                    </tr>
+                                    </col>
+                                </col>
+                            </col>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table class="small-text" border="0"
+                            width="100%" align="left">
+                            <tr valign="top">
+                                <td align="right" colspan="2" nowrap="nowrap"/>
+                            </tr>
+                            <tr valign="top">
+                                <td/>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <tr>
+            <td>
+                <br/>
+                <br/>
+                <DIV class="footer-copy-text" align="center">
+
+
+
+
+	The ACM Portal is published by the Association for Computing Machinery. Copyright © 2010 ACM, Inc.<br/>
+                    <A
+                        href="http://www.acm.org/publications/policies/usage">Terms of Usage</A>  
+	<A
+                        href="http://www.acm.org/about/privacy-policy">Privacy Policy</A>  
+	<A
+                        href="http://www.acm.org/about/code-of-ethics">Code of Ethics</A>  
+	<A href="http://www.acm.org/about/contact-us">Contact Us</A>
+                    <br/>
+                    <br/>
+Useful downloads:
+<a href="http://www.adobe.com/products/acrobat/readstep2.html">
+                        <img
+                            src="http://portal.acm.org/images/pdf_logo.gif"
+                            height="16" border="0" alt=""
+                        width="16"/> Adobe Acrobat</a>
+  
+<a
+                        target="_blank" href="http://www.apple.com/quicktime/download/">
+                        <img
+                            src="http://portal.acm.org/images/qtlogo.gif"
+                            height="16" border="0" alt=""
+                        width="16"/> QuickTime</a>
+  
+<a target="_blank" href="http://www.microsoft.com/windows/windowsmedia/download/default.asp">
+                        <img src="http://portal.acm.org/images/wmv.gif"
+                            height="15" border="0" alt=""
+                        width="16"/> Windows Media Player</a>
+  
+<a
+                        target="_blank" href="http://www.real.com/">
+                        <img
+                            src="http://portal.acm.org/images/realplayer.gif"
+                            height="18" border="0" alt="" width="20"/> Real Player</a>
+                </DIV>
+            </td>
+        </tr>
+    </body>
+</html>

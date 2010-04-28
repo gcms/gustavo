@@ -35,4 +35,23 @@ class ACMPageParserTests extends GroovyTestCase {
 
         assertTrue results.every { it.citationCount >= 0 }
     }
+
+    void testeAuthorNoLink() {
+        DocumentBuilder dbi = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        Document doc = dbi.parse(new FileInputStream('res/acm-author-nolink.xml'))
+
+        PageProcessor pp = new PageProcessor(new ACMPageParser(), new ACMResultParser())
+
+        List results = pp.parsePage(doc)
+
+        SearchResult secureXML = results.first()
+
+        assertFalse secureXML.authors.empty
+        assertTrue secureXML.authors.contains('Belén Vela')
+
+        SearchResult second = results[1]
+        assertEquals 4, second.authors.size()
+        assertTrue second.authors.contains('Belén Vela')
+        assertTrue second.authors.contains('Mario Piattini')
+    }
 }
