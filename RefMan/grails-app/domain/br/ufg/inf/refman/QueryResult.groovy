@@ -8,6 +8,7 @@ class QueryResult {
     Engine engine
     String name
     String description
+    String url
 
     Date date = new Date()
 
@@ -15,11 +16,12 @@ class QueryResult {
     List results = []
 
     public QueryResult() {}
-    public QueryResult(Engine engine, Collection results, String name, String description) {
+    public QueryResult(Engine engine, Collection results, String name, String description, String url) {
         this.engine = engine
         addResults(results)
         this.name = name
         this.description = description
+        this.url = url
     }
 
     public void addResults(Collection results) {

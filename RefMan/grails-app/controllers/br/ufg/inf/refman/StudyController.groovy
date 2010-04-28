@@ -10,7 +10,7 @@ class StudyController {
     private void initSession(Map fields, String action, List similarResults, List selectedResults) {
         session.fields = new HashMap(fields)
         session.fields.action = action
-        session.fields.year = fields.year ?: fields.publicationYear
+        session.fields.year = fields.year ?: fields.publicationYear 
 
         session.similarResults = similarResults.collect { it.id.toString() }
         session.selectedResults = selectedResults.collect { it.id.toString() }

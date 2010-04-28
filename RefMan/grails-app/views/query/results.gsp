@@ -25,6 +25,7 @@
           <label for="description">Description:</label>
           <g:textArea name="description"/>
         </p>
+        <g:hiddenField name="url" value="${url}"/>
         <g:submitButton name="save" value="Save"/>
       </g:form>
     </fieldset>

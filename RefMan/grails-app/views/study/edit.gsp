@@ -29,7 +29,7 @@
       <form id="study-form" action="${fields.action}" method="POST">
         <p>
           <label for="title">Title:</label>
-          <g:textField name="title" value="${fields.title}"/>
+          <g:textField name="title" value="${fields.title}" size="${fields.title.length()}"/>
         </p>
         <p>
           <label for="authorsString">Authors:</label>
@@ -47,6 +47,13 @@
         <g:submitButton name="save" value="Save"/>
       </form>
     </fieldset>
+
+  <!--
+  <g:set var="query" value="${'allintitle:' + fields.normalizedTitle.replaceAll(' ', '.')}"/>
+  <iframe src="http://scholar.google.com/scholar?q=${query}" width="100%" height="300px"/>
+  -->
+  <g:set var="query" value="${fields.normalizedTitle.replaceAll(' ', '.')}"/>
+  <iframe src="http://www.google.com/search?q=${query}" width="100%" height="300px"/>
 
     <p><b>Selected</b></p>
     <g:each var="result" in="${selectedResults}">

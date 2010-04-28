@@ -20,6 +20,7 @@
     <p>Name: ${query.name}</p>
     <p>Date: ${query.date}</p>
     <p>Description:<br/>${query.description}</p>
+    <p>Results:<br/>${query.results.size()}</p>
     <g:render template="searchResults" var="results" model="[results: query.results]"/>
   </body>
 </html>
