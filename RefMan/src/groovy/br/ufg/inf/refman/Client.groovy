@@ -14,6 +14,7 @@ import org.lobobrowser.html.test.SimpleUserAgentContext
 import org.w3c.dom.Document
 import br.ufg.inf.refman.query.URLBuilder
 import org.apache.log4j.Logger
+import br.ufg.inf.utils.URLDOMBuilder
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,10 +26,7 @@ import org.apache.log4j.Logger
 class Client {
     private static Logger log = Logger.getLogger(Client)
 
-    HttpClient client
-
-    UserAgentContext context
-    DocumentBuilder dbi
+    URLDOMBuilder domBuilder
 
     URLBuilder queryBuilder
     PageProcessor pageProcessor
@@ -36,31 +34,18 @@ class Client {
 
     public Client(URLBuilder queryBuilder, SiteDirector siteDirector,
                   PageParser pageParser, ResultParser resultParser) {
-        client = new DefaultHttpClient()
-        context = new ScriptSetupSimpleUserAgentContext() //new SimpleUserAgentContext()
-        dbi = new DocumentBuilderImpl(context)
+        domBuilder = new URLDOMBuilder()
 
         this.queryBuilder = queryBuilder
         this.siteDirector = siteDirector
         pageProcessor = new PageProcessor(pageParser, resultParser)
     }
 
-    private InputSource executeRequest(URI uri) {
-        HttpGet get = new HttpGet(uri)
-        HttpResponse response = client.execute(get)
-
-        String charset = response.entity.contentEncoding?.value ?: System.getProperty('file.encoding')
-        new InputSourceImpl(response.entity.content, get.URI.toString(), charset)
-    }
-
     public List getResultsFromURI(URI uri) {
-        log.debug "Getting results from '${uri}'..."
-        InputSource response = executeRequest(uri)
-
-        log.debug "Parsing HTML..."
-        Document document = dbi.parse(response)
-
-        log.debug "Extracting data..."
+        log.debug "Getting DOM from '${uri}'"
+        Document document = domBuilder.getDocument(uri)
+        
+        log.debug "Extracting results"
         pageProcessor.parsePage(document)
     }
 
@@ -79,11 +64,3 @@ class Client {
     }
 }
 
-
-class ScriptSetupSimpleUserAgentContext extends SimpleUserAgentContext {
-    boolean scriptEnabled = false
-    
-    public boolean isScriptingEnabled() {
-        scriptEnabled
-    }
-}

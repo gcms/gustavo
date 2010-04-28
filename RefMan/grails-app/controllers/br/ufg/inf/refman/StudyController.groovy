@@ -4,12 +4,12 @@ class StudyController {
     SearchResultService searchResultService
 
     def index = {
-        [studies: Study.list()]
+        [studies: Study.list().sort { -it.citationCount }]
     }
 
     private void initSession(Map fields, String action, List similarResults, List selectedResults) {
         session.fields = new HashMap(fields)
-        session.fields.action = action
+        session.fields.acao = action
         session.fields.year = fields.year ?: fields.publicationYear 
 
         session.similarResults = similarResults.collect { it.id.toString() }
@@ -64,7 +64,9 @@ class StudyController {
         study.citationCount = params.citationCount.toInteger()
       
         study.results.removeAll(getResults(session.similarResults))
-        study.results.addAll(getResults(session.selectedResults))
+        getResults(session.selectedResults).each {
+            study.addResult(it)
+        }        
         study.save(flush: true)
 
         redirect(action: view, id: study.id)

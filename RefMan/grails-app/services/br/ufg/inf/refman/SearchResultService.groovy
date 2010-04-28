@@ -8,7 +8,7 @@ class SearchResultService {
     int relevanceThreshold = 10
 
     List getSimilarResults(SearchResult searchResult) {
-        List allResults = SearchResult.list().findAll { !it.study } - searchResult
+        List allResults = SearchResult.list().findAll { it.study == null } - searchResult
 
         log.debug "Results found: ${allResults.size()}"
 
