@@ -8,7 +8,7 @@ class QueryController {
 
     static allowedMethods = [
             index: 'GET', query: 'POST', results: 'GET',
-            save: 'POST', list: 'GET', delete: 'POST', view: 'GET'
+            save: 'POST', list: 'GET', view: 'GET'
     ]
 
     def index = {
@@ -19,8 +19,8 @@ class QueryController {
     def query = {
         Engine engine = Engine.get(params.engine)
 
-        String url = params.url ?: engine.client.buildURL(params.query)
-        session.results = queryService.getResults(engine, url)
+        session.url = params.url ?: engine.client.buildURL(params.query)
+        session.results = queryService.getResults(engine, session.url)
         session.engine = engine.id
         redirect(action: results)
     }
@@ -31,12 +31,12 @@ class QueryController {
             return
         }
         
-        [engine: session.engine, results: session.results]
+        [engine: session.engine, results: session.results, url: session.url]
     }
 
     def save = {
         Engine engine = Engine.get(params.engine)
-        QueryResult queryResult = new QueryResult(engine, session.results, params.name, params.description)
+        QueryResult queryResult = new QueryResult(engine, session.results, params.name, params.description, params.url)
         assert queryResult.results.size() > 0
         queryResult.save(flush: true)
         redirect(action: list)

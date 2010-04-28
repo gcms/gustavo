@@ -1,5 +1,7 @@
 package br.ufg.inf.refman
 
+import br.ufg.inf.utils.Normalizer
+
 /**
  * Created by IntelliJ IDEA.
  * User: gustavo
@@ -15,7 +17,7 @@ class Study {
     }
 
     static hasMany = [results:SearchResult, authors:String]
-    static transients = [ 'authorsString' ]
+    static transients = [ 'authorsString', 'normalizedTitle' ]
 
     public Study() {}
     public Study(Map params, Collection results) {
@@ -43,5 +45,9 @@ class Study {
 
     public String getAuthorsString() {
         authors.join(', ')
+    }
+
+    public String getNormalizedTitle() {
+        title ? Normalizer.normalize(title) : null
     }
 }
