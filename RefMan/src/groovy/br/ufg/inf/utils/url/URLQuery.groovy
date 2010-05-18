@@ -8,25 +8,34 @@ package br.ufg.inf.utils.url
  * To change this template use File | Settings | File Templates.
  */
 class URLQuery {
-    private LinkedHashMap query = [:]
+    private List entries = []
 
     public URLQuery(String query) {
-        println query
         query.tokenize('&?').each { String keyValStr ->
             String[] keyVal = keyValStr.split('=', 2)
-            setParam(keyVal[0], keyVal[1])
+            entries.add(new MapEntry(keyVal[0], keyVal[1]))
         }
     }
 
+    private MapEntry getEntry(String key) {
+        MapEntry entry = entries.find { it.key == key }
+        if (entry == null) {
+            entry = new MapEntry(key, null)
+            entries.add(entry)
+        }
+
+        entry
+    }
+
     public void setParam(String key, String val) {
-        query[key] = val
+        getEntry(key).value = val
     }
 
     public String getParam(String key) {
-        query[key]
+        getEntry(key).value
     }
 
     public String toString() {
-        query.entrySet().collect { "${it.key}=${it.value}" }.join('&')
+        entries.findAll { it.value }.collect { "${it.key}=${it.value}" }.join('&')
     }
 }

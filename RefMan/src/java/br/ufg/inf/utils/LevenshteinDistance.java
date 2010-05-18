@@ -1,6 +1,12 @@
 package br.ufg.inf.utils;
 
 public class LevenshteinDistance {
+
+    public static int calculateDistanceToLengthRation(String source, String target) {
+        double distance = calcule(source, target);
+
+        return (int) (distance / target.length() + distance / source.length());
+    }
     public static int calcule(String source, String target) {
       /*
         The difference between this impl. and the previous is that, rather

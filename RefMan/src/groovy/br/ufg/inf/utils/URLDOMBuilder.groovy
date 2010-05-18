@@ -26,7 +26,7 @@ class URLDOMBuilder {
     }
 
     Document getDocument(URI uri) {
-        log.debug "Fetchomg URI '${uri}'"
+        log.debug "Fetching URI '${uri}'"
         Reader reader = fetchURI(uri)
 
         log.debug "Parsing HTML response"

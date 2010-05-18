@@ -2,6 +2,7 @@ package br.ufg.inf.refman.query
 
 import br.ufg.inf.refman.Engine
 import br.ufg.inf.refman.QueryResult
+import br.ufg.inf.utils.ObjectFilter
 
 class QueryController {
     QueryService queryService
@@ -12,7 +13,10 @@ class QueryController {
     ]
 
     def index = {
-        println Engine.list().size()
+        redirect(action: create)
+    }
+
+    def create = {
         [engines: Engine.list()]
     }
 
@@ -27,23 +31,30 @@ class QueryController {
 
     def results = {
         if (!session.results || session.results.empty || !session.engine) {
-            redirect(action: index)
+            flash.message = 'No results found'
+            redirect(action: create)
             return
         }
-        
-        [engine: session.engine, results: session.results, url: session.url]
+
+        QueryResult query = new QueryResult(Engine.get(session.engine), session.results, '', '', session.url)        
+        [query: query]
     }
 
+
+    
     def save = {
         Engine engine = Engine.get(params.engine)
         QueryResult queryResult = new QueryResult(engine, session.results, params.name, params.description, params.url)
+
         assert queryResult.results.size() > 0
+
         queryResult.save(flush: true)
         redirect(action: list)
     }
 
     def list = {
-        [results: QueryResult.list()]
+        params.max = params.max ?: 100
+        [queries: ObjectFilter.filter(QueryResult.list(), params), queriesCount: QueryResult.count()]
     }
 
     def delete = {
