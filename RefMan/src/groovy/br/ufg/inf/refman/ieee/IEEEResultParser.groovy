@@ -22,8 +22,7 @@ class IEEEResultParser implements ResultParser {
 
     private XPath xpath = XPathFactory.newInstance().newXPath()
     
-    public SearchResult parse(Node node) {
-        println XMLUtils.instance.nodeToHTML(node)
+    public SearchResult parse(Node node) {        
         new SearchResult(html: XMLUtils.instance.nodeToHTML(node),
                 title: parseTitle(node), authors: parseAuthors(node),
                 description: parseDescription(node), publication: parsePublication(node))

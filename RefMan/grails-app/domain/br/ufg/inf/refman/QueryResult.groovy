@@ -13,6 +13,8 @@ class QueryResult {
     Date date = new Date()
 
     static hasMany = [results:SearchResult]
+    static transients = [ 'resultCount' ]
+
     List results = []
 
     public QueryResult() {}
@@ -31,5 +33,9 @@ class QueryResult {
     public void addResult(SearchResult sr) {
         sr.queryResult = this
         results.add(sr)
+    }
+
+    public int getResultCount() {
+        results.size()
     }
 }

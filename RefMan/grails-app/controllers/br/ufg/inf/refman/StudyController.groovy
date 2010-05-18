@@ -2,6 +2,7 @@ package br.ufg.inf.refman
 
 class StudyController {
     SearchResultService searchResultService
+    StudyService studyService
 
     def index = {
         [studies: Study.list().sort { -it.citationCount }]
@@ -20,19 +21,42 @@ class StudyController {
         ids.collect { SearchResult.get(it) }
     }
 
+    def analyse = {
+        SearchResult searchResult = SearchResult.get(params.id)
+
+        if (searchResult.study) {
+            redirect(action: view, id: searchResult.study.id)
+            return
+        }
+
+        List studies = studyService.getSimilarResults(searchResult.title)
+        [searchResult: searchResult, studies: studies]
+    }
+
+    def associate = {
+        Study study = Study.get(params.id)
+        SearchResult searchResult = SearchResult.get(params.searchResult)
+
+        List similarResults = searchResultService.getSimilarResults(searchResult)
+        List selectedResults = (study.results as List) + [searchResult]
+        initSession(study.properties, 'update', similarResults, selectedResults)
+
+        redirect(action: edit)
+    }
+
     def newStudy = {
         SearchResult searchResult = SearchResult.get(params.id)
 
         List similarResults = searchResultService.getSimilarResults(searchResult)
-        initSession(searchResult.properties, 'save', similarResults, [])
+        initSession(searchResult.properties, 'save', similarResults, [searchResult])
 
         redirect(action: edit)
     }
 
     def edit = {
-        [fields: session.fields,
-                selectedResults: getResults(session.selectedResults),
-                similarResults: getResults(session.similarResults)]
+        Study study = new Study(session.fields, [])
+        study.results = getResults(session.selectedResults)
+        [study: study, fields: session.fields, similarResults: getResults(session.similarResults)]
     }
 
     def addItem = {
@@ -53,6 +77,8 @@ class StudyController {
         List results = getResults(session.selectedResults + [session.fields.id])
         Study study = new Study(session.fields, results)
         study.citationCount = params.citationCount.toInteger()
+
+        assert !study.results.empty
         study.save(flush: true)
 
         redirect(action: view, id: study.id)
@@ -60,13 +86,17 @@ class StudyController {
 
     def update = {
         Study study = Study.get(params.id)
+        println params
+        println study
         study.properties = params
         study.citationCount = params.citationCount.toInteger()
       
         study.results.removeAll(getResults(session.similarResults))
         getResults(session.selectedResults).each {
             study.addResult(it)
-        }        
+        }
+
+        assert !study.results.empty
         study.save(flush: true)
 
         redirect(action: view, id: study.id)
@@ -75,10 +105,11 @@ class StudyController {
     def view = {
         Study study = Study.get(params.id)
 
-        println study.results.size()
+        assert !study.results.empty
+        
         List similarResults = searchResultService.getSimilarResults(study.results.iterator().next())
         initSession(study.properties, 'update', similarResults, study.results as List)
 
-        redirect(action: edit)
+        render(model: [study: study, fields: session.fields, similarResults: getResults(session.similarResults)], view: 'edit')
     }
 }

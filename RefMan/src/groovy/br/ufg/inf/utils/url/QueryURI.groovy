@@ -36,4 +36,8 @@ class QueryURI {
     public URI getURI() {
         uri
     }
+
+    public String toString() {
+        getURI().toString()
+    }
 }

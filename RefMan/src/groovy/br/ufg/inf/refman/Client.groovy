@@ -43,6 +43,7 @@ class Client {
 
     public List getResultsFromURI(URI uri) {
         log.debug "Getting DOM from '${uri}'"
+        domBuilder = new URLDOMBuilder()
         Document document = domBuilder.getDocument(uri)
         
         log.debug "Extracting results"

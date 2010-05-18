@@ -7,6 +7,9 @@ import br.ufg.inf.refman.acm.ACMResultParser
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Document
+import br.ufg.inf.utils.URLDOMBuilder
+import br.ufg.inf.refman.PageParser
+import br.ufg.inf.refman.Client
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,5 +45,22 @@ class IEEEPageParserTests extends GroovyTestCase {
 
         SearchResult second = results[1]
         assertFalse first.title == second.title
+    }
+
+    void testeComURL() {
+        String url = "http://ieeexplore.ieee.org/search/freesearchresult.jsp?reload=true&action=search&sortType=&rowsPerPage=100&searchField=Search%20All&matchBoolean=true&queryText=((Document%20Title:middleware)%20AND%20Document%20Title:model)&refinements=4294967270&refinements=4294967131"
+        URLDOMBuilder domBuilder = new URLDOMBuilder()
+        Document doc = domBuilder.getDocument(new URI(url))
+        PageParser parser = new IEEEPageParser()
+
+        assertEquals 71, parser.getResults(doc).length
+    }
+
+    void testeCompleto() {
+        String url = "http://ieeexplore.ieee.org/search/freesearchresult.jsp?reload=true&action=search&sortType=&rowsPerPage=25&searchField=Search%20All&matchBoolean=true&queryText=((Document%20Title:middleware)%20AND%20Document%20Title:model)&refinements=4294967270&refinements=4294967131"
+        Client client = new IEEEClient()
+        List itens = client.executeURL(url)
+
+        assertEquals 71, itens.size()
     }
 }
