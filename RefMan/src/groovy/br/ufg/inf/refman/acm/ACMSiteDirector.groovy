@@ -2,6 +2,7 @@ package br.ufg.inf.refman.acm
 
 import br.ufg.inf.refman.SiteDirector
 import br.ufg.inf.utils.url.QueryURI
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,10 +12,13 @@ import br.ufg.inf.utils.url.QueryURI
  * To change this template use File | Settings | File Templates.
  */
 class ACMSiteDirector implements SiteDirector {
+    private static Logger log = Logger.getLogger(ACMSiteDirector)
     public List collectPages(String url, Closure closure) {
         List result = []
         int start = 1
 
+
+        log.debug "URL: ${url}"
         QueryURI queryURI = new QueryURI(url)
         while (true) {
             queryURI.setQueryParam('start', start)

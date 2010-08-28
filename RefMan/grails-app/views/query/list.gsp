@@ -11,6 +11,7 @@
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}">Home</a></span>
             <span class="menuButton"><g:link class="create" action="create"><g:message code="queryResult.new.label" args="[entityName]" /></g:link></span>
+            <span class="menuButton"><g:link class="list" controller="searchResult" action="list"><g:message code="searchResult.list.label" args="[entityName]" /></g:link></span>
         </div>
         <div class="body">
             <h1><g:message code="queryResult.list.label" args="[entityName]" /></h1>

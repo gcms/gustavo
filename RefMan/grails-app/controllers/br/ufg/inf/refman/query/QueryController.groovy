@@ -41,6 +41,13 @@ class QueryController {
     }
 
 
+    def update = {
+        QueryResult queryResult = QueryResult.get(params.id)
+        queryResult.properties = params
+        queryResult.save(flush: true)
+        redirect(action: view, id: params.id)
+    }
+
     
     def save = {
         Engine engine = Engine.get(params.engine)
