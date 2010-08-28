@@ -36,6 +36,6 @@ class URLQuery {
     }
 
     public String toString() {
-        entries.findAll { it.value }.collect { "${it.key}=${it.value}" }.join('&')
+        entries.findAll { it.value != null }.collect { "${it.key}=${it.value}" }.join('&')
     }
 }

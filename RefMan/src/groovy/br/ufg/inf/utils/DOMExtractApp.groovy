@@ -1,5 +1,6 @@
 package br.ufg.inf.utils
 
+import br.ufg.inf.refman.acm.ACMPageParser
 import org.w3c.dom.Document
 
 /**
@@ -11,9 +12,11 @@ import org.w3c.dom.Document
  */
 class DOMExtractApp {
     static void main(String[] args) {
-        String url = "http://portal.acm.org/results.cfm?within=&CFID=88256700&CFTOKEN=47174228&adv=1&COLL=ACM&qrycnt=47&DL=ACM&Go.x=39&Go.y=12&termzone=Title&allofem=Model+driven+development+secure+XML&anyofem=&noneofem=&peoplezone=Name&people=&peoplehow=and&keyword=&keywordhow=AND&affil=&affilhow=AND&pubin=&pubinhow=and&pubby=&pubbyhow=OR&since_year=&before_year=&pubashow=OR&sponsor=&sponsorhow=AND&confdate=&confdatehow=OR&confloc=&conflochow=OR&isbnhow=OR&isbn=&doi=&ccs=&subj="
+        String url = "http://portal.acm.org/results.cfm?within=&CFID=96422564&CFTOKEN=88074955&adv=1&COLL=Portal&qrycnt=3&DL=ACM&Go.x=3&Go.y=10&termzone=all&allofem=&anyofem=&noneofem=&peoplezone=Name&people=&peoplehow=and&keyword=%22model+driven%22&keywordhow=AND&affil=&affilhow=AND&pubin=&pubinhow=and&pubby=&pubbyhow=OR&since_year=&before_year=&pubashow=OR&sponsor=&sponsorhow=AND&confdate=&confdatehow=OR&confloc=&conflochow=OR&isbnhow=OR&isbn=&doi=&ccs=&subj="
 
         Document document = new URLDOMBuilder().getDocument(new URI(url))
         println XMLUtils.instance.nodeToHTML(document)
+
+         println new ACMPageParser().getResults(document).length
     }
 }

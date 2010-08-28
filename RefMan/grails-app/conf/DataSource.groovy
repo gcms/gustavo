@@ -33,7 +33,7 @@ environments {
             url = "jdbc:mysql://localhost:3306/refman"
             dbCreate =  "update"
             username = "root"
-            password = "donline"
+            password = "root"
 
 		}
 	}

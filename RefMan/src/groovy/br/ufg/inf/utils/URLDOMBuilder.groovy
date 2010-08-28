@@ -26,10 +26,15 @@ class URLDOMBuilder {
     }
 
     Document getDocument(URI uri) {
-        log.debug "Fetching URI '${uri}'"
+        log.info "Fetching URI '${uri}'"
         Reader reader = fetchURI(uri)
 
-        log.debug "Parsing HTML response"
+//        String text = reader.getText()
+//        log.debug text
+//
+//        reader = new StringReader(text)
+
+        log.info "Parsing HTML response"
         parser.parse(reader)
     }
 
