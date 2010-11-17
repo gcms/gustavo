@@ -85,3 +85,31 @@ log4j = {
 
     warn   'org.mortbay.log'
 }
+
+// Added by the Spring Security Core plugin:
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'br.gov.go.saude.hugo.ambulancia.Operador'
+grails.plugins.springsecurity.userLookup.usernamePropertyName = 'usuario'
+grails.plugins.springsecurity.userLookup.passwordPropertyName = 'senha'
+
+//grails.plugins.springsecurity.userLookup.authoritiesPropertyName = 'grupos'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'br.gov.go.saude.hugo.ambulancia.OperadorGrupo'
+
+grails.plugins.springsecurity.authority.className = 'br.gov.go.saude.hugo.ambulancia.Grupo'
+//grails.plugins.springsecurity.authority.nameField = 'authority'
+
+
+grails.plugins.springsecurity.rejectIfNoRule = true
+grails.plugins.springsecurity.securityConfigType = grails.plugins.springsecurity.SecurityConfigType.InterceptUrlMap
+
+grails.plugins.springsecurity.interceptUrlMap = [
+   '/**':           ['IS_AUTHENTICATED_REMEMBERED'],
+
+   '/js/**':        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+   '/css/**':       ['IS_AUTHENTICATED_ANONYMOUSLY'],
+   '/images/**':    ['IS_AUTHENTICATED_ANONYMOUSLY'],
+
+   '/operador/**':  ['ROLE_ADMIN', 'IS_AUTHENTICATED_REMEMBERED'],
+   '/login/**':     ['IS_AUTHENTICATED_ANONYMOUSLY'],
+   '/logout/**':    ['IS_AUTHENTICATED_ANONYMOUSLY']
+]
+
