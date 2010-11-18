@@ -26,6 +26,7 @@ class MotoristaTests extends GrailsUnitTestCase {
         assertFalse duplicado.validate()
 
         duplicado.save() // item duplicado => não será salvo
+        assertEquals 'unique', duplicado.errors['nome']
         assertEquals 1, Motorista.count() // continua 1 item após salvar
     }
 

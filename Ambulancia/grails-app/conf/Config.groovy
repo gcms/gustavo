@@ -67,9 +67,10 @@ log4j = {
     // Example of changing the log pattern for the default console
     // appender:
     //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
+    appenders {
+        file name:'file', file: "${grails.util.Environment.currentEnvironment}.log"
+//        console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+    }
 
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -83,7 +84,8 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    warn   'org.mortbay.log'
+    warn   'org.mortbay.log',
+           'br.gov.go.saude.hugo'
 }
 
 // Added by the Spring Security Core plugin:

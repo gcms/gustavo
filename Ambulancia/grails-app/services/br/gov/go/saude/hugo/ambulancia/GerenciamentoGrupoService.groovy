@@ -7,7 +7,7 @@ package br.gov.go.saude.hugo.ambulancia
  * Time: 09:42:36
  * To change this template use File | Settings | File Templates.
  */
-class GerenciadorGrupoService {
+class GerenciamentoGrupoService {
     def springSecurityService
 
     private Grupo crieGrupo(String authority) {
