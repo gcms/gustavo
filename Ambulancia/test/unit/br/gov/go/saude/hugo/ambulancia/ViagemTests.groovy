@@ -33,12 +33,17 @@ class ViagemTests extends GrailsUnitTestCase {
         Viagem viagem = new Viagem(operador: operador)
         viagem.registreSaida(new Date(), 12453)
         assertFalse viagem.validate()
+        
+        assertEquals 'nullable', viagem.errors['ambulancia']
+        assertEquals 'nullable', viagem.errors['motorista']
 
         viagem.ambulancia = ambulancia
         assertFalse viagem.validate()
 
+        assertEquals 'nullable', viagem.errors['motorista']
+
         viagem.motorista = motorista
-        assertTrue viagem.validate()       
+        assertTrue viagem.validate()
     }
 
     void testeRetorno() {

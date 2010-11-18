@@ -2,8 +2,8 @@ package br.gov.go.saude.hugo.ambulancia
 
 import grails.test.GrailsUnitTestCase
 
-class GerenciadorGrupoServiceTests extends GrailsUnitTestCase {
-    GerenciadorGrupoService gerenciadorGrupoService
+class GerenciamentoGrupoServiceTests extends GrailsUnitTestCase {
+    GerenciamentoGrupoService gerenciamentoGrupoService
 
     protected void setUp() {
         super.setUp()
@@ -16,14 +16,14 @@ class GerenciadorGrupoServiceTests extends GrailsUnitTestCase {
     void testeRegistreGrupo() {
         assertNull Grupo.findByAuthority('ROLE_NOVO_GRUPO')
         
-        gerenciadorGrupoService.registreGrupo('ROLE_NOVO_GRUPO')
+        gerenciamentoGrupoService.registreGrupo('ROLE_NOVO_GRUPO')
         assertNotNull Grupo.findByAuthority('ROLE_NOVO_GRUPO')
     }
 
     void testeRegistreUsuario() {
         assertNull Operador.findByUsuario('teste')
 
-        gerenciadorGrupoService.registreUsuario('teste', 'teste', 'ROLE_NOVO_GRUPO2')
+        gerenciamentoGrupoService.registreUsuario('teste', 'teste', 'ROLE_NOVO_GRUPO2')
         assertNotNull Grupo.findByAuthority('ROLE_NOVO_GRUPO2')
         assertNotNull Operador.findByUsuario('teste')
     }
