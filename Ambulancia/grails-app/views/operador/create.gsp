@@ -56,25 +56,25 @@
                                 </td>
                             </tr>
                         
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="accountExpired"><g:message code="operador.accountExpired" default="Account Expired" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: operadorInstance, field: 'accountExpired', 'errors')}">
-                                    <g:checkBox name="accountExpired" value="${operadorInstance?.accountExpired}" />
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name">--}%
+                                    %{--<label for="accountExpired"><g:message code="operador.accountExpired" default="Account Expired" />:</label>--}%
+                                %{--</td>--}%
+                                %{--<td valign="top" class="value ${hasErrors(bean: operadorInstance, field: 'accountExpired', 'errors')}">--}%
+                                    %{--<g:checkBox name="accountExpired" value="${operadorInstance?.accountExpired}" />--}%
 
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="accountLocked"><g:message code="operador.accountLocked" default="Account Locked" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: operadorInstance, field: 'accountLocked', 'errors')}">
-                                    <g:checkBox name="accountLocked" value="${operadorInstance?.accountLocked}" />
+                                %{--</td>--}%
+                            %{--</tr>--}%
+                        %{----}%
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name">--}%
+                                    %{--<label for="accountLocked"><g:message code="operador.accountLocked" default="Account Locked" />:</label>--}%
+                                %{--</td>--}%
+                                %{--<td valign="top" class="value ${hasErrors(bean: operadorInstance, field: 'accountLocked', 'errors')}">--}%
+                                    %{--<g:checkBox name="accountLocked" value="${operadorInstance?.accountLocked}" />--}%
 
-                                </td>
-                            </tr>
+                                %{--</td>--}%
+                            %{--</tr>--}%
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
@@ -86,15 +86,15 @@
                                 </td>
                             </tr>
                         
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="passwordExpired"><g:message code="operador.passwordExpired" default="Password Expired" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: operadorInstance, field: 'passwordExpired', 'errors')}">
-                                    <g:checkBox name="passwordExpired" value="${operadorInstance?.passwordExpired}" />
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name">--}%
+                                    %{--<label for="passwordExpired"><g:message code="operador.passwordExpired" default="Password Expired" />:</label>--}%
+                                %{--</td>--}%
+                                %{--<td valign="top" class="value ${hasErrors(bean: operadorInstance, field: 'passwordExpired', 'errors')}">--}%
+                                    %{--<g:checkBox name="passwordExpired" value="${operadorInstance?.passwordExpired}" />--}%
 
-                                </td>
-                            </tr>
+                                %{--</td>--}%
+                            %{--</tr>--}%
                         
                         </tbody>
                     </table>

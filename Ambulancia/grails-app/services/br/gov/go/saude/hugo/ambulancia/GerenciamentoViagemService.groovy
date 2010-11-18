@@ -1,8 +1,7 @@
 package br.gov.go.saude.hugo.ambulancia
 
 class GerenciamentoViagemService {
-
-    static transactional = true
+    AmbulanciaService ambulanciaService
 
     private Viagem obtenhaViagemNaoRetornou(Ambulancia ambulancia) {
         Viagem.findByAmbulanciaAndRetornou(ambulancia, false)
@@ -18,22 +17,28 @@ class GerenciamentoViagemService {
         if (!viagem.errors.hasErrors())
             viagem.validate()
 
-        if (!viagem.errors.hasFieldErrors(atributo))
-            viagem.errors.rejectValue(atributo, 'unique')
+//        if (!viagem.errors.hasFieldErrors(atributo))
+        viagem.errors.rejectValue(atributo, 'unique')
     }
 
-    void registreSaida(Viagem viagem) {
+    boolean registreSaida(Viagem viagem) {
         if (obtenhaViagemNaoRetornou(viagem.ambulancia))
             verifiqueAtributo(viagem, 'ambulancia')
 
         if (obtenhaViagemNaoRetornou(viagem.motorista))
             verifiqueAtributo(viagem, 'motorista')
 
-        if (!viagem.hasErrors())
-            viagem.save()
+        if (viagem.kmSaida < ambulanciaService.obtenhaKmRetornoUltimaViagem(viagem.ambulancia)) {
+            if (!viagem.errors.hasErrors())
+                viagem.validate()
+
+            viagem.errors.rejectValue('kmSaida', 'min')
+        }
+
+        !viagem.hasErrors() && viagem.save()
     }
 
     void registreRetorno(Viagem viagem) {
-        viagem.save()
+        !viagem.hasErrors() && viagem.save()
     }
 }

@@ -1,5 +1,8 @@
 package br.gov.go.saude.hugo.ambulancia
 
+import grails.plugins.springsecurity.SpringSecurityService
+import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUser
+
 /**
  * Created by IntelliJ IDEA.
  * User: gustavosousa
@@ -8,7 +11,7 @@ package br.gov.go.saude.hugo.ambulancia
  * To change this template use File | Settings | File Templates.
  */
 class GerenciamentoGrupoService {
-    def springSecurityService
+    SpringSecurityService springSecurityService
 
     private Grupo crieGrupo(String authority) {
         log.info "Cadastrando grupo $authority ..."
@@ -34,5 +37,10 @@ class GerenciamentoGrupoService {
 
     public Operador registreUsuario(String username, String password, String authority) {
         Operador.findByUsuario(username) ?: crieOperador(username, password, registreGrupo(authority))
+    }
+
+    public Operador obtenhaOperadorLogado() {
+        GrailsUser grailsUser = springSecurityService.principal
+        Operador.findByUsuario(grailsUser.username)
     }
 }

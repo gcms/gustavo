@@ -19,10 +19,6 @@ class Viagem {
 
     boolean retornou = false
 
-    static validadorDadosRetorno = { val, obj ->
-        val != null || !obj.retornou
-    }
-
     static constraints = {
         motorista(nullable: false)
         ambulancia(nullable: false)
@@ -31,8 +27,18 @@ class Viagem {
         horaSaida(nullable: false)
         kmSaida(nullable: false)
 
-        horaRetorno(nullable: true, validator: validadorDadosRetorno)
-        kmRetorno(nullable: true, validator: validadorDadosRetorno)
+        horaRetorno(nullable: true, validator: { val, obj ->
+            if (val == null && obj.retornou)
+                return 'nullable'
+            if (val != null && val < obj.horaSaida)
+                return 'min'
+        })
+        kmRetorno(nullable: true, validator: { val, obj ->
+            if (val == null && obj.retornou)
+                return 'nullable'
+            if (val != null && val < obj.kmSaida)
+                return 'min'
+        })
 
         destino(nullable: true)
         observacoes(nullable: true)

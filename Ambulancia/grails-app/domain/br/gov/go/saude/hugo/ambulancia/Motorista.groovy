@@ -6,4 +6,8 @@ class Motorista {
     static constraints = {
         nome(blank: false, unique: true)
     }
+
+    String toString() {
+        nome
+    }
 }
