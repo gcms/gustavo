@@ -26,4 +26,8 @@ class Operador {
 	Set<Grupo> getAuthorities() {
 		OperadorGrupo.findAllByOperador(this).collect { it.grupo } as Set
 	}
+
+    String toString() {
+        nome
+    }
 }

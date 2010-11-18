@@ -91,4 +91,22 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 2, Viagem.count()
     }
+
+    void testeMsmAmbulanciaKmAnterior() {
+        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+
+        viagem.registreSaida(new Date(), 1500)
+        gerenciamentoViagemService.registreSaida(viagem)
+        assertEquals 1, Viagem.count()
+
+        viagem.registreRetorno(new Date(), 3000)
+        gerenciamentoViagemService.registreRetorno(viagem)
+        assertEquals 1, Viagem.count()
+
+        viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(new Date(), 2000)
+        gerenciamentoViagemService.registreSaida(viagem); // km anterior ao de retorno da última viagem
+
+        assertEquals 'min', viagem.errors.getFieldError('kmSaida').code        
+    }
 }

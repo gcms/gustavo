@@ -27,11 +27,11 @@
                         
                    	    <g:sortableColumn property="usuario" title="Usuario" titleKey="operador.usuario" />
                         
-                   	    <g:sortableColumn property="senha" title="Senha" titleKey="operador.senha" />
-                        
-                   	    <g:sortableColumn property="accountExpired" title="Account Expired" titleKey="operador.accountExpired" />
-                        
-                   	    <g:sortableColumn property="accountLocked" title="Account Locked" titleKey="operador.accountLocked" />
+                   	    %{--<g:sortableColumn property="senha" title="Senha" titleKey="operador.senha" />--}%
+                        %{----}%
+                   	    %{--<g:sortableColumn property="accountExpired" title="Account Expired" titleKey="operador.accountExpired" />--}%
+                        %{----}%
+                   	    %{--<g:sortableColumn property="accountLocked" title="Account Locked" titleKey="operador.accountLocked" />--}%
                         
                         </tr>
                     </thead>
@@ -45,11 +45,11 @@
                         
                             <td>${fieldValue(bean: operadorInstance, field: "usuario")}</td>
                         
-                            <td>${fieldValue(bean: operadorInstance, field: "senha")}</td>
-                        
-                            <td><g:formatBoolean boolean="${operadorInstance.accountExpired}" /></td>
-                        
-                            <td><g:formatBoolean boolean="${operadorInstance.accountLocked}" /></td>
+                            %{--<td>${fieldValue(bean: operadorInstance, field: "senha")}</td>--}%
+                        %{----}%
+                            %{--<td><g:formatBoolean boolean="${operadorInstance.accountExpired}" /></td>--}%
+                        %{----}%
+                            %{--<td><g:formatBoolean boolean="${operadorInstance.accountLocked}" /></td>--}%
                         
                         </tr>
                     </g:each>

@@ -44,26 +44,26 @@
                                 
                             </tr>
                             
-                            <tr class="prop">
-                                <td valign="top" class="name"><g:message code="operador.senha" default="Senha" />:</td>
-                                
-                                <td valign="top" class="value">${fieldValue(bean: operadorInstance, field: "senha")}</td>
-                                
-                            </tr>
-                            
-                            <tr class="prop">
-                                <td valign="top" class="name"><g:message code="operador.accountExpired" default="Account Expired" />:</td>
-                                
-                                <td valign="top" class="value"><g:formatBoolean boolean="${operadorInstance?.accountExpired}" /></td>
-                                
-                            </tr>
-                            
-                            <tr class="prop">
-                                <td valign="top" class="name"><g:message code="operador.accountLocked" default="Account Locked" />:</td>
-                                
-                                <td valign="top" class="value"><g:formatBoolean boolean="${operadorInstance?.accountLocked}" /></td>
-                                
-                            </tr>
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name"><g:message code="operador.senha" default="Senha" />:</td>--}%
+                                %{----}%
+                                %{--<td valign="top" class="value">${fieldValue(bean: operadorInstance, field: "senha")}</td>--}%
+                                %{----}%
+                            %{--</tr>--}%
+                            %{----}%
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name"><g:message code="operador.accountExpired" default="Account Expired" />:</td>--}%
+                                %{----}%
+                                %{--<td valign="top" class="value"><g:formatBoolean boolean="${operadorInstance?.accountExpired}" /></td>--}%
+                                %{----}%
+                            %{--</tr>--}%
+                            %{----}%
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name"><g:message code="operador.accountLocked" default="Account Locked" />:</td>--}%
+                                %{----}%
+                                %{--<td valign="top" class="value"><g:formatBoolean boolean="${operadorInstance?.accountLocked}" /></td>--}%
+                                %{----}%
+                            %{--</tr>--}%
                             
                             <tr class="prop">
                                 <td valign="top" class="name"><g:message code="operador.enabled" default="Enabled" />:</td>
@@ -72,26 +72,26 @@
                                 
                             </tr>
                             
-                            <tr class="prop">
-                                <td valign="top" class="name"><g:message code="operador.passwordExpired" default="Password Expired" />:</td>
-                                
-                                <td valign="top" class="value"><g:formatBoolean boolean="${operadorInstance?.passwordExpired}" /></td>
-                                
-                            </tr>
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name"><g:message code="operador.passwordExpired" default="Password Expired" />:</td>--}%
+                                %{----}%
+                                %{--<td valign="top" class="value"><g:formatBoolean boolean="${operadorInstance?.passwordExpired}" /></td>--}%
+                                %{----}%
+                            %{--</tr>--}%
                             
-                            <tr class="prop">
-                                <td valign="top" class="name"><g:message code="operador.authorities" default="Authorities" />:</td>
-                                
-                                <td valign="top" class="value">${fieldValue(bean: operadorInstance, field: "authorities")}</td>
-                                
-                            </tr>
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name"><g:message code="operador.authorities" default="Authorities" />:</td>--}%
+                                %{----}%
+                                %{--<td valign="top" class="value">${fieldValue(bean: operadorInstance, field: "authorities")}</td>--}%
+                                %{----}%
+                            %{--</tr>--}%
                             
-                            <tr class="prop">
-                                <td valign="top" class="name"><g:message code="operador.grupos" default="Grupos" />:</td>
-                                
-                                <td valign="top" class="value">${fieldValue(bean: operadorInstance, field: "grupos")}</td>
-                                
-                            </tr>
+                            %{--<tr class="prop">--}%
+                                %{--<td valign="top" class="name"><g:message code="operador.grupos" default="Grupos" />:</td>--}%
+                                %{----}%
+                                %{--<td valign="top" class="value">${fieldValue(bean: operadorInstance, field: "grupos")}</td>--}%
+                                %{----}%
+                            %{--</tr>--}%
                             
                         </tbody>
                     </table>

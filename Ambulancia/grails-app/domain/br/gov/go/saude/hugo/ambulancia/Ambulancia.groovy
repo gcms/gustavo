@@ -13,4 +13,8 @@ class Ambulancia {
     void setPlaca(String placa) {
         this.placa = placa.toUpperCase()
     }
+
+    String toString() {
+        placa
+    }
 }
