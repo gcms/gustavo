@@ -19,6 +19,33 @@ class Viagem {
 
     boolean retornou = false
 
+    static transients = [ 'dataSaida', 'dataRetorno' ]
+
+    Date getDataSaida() {
+        horaSaida
+    }
+
+    void setDataSaida(Date data) {
+        horaSaida = horaSaida ? UtilitarioDataHorario.copieData(horaSaida, data) : data
+    }
+
+    void setHoraSaida(Date data) {
+        horaSaida = horaSaida ? UtilitarioDataHorario.copieHora(horaSaida, data) : data
+    }
+    
+    Date getDataRetorno() {
+        horaRetorno
+    }
+
+    void setDataRetorno(Date data) {
+        horaRetorno = horaRetorno ? UtilitarioDataHorario.copieData(horaRetorno, data) : data
+    }
+
+    void setHoraRetorno(Date data) {
+        horaRetorno = horaRetorno ? UtilitarioDataHorario.copieHora(horaRetorno, data) : data
+    }
+    
+
     static constraints = {
         motorista(nullable: false)
         ambulancia(nullable: false)
@@ -40,8 +67,8 @@ class Viagem {
                 return 'min'
         })
 
-        destino(nullable: true)
-        observacoes(nullable: true)
+        destino(nullable: true, maxSize: 255)
+        observacoes(nullable: true, maxSize: 500)
     }
 
 
@@ -61,5 +88,4 @@ class Viagem {
     boolean jaRetornou() {
         retornou
     }
-
 }

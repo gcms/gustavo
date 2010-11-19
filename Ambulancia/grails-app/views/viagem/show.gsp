@@ -54,7 +54,7 @@
                             <tr class="prop">
                                 <td valign="top" class="name"><g:message code="viagem.horaSaida" default="Hora Saida" />:</td>
                                 
-                                <td valign="top" class="value"><g:formatDate date="${viagemInstance?.horaSaida}" /></td>
+                                <td valign="top" class="value"><g:formatDate date="${viagemInstance?.horaSaida}" formatName="default.dateTime.format"/></td>
                                 
                             </tr>
                             

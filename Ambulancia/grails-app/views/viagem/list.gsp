@@ -28,7 +28,9 @@
                         <th><g:message code="viagem.motorista" default="Motorista" /></th>
                    	                       	                       	    
                    	    %{--<th><g:message code="viagem.operador" default="Operador" /></th>--}%
-                   	    
+
+                        <g:sortableColumn property="dataSaida" title="Data Saida" titleKey="viagem.dataSaida" />
+
                    	    <g:sortableColumn property="horaSaida" title="Hora Saida" titleKey="viagem.horaSaida" />
                         
                    	    <g:sortableColumn property="kmSaida" title="Km Saida" titleKey="viagem.kmSaida" />
@@ -47,8 +49,10 @@
 
                         
                             %{--<td>${fieldValue(bean: viagemInstance, field: "operador")}</td>--}%
-                        
-                            <td><g:formatDate date="${viagemInstance.horaSaida}" /></td>
+
+                            <td><g:formatDate date="${viagemInstance.dataSaida}" formatName="default.date.format"/></td>
+
+                            <td><g:formatDate date="${viagemInstance.horaSaida}" formatName="default.time.format" /></td>
                         
                             <td>${fieldValue(bean: viagemInstance, field: "kmSaida")}</td>
                         

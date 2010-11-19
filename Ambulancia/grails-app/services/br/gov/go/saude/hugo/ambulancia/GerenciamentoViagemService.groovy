@@ -32,13 +32,13 @@ class GerenciamentoViagemService {
             if (!viagem.errors.hasErrors())
                 viagem.validate()
 
-            viagem.errors.rejectValue('kmSaida', 'min')
+            viagem.errors.rejectValue('kmSaida', 'min.notmet')
         }
 
         !viagem.hasErrors() && viagem.save()
     }
 
-    void registreRetorno(Viagem viagem) {
+    boolean registreRetorno(Viagem viagem) {
         !viagem.hasErrors() && viagem.save()
     }
 }
