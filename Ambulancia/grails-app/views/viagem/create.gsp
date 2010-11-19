@@ -1,128 +1,170 @@
-
 <%@ page import="br.gov.go.saude.hugo.ambulancia.Viagem" %>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="main" />
-        <title><g:message code="viagem.create" default="Create Viagem" /></title>
-    </head>
-    <body>
-        <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home" /></a></span>
-            <span class="menuButton"><g:link class="list" action="list"><g:message code="viagem.list" default="Viagem List" /></g:link></span>
-        </div>
-        <div class="body">
-            <h1><g:message code="viagem.create" default="Create Viagem" /></h1>
-            <g:if test="${flash.message}">
-            <div class="message"><g:message code="${flash.message}" args="${flash.args}" default="${flash.defaultMessage}" /></div>
-            </g:if>
-            <g:hasErrors bean="${viagemInstance}">
-            <div class="errors">
-                <g:renderErrors bean="${viagemInstance}" as="list" />
-            </div>
-            </g:hasErrors>
-            <g:form action="save" method="post" >
-                <div class="dialog">
-                    <table>
-                        <tbody>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="motorista"><g:message code="viagem.motorista" default="Motorista" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'motorista', 'errors')}">
-                                    <g:select name="motorista.id" from="${motoristas}" optionKey="id" value="${viagemInstance?.motorista?.id}"  />
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="layout" content="main"/>
+  <title><g:message code="viagem.create" default="Create Viagem"/></title>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#dataSaida').datepicker({
+        constrainInput: true,
+        defaultDate: new Date(${viagemInstance?.dataSaida.time}),
+        minDate: new Date(${hoje.time}),
 
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="ambulancia"><g:message code="viagem.ambulancia" default="Ambulancia" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'ambulancia', 'errors')}">
-                                    <g:select name="ambulancia.id" from="${ambulancias}" optionKey="id" value="${viagemInstance?.ambulancia?.id}"  />
+        showOn: 'button',
+        buttonImageOnly: true,
+        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}"
+      });
+    });
+  </script>
 
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="horaSaida"><g:message code="viagem.horaSaida" default="Hora Saida" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'horaSaida', 'errors')}">
-                                    <g:datePicker name="horaSaida" value="${viagemInstance?.horaSaida}"  />
+  <style type="text/css">
+  div.ui-datepicker {
+    font-size: 14px;
+  }
+  </style>
 
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="kmSaida"><g:message code="viagem.kmSaida" default="Km Saida" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'kmSaida', 'errors')}">
-                                    <g:textField name="kmSaida" value="${fieldValue(bean: viagemInstance, field: 'kmSaida')}" />
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#horaSaida').timeEntry({
+        show24Hours: true
+      });
 
-                                </td>
-                            </tr>
-                        
-                            %{--<tr class="prop">--}%
-                                %{--<td valign="top" class="name">--}%
-                                    %{--<label for="horaRetorno"><g:message code="viagem.horaRetorno" default="Hora Retorno" />:</label>--}%
-                                %{--</td>--}%
-                                %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'horaRetorno', 'errors')}">--}%
-                                    %{--<g:datePicker name="horaRetorno" value="${viagemInstance?.horaRetorno}" noSelection="['': '']" />--}%
+    });
+  </script>
 
-                                %{--</td>--}%
-                            %{--</tr>--}%
-                        %{----}%
-                            %{--<tr class="prop">--}%
-                                %{--<td valign="top" class="name">--}%
-                                    %{--<label for="kmRetorno"><g:message code="viagem.kmRetorno" default="Km Retorno" />:</label>--}%
-                                %{--</td>--}%
-                                %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'kmRetorno', 'errors')}">--}%
-                                    %{--<g:textField name="kmRetorno" value="${fieldValue(bean: viagemInstance, field: 'kmRetorno')}" />--}%
+</head>
+<body>
+<div class="nav">
+  <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
+  <span class="menuButton"><g:link class="list" action="list"><g:message code="viagem.list" default="Viagem List"/></g:link></span>
+</div>
+<div class="body">
+  <h1><g:message code="viagem.create" default="Create Viagem"/></h1>
+  <g:if test="${flash.message}">
+    <div class="message"><g:message code="${flash.message}" args="${flash.args}" default="${flash.defaultMessage}"/></div>
+  </g:if>
+  <g:hasErrors bean="${viagemInstance}">
+    <div class="errors">
+      <g:renderErrors bean="${viagemInstance}" as="list"/>
+    </div>
+  </g:hasErrors>
+  <g:form action="save" method="post">
+    <div class="dialog">
+      <table>
+        <tbody id="main">
 
-                                %{--</td>--}%
-                            %{--</tr>--}%
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="destino"><g:message code="viagem.destino" default="Destino" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'destino', 'errors')}">
-                                    <g:textField name="destino" value="${fieldValue(bean: viagemInstance, field: 'destino')}" />
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="motorista"><g:message code="viagem.motorista" default="Motorista"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'motorista', 'errors')}">
+            <g:select name="motorista.id" from="${motoristas}" optionKey="id" value="${viagemInstance?.motorista?.id}"/>
 
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="observacoes"><g:message code="viagem.observacoes" default="Observacoes" />:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'observacoes', 'errors')}">
-                                    <g:textField name="observacoes" value="${fieldValue(bean: viagemInstance, field: 'observacoes')}" />
+          </td>
+        </tr>
 
-                                </td>
-                            </tr>
-                        
-                            %{--<tr class="prop">--}%
-                                %{--<td valign="top" class="name">--}%
-                                    %{--<label for="retornou"><g:message code="viagem.retornou" default="Retornou" />:</label>--}%
-                                %{--</td>--}%
-                                %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'retornou', 'errors')}">--}%
-                                    %{--<g:checkBox name="retornou" value="${viagemInstance?.retornou}" />--}%
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="ambulancia"><g:message code="viagem.ambulancia" default="Ambulancia"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'ambulancia', 'errors')}">
+            <g:select name="ambulancia.id" from="${ambulancias}" optionKey="id" value="${viagemInstance?.ambulancia?.id}"/>
 
-                                %{--</td>--}%
-                            %{--</tr>--}%
-                        
-                        </tbody>
-                    </table>
-                </div>
-                <div class="buttons">
-                    <span class="button"><g:submitButton name="create" class="save" value="${message(code: 'create', 'default': 'Create')}" /></span>
-                </div>
-            </g:form>
-        </div>
-    </body>
+          </td>
+        </tr>
+
+
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="dataSaida"><g:message code="viagem.dataSaida" default="Data Saida"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'dataSaida', 'errors')}">
+            <input id="dataSaida" name="dataSaida" type="text" value="${formatDate(date: viagemInstance?.horaSaida, formatName: 'default.date.format')}" readonly="readonly">
+            %{--<input type="text" readonly="readonly" id="dataSaida" name="dataSaida"--}%
+            %{--value="${formatDate(date: viagemInstance?.horaSaida, format: 'dd/MM/yyyy')}" />--}%
+
+          </td>
+        </tr>
+
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="horaSaida"><g:message code="viagem.horaSaida" default="Hora Saida"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'horaSaida', 'errors')}">
+            <input id="horaSaida" name="horaSaida" type="text" value="${formatDate(date: viagemInstance?.horaSaida, formatName: 'default.time.format')}"/>
+            %{--<g:datePicker name="horaSaida" value="${viagemInstance?.horaSaida}"  />--}%
+
+          </td>
+        </tr>
+
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="kmSaida"><g:message code="viagem.kmSaida" default="Km Saida"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'kmSaida', 'errors')}">
+            <g:textField name="kmSaida" value="${viagemInstance?.kmSaida}"/>
+
+          </td>
+        </tr>
+
+        %{--<tr class="prop">--}%
+        %{--<td valign="top" class="name">--}%
+        %{--<label for="horaRetorno"><g:message code="viagem.horaRetorno" default="Hora Retorno" />:</label>--}%
+        %{--</td>--}%
+        %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'horaRetorno', 'errors')}">--}%
+        %{--<g:datePicker name="horaRetorno" value="${viagemInstance?.horaRetorno}" noSelection="['': '']" />--}%
+
+        %{--</td>--}%
+        %{--</tr>--}%
+        %{----}%
+        %{--<tr class="prop">--}%
+        %{--<td valign="top" class="name">--}%
+        %{--<label for="kmRetorno"><g:message code="viagem.kmRetorno" default="Km Retorno" />:</label>--}%
+        %{--</td>--}%
+        %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'kmRetorno', 'errors')}">--}%
+        %{--<g:textField name="kmRetorno" value="${fieldValue(bean: viagemInstance, field: 'kmRetorno')}" />--}%
+
+        %{--</td>--}%
+        %{--</tr>--}%
+
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="destino"><g:message code="viagem.destino" default="Destino"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'destino', 'errors')}">
+            <g:textField name="destino" value="${fieldValue(bean: viagemInstance, field: 'destino')}"/>
+
+          </td>
+        </tr>
+
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="observacoes"><g:message code="viagem.observacoes" default="Observacoes"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'observacoes', 'errors')}">
+            <g:textArea name="observacoes" value="${fieldValue(bean: viagemInstance, field: 'observacoes')}"/>
+
+          </td>
+        </tr>
+
+        %{--<tr class="prop">--}%
+        %{--<td valign="top" class="name">--}%
+        %{--<label for="retornou"><g:message code="viagem.retornou" default="Retornou" />:</label>--}%
+        %{--</td>--}%
+        %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'retornou', 'errors')}">--}%
+        %{--<g:checkBox name="retornou" value="${viagemInstance?.retornou}" />--}%
+
+        %{--</td>--}%
+        %{--</tr>--}%
+
+        </tbody>
+      </table>
+    </div>
+    <div class="buttons">
+      <span class="button"><g:submitButton name="create" class="save" value="${message(code: 'create', 'default': 'Create')}"/></span>
+    </div>
+  </g:form>
+</div>
+</body>
 </html>
