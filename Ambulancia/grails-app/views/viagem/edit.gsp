@@ -28,7 +28,8 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $('#horaRetorno').timeEntry({
-        show24Hours: true
+        show24Hours: true,
+        spinnerImage: "${createLinkTo(dir: 'css', file: 'spinnerDefault.png')}"
       });
 
     });
