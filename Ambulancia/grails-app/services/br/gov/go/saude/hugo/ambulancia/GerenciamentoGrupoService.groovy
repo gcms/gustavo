@@ -2,6 +2,7 @@ package br.gov.go.saude.hugo.ambulancia
 
 import grails.plugins.springsecurity.SpringSecurityService
 import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUser
+import grails.orm.PagedResultList
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,20 +16,20 @@ class GerenciamentoGrupoService {
 
     private Grupo crieGrupo(String authority) {
         log.info "Cadastrando grupo $authority ..."
-        
+
         Grupo grupo = new Grupo(authority: authority)
         grupo.save(flush: true)
         grupo
     }
 
     public Grupo registreGrupo(String authority) {
-        Grupo.findByAuthority(authority) ?: crieGrupo(authority)
+            Grupo.findByAuthority(authority) ?: crieGrupo(authority)
     }
 
     private Operador crieOperador(String username, String password, Grupo grupo) {
         log.info "Cadastrando operador $username ..."
 
-        Operador operador = new Operador(usuario: username, enabled: true, senha: springSecurityService.encodePassword(password))        
+        Operador operador = new Operador(usuario: username, enabled: true, senha: springSecurityService.encodePassword(password))
         operador.save(flush: true)
 
         OperadorGrupo.create operador, grupo, true
@@ -36,11 +37,14 @@ class GerenciamentoGrupoService {
     }
 
     public Operador registreUsuario(String username, String password, String authority) {
-        Operador.findByUsuario(username) ?: crieOperador(username, password, registreGrupo(authority))
+            Operador.findByUsuario(username) ?: crieOperador(username, password, registreGrupo(authority))
     }
 
-    public Operador obtenhaOperadorLogado() {
-        GrailsUser grailsUser = springSecurityService.principal
-        Operador.findByUsuario(grailsUser.username)
+    public GrailsUser getPrincipal() {
+        springSecurityService.principal
+    }
+
+    public Operador getOperadorLogado() {
+        Operador.findByUsuario(principal.username)
     }
 }

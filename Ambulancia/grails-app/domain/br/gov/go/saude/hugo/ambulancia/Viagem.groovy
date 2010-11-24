@@ -7,10 +7,10 @@ class Viagem {
     Operador operador
     
     Date horaSaida
-    Integer kmSaida
+    Long kmSaida
 
     Date horaRetorno
-    Integer kmRetorno
+    Long kmRetorno
 
     String observacoes
 
@@ -18,6 +18,16 @@ class Viagem {
     List pacientes = []
 
     boolean retornou = false
+
+    Long distancia
+
+    Long getDistancia() {
+        distancia ?: (kmRetorno ? kmRetorno - kmSaida : null)
+    }
+
+    static mapping = {
+        distancia formula: 'km_retorno - km_saida'
+    }
 
     static transients = [ 'dataSaida', 'dataRetorno' ]
 
@@ -44,7 +54,7 @@ class Viagem {
     void setHoraRetorno(Date data) {
         horaRetorno = horaRetorno ? UtilitarioDataHorario.copieHora(horaRetorno, data) : data
     }
-    
+
 
     static constraints = {
         motorista(nullable: false)
@@ -66,6 +76,8 @@ class Viagem {
             if (val != null && val < obj.kmSaida)
                 return 'min'
         })
+
+        distancia(nullable: true)
 
         destino(nullable: true, maxSize: 255)
         observacoes(nullable: true, maxSize: 500)

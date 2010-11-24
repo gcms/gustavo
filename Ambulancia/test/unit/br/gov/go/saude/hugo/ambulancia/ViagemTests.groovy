@@ -62,6 +62,23 @@ class ViagemTests extends GrailsUnitTestCase {
         assertTrue viagem.jaRetornou()
     }
 
+    void testeRetornoDistancia() {
+        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(new Date(), 12453)
+        viagem.save()
+        assertEquals 1, Viagem.count()
+
+        viagem = Viagem.list().first()
+        assertFalse viagem.jaRetornou()
+
+        viagem.registreRetorno(new Date(), 12464)
+        viagem.save()
+
+        viagem = Viagem.list().first()
+        assertTrue viagem.jaRetornou()
+        assertEquals 11, viagem.distancia
+    }
+
     void testeRetornoIncorreto() {
         Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
         viagem.registreSaida(new Date(), 12453)

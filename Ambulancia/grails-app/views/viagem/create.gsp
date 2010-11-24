@@ -24,6 +24,64 @@
   }
   </style>
 
+  <style type="text/css">
+  .x-grid3 .x-window-ml {
+    padding-left: 0;
+  }
+
+  .x-grid3 .x-window-mr {
+    padding-right: 0;
+  }
+
+  .x-grid3 .x-window-tl {
+    padding-left: 0;
+  }
+
+  .x-grid3 .x-window-tr {
+    padding-right: 0;
+  }
+
+  .x-grid3 .x-window-tc .x-window-header {
+    height: 3px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .x-grid3 .x-window-mc {
+    border-width: 0;
+    background: #cdd9e8;
+  }
+
+  .x-grid3 .x-window-bl {
+    padding-left: 0;
+  }
+
+  .x-grid3 .x-window-br {
+    padding-right: 0;
+  }
+
+  .x-grid3 .x-panel-btns {
+    padding: 0;
+  }
+
+  .x-grid3 .x-panel-btns td.x-toolbar-cell {
+    padding: 3px 3px 0;
+  }
+
+  .x-box-inner {
+    zoom: 1;
+  }
+
+  .icon-user-add {
+    background-image: url(${resource(dir: 'js/ext-3.3.0/examples/shared', file: 'icons/fam/user_add.gif')}) !important;
+  }
+
+  .icon-user-delete {
+    background-image: url(${resource(dir: 'js/ext-3.3.0/examples/shared', file: 'icons/fam/user_delete.gif')}) !important;
+  }
+  </style>
+
+
   <script type="text/javascript">
     $(document).ready(function() {
       $('#horaSaida').timeEntry({
@@ -33,6 +91,8 @@
 
     });
   </script>
+
+  <script type="text/javascript" src="${createLinkTo(dir: 'js', file: 'paciente-editor.js')}"></script>
 
 </head>
 <body>
@@ -51,6 +111,11 @@
     </div>
   </g:hasErrors>
   <g:form action="save" method="post">
+
+    <g:each var="paciente" in="${viagemInstance?.pacientes}" status="i">
+      <g:hiddenField name="pacientes[${i}]" value="${paciente}"/>
+    </g:each>
+
     <div class="dialog">
       <table>
         <tbody id="main">
@@ -81,7 +146,7 @@
             <label for="dataSaida"><g:message code="viagem.dataSaida" default="Data Saida"/>:</label>
           </td>
           <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'dataSaida', 'errors')}">
-            <input id="dataSaida" name="dataSaida" type="text" value="${formatDate(date: viagemInstance?.horaSaida, formatName: 'default.date.format')}" readonly="readonly">
+            <input id="dataSaida" name="dataSaida" type="text" value="${formatDate(date: viagemInstance?.dataSaida, formatName: 'default.date.format')}" readonly="readonly">
             %{--<input type="text" readonly="readonly" id="dataSaida" name="dataSaida"--}%
             %{--value="${formatDate(date: viagemInstance?.horaSaida, format: 'dd/MM/yyyy')}" />--}%
 
@@ -136,6 +201,15 @@
           <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'destino', 'errors')}">
             <g:textField name="destino" value="${fieldValue(bean: viagemInstance, field: 'destino')}"/>
 
+          </td>
+        </tr>
+
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="pacientes"><g:message code="viagem.pacientes" default="Pacientes"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'pacientes', 'errors')} extjs">
+            <div id="paciente"></div>
           </td>
         </tr>
 

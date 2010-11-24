@@ -32,7 +32,8 @@ class GerenciamentoViagemService {
             if (!viagem.errors.hasErrors())
                 viagem.validate()
 
-            viagem.errors.rejectValue('kmSaida', 'min.notmet')
+            if (!viagem.errors.hasFieldErrors('kmSaida'))
+                viagem.errors.rejectValue('kmSaida', 'min.notmet')
         }
 
         !viagem.hasErrors() && viagem.save()
@@ -40,5 +41,9 @@ class GerenciamentoViagemService {
 
     boolean registreRetorno(Viagem viagem) {
         !viagem.hasErrors() && viagem.save()
+    }
+
+    Date obtenhaMenorDataSaida() {
+        
     }
 }
