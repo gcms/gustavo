@@ -30,4 +30,38 @@ class UtilitarioDataHorario {
         anterior.time
     }
 
+    public static Date inicioDoDia(Date data) {
+        Calendar novo = Calendar.instance
+        novo.time = data
+
+        novo.set(Calendar.HOUR_OF_DAY, 0)
+        novo.set(Calendar.MINUTE, 0)
+        novo.set(Calendar.SECOND, 0)
+
+        novo.time
+    }
+
+    public static Date fimDoDia(Date data) {
+        Calendar novo = Calendar.instance
+        novo.time = data
+
+        novo.set(Calendar.HOUR_OF_DAY, 23)
+        novo.set(Calendar.MINUTE, 59)
+        novo.set(Calendar.SECOND, 59)
+
+        novo.time
+    }
+    
+    public static Date inicioDoMes(Date data) {
+        Calendar novo = Calendar.instance
+        novo.time = data
+
+        novo.set(Calendar.DAY_OF_MONTH, 1)
+
+        novo.time
+    }
+
+    public static Date inicioDoMes() {
+        inicioDoMes(new Date())
+    }
 }

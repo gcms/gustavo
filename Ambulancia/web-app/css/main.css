@@ -96,6 +96,12 @@ input:focus, select:focus, textarea:focus {
     padding-left: 25px;
 }
 
+.menuButton a.logout {
+    background: url(../js/ext-3.3.0/examples/desktop/images/logout.gif) center left no-repeat;
+    color: #333;
+    padding-left: 25px;
+}
+
 /* MESSAGES AND ERRORS */
 
 .message {
@@ -222,7 +228,6 @@ th.desc a {
 .dialog table {
     padding: 5px 0;
 }
-
 .prop {
     padding: 5px;
 }
@@ -270,4 +275,26 @@ th.desc a {
 .buttons input.save {
     background: transparent url(../images/skin/database_save.png) 5px 50% no-repeat;
     padding-left: 28px;
+}
+.buttons input.filter {
+    /*background: transparent url(../images/skin/information.png) 5px 50% no-repeat;*/
+    padding-left: 28px;
+}
+.buttons input.print {
+    /*background: transparent url(../images/skin/information.png) 5px 50% no-repeat;*/
+    padding-left: 28px;
+}
+
+.extjs td, .extjs th {
+    font: normal;
+    line-height: normal;
+    padding: 0px 0px;
+    text-align: inherit;
+    vertical-align: inherit;
+}
+
+
+.extjs table {
+    padding: 0;
+    border: 0;
 }
