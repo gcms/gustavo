@@ -11,8 +11,6 @@ class Operador {
 	boolean accountLocked
 	boolean passwordExpired
 
-    List grupos
-
 	static constraints = {
         nome nullable: true
 		usuario blank: false, unique: true
