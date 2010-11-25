@@ -2,12 +2,16 @@ package br.gov.go.saude.hugo.ambulancia
 
 class Ambulancia {
 
-    String descricao
+    String prefixo
     String placa
+    String descricao
+
+    Boolean ativada = true
 
     static constraints = {
         descricao(nullable: true)
-        placa(unique: true, matches: '[A-Z]{3}\\-[0-9]{4}')
+        prefixo(blank: false, unique: true, matches: '[0-9]+', maxSize: 3)
+        placa(blank: false, unique: true, matches: '[A-Z]{3}\\-[0-9]{4}')
     }
 
     void setPlaca(String placa) {
@@ -15,6 +19,6 @@ class Ambulancia {
     }
 
     String toString() {
-        placa
+        "$prefixo - $placa"
     }
 }
