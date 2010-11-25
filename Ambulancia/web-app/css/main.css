@@ -276,12 +276,16 @@ th.desc a {
     background: transparent url(../images/skin/database_save.png) 5px 50% no-repeat;
     padding-left: 28px;
 }
+.buttons input.next {
+    background: transparent url(../images/skin/next.png) 5px 50% no-repeat;
+    padding-left: 28px;
+}
 .buttons input.filter {
-    /*background: transparent url(../images/skin/information.png) 5px 50% no-repeat;*/
+    background: transparent url(../images/skin/filter.png) 5px 50% no-repeat;
     padding-left: 28px;
 }
 .buttons input.print {
-    /*background: transparent url(../images/skin/information.png) 5px 50% no-repeat;*/
+    background: transparent url(../images/skin/print.png) 5px 50% no-repeat;
     padding-left: 28px;
 }
 

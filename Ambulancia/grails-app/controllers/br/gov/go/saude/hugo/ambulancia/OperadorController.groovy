@@ -1,6 +1,9 @@
 package br.gov.go.saude.hugo.ambulancia
 
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+
 class OperadorController {
+    GerenciamentoGrupoService gerenciamentoGrupoService
 
     def index = { redirect(action: "list", params: params) }
 
@@ -20,7 +23,7 @@ class OperadorController {
 
     def save = {
         def operadorInstance = new Operador(params)
-        if (!operadorInstance.hasErrors() && operadorInstance.save()) {
+        if (gerenciamentoGrupoService.crieOperador(operadorInstance, params.senha, params.senhaConfirmada)) {
             flash.message = "operador.created"
             flash.args = [operadorInstance.id]
             flash.defaultMessage = "Operador ${operadorInstance.id} created"
@@ -60,17 +63,12 @@ class OperadorController {
     def update = {
         def operadorInstance = Operador.get(params.id)
         if (operadorInstance) {
-            if (params.version) {
-                def version = params.version.toLong()
-                if (operadorInstance.version > version) {
-                    
-                    operadorInstance.errors.rejectValue("version", "operador.optimistic.locking.failure", "Another user has updated this Operador while you were editing")
-                    render(view: "edit", model: [operadorInstance: operadorInstance])
-                    return
-                }
-            }
+            String senha = params.remove('senha')
+            String senhaConfirmada = params.remove('senhaConfirmada')
+          
             operadorInstance.properties = params
-            if (!operadorInstance.hasErrors() && operadorInstance.save()) {
+
+            if (gerenciamentoGrupoService.salveOperador(operadorInstance, senha, senhaConfirmada)) {
                 flash.message = "operador.updated"
                 flash.args = [params.id]
                 flash.defaultMessage = "Operador ${params.id} updated"

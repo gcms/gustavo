@@ -12,7 +12,8 @@
         defaultDate: new Date(${dataInicio.time}),
         showOn: 'button',
         buttonImageOnly: true,
-        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}"
+        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}",
+        changeYear: true
       });
     });
 
@@ -22,7 +23,8 @@
         defaultDate: new Date(${dataFim.time}),
         showOn: 'button',
         buttonImageOnly: true,
-        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}"
+        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}",
+        changeYear: true
       });
     });
   </script>
@@ -38,7 +40,7 @@
   <span class="menuButton"><g:link class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:link></span>
 </div>
 <div class="body">
-  <h1><g:message code="viagem.list" default="Viagem List"/></h1>
+  <h1><g:message code="viagem.list.retornou" default="Viagem List" /></h1>
   <g:if test="${flash.message}">
     <div class="message"><g:message code="${flash.message}" args="${flash.args}" default="${flash.defaultMessage}"/></div>
   </g:if>
@@ -91,10 +93,12 @@
       </table>
     </div>
     <div class="buttons">
-      <span class="button"><g:submitButton name="filter" class="filter" value="${message(code: 'filter', 'default': 'Filter')}"/></span>
+      <span class="button">
+        <g:submitButton name="filter" class="filter" value="${message(code: 'viagem.filter', 'default': 'Filter')}"/>
+      </span>
       <span class="button">
         %{--<g:submitButton name="print" class="print" value="${message(code: 'print', 'default': 'Print')}" onclick="document.forms[0].action = 'print'; document.forms[0].target= '_blank'; document.forms[0].submit();"/>--}%
-        <g:actionSubmit name="print" value="${message(code: 'print', 'default': 'Print')}" action="print"/> 
+        <g:actionSubmit name="print" class="print" value="${message(code: 'viagem.print', 'default': 'Print')}" action="print"/> 
       </span>
     </div>
   </g:form>

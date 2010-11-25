@@ -2,7 +2,6 @@ package br.gov.go.saude.hugo.ambulancia
 
 import grails.plugins.springsecurity.SpringSecurityService
 import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUser
-import grails.orm.PagedResultList
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,21 +22,43 @@ class GerenciamentoGrupoService {
     }
 
     public Grupo registreGrupo(String authority) {
-            Grupo.findByAuthority(authority) ?: crieGrupo(authority)
+        Grupo.findByAuthority(authority) ?: crieGrupo(authority)
     }
 
-    private Operador crieOperador(String username, String password, Grupo grupo) {
-        log.info "Cadastrando operador $username ..."
+    public boolean salveOperador(Operador operador, String password, String passwordConfirm) {
+        if (password.empty && passwordConfirm.empty) {
+            log.info "Salvando operador... Ambas senhas vazias"
+            operador.validate()
+        } else if (password != passwordConfirm) {
+            log.info "Salvando operador... Senhas diferem"
+            operador.validate()
+            operador.errors.rejectValue('senha', 'matches.invalid')
+        } else {
+            operador.senha = springSecurityService.encodePassword(password)
+            operador.validate()            
+        }
 
-        Operador operador = new Operador(usuario: username, enabled: true, senha: springSecurityService.encodePassword(password))
-        operador.save(flush: true)
+        !operador.hasErrors() && operador.save()
+    }
 
-        OperadorGrupo.create operador, grupo, true
-        operador
+    public boolean crieOperador(Operador operador, String password, String passwordConfirm) {
+        crieOperador(operador, password, passwordConfirm, registreGrupo('ROLE_USER'))
+    }
+
+    public boolean crieOperador(Operador operador, String password, String passwordConfirm, Grupo grupo) {
+        log.info "Cadastrando operador ${operador.usuario} ..."
+
+        salveOperador(operador, password, passwordConfirm) &&
+                OperadorGrupo.create(operador, grupo, true)
+    }
+
+    public Operador crieOperador(String username, String password, Grupo grupo) {
+        Operador operador = new Operador(usuario: username, enabled: true)
+        crieOperador(operador, password, password, grupo) ? operador : null
     }
 
     public Operador registreUsuario(String username, String password, String authority) {
-            Operador.findByUsuario(username) ?: crieOperador(username, password, registreGrupo(authority))
+        Operador.findByUsuario(username) ?: crieOperador(username, password, registreGrupo(authority))
     }
 
     public GrailsUser getPrincipal() {
