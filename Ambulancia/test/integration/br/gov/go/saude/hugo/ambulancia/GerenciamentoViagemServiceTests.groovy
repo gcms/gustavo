@@ -18,7 +18,7 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
         motorista = new Motorista(nome: 'Fulano da Silva')
         motorista.save()
 
-        ambulancia = new Ambulancia(placa: 'NFS-1234')
+        ambulancia = new Ambulancia(placa: 'NFS-1234', prefixo: '901')
         ambulancia.save()
     }
 
@@ -47,11 +47,13 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
-        Ambulancia ambulancia2 = new Ambulancia(placa: 'nsw-1234')
+        Ambulancia ambulancia2 = new Ambulancia(placa: 'nsw-1234', prefixo: '902')
         ambulancia2.save()
+        assertEquals 2, Ambulancia.count()
 
         Motorista motorista2 = new Motorista(nome: "Ciclano da Silva")
         motorista2.save()
+        assertEquals 2, Motorista.count()
 
         viagem = new Viagem(operador: operador, ambulancia: ambulancia2, motorista: motorista2)
         viagem.registreSaida(new Date(), 12453)
@@ -65,7 +67,7 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
-        Ambulancia ambulancia2 = new Ambulancia(placa: 'nsw-1234')
+        Ambulancia ambulancia2 = new Ambulancia(placa: 'nsw-1234', prefixo: '902')
         ambulancia2.save()
 
         viagem = new Viagem(operador: operador, ambulancia: ambulancia2, motorista: motorista)

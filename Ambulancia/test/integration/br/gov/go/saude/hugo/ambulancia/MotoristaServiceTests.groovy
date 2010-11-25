@@ -29,13 +29,13 @@ class MotoristaServiceTests extends GrailsUnitTestCase {
         motorista3 = new Motorista(nome: 'motorista3')
         motorista3.save()
 
-        ambulancia1 = new Ambulancia(placa: 'asd-1234')
+        ambulancia1 = new Ambulancia(placa: 'asd-1234', prefixo: '901')
         ambulancia1.save()
 
-        ambulancia2 = new Ambulancia(placa: 'asd-1233')
+        ambulancia2 = new Ambulancia(placa: 'asd-1233', prefixo: '902')
         ambulancia2.save()
 
-        ambulancia3 = new Ambulancia(placa: 'asd-1232')
+        ambulancia3 = new Ambulancia(placa: 'asd-1232', prefixo: '903')
         ambulancia3.save()
 
         operador = gerenciamentoGrupoService.registreUsuario('fulano', 'teste', 'ROLE_USER') 

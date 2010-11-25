@@ -48,7 +48,7 @@ class ViagemController {
         def distanciaTotal = Viagem.createCriteria().get(criteria)
 
         [
-                motoristas: Motorista.list(), ambulancias: Ambulancia.list(),
+                motoristas: Motorista.list(), ambulancias: Ambulancia.findAllByAtivada(true),
                 motorista: motorista, ambulancia: ambulancia,
                 dataInicio: dataInicio, dataFim: dataFim,
                 viagemInstanceList: viagens, viagemInstanceTotal: viagens.totalCount,

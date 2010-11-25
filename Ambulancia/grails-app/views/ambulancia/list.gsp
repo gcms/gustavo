@@ -23,7 +23,7 @@
                         
                    	    <g:sortableColumn property="id" title="Id" titleKey="ambulancia.id" />
                         
-                   	    <g:sortableColumn property="descricao" title="Descricao" titleKey="ambulancia.descricao" />
+                   	    <g:sortableColumn property="prefixo" title="Prefixo" titleKey="ambulancia.prefixo" />
                         
                    	    <g:sortableColumn property="placa" title="Placa" titleKey="ambulancia.placa" />
                         
@@ -35,7 +35,7 @@
                         
                             <td><g:link action="show" id="${ambulanciaInstance.id}">${fieldValue(bean: ambulanciaInstance, field: "id")}</g:link></td>
                         
-                            <td>${fieldValue(bean: ambulanciaInstance, field: "descricao")}</td>
+                            <td>${fieldValue(bean: ambulanciaInstance, field: "prefixo")}</td>
                         
                             <td>${fieldValue(bean: ambulanciaInstance, field: "placa")}</td>
                         
