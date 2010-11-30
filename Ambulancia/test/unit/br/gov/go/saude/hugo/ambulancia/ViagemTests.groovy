@@ -14,6 +14,8 @@ class ViagemTests extends GrailsUnitTestCase {
         mockDomain(Ambulancia)
         mockDomain(Motorista)
         mockDomain(Viagem)
+        mockDomain(ParadaPaciente)
+        mockDomain(ParadaServicos)
 
         operador = new Operador(usuario: 'gustavocms', senha: 'hello')
         operador.save()
@@ -86,14 +88,17 @@ class ViagemTests extends GrailsUnitTestCase {
         assertFalse viagem.validate()
     }
 
-    void testePacientes() {
+    void testeParadas() {
         Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
         viagem.registreSaida(new Date(), 12453)
-        viagem.pacientes = ["João de Deus", "Maria da Silva"]
+        viagem.paradas = [
+                new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
+                new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
+        ]
         viagem.save()
         assertEquals 1, Viagem.count()
 
         viagem = Viagem.list().first()
-        assertEquals 2, viagem.pacientes.size()
+        assertEquals 2, viagem.paradas.size()
     }
 }

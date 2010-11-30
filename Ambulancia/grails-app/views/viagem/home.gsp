@@ -35,7 +35,9 @@
 
         <th><g:message code="viagem.motorista" default="Motorista"/></th>
 
-        %{--<th><g:message code="viagem.operador" default="Operador" /></th>--}%
+        <th><g:message code="viagem.operador" default="Operador" /></th>
+
+        <th><g:message code="viagem.destino" default="Destinos" /></th>
 
         <g:sortableColumn property="dataSaida" title="Data Saida" titleKey="viagem.dataSaida"/>
 
@@ -48,26 +50,31 @@
       </tr>
       </thead>
       <tbody>
-      <g:each in="${viagemInstanceList}" status="i" var="viagemInstance">
+      <g:each in="${viagens}" status="i" var="viagem">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          %{--<td><g:link action="show" id="${viagemInstance.id}">${fieldValue(bean: viagemInstance, field: "id")}</g:link></td>--}%
+          %{--<td><g:link action="show" id="${viagem.id}">${fieldValue(bean: viagem, field: "id")}</g:link></td>--}%
 
-          <td>${fieldValue(bean: viagemInstance, field: "ambulancia")}</td>
+          <td>${fieldValue(bean: viagem, field: "ambulancia")}</td>
 
-          <td>${fieldValue(bean: viagemInstance, field: "motorista")}</td>
+          <td>${fieldValue(bean: viagem, field: "motorista")}</td>
 
+          <td>${fieldValue(bean: viagem, field: "operador")}</td>
 
-          %{--<td>${fieldValue(bean: viagemInstance, field: "operador")}</td>--}%
+          <td>
+            <g:each var="parada" in="${viagem.paradas}">
+              <p>${parada.destino}</p>
+            </g:each>
+          </td>
 
-          <td><g:formatDate date="${viagemInstance.dataSaida}" formatName="default.date.format"/></td>
+          <td><g:formatDate date="${viagem.dataSaida}" formatName="default.date.format"/></td>
 
-          <td><g:formatDate date="${viagemInstance.horaSaida}" formatName="default.time.format"/></td>
+          <td><g:formatDate date="${viagem.horaSaida}" formatName="default.time.format"/></td>
 
-          <td>${fieldValue(bean: viagemInstance, field: "kmSaida")}</td>
+          <td>${fieldValue(bean: viagem, field: "kmSaida")}</td>
 
           <td style="text-align: center;">
-            <g:link action="show" id="${viagemInstance.id}">
+            <g:link action="show" id="${viagem.id}">
               <img src="${resource(dir: 'images/skin', file: 'next.png')}" alt="Registrar retorno" border="0" height="12pt"/>
             </g:link>
           </td>
@@ -77,7 +84,7 @@
     </table>
   </div>
   <div class="paginateButtons">
-    <g:paginate total="${viagemInstanceTotal}"/>
+    <g:paginate total="${viagens.totalCount}"/>
   </div>
 </div>
 </body>

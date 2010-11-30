@@ -1,7 +1,6 @@
 import br.gov.go.saude.hugo.ambulancia.GerenciamentoGrupoService
 import br.gov.go.saude.hugo.ambulancia.Operador
 import br.gov.go.saude.hugo.ambulancia.Grupo
-import br.gov.go.saude.hugo.ambulancia.GerenciamentoGrupoService
 
 class BootStrap {
     GerenciamentoGrupoService gerenciamentoGrupoService
