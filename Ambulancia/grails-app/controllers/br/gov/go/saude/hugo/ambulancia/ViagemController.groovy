@@ -1,8 +1,9 @@
 package br.gov.go.saude.hugo.ambulancia
 
 import grails.plugins.springsecurity.SpringSecurityService
+
+import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 
 class ViagemController {
     MotoristaService motoristaService
@@ -11,15 +12,20 @@ class ViagemController {
     GerenciamentoGrupoService gerenciamentoGrupoService
     GerenciamentoViagemService gerenciamentoViagemService
 
+    private static DateFormat getTimeFormat() {
+        UtilitarioDataHorario.timeFormat
+    }
+
+    private static DateFormat getDateFormat() {
+        UtilitarioDataHorario.dateFormat
+    }
+
     def index = { redirect(action: "home", params: params) }
 
     // the delete, save and update actions only accept POST requests
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def list = {
-        params.offset = params.offset ? params.offset.toInteger() : 0
-        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-
         Date dataInicio = UtilitarioDataHorario.inicioDoDia(params.dataInicio ? dateFormat.parse(params.dataInicio) : UtilitarioDataHorario.inicioDoMes())
         Date dataFim = UtilitarioDataHorario.fimDoDia(params.dataFim ? dateFormat.parse(params.dataFim) : new Date())
 
@@ -51,8 +57,7 @@ class ViagemController {
                 motoristas: Motorista.list(), ambulancias: Ambulancia.findAllByAtivada(true),
                 motorista: motorista, ambulancia: ambulancia,
                 dataInicio: dataInicio, dataFim: dataFim,
-                viagemInstanceList: viagens, viagemInstanceTotal: viagens.totalCount,
-                distanciaTotal: distanciaTotal
+                viagens: viagens, distanciaTotal: distanciaTotal
         ]
     }
 
@@ -88,18 +93,14 @@ class ViagemController {
                 operador: gerenciamentoGrupoService.getOperadorLogado(),
                 motorista: motorista, ambulancia: ambulancia,
                 dataInicio: dataInicio, dataFim: dataFim,
-                viagens: viagens,
-                distanciaTotal: distanciaTotal
+                viagens: viagens, distanciaTotal: distanciaTotal
         ]
     }
 
     def home = {
-        params.offset = params.offset ? params.offset.toInteger() : 0
-        params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-
         List viagens = Viagem.createCriteria().list(params) { eq('retornou', false) }
 
-        [viagemInstanceList: viagens, viagemInstanceTotal: viagens.totalCount]
+        [viagens: viagens]
     }
 
     def create = {
@@ -109,21 +110,27 @@ class ViagemController {
         params.horaSaida = params.horaSaida ?: new Date()
         params.dataSaida = params.dataSaida ?: new Date()
         Viagem viagem = flash.viagem ?: new Viagem(params)
-//        viagem.horaSaida = new Date() //TODO: checar se já não recebeu uma data em params
 
-        [viagemInstance: viagem, motoristas: motoristas, ambulancias: ambulancias, hoje: new Date()]
+        [viagem: viagem, motoristas: motoristas, ambulancias: ambulancias, hoje: new Date()]
     }
-
-// TODO: definir como padrões globais de formatos (criar uma classe de configuracao). Se possível carregar do messages.properties
-    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy")
-    private DateFormat timeFormat = new SimpleDateFormat("HH:mm")
 
     def save = {
         params.horaSaida = timeFormat.parse(params.horaSaida)
         params.dataSaida = dateFormat.parse(params.dataSaida)
 
+        // TODO: tentar colocar em um binding customizado
+        List paradas = []
+        params.findAll { it.key =~ ~/^paradas\[(\d+)\]$/ }.each { key, val ->
+            Class klass = getClass().getClassLoader().loadClass(val['class'])
+            paradas.add(klass.newInstance(val))
+        }
+
         Viagem viagem = new Viagem(params)
         viagem.operador = gerenciamentoGrupoService.getOperadorLogado()
+
+        // TODO: tentar colocar em um binding customizado
+        viagem.paradas.clear()
+        viagem.paradas.addAll(paradas)
 
         if (gerenciamentoViagemService.registreSaida(viagem)) {
             flash.message = "viagem.created"
@@ -138,17 +145,18 @@ class ViagemController {
     }
 
     def show = {
-        def viagemInstance = Viagem.get(params.id)
-        if (!viagemInstance) {
+        def viagem = Viagem.get(params.id)
+        if (!viagem) {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Viagem not found with id ${params.id}"
             redirect(action: "list")
         } else {
-            return [viagemInstance: viagemInstance]
+            return [viagem: viagem]
         }
     }
 
+    // TODO: diferenciar edição de retorno
     def edit = {
         def viagemBanco = Viagem.get(params.id)
         def viagemInstance = flash.viagem ?: viagemBanco
@@ -167,22 +175,32 @@ class ViagemController {
         }
     }
 
+    // TODO: diferenciar confirmação de retorno de atualização
     def update = {
         params.horaRetorno = timeFormat.parse(params.horaRetorno)
         params.dataRetorno = dateFormat.parse(params.dataRetorno)
 
-        def viagemInstance = Viagem.get(params.id)
-        if (viagemInstance) {
-            viagemInstance.properties = params
-            viagemInstance.retornou = true
+        def viagem = Viagem.get(params.id)
 
-            if (gerenciamentoViagemService.registreRetorno(viagemInstance)) {
+        if (viagem) {
+            if (viagem.retornou) {
+                flash.message = 'viagem.not.deleted'
+                flash.args = [params.id]
+                flash.defaultMessage = "Viagem ${params.id} já retornou, não pode ser atualizada"
+
+                redirect(action: 'show', id: params.id)
+            }
+
+            viagem.properties = params
+            viagem.retornou = true
+
+            if (gerenciamentoViagemService.registreRetorno(viagem)) {
                 flash.message = "viagem.updated"
                 flash.args = [params.id]
-                flash.defaultMessage = "Viagem ${params.id} updated"
-                redirect(action: "show", id: viagemInstance.id)
+                flash.defaultMessage = "Retorno da viagem ${params.id} foi registrado"
+                redirect(action: "show", id: viagem.id)
             } else {
-                flash.viagem = viagemInstance
+                flash.viagem = viagem
                 redirect(action: 'edit', id: params.id)
             }
         }
@@ -195,10 +213,19 @@ class ViagemController {
     }
 
     def delete = {
-        def viagemInstance = Viagem.get(params.id)
-        if (viagemInstance) {
+        def viagem = Viagem.get(params.id)
+
+        if (viagem) {
+            if (viagem.retornou) {
+                flash.message = 'viagem.not.deleted'
+                flash.args = [params.id]
+                flash.defaultMessage = "Viagem ${params.id} já retornou, não pode ser cancelada"
+
+                redirect(action: 'show', id: params.id)
+            }
+
             try {
-                viagemInstance.delete()
+                viagem.delete()
                 flash.message = "viagem.deleted"
                 flash.args = [params.id]
                 flash.defaultMessage = "Viagem ${params.id} deleted"

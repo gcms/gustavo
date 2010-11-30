@@ -151,7 +151,7 @@
       </tr>
       </thead>
       <tbody>
-      <g:each in="${viagemInstanceList}" status="i" var="viagemInstance">
+      <g:each in="${viagens}" status="i" var="viagemInstance">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
           <td><g:link action="show" id="${viagemInstance.id}">${fieldValue(bean: viagemInstance, field: "id")}</g:link></td>
@@ -179,7 +179,7 @@
     </table>
   </div>
   <div class="paginateButtons">
-    <g:paginate total="${viagemInstanceTotal}"
+    <g:paginate total="${viagens.totalCount}"
             params="${[dataInicio: formatDate(date: dataInicio, formatName: 'default.date.format'),
                        dataFim: formatDate(date: dataFim, formatName: 'default.date.format'),
                        'motorista.id': (motorista?.id ?: 0),

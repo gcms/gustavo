@@ -16,8 +16,7 @@ class OperadorController {
     }
 
     def create = {
-        def operadorInstance = new Operador()
-        operadorInstance.properties = params
+        def operadorInstance = new Operador(params)
         return [operadorInstance: operadorInstance]
     }
 

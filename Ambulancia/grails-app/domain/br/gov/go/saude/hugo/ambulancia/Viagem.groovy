@@ -1,5 +1,7 @@
 package br.gov.go.saude.hugo.ambulancia
 
+import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
+
 class Viagem {
 
     Motorista motorista
@@ -14,8 +16,7 @@ class Viagem {
 
     String observacoes
 
-    String destino
-    List pacientes = []
+    List paradas = []
 
     boolean retornou = false
 
@@ -27,6 +28,7 @@ class Viagem {
 
     static mapping = {
         distancia formula: 'km_retorno - km_saida'
+        paradas cascade: 'all-delete-orphan'
     }
 
     static transients = [ 'dataSaida', 'dataRetorno' ]
@@ -69,22 +71,34 @@ class Viagem {
                 return 'nullable'
             if (val != null && val < obj.horaSaida)
                 return 'min'
+
+            true
         })
         kmRetorno(nullable: true, validator: { val, obj ->
             if (val == null && obj.retornou)
                 return 'nullable'
             if (val != null && val < obj.kmSaida)
                 return 'min'
+
+            true
         })
 
         distancia(nullable: true)
 
-        destino(nullable: true, maxSize: 255)
         observacoes(nullable: true, maxSize: 500)
+
+        paradas(validator: { val, obj ->
+            for (Parada parada : val) {
+                if (!parada.validate())
+                    return parada.errors.allErrors.collect { it.code }
+            }
+            
+            true
+        })
     }
 
 
-    static hasMany = [pacientes: String]
+    static hasMany = [paradas: Parada]
 
     void registreSaida(Date horaSaida, int kmSaida) {
         this.horaSaida = horaSaida

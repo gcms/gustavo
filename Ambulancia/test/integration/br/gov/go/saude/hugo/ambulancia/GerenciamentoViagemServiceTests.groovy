@@ -111,4 +111,22 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
 
         assertEquals 'min.notmet', viagem.errors.getFieldError('kmSaida').code        
     }
+
+    void testeCascadeDlete() {
+        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        viagem.paradas = [
+                new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
+                new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
+        ]
+
+        viagem.registreSaida(new Date(), 1500)
+        assertTrue gerenciamentoViagemService.registreSaida(viagem)
+        assertEquals 1, Viagem.count()
+        assertEquals 2, Parada.count()
+
+        viagem.delete()
+
+        assertEquals 0, Viagem.count()
+        assertEquals 0, Parada.count()
+    }
 }

@@ -1,4 +1,7 @@
-package br.gov.go.saude.hugo.ambulancia
+package br.gov.go.saude.hugo.utilitario
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 /**
  * Created by IntelliJ IDEA.
@@ -8,6 +11,10 @@ package br.gov.go.saude.hugo.ambulancia
  * To change this template use File | Settings | File Templates.
  */
 class UtilitarioDataHorario {
+    // TODO: Se possível carregar do messages.properties
+    final static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy")
+    final static DateFormat timeFormat = new SimpleDateFormat("HH:mm")
+
     public static Date copieData(Date dataOriginal, Date dataDia) {
         copieCampos(dataOriginal, dataDia, [Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH])
     }

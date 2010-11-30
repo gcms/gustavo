@@ -110,22 +110,22 @@
           </td>
         </tr>
 
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="destino"><g:message code="viagem.destino" default="Destino"/>:</label>
-          </td>
-          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'destino', 'errors')}">
-            ${viagemBanco?.destino}
-          </td>
-        </tr>
+        %{--<tr class="prop">--}%
+          %{--<td valign="top" class="name">--}%
+            %{--<label for="destino"><g:message code="viagem.destino" default="Destino"/>:</label>--}%
+          %{--</td>--}%
+          %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'destino', 'errors')}">--}%
+            %{--${viagemBanco?.destino}--}%
+          %{--</td>--}%
+        %{--</tr>--}%
 
 
         <tr class="prop">
            <td valign="top" class="name">
-             <label for="pacientes"><g:message code="viagem.pacientes" default="Pacientes"/>:</label>
+             <label for="pacientes"><g:message code="viagem.paradas" default="Paradas"/>:</label>
            </td>
-           <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'pacientes', 'errors')}">
-             <g:each var="paciente" in="${viagemBanco?.pacientes}">
+           <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'paradas', 'errors')}">
+             <g:each var="parada" in="${viagemBanco?.paradas}">
                <p>${paciente}</p>
              </g:each>
            </td>
@@ -211,8 +211,8 @@
       </table>
     </div>
     <div class="buttons">
-      <span class="button"><g:actionSubmit class="save" action="update" value="${message(code: 'update', 'default': 'Update')}"/></span>
-      <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'delete', 'default': 'Delete')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
+      <span class="button"><g:actionSubmit class="save" action="update" value="${message(code: 'viagem.update', 'default': 'Update')}"/></span>
+      <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'viagem.cancel', 'default': 'Cancel viagem')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
     </div>
   </g:form>
 </div>
