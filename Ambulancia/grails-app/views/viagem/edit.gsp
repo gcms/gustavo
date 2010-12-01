@@ -9,8 +9,8 @@
     $(document).ready(function() {
       $('#dataRetorno').datepicker({
         constrainInput: true,
-        defaultDate: new Date(${viagemInstance?.dataRetorno?.time}),
-        minDate: new Date(${viagemInstance?.dataSaida.time}),
+        defaultDate: new Date(${viagem?.dataRetorno?.time}),
+        minDate: new Date(${viagem?.dataSaida.time}),
 
         showOn: 'button',
         buttonImageOnly: true,
@@ -47,14 +47,14 @@
   <g:if test="${flash.message}">
     <div class="message"><g:message code="${flash.message}" args="${flash.args}" default="${flash.defaultMessage}"/></div>
   </g:if>
-  <g:hasErrors bean="${viagemInstance}">
+  <g:hasErrors bean="${viagem}">
     <div class="errors">
-      <g:renderErrors bean="${viagemInstance}" as="list"/>
+      <g:renderErrors bean="${viagem}" as="list"/>
     </div>
   </g:hasErrors>
   <g:form method="post">
-    <g:hiddenField name="id" value="${viagemInstance?.id}"/>
-    <g:hiddenField name="version" value="${viagemInstance?.version}"/>
+    <g:hiddenField name="id" value="${viagem?.id}"/>
+    <g:hiddenField name="version" value="${viagem?.version}"/>
     <div class="dialog">
       <table>
         <tbody>
@@ -94,9 +94,9 @@
           <td valign="top" class="name">
             <label for="horaSaida"><g:message code="viagem.horaSaida" default="Hora Saida"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'horaSaida', 'errors')}">
+          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'horaSaida', 'errors')}">
             ${formatDate(date: viagemBanco?.horaSaida, formatName: 'default.dateTime.format')}
-            %{--<g:datePicker name="horaSaida" value="${viagemInstance?.horaSaida}"/>--}%
+            %{--<g:datePicker name="horaSaida" value="${viagem?.horaSaida}"/>--}%
           </td>
         </tr>
 
@@ -104,42 +104,44 @@
           <td valign="top" class="name">
             <label for="kmSaida"><g:message code="viagem.kmSaida" default="Km Saida"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'kmSaida', 'errors')}">
+          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'kmSaida', 'errors')}">
             ${viagemBanco?.kmSaida}
-            %{--<g:textField name="kmSaida" value="${fieldValue(bean: viagemInstance, field: 'kmSaida')}"/>--}%
+            %{--<g:textField name="kmSaida" value="${fieldValue(bean: viagem, field: 'kmSaida')}"/>--}%
           </td>
         </tr>
 
         %{--<tr class="prop">--}%
-          %{--<td valign="top" class="name">--}%
-            %{--<label for="destino"><g:message code="viagem.destino" default="Destino"/>:</label>--}%
-          %{--</td>--}%
-          %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'destino', 'errors')}">--}%
-            %{--${viagemBanco?.destino}--}%
-          %{--</td>--}%
+        %{--<td valign="top" class="name">--}%
+        %{--<label for="destino"><g:message code="viagem.destino" default="Destino"/>:</label>--}%
+        %{--</td>--}%
+        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'destino', 'errors')}">--}%
+        %{--${viagemBanco?.destino}--}%
+        %{--</td>--}%
         %{--</tr>--}%
 
 
-        <tr class="prop">
-           <td valign="top" class="name">
-             <label for="pacientes"><g:message code="viagem.paradas" default="Paradas"/>:</label>
-           </td>
-           <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'paradas', 'errors')}">
-             <g:each var="parada" in="${viagemBanco?.paradas}">
-               <p>${paciente}</p>
-             </g:each>
-           </td>
-         </tr>
-        
+        <g:if test="${!viagem.paradas.empty}">
+          <tr class="prop">
+            <td valign="top" class="name">
+              <label for="pacientes"><g:message code="viagem.paradas" default="Paradas"/>:</label>
+            </td>
+            <td valign="top" class="value ${hasErrors(bean: viagem, field: 'paradas', 'errors')}">
+              <g:each var="parada" in="${viagemBanco?.paradas}">
+                <p>${parada}</p>
+              </g:each>
+            </td>
+          </tr>
+        </g:if>
+
 
         <tr class="prop">
           <td valign="top" class="name">
             <label for="dataRetorno"><g:message code="viagem.dataRetorno" default="Data Retorno"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'dataRetorno', 'errors')}">
-            <input id="dataRetorno" name="dataRetorno" type="text" value="${formatDate(date: viagemInstance?.dataRetorno, formatName: 'default.date.format')}" readonly="readonly">
+          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'dataRetorno', 'errors')}">
+            <input id="dataRetorno" name="dataRetorno" type="text" value="${formatDate(date: viagem?.dataRetorno, formatName: 'default.date.format')}" readonly="readonly">
             %{--<input type="text" readonly="readonly" id="dataRetorno" name="dataRetorno"--}%
-            %{--value="${formatDate(date: viagemInstance?.horaRetorno, format: 'dd/MM/yyyy')}" />--}%
+            %{--value="${formatDate(date: viagem?.horaRetorno, format: 'dd/MM/yyyy')}" />--}%
 
           </td>
         </tr>
@@ -148,9 +150,9 @@
           <td valign="top" class="name">
             <label for="horaRetorno"><g:message code="viagem.horaRetorno" default="Hora Retorno"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'horaRetorno', 'errors')}">
-            <input id="horaRetorno" name="horaRetorno" type="text" value="${formatDate(date: viagemInstance?.horaRetorno, formatName: 'default.time.format')}"/>
-            %{--<g:datePicker name="horaRetorno" value="${viagemInstance?.horaRetorno}"  />--}%
+          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'horaRetorno', 'errors')}">
+            <input id="horaRetorno" name="horaRetorno" type="text" value="${formatDate(date: viagem?.horaRetorno, formatName: 'default.time.format')}"/>
+            %{--<g:datePicker name="horaRetorno" value="${viagem?.horaRetorno}"  />--}%
 
           </td>
         </tr>
@@ -160,8 +162,8 @@
         %{--<td valign="top" class="name">--}%
         %{--<label for="horaRetorno"><g:message code="viagem.horaRetorno" default="Hora Retorno" />:</label>--}%
         %{--</td>--}%
-        %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'horaRetorno', 'errors')}">--}%
-        %{--<g:datePicker name="horaRetorno" value="${viagemInstance?.horaRetorno}" noSelection="['': '']" />--}%
+        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'horaRetorno', 'errors')}">--}%
+        %{--<g:datePicker name="horaRetorno" value="${viagem?.horaRetorno}" noSelection="['': '']" />--}%
 
         %{--</td>--}%
         %{--</tr>--}%
@@ -170,8 +172,8 @@
           <td valign="top" class="name">
             <label for="kmRetorno"><g:message code="viagem.kmRetorno" default="Km Retorno"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'kmRetorno', 'errors')}">
-            <g:textField name="kmRetorno" value="${fieldValue(bean: viagemInstance, field: 'kmRetorno')}"/>
+          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'kmRetorno', 'errors')}">
+            <g:textField name="kmRetorno" value="${fieldValue(bean: viagem, field: 'kmRetorno')}"/>
           </td>
         </tr>
 
@@ -181,8 +183,8 @@
           <td valign="top" class="name">
             <label for="observacoes"><g:message code="viagem.observacoes" default="Observacoes"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'observacoes', 'errors')}">
-            <g:textArea name="observacoes" value="${fieldValue(bean: viagemInstance, field: 'observacoes')}"/>
+          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'observacoes', 'errors')}">
+            <g:textArea name="observacoes" value="${fieldValue(bean: viagem, field: 'observacoes')}"/>
 
           </td>
         </tr>
@@ -191,7 +193,7 @@
         %{--<td valign="top" class="name">--}%
         %{--<label for="pacientes"><g:message code="viagem.pacientes" default="Pacientes" />:</label>--}%
         %{--</td>--}%
-        %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'pacientes', 'errors')}">--}%
+        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'pacientes', 'errors')}">--}%
         %{----}%
 
         %{--</td>--}%
@@ -201,8 +203,8 @@
         %{--<td valign="top" class="name">--}%
         %{--<label for="retornou"><g:message code="viagem.retornou" default="Retornou" />:</label>--}%
         %{--</td>--}%
-        %{--<td valign="top" class="value ${hasErrors(bean: viagemInstance, field: 'retornou', 'errors')}">--}%
-        %{--<g:checkBox name="retornou" value="${viagemInstance?.retornou}" />--}%
+        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'retornou', 'errors')}">--}%
+        %{--<g:checkBox name="retornou" value="${viagem?.retornou}" />--}%
 
         %{--</td>--}%
         %{--</tr>--}%

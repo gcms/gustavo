@@ -85,6 +85,11 @@ input:focus, select:focus, textarea:focus {
     color: #333;
     padding-left: 25px;
 }
+.menuButton a.ambulance {
+    background: url(../images/skin/ambulance.png) center left no-repeat;
+    color: #333;
+    padding-left: 23px;
+}
 .menuButton a.list {
     background: url(../images/skin/database_table.png) center left no-repeat;
     color: #333;

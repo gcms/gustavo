@@ -85,19 +85,21 @@
 
         %{--</tr>--}%
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="viagem.paradas" default="Paradas"/>:</td>
+        <g:if test="${!viagem.paradas.empty}">
+          <tr class="prop">
+            <td valign="top" class="name"><g:message code="viagem.paradas" default="Paradas"/>:</td>
 
-          <td valign="top" class="value">
-            <g:each var="parada" in="${viagem?.paradas}">
-              <p>
-                ${parada}
-                %{--<g:render template="${parada.className.decapitalize()}" model="[parada: parada]"/> --}%
-              </p>
-            </g:each>
-          %{--${fieldValue(bean: viagem, field: "pacientes")}--}%
-          </td>
-        </tr>
+            <td valign="top" class="value">
+              <g:each var="parada" in="${viagem?.paradas}">
+                <p>
+                  ${parada}
+                  %{--<g:render template="${parada.className.decapitalize()}" model="[parada: parada]"/> --}%
+                </p>
+              </g:each>
+            %{--${fieldValue(bean: viagem, field: "pacientes")}--}%
+            </td>
+          </tr>
+        </g:if>
 
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.observacoes" default="Observacoes"/>:</td>

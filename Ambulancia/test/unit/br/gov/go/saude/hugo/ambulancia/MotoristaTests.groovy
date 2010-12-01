@@ -12,13 +12,13 @@ class MotoristaTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
-    void testNomeValido() {
+    void testeNomeValido() {
         assertFalse new Motorista().validate()
 
         assertTrue new Motorista(nome: "Fulano da Silva").validate()
     }
 
-    void testMotoristaDuplicado() {
+    void testeMotoristaDuplicado() {
         new Motorista(nome: "Fulano da Silva").save()
         assertEquals 1, Motorista.count()
 

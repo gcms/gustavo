@@ -109,7 +109,7 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
         viagem.registreSaida(new Date(), 2000)
         assertFalse gerenciamentoViagemService.registreSaida(viagem); // km anterior ao de retorno da última viagem
 
-        assertEquals 'min.notmet', viagem.errors.getFieldError('kmSaida').code        
+        assertEquals 'viagem.kmSaida.min.notmet', viagem.errors.getFieldError('kmSaida').code        
     }
 
     void testeCascadeDlete() {

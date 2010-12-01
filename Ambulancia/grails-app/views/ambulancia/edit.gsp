@@ -57,10 +57,10 @@
 
         <tr class="prop">
           <td valign="top" class="name">
-            <label for="ativada"><g:message code="ambulancia.ativada" default="Ativada"/>:</label>
+            <label for="disponivel"><g:message code="ambulancia.disponivel" default="Disponivel"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: ambulanciaInstance, field: 'ativada', 'errors')}">
-            <g:checkBox name="ativada" value="${ambulanciaInstance?.ativada}"/>
+          <td valign="top" class="value ${hasErrors(bean: ambulanciaInstance, field: 'disponivel', 'errors')}">
+            <g:checkBox name="disponivel" value="${ambulanciaInstance?.disponivel}"/>
           </td>
         </tr>
 
