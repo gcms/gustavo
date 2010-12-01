@@ -13,15 +13,21 @@ class AmbulanciaService {
     SessionFactory sessionFactory
 
     List obtenhaAmbulanciasDisponiveis() {
+        log.debug "Obtendo ambulâncias disponíveis..."
+
         String hql = """
         from Ambulancia a
-        where not exists (select 1 from Viagem v
+        where a.disponivel = true
+          and not exists (select 1 from Viagem v
                           where v.retornou = false and v.ambulancia = a)
 """
-        sessionFactory.currentSession.createQuery(hql).list()
+
+        Ambulancia.executeQuery(hql)
     }
 
     Long obtenhaKmRetornoUltimaViagem(Ambulancia ambulancia) {
+        log.debug "Obtendo km da ambulancia $ambulancia..."
+
         String hql = """
         select max(kmRetorno) from Viagem v
         where v.retornou = true and v.ambulancia.id = ${ambulancia.id})

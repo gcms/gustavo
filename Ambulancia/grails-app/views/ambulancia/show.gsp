@@ -42,6 +42,11 @@
           <td valign="top" class="name"><g:message code="ambulancia.descricao" default="Descricao"/>:</td>
           <td valign="top" class="value">${fieldValue(bean: ambulanciaInstance, field: "descricao")}</td>
         </tr>
+        
+        <tr class="prop">
+          <td valign="top" class="name"><g:message code="ambulancia.disponivel" default="Disponivel"/>:</td>
+          <td valign="top" class="value">${ambulanciaInstance?.disponivel ? 'Sim' : 'Não'}</td>
+        </tr>
 
         </tbody>
       </table>

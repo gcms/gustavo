@@ -84,8 +84,9 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    warn   'org.mortbay.log',
-           'br.gov.go.saude.hugo'
+    warn   'org.mortbay.log'
+
+    debug  'br.gov.go.saude.hugo'
 }
 
 // Added by the Spring Security Core plugin:

@@ -3,6 +3,8 @@ package br.gov.go.saude.hugo.ambulancia
 class Operador {
 
     String nome
+    String telefone
+
 	String usuario
 	String senha
 
@@ -13,6 +15,8 @@ class Operador {
 
 	static constraints = {
         nome nullable: true
+        telefone nullable: true
+        
 		usuario blank: false, unique: true
 		senha blank: false
 	}

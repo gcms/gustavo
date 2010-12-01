@@ -12,7 +12,7 @@ class AmbulanciaTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
-    void testValidacaoPlaca() {
+    void testeValidacaoPlaca() {
         assertFalse new Ambulancia(placa: "NFW1234", prefixo: '231').validate()
         assertFalse new Ambulancia(placa: "NF1234", prefixo: '901').validate()
         assertFalse new Ambulancia(placa: "NFW-34", prefixo: '901').validate()
@@ -37,10 +37,10 @@ class AmbulanciaTests extends GrailsUnitTestCase {
         assertEquals 1, Ambulancia.count() // continua 1 após salvar
     }
 
-    void testValidacaoPrefixo() {
+    void testeValidacaoPrefixo() {
         assertFalse new Ambulancia(placa: "NFW-1234", prefixo: 'asb').validate()
         assertFalse new Ambulancia(placa: "NFW-1234", prefixo: 'AXZ').validate()
-        assertFalse new Ambulancia(placa: "NFW-1234", prefixo: '1009').validate()
+        assertFalse new Ambulancia(placa: "NFW-1234", prefixo: '10099').validate()
         assertFalse new Ambulancia(placa: "NFW-1234", prefixo: '1ab').validate()
         assertFalse new Ambulancia(placa: "NFW-1234", prefixo: '11b').validate()
         assertFalse new Ambulancia(placa: "NFW-1234", prefixo: '1b1').validate()

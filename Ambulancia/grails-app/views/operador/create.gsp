@@ -34,6 +34,16 @@
 
           </td>
         </tr>
+        
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="telefone"><g:message code="operador.telefone" default="Telefone"/>:</label>
+          </td>
+          <td valign="top" class="value ${hasErrors(bean: operadorInstance, field: 'telefone', 'errors')}">
+            <g:textField name="telefone" value="${fieldValue(bean: operadorInstance, field: 'telefone')}"/>
+
+          </td>
+        </tr>        
 
         <tr class="prop">
           <td valign="top" class="name">

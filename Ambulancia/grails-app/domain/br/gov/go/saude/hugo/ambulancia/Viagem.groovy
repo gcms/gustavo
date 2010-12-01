@@ -59,42 +59,42 @@ class Viagem {
 
 
     static constraints = {
-        motorista(nullable: false)
-        ambulancia(nullable: false)
-        operador(nullable: false)
+        motorista nullable: false
+        ambulancia nullable: false
+        operador nullable: false
 
-        horaSaida(nullable: false)
-        kmSaida(nullable: false)
+        horaSaida nullable: false
+        kmSaida nullable: false
 
-        horaRetorno(nullable: true, validator: { val, obj ->
+        horaRetorno nullable: true, validator: { val, obj ->
             if (val == null && obj.retornou)
                 return 'nullable'
             if (val != null && val < obj.horaSaida)
-                return 'min'
+                return ['min.notmet', obj.horaSaida ]
 
             true
-        })
-        kmRetorno(nullable: true, validator: { val, obj ->
+        }
+        kmRetorno nullable: true, validator: { val, obj ->
             if (val == null && obj.retornou)
                 return 'nullable'
             if (val != null && val < obj.kmSaida)
-                return 'min'
+                return ['min.notmet', obj.kmSaida ]
 
             true
-        })
+        }
 
-        distancia(nullable: true)
+        distancia nullable: true
 
-        observacoes(nullable: true, maxSize: 500)
+        observacoes nullable: true, maxSize: 500
 
-        paradas(validator: { val, obj ->
+        paradas validator: { val, obj ->
             for (Parada parada : val) {
                 if (!parada.validate())
-                    return parada.errors.allErrors.collect { it.code }
+                    return 'blank'
             }
             
-            true
-        })
+           true
+        }
     }
 
 
