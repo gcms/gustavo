@@ -7,6 +7,7 @@ class BootStrap {
     GerenciamentoGrupoService gerenciamentoGrupoService
     GrailsApplication grailsApplication
 
+    // TODO: mover inicialização para partes separadas
     def init = { servletContext ->
         Locale.default = new Locale("pt", "BR")
 
@@ -18,10 +19,21 @@ class BootStrap {
         assert Operador.count() >= 1
         assert Grupo.count() >= 2
 
+
+        grailsApplication.domainClasses.each() {
+            it.clazz.metaClass.getRealClass = {
+                org.hibernate.Hibernate.getClass(delegate)
+            }
+        }
+
+        String.metaClass.uncapitalize = {
+            org.apache.commons.lang.StringUtils.uncapitalize(delegate)
+        }
+
+
         grailsApplication.controllerClasses.each() {
             println it
-        } 
-
+        }
     }
     def destroy = {
     }

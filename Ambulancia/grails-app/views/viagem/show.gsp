@@ -91,12 +91,11 @@
 
             <td valign="top" class="value">
               <g:each var="parada" in="${viagem?.paradas}">
+                <g:set var="classe" value="${parada.realClass.name.tokenize('\\.').last()}"/>
                 <p>
-                  ${parada}
-                  %{--<g:render template="${parada.className.decapitalize()}" model="[parada: parada]"/> --}%
+                  <g:render template="${classe.uncapitalize()}" model="[parada: parada]"/>
                 </p>
               </g:each>
-            %{--${fieldValue(bean: viagem, field: "pacientes")}--}%
             </td>
           </tr>
         </g:if>

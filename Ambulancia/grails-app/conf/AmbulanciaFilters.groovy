@@ -1,4 +1,4 @@
-class DefaultFilters {
+class AmbulanciaFilters {
     def filters = {
         all(controller:'*', action:'*') {
             before = {

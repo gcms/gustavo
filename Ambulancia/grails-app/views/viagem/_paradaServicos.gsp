@@ -7,4 +7,11 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-${parada.descricao} ${parada.destino}
+<div style="margin-bottom: 10pt;">
+<p>
+  <label>Serviço:</label> ${parada.descricao}
+</p>
+<p>
+  <label>Destino:</label> ${parada.destino}
+</p>
+</div>

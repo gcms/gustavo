@@ -127,7 +127,10 @@
             </td>
             <td valign="top" class="value ${hasErrors(bean: viagem, field: 'paradas', 'errors')}">
               <g:each var="parada" in="${viagemBanco?.paradas}">
-                <p>${parada}</p>
+                <g:set var="classe" value="${parada.realClass.name.tokenize('\\.').last()}"/>
+                <p>
+                  <g:render template="${classe.uncapitalize()}" model="[parada: parada]"/>
+                </p>
               </g:each>
             </td>
           </tr>
