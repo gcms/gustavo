@@ -2,6 +2,8 @@ package br.gov.go.saude.hugo.utilitario
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.springframework.context.MessageSource
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,19 +13,38 @@ import java.text.SimpleDateFormat
  * To change this template use File | Settings | File Templates.
  */
 class UtilitarioDataHorario {
-    // TODO: Se possível carregar do messages.properties
-    final static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy")
-    final static DateFormat timeFormat = new SimpleDateFormat("HH:mm")
+    private static UtilitarioDataHorario defaultInstance
 
-    public static Date copieData(Date dataOriginal, Date dataDia) {
+    public static UtilitarioDataHorario getDefault() {
+        defaultInstance ?: (defaultInstance = createInstancia(Locale.default))
+    }
+
+    public static UtilitarioDataHorario createInstancia(Locale locale) {
+        MessageSource ms = ApplicationHolder.application.mainContext.messageSource
+        String dateFormat = ms?.getMessage('default.date.format', [] as Object[], locale) ?: 'dd/MM/yyy'
+        String timeFormat = ms?.getMessage('default.time.format', [] as Object[], locale) ?: 'HH:mm'
+
+        return new UtilitarioDataHorario(dateFormat, timeFormat)
+    }
+
+    // TODO: melhorar coesão... está apenas armazenando estes formatos, não utiliza para nada.
+    final DateFormat dateFormat
+    final DateFormat timeFormat
+    
+    public UtilitarioDataHorario(String dateFormat, String timeFormat) {
+        this.dateFormat = new SimpleDateFormat(dateFormat)
+        this.timeFormat = new SimpleDateFormat(timeFormat)
+    }        
+
+    public Date copieData(Date dataOriginal, Date dataDia) {
         copieCampos(dataOriginal, dataDia, [Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH])
     }
 
-    public static Date copieHora(Date dataOriginal, Date dataHora) {
+    public Date copieHora(Date dataOriginal, Date dataHora) {
         copieCampos(dataOriginal, dataHora, [Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND])
     }
 
-    public static Date copieCampos(Date dataOriginal, Date dataNova, List campos) {
+    public Date copieCampos(Date dataOriginal, Date dataNova, List campos) {
         Calendar novo = Calendar.instance
         novo.time = dataNova
 
@@ -37,7 +58,7 @@ class UtilitarioDataHorario {
         anterior.time
     }
 
-    public static Date inicioDoDia(Date data) {
+    public Date inicioDoDia(Date data) {
         Calendar novo = Calendar.instance
         novo.time = data
 
@@ -48,7 +69,7 @@ class UtilitarioDataHorario {
         novo.time
     }
 
-    public static Date fimDoDia(Date data) {
+    public Date fimDoDia(Date data) {
         Calendar novo = Calendar.instance
         novo.time = data
 
@@ -58,8 +79,8 @@ class UtilitarioDataHorario {
 
         novo.time
     }
-    
-    public static Date inicioDoMes(Date data) {
+
+    public Date inicioDoMes(Date data) {
         Calendar novo = Calendar.instance
         novo.time = data
 
@@ -68,7 +89,7 @@ class UtilitarioDataHorario {
         novo.time
     }
 
-    public static Date inicioDoMes() {
+    public Date inicioDoMes() {
         inicioDoMes(new Date())
     }
 }

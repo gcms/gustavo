@@ -38,11 +38,11 @@ class Viagem {
     }
 
     void setDataSaida(Date data) {
-        horaSaida = horaSaida ? UtilitarioDataHorario.copieData(horaSaida, data) : data
+        horaSaida = horaSaida ? UtilitarioDataHorario.default.copieData(horaSaida, data) : data
     }
 
     void setHoraSaida(Date data) {
-        horaSaida = horaSaida ? UtilitarioDataHorario.copieHora(horaSaida, data) : data
+        horaSaida = horaSaida ? UtilitarioDataHorario.default.copieHora(horaSaida, data) : data
     }
     
     Date getDataRetorno() {
@@ -50,11 +50,11 @@ class Viagem {
     }
 
     void setDataRetorno(Date data) {
-        horaRetorno = horaRetorno ? UtilitarioDataHorario.copieData(horaRetorno, data) : data
+        horaRetorno = horaRetorno ? UtilitarioDataHorario.default.copieData(horaRetorno, data) : data
     }
 
     void setHoraRetorno(Date data) {
-        horaRetorno = horaRetorno ? UtilitarioDataHorario.copieHora(horaRetorno, data) : data
+        horaRetorno = horaRetorno ? UtilitarioDataHorario.default.copieHora(horaRetorno, data) : data
     }
 
 
