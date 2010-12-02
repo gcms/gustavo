@@ -123,12 +123,12 @@ Ambulancia.FieldSetList.TiposParadas = {
         {
             fieldLabel: 'Paciente',
             name: 'paciente',
-            allowBlank: false
+            allowBlank: true//false
         },
         {
             fieldLabel: 'Destino',
             name: 'destino',
-            allowBlank: false
+            allowBlank: true//false
         },
         {
             xtype: 'hidden',
@@ -140,12 +140,12 @@ Ambulancia.FieldSetList.TiposParadas = {
         {
             fieldLabel: 'Serviços',
             name: 'descricao',
-            allowBlank: false
+            allowBlank: true//false
         },
         {
             fieldLabel: 'Destino',
             name: 'destino',
-            allowBlank: false
+            allowBlank: true//false
         },
         {
             xtype: 'hidden',

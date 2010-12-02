@@ -5,6 +5,8 @@ import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
 class ViagemController {
     MotoristaService motoristaService
     AmbulanciaService ambulanciaService
+    DestinoService destinoService
+
     GerenciamentoGrupoService gerenciamentoGrupoService
     GerenciamentoViagemService gerenciamentoViagemService
 
@@ -23,6 +25,7 @@ class ViagemController {
 
         Motorista motorista = params?.motorista?.id ? Motorista.get(params.motorista.id) : null
         Ambulancia ambulancia = params?.ambulancia?.id ? Ambulancia.get(params.ambulancia.id) : null
+        String destino = params.getInt('destino') != 0 ? params.destino : null
 
         def criteria = {
             and {
@@ -35,6 +38,11 @@ class ViagemController {
 
                 if (ambulancia)
                     eq("ambulancia.id", ambulancia.id)
+
+                if (destino)
+                    paradas {
+                        eq('destino', destino)
+                    }
             }
             projections {
                 sum("distancia")
@@ -45,18 +53,22 @@ class ViagemController {
         def distanciaTotal = Viagem.createCriteria().get(criteria)
 
         [
-                motorista: motorista, ambulancia: ambulancia,
+                motorista: motorista, ambulancia: ambulancia, destino: destino,
                 dataInicio: dataInicio, dataFim: dataFim,
                 viagens: viagens, distanciaTotal: distanciaTotal
         ]
     }
 
     def list = {
-        obtenhaViagens(params) + [ motoristas: Motorista.list(), ambulancias: Ambulancia.list() ]
+        [
+                motoristas: Motorista.list(),
+                ambulancias: Ambulancia.list(),
+                destinos: destinoService.obtenhaDestinos()
+        ] + obtenhaViagens(params)
     }
 
     def print = {
-        obtenhaViagens([:]) + [ operador: gerenciamentoGrupoService.getOperadorLogado() ]
+        [operador: gerenciamentoGrupoService.getOperadorLogado()] + obtenhaViagens([:]) 
     }
 
     def home = {
@@ -117,7 +129,7 @@ class ViagemController {
         }
     }
 
-    // TODO: diferenciar edi��o de retorno
+    // TODO: diferenciar ediçãoo de retorno
     def edit = {
         def viagemBanco = Viagem.get(params.id)
         def viagem = flash.viagem ?: viagemBanco
@@ -136,7 +148,7 @@ class ViagemController {
         }
     }
 
-    // TODO: diferenciar confirmaçãoo de retorno de atualização
+    // TODO: diferenciar confirmação de retorno de atualização
     def update = {
         params.horaRetorno = dataHora.timeFormat.parse(params.horaRetorno)
         params.dataRetorno = dataHora.dateFormat.parse(params.dataRetorno)
@@ -190,7 +202,7 @@ class ViagemController {
                 flash.message = "viagem.deleted"
                 flash.args = [params.id]
                 flash.defaultMessage = "Viagem com identificador ${params.id} foi excluída"
-                redirect(action: "list")
+                redirect(action: "home")
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {
                 flash.message = "viagem.not.deleted"
@@ -203,7 +215,7 @@ class ViagemController {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
-            redirect(action: "list")
+            redirect(action: "home")
         }
     }
 }

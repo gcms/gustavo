@@ -47,7 +47,7 @@
       items.adicione(Ambulancia.FieldSetList.TiposParadas['br.gov.go.saude.hugo.ambulancia.ParadaServicos']);
     }
 
-    var paradas = ${viagem?.paradas as JSON };
+    var paradas = ${viagem?.paradas as JSON};
 
     Ext.onReady(function() {
       Ext.QuickTips.init();

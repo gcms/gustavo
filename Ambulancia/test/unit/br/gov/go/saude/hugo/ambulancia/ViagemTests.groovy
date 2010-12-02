@@ -23,7 +23,7 @@ class ViagemTests extends GrailsUnitTestCase {
         motorista = new Motorista(nome: 'Fulano da Silva')
         motorista.save()
 
-        ambulancia = new Ambulancia(placa: 'NFS-1234')
+        ambulancia = new Ambulancia(placa: 'NFS-1234', prefixo: '901')
         ambulancia.save()
     }
 
