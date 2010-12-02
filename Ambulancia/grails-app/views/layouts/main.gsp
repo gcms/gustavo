@@ -35,6 +35,7 @@
   <script type="text/javascript" src="${resource(dir: 'js/ext-3.3.0', file: 'adapter/ext/ext-base.js')}"></script>
   <script type="text/javascript" src="${resource(dir: 'js/ext-3.3.0', file: 'ext-all-debug.js')}"></script>
   <script type="text/javascript" src="${resource(dir: 'js/ext-3.3.0', file: 'examples/ux/RowEditor.js')}"></script>
+  <script type="text/javascript" src="${resource(dir: 'js/ext-3.3.0', file: 'src/locale/ext-lang-pt_BR.js')}"></script>
   %{--<script type="text/javascript" src="${resource(dir: 'js/ext-3.3.0', file: 'adapter/ext/ext-base.js')}"></script>--}%
   %{--<script type="text/javascript" src="${resource(dir: 'js/ext-3.3.0', file: 'adapter/ext/ext-base.js')}"></script>--}%
 

@@ -1,7 +1,6 @@
 package br.gov.go.saude.hugo.ambulancia
 
 import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
-import java.text.DateFormat
 
 class ViagemController {
     MotoristaService motoristaService
@@ -9,13 +8,7 @@ class ViagemController {
     GerenciamentoGrupoService gerenciamentoGrupoService
     GerenciamentoViagemService gerenciamentoViagemService
 
-    private static DateFormat getTimeFormat() {
-        UtilitarioDataHorario.timeFormat
-    }
-
-    private static DateFormat getDateFormat() {
-        UtilitarioDataHorario.dateFormat
-    }
+    UtilitarioDataHorario dataHora = UtilitarioDataHorario.default
 
     def index = {
         redirect(action: "home", params: params)
@@ -24,9 +17,9 @@ class ViagemController {
     // the delete, save and update actions only accept POST requests
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def list = {
-        Date dataInicio = UtilitarioDataHorario.inicioDoDia(params.dataInicio ? dateFormat.parse(params.dataInicio) : UtilitarioDataHorario.inicioDoMes())
-        Date dataFim = UtilitarioDataHorario.fimDoDia(params.dataFim ? dateFormat.parse(params.dataFim) : new Date())
+    private Map obtenhaViagens(Map listParams) {
+        Date dataInicio = dataHora.inicioDoDia(params.dataInicio ? dataHora.dateFormat.parse(params.dataInicio) : dataHora.inicioDoMes())
+        Date dataFim = dataHora.fimDoDia(params.dataFim ? dataHora.dateFormat.parse(params.dataFim) : new Date())
 
         Motorista motorista = params?.motorista?.id ? Motorista.get(params.motorista.id) : null
         Ambulancia ambulancia = params?.ambulancia?.id ? Ambulancia.get(params.ambulancia.id) : null
@@ -48,52 +41,22 @@ class ViagemController {
             }
         }
 
-
-        def viagens = Viagem.createCriteria().list(params, criteria)
+        def viagens = Viagem.createCriteria().list(listParams, criteria)
         def distanciaTotal = Viagem.createCriteria().get(criteria)
 
         [
-                motoristas: Motorista.list(), ambulancias: Ambulancia.list(),
                 motorista: motorista, ambulancia: ambulancia,
                 dataInicio: dataInicio, dataFim: dataFim,
                 viagens: viagens, distanciaTotal: distanciaTotal
         ]
     }
 
+    def list = {
+        obtenhaViagens(params) + [ motoristas: Motorista.list(), ambulancias: Ambulancia.list() ]
+    }
+
     def print = {
-        Date dataInicio = UtilitarioDataHorario.inicioDoDia(params.dataInicio ? dateFormat.parse(params.dataInicio) : UtilitarioDataHorario.inicioDoMes())
-        Date dataFim = UtilitarioDataHorario.fimDoDia(params.dataFim ? dateFormat.parse(params.dataFim) : new Date())
-
-        Motorista motorista = params?.motorista?.id ? Motorista.get(params.motorista.id) : null
-        Ambulancia ambulancia = params?.ambulancia?.id ? Ambulancia.get(params.ambulancia.id) : null
-
-        def criteria = {
-            and {
-                between("horaSaida", dataInicio, dataFim)
-                between("horaRetorno", dataInicio, dataFim)
-                eq("retornou", true)
-
-                if (motorista)
-                    eq("motorista.id", motorista.id)
-
-                if (ambulancia)
-                    eq("ambulancia.id", ambulancia.id)
-            }
-            projections {
-                sum("distancia")
-            }
-        }
-
-
-        def viagens = Viagem.createCriteria().list([:], criteria)
-        def distanciaTotal = Viagem.createCriteria().get(criteria)
-
-        [
-                operador: gerenciamentoGrupoService.getOperadorLogado(),
-                motorista: motorista, ambulancia: ambulancia,
-                dataInicio: dataInicio, dataFim: dataFim,
-                viagens: viagens, distanciaTotal: distanciaTotal
-        ]
+        obtenhaViagens([:]) + [ operador: gerenciamentoGrupoService.getOperadorLogado() ]
     }
 
     def home = {
@@ -114,8 +77,8 @@ class ViagemController {
     }
 
     def save = {
-        params.horaSaida = timeFormat.parse(params.horaSaida)
-        params.dataSaida = dateFormat.parse(params.dataSaida)
+        params.horaSaida = dataHora.timeFormat.parse(params.horaSaida)
+        params.dataSaida = dataHora.dateFormat.parse(params.dataSaida)
 
         // TODO: tentar colocar em um binding customizado
         List paradas = []
@@ -175,8 +138,8 @@ class ViagemController {
 
     // TODO: diferenciar confirmação de retorno de atualização
     def update = {
-        params.horaRetorno = timeFormat.parse(params.horaRetorno)
-        params.dataRetorno = dateFormat.parse(params.dataRetorno)
+        params.horaRetorno = dataHora.timeFormat.parse(params.horaRetorno)
+        params.dataRetorno = dataHora.dateFormat.parse(params.dataRetorno)
 
         def viagem = Viagem.get(params.id)
 

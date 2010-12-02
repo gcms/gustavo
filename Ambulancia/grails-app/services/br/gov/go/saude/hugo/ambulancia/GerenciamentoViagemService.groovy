@@ -1,7 +1,10 @@
 package br.gov.go.saude.hugo.ambulancia
 
+import org.springframework.context.MessageSource
+
 class GerenciamentoViagemService {
     AmbulanciaService ambulanciaService
+    MessageSource messageSource
 
     private Viagem obtenhaViagemNaoRetornou(Ambulancia ambulancia) {
         Viagem.findByAmbulanciaAndRetornou(ambulancia, false)
@@ -17,8 +20,9 @@ class GerenciamentoViagemService {
         if (!viagem.errors.hasErrors())
             viagem.validate()
 
-//        if (!viagem.errors.hasFieldErrors(atributo))
-        viagem.errors.rejectValue(atributo, 'unique')
+        viagem.errors.rejectValue(atributo, 'unique',
+                [atributo, viagem.getClass().name, viagem."$atributo"] as Object[],
+                messageSource.getMessage('default.not.unique.message', [] as Object[], Locale.default))
     }
 
     private void verifiqueKmAmbulancia(Viagem viagem, Ambulancia ambulancia) {
@@ -31,7 +35,7 @@ class GerenciamentoViagemService {
             if (!viagem.errors.hasFieldErrors('kmSaida'))
                 viagem.errors.rejectValue('kmSaida', 'viagem.kmSaida.min.notmet',
                         ['kmSaida', viagem.getClass().name, viagem.kmSaida, kmRetornoUltimo] as Object[],
-                        'O campo [{0}] da classe [{1}] com o valor [{2}] não atinge o valor mínimo [{3}]')
+                        messageSource.getMessage('default.invalid.min.message', [] as Object[], Locale.default))
         }
     }
 
@@ -51,9 +55,5 @@ class GerenciamentoViagemService {
 
     boolean registreRetorno(Viagem viagem) {
         !viagem.hasErrors() && viagem.save()
-    }
-
-    Date obtenhaMenorDataSaida() {
-
     }
 }
