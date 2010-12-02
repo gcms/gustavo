@@ -40,7 +40,7 @@
   <span class="menuButton"><g:link class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:link></span>
 </div>
 <div class="body">
-  <h1><g:message code="viagem.list.retornou" default="Viagem List" /></h1>
+  <h1><g:message code="viagem.list.retornou" default="Viagem List"/></h1>
   <g:if test="${flash.message}">
     <div class="message"><g:message code="${flash.message}" args="${flash.args}" default="${flash.defaultMessage}"/></div>
   </g:if>
@@ -66,6 +66,16 @@
           </td>
           <td valign="top" class="value">
             <g:select name="ambulancia.id" from="${ambulancias}" optionKey="id" value="${ambulancia?.id}"
+                    noSelection="${[0:'Todos']}"/>
+          </td>
+        </tr>
+        
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="destino"><g:message code="viagem.parada.destino" default="Destino"/>:</label>
+          </td>
+          <td valign="top" class="value">
+            <g:select name="destino" from="${destinos}" value="${destino}"
                     noSelection="${[0:'Todos']}"/>
           </td>
         </tr>
@@ -98,13 +108,13 @@
       </span>
       <span class="button">
         %{--<g:submitButton name="print" class="print" value="${message(code: 'print', 'default': 'Print')}" onclick="document.forms[0].action = 'print'; document.forms[0].target= '_blank'; document.forms[0].submit();"/>--}%
-        <g:actionSubmit name="print" class="print" value="${message(code: 'viagem.print', 'default': 'Print')}" action="print"/> 
+        <g:actionSubmit name="print" class="print" value="${message(code: 'viagem.print', 'default': 'Print')}" action="print"/>
       </span>
     </div>
   </g:form>
 
   <p>&nbsp;</p>
-  
+
   <div class="dialog">
     <table>
       <tbody>
@@ -116,9 +126,9 @@
       </tr>
 
       %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name"><g:message code="tempo.total" default="Tempo total"/>:</td>--}%
+      %{--<td valign="top" class="name"><g:message code="tempo.total" default="Tempo total"/>:</td>--}%
 
-        %{--<td valign="top" class="value"></td>--}%
+      %{--<td valign="top" class="value"></td>--}%
       %{--</tr>--}%
       </tbody>
     </table>
@@ -137,6 +147,8 @@
         <th><g:message code="viagem.motorista" default="Motorista"/></th>
 
         %{--<th><g:message code="viagem.operador" default="Operador" /></th>--}%
+
+        <th><g:message code="viagem.destino" default="Destinos"/></th>
 
         <g:sortableColumn property="dataSaida" title="Data Saida" titleKey="viagem.dataSaida"/>
         <g:sortableColumn property="horaSaida" title="Hora Saida" titleKey="viagem.horaSaida"/>
@@ -162,6 +174,12 @@
 
 
           %{--<td>${fieldValue(bean: viagemInstance, field: "operador")}</td>--}%
+
+          <td>
+            <g:each var="parada" in="${viagemInstance.paradas}">
+              <p>${parada.destino}</p>
+            </g:each>
+          </td>
 
           <td><g:formatDate date="${viagemInstance.dataSaida}" formatName="default.date.format"/></td>
           <td><g:formatDate date="${viagemInstance.horaSaida}" formatName="default.time.format"/></td>

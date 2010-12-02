@@ -2,6 +2,7 @@ import br.gov.go.saude.hugo.ambulancia.GerenciamentoGrupoService
 import br.gov.go.saude.hugo.ambulancia.Operador
 import br.gov.go.saude.hugo.ambulancia.Grupo
 import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 class BootStrap {
     GerenciamentoGrupoService gerenciamentoGrupoService
@@ -20,21 +21,18 @@ class BootStrap {
         assert Grupo.count() >= 2
 
 
-        grailsApplication.domainClasses.each() {
-            it.clazz.metaClass.getRealClass = {
+        grailsApplication.domainClasses.each() { GrailsDomainClass dc ->
+            dc.clazz.metaClass.getRealClass = {
                 org.hibernate.Hibernate.getClass(delegate)
-            }
+            }            
         }
 
         String.metaClass.uncapitalize = {
             org.apache.commons.lang.StringUtils.uncapitalize(delegate)
         }
-
-
-        grailsApplication.controllerClasses.each() {
-            println it
-        }
     }
+
+
     def destroy = {
     }
 }

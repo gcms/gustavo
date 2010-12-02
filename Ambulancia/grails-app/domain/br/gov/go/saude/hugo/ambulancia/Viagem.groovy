@@ -31,6 +31,8 @@ class Viagem {
         paradas cascade: 'all-delete-orphan'
     }
 
+    static hasMany = [paradas: Parada]
+
     static transients = [ 'dataSaida', 'dataRetorno' ]
 
     Date getDataSaida() {
@@ -96,9 +98,6 @@ class Viagem {
            true
         }
     }
-
-
-    static hasMany = [paradas: Parada]
 
     void registreSaida(Date horaSaida, int kmSaida) {
         this.horaSaida = horaSaida
