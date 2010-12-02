@@ -32,7 +32,7 @@ class GerenciamentoViagemService {
             if (!viagem.errors.hasErrors())
                 viagem.validate()
 
-            if (!viagem.errors.hasFieldErrors('kmSaida'))
+//            if (!viagem.errors.hasFieldErrors('kmSaida'))
                 viagem.errors.rejectValue('kmSaida', 'viagem.kmSaida.min.notmet',
                         ['kmSaida', viagem.getClass().name, viagem.kmSaida, kmRetornoUltimo] as Object[],
                         messageSource.getMessage('default.invalid.min.message', [] as Object[], Locale.default))

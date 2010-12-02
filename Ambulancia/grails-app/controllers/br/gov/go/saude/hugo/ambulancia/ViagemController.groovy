@@ -110,14 +110,14 @@ class ViagemController {
         if (!viagem) {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
-            flash.defaultMessage = "N„o foi encontrada viagem com identificador ${params.id}"
+            flash.defaultMessage = "N√£o foi encontrada viagem com identificador ${params.id}"
             redirect(action: "list")
         } else {
             return [viagem: viagem]
         }
     }
 
-    // TODO: diferenciar ediÁ„o de retorno
+    // TODO: diferenciar ediÔøΩÔøΩo de retorno
     def edit = {
         def viagemBanco = Viagem.get(params.id)
         def viagem = flash.viagem ?: viagemBanco
@@ -128,7 +128,7 @@ class ViagemController {
         if (!viagem) {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
-            flash.defaultMessage = "N„o foi encontrada viagem com identificador ${params.id}"
+            flash.defaultMessage = "N√£o foi encontrada viagem com identificador ${params.id}"
             redirect(action: "list")
         }
         else {
@@ -136,7 +136,7 @@ class ViagemController {
         }
     }
 
-    // TODO: diferenciar confirmaÁ„o de retorno de atualizaÁ„o
+    // TODO: diferenciar confirma√ß√£oo de retorno de atualiza√ß√£o
     def update = {
         params.horaRetorno = dataHora.timeFormat.parse(params.horaRetorno)
         params.dataRetorno = dataHora.dateFormat.parse(params.dataRetorno)
@@ -147,7 +147,7 @@ class ViagemController {
             if (viagem.retornou) {
                 flash.message = 'viagem.not.deleted'
                 flash.args = [params.id]
-                flash.defaultMessage = "Viagem ${params.id} j· retornou, n„o pode ser atualizada"
+                flash.defaultMessage = "Viagem ${params.id} j√° retornou, n√£o pode ser atualizada"
 
                 redirect(action: 'show', id: params.id)
             }
@@ -168,7 +168,7 @@ class ViagemController {
         else {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
-            flash.defaultMessage = "N„o foi encontrada viagem com identificador ${params.id}"
+            flash.defaultMessage = "N√£o foi encontrada viagem com identificador ${params.id}"
             redirect(action: "edit", id: params.id)
         }
     }
@@ -180,7 +180,7 @@ class ViagemController {
             if (viagem.retornou) {
                 flash.message = 'viagem.not.deleted'
                 flash.args = [params.id]
-                flash.defaultMessage = "Viagem ${params.id} j· retornou, n„o pode ser cancelada"
+                flash.defaultMessage = "Viagem ${params.id} j√° retornou, n√£o pode ser cancelada"
 
                 redirect(action: 'show', id: params.id)
             }
@@ -189,20 +189,20 @@ class ViagemController {
                 viagem.delete()
                 flash.message = "viagem.deleted"
                 flash.args = [params.id]
-                flash.defaultMessage = "Viagem com identificador ${params.id} foi excluÌda"
+                flash.defaultMessage = "Viagem com identificador ${params.id} foi exclu√≠da"
                 redirect(action: "list")
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {
                 flash.message = "viagem.not.deleted"
                 flash.args = [params.id]
-                flash.defaultMessage = "Viagem com identificador ${params.id} n„o pode ser excluÌda"
+                flash.defaultMessage = "Viagem com identificador ${params.id} n√£o pode ser exclu√≠da"
                 redirect(action: "show", id: params.id)
             }
         }
         else {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
-            flash.defaultMessage = "N„o foi encontrada viagem com identificador ${params.id}"
+            flash.defaultMessage = "N√£o foi encontrada viagem com identificador ${params.id}"
             redirect(action: "list")
         }
     }

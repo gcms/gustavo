@@ -7,4 +7,11 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-${parada.nome} ${parada.destino}
+<div style="margin-bottom: 10pt;">
+<p>
+  <label>Paciente:</label> ${parada.paciente}
+</p>
+<p>
+  <label>Destino:</label> ${parada.destino}
+</p>
+</div>
