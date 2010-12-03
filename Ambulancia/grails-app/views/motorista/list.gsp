@@ -8,7 +8,7 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:link class="create" action="create"><g:message code="motorista.new" default="New Motorista"/></g:link></span>
+  <span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="motorista.new" default="New Motorista"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="motorista.list" default="Motorista List"/></h1>
@@ -32,7 +32,7 @@
       <g:each in="${motoristaInstanceList}" status="i" var="motoristaInstance">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          <td><g:link action="show" id="${motoristaInstance.id}">${fieldValue(bean: motoristaInstance, field: "id")}</g:link></td>
+          <td><g:linkIfAccess action="show" id="${motoristaInstance.id}">${fieldValue(bean: motoristaInstance, field: "id")}</g:linkIfAccess></td>
 
           <td>${fieldValue(bean: motoristaInstance, field: "nome")}</td>
 

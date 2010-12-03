@@ -37,7 +37,7 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:link class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:link></span>
+  <span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="viagem.list.retornou" default="Viagem List"/></h1>
@@ -108,7 +108,7 @@
       </span>
       <span class="button">
         %{--<g:submitButton name="print" class="print" value="${message(code: 'print', 'default': 'Print')}" onclick="document.forms[0].action = 'print'; document.forms[0].target= '_blank'; document.forms[0].submit();"/>--}%
-        <g:actionSubmit name="print" class="print" value="${message(code: 'viagem.print', 'default': 'Print')}" action="print"/>
+        <g:actionSubmitIfAccess name="print" class="print" value="${message(code: 'viagem.print', 'default': 'Print')}" action="print"/>
       </span>
     </div>
   </g:form>
@@ -166,7 +166,7 @@
       <g:each in="${viagens}" status="i" var="viagemInstance">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          <td><g:link action="show" id="${viagemInstance.id}">${fieldValue(bean: viagemInstance, field: "id")}</g:link></td>
+          <td><g:linkIfAccess action="show" id="${viagemInstance.id}">${fieldValue(bean: viagemInstance, field: "id")}</g:linkIfAccess></td>
 
           <td>${fieldValue(bean: viagemInstance, field: "ambulancia")}</td>
 

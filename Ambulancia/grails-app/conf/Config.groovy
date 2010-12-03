@@ -105,14 +105,29 @@ grails.plugins.springsecurity.rejectIfNoRule = true
 grails.plugins.springsecurity.securityConfigType = grails.plugins.springsecurity.SecurityConfigType.InterceptUrlMap
 
 grails.plugins.springsecurity.interceptUrlMap = [
-   '/**':           ['IS_AUTHENTICATED_REMEMBERED'],
+   '/**':                ['IS_AUTHENTICATED_REMEMBERED'],
+   '/js/**':             ['IS_AUTHENTICATED_ANONYMOUSLY'],
+   '/css/**':            ['IS_AUTHENTICATED_ANONYMOUSLY'],
+   '/images/**':         ['IS_AUTHENTICATED_ANONYMOUSLY'],
+   '/login/**':          ['IS_AUTHENTICATED_ANONYMOUSLY'],
+   '/logout/**':         ['IS_AUTHENTICATED_ANONYMOUSLY'],
 
-   '/js/**':        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-   '/css/**':       ['IS_AUTHENTICATED_ANONYMOUSLY'],
-   '/images/**':    ['IS_AUTHENTICATED_ANONYMOUSLY'],
+   '/operador/**':       ['ROLE_SUPERUSER'],
+//   '/operador/index':    ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/operador/list':     ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/operador/show/*':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
-   '/operador/**':  ['ROLE_ADMIN', 'IS_AUTHENTICATED_REMEMBERED'],
-   '/login/**':     ['IS_AUTHENTICATED_ANONYMOUSLY'],
-   '/logout/**':    ['IS_AUTHENTICATED_ANONYMOUSLY']
+   '/ambulancia/**':     ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+//   '/ambulancia/index':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/ambulancia/list':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/ambulancia/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+
+   '/motorista/**':     ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+//   '/motorista/index':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/motorista/list':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/motorista/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+
+   '/viagem/**': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER']                
+
 ]
 

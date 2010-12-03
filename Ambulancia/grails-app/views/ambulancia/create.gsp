@@ -8,7 +8,7 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:link class="list" action="list"><g:message code="ambulancia.list" default="Ambulancia List"/></g:link></span>
+  <span class="menuButton"><g:linkIfAccess class="list" action="list"><g:message code="ambulancia.list" default="Ambulancia List"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="ambulancia.create" default="Create Ambulancia"/></h1>

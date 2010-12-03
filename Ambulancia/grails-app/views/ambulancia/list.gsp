@@ -8,7 +8,7 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:link class="create" action="create"><g:message code="ambulancia.new" default="New Ambulancia"/></g:link></span>
+  <span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="ambulancia.new" default="New Ambulancia"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="ambulancia.list" default="Ambulancia List"/></h1>
@@ -34,7 +34,7 @@
       <g:each in="${ambulanciaInstanceList}" status="i" var="ambulanciaInstance">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          <td><g:link action="show" id="${ambulanciaInstance.id}">${fieldValue(bean: ambulanciaInstance, field: "id")}</g:link></td>
+          <td><g:linkIfAccess action="show" id="${ambulanciaInstance.id}">${fieldValue(bean: ambulanciaInstance, field: "id")}</g:linkIfAccess></td>
 
           <td>${fieldValue(bean: ambulanciaInstance, field: "prefixo")}</td>
 

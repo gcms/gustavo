@@ -8,7 +8,11 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:link class="create" action="create"><g:message code="operador.new" default="New Operador"/></g:link></span>
+  %{--<sec:access url="/operador/create">--}%
+    %{--<span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="operador.new" default="New Operador"/></g:linkIfAccess></span>--}%
+  %{--</sec:access>--}%
+
+    <span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="operador.new" default="New Operador"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="operador.list" default="Operador List"/></h1>
@@ -40,7 +44,7 @@
       <g:each in="${operadorInstanceList}" status="i" var="operadorInstance">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          <td><g:link action="show" id="${operadorInstance.id}">${fieldValue(bean: operadorInstance, field: "id")}</g:link></td>
+          <td><g:linkIfAccess action="show" id="${operadorInstance.id}">${fieldValue(bean: operadorInstance, field: "id")}</g:linkIfAccess></td>
 
           <td>${fieldValue(bean: operadorInstance, field: "usuario")}</td>
 

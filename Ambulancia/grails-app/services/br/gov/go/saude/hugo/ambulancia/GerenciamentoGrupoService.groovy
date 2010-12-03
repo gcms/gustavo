@@ -32,7 +32,7 @@ class GerenciamentoGrupoService {
         } else if (password != passwordConfirm) {
             log.info "Salvando operador... Senhas diferem"
             operador.validate()
-            operador.errors.rejectValue('senha', 'matches.invalid')
+            operador.errors.rejectValue('senha', 'operador.senha.matches.invalid')
         } else {
             operador.senha = springSecurityService.encodePassword(password)
             operador.validate()            
@@ -59,6 +59,14 @@ class GerenciamentoGrupoService {
 
     public Operador registreUsuario(String username, String password, String authority) {
         Operador.findByUsuario(username) ?: crieOperador(username, password, registreGrupo(authority))
+    }
+
+    public void excluaOperador(Operador operador) {
+        OperadorGrupo.findAllByOperador(operador).each { OperadorGrupo operadorGrupo ->
+            operadorGrupo.delete()
+        }
+
+        operador.delete()
     }
 
     public GrailsUser getPrincipal() {

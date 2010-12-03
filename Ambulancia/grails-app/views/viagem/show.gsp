@@ -8,8 +8,8 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:link class="list" action="list"><g:message code="viagem.list" default="Viagem List"/></g:link></span>
-  <span class="menuButton"><g:link class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:link></span>
+  <span class="menuButton"><g:linkIfAccess class="list" action="list"><g:message code="viagem.list" default="Viagem List"/></g:linkIfAccess></span>
+  <span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="viagem.show" default="Show Viagem"/></h1>
@@ -32,21 +32,21 @@
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.motorista" default="Motorista"/>:</td>
 
-          <td valign="top" class="value"><g:link controller="motorista" action="show" id="${viagem?.motorista?.id}">${viagem?.motorista?.encodeAsHTML()}</g:link></td>
+          <td valign="top" class="value"><g:linkIfAccess controller="motorista" action="show" id="${viagem?.motorista?.id}">${viagem?.motorista?.encodeAsHTML()}</g:linkIfAccess></td>
 
         </tr>
 
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.ambulancia" default="Ambulancia"/>:</td>
 
-          <td valign="top" class="value"><g:link controller="ambulancia" action="show" id="${viagem?.ambulancia?.id}">${viagem?.ambulancia?.encodeAsHTML()}</g:link></td>
+          <td valign="top" class="value"><g:linkIfAccess controller="ambulancia" action="show" id="${viagem?.ambulancia?.id}">${viagem?.ambulancia?.encodeAsHTML()}</g:linkIfAccess></td>
 
         </tr>
 
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.operador" default="Operador"/>:</td>
 
-          <td valign="top" class="value"><g:link controller="operador" action="show" id="${viagem?.operador?.id}">${viagem?.operador?.encodeAsHTML()}</g:link></td>
+          <td valign="top" class="value"><g:linkIfAccess controller="operador" action="show" id="${viagem?.operador?.id}">${viagem?.operador?.encodeAsHTML()}</g:linkIfAccess></td>
 
         </tr>
 
@@ -121,8 +121,8 @@
     </div>
     <g:if test="${!viagem.retornou}">
       <div class="buttons">
-        <span class="button"><g:actionSubmit class="next" action="edit" value="${message(code: 'viagem.next', 'default': 'Edit')}"/></span>
-        <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'viagem.cancel', 'default': 'Cancel viagem')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
+        <span class="button"><g:actionSubmitIfAccess class="next" action="edit" value="${message(code: 'viagem.next', 'default': 'Edit')}"/></span>
+        <span class="button"><g:actionSubmitIfAccess class="delete" action="delete" value="${message(code: 'viagem.cancel', 'default': 'Cancel viagem')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
       </div>
     </g:if>
   </g:form>
