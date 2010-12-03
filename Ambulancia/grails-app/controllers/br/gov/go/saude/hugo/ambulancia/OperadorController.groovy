@@ -21,7 +21,7 @@ class OperadorController {
     }
 
     def save = {
-        Grupo grupo = Grupo.get(params.grupo.id)
+        Grupo grupo = Grupo.get(params.grupo)
 
         def operadorInstance = new Operador(params)
         if (gerenciamentoGrupoService.crieOperador(operadorInstance, params.senha, params.senhaConfirmada, grupo)) {
@@ -31,7 +31,7 @@ class OperadorController {
             redirect(action: "show", id: operadorInstance.id)
         }
         else {
-            render(view: "create", model: [operadorInstance: operadorInstance, grupos: Grupo.list().reverse()])
+            render(view: "create", model: [operadorInstance: operadorInstance, grupo: params.grupo, grupos: Grupo.list().reverse()])
         }
     }
 
