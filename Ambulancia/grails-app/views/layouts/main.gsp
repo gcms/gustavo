@@ -9,9 +9,9 @@
 
   <!-- EXT.JS -->
 
-  <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/resources/css', file: 'ext-all.css')}" />
-  <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/resources/css', file: 'xtheme-gray.css')}" />
-  <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/examples/grid', file: 'grid-examples.css')}" />
+  <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/resources/css', file: 'ext-all.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/resources/css', file: 'xtheme-gray.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/examples/grid', file: 'grid-examples.css')}"/>
 
   <!-- Common Styles for the examples -->
   <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/examples', file: 'shared/examples.css')}"/>
@@ -46,15 +46,28 @@
   <g:javascript library="application"/>
 
   <g:layoutHead/>
-
 </head>
 <body>
 <div id="spinner" class="spinner" style="display:none;">
   <img src="${resource(dir: 'images', file: 'spinner.gif')}" alt="${message(code: 'spinner.alt', default: 'Loading...')}"/>
 </div>
-<div id="grailsLogo"><a href="http://intranet-hugo.saude-go.net/">
-  <img src="${resource(dir: 'images', file: 'hugo_logo.png')}" alt="Grails" border="0" height="80"/>
-</a></div>
+<div id="top-main">
+  <div id="grailsLogo" class="floating-left">
+    <a href="http://intranet-hugo.saude-go.net/">
+      <img src="${resource(dir: 'images', file: 'hugo_logo.png')}" alt="Grails" border="0" alt="Home page do HUGO"/>
+    </a>
+  </div>
+  <div class="floating-right">
+    <sec:ifLoggedIn>
+      <p>
+        <span style="font-size: 16pt; font-weight: bold">${operador.nome}</span>
+      </p>
+      <p>
+        Sessão iniciada em <g:formatDate date="${session.login}" formatName="default.dateTime.format"/>
+      </p>
+    </sec:ifLoggedIn>
+  </div>
+</div>
 <g:layoutBody/>
 </body>
 </html>

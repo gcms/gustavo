@@ -13,7 +13,7 @@
 
         showOn: 'button',
         buttonImageOnly: true,
-        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}"
+        buttonImage: "${createLinkTo(dir: 'images/skin', file: 'calendar.png')}",
       });
     });
   </script>
@@ -175,17 +175,28 @@
           <td valign="top" class="name">
             <label for="paradas"><g:message code="viagem.paradas" default="Paradas"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'paradas', 'errors')} extjs">
-            <a href="#" onclick="adicionePaciente()">Incluir paciente</a>
-            <a href="#" onclick="adicioneServicos()">Incluir serviços</a>
+          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'paradas', 'errors')} extjs link-list">
+            <span class="list-link">
+              <a href="#" onclick="adicionePaciente()">
+                <img src="${resource(dir: 'images', file: 'skin/person.png')}"/>
+                paciente
+              </a>
+            </span>
+
+            <span class="list-link">
+              <a href="#" onclick="adicioneServicos()">
+                <img src="${resource(dir: 'images', file: 'skin/truck.png')}"/>
+                serviços
+              </a>
+            </span>
             <div id="paradas"></div>
           </td>
         </tr>
 
         %{--<tr class="prop">--}%
-          %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'paradas', 'errors')} extjs" colspan="2">--}%
-            %{--<div id="paradas"></div>--}%
-          %{--</td>--}%
+        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'paradas', 'errors')} extjs" colspan="2">--}%
+        %{--<div id="paradas"></div>--}%
+        %{--</td>--}%
         %{--</tr>--}%
 
         <tr class="prop">
