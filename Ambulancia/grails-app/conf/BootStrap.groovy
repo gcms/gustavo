@@ -8,14 +8,15 @@ class BootStrap {
     GerenciamentoGrupoService gerenciamentoGrupoService
     GrailsApplication grailsApplication
 
-    // TODO: mover inicialização para partes separadas
+    // TODO: mover inicializaÃ§Ã£o para partes separadas
     def init = { servletContext ->
         Locale.default = new Locale("pt", "BR")
 
+        gerenciamentoGrupoService.registreGrupo('ROLE_SUPERUSER')
         gerenciamentoGrupoService.registreGrupo('ROLE_ADMIN')
         gerenciamentoGrupoService.registreGrupo('ROLE_USER')
 
-        gerenciamentoGrupoService.registreUsuario('admin', '12345', 'ROLE_ADMIN')
+        gerenciamentoGrupoService.registreUsuario('admin', '12345', 'ROLE_SUPERUSER')
 
         assert Operador.count() >= 1
         assert Grupo.count() >= 2

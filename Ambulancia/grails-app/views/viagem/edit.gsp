@@ -39,8 +39,8 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:link class="list" action="list"><g:message code="viagem.list" default="Viagem List"/></g:link></span>
-  <span class="menuButton"><g:link class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:link></span>
+  <span class="menuButton"><g:linkIfAccess class="list" action="list"><g:message code="viagem.list" default="Viagem List"/></g:linkIfAccess></span>
+  <span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="viagem.edit" default="Edit Viagem"/></h1>
@@ -216,8 +216,8 @@
       </table>
     </div>
     <div class="buttons">
-      <span class="button"><g:actionSubmit class="save" action="update" value="${message(code: 'viagem.update', 'default': 'Update')}"/></span>
-      <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'viagem.cancel', 'default': 'Cancel viagem')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
+      <span class="button"><g:actionSubmitIfAccess class="save" action="update" value="${message(code: 'viagem.update', 'default': 'Update')}"/></span>
+      <span class="button"><g:actionSubmitIfAccess class="delete" action="delete" value="${message(code: 'viagem.cancel', 'default': 'Cancel viagem')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
     </div>
   </g:form>
 </div>

@@ -1,7 +1,7 @@
 package br.gov.go.saude.hugo.ambulancia
 
 class Grupo {
-
+    
 	String authority
 
 	static mapping = {
@@ -11,4 +11,8 @@ class Grupo {
 	static constraints = {
 		authority blank: false, unique: true
 	}
+
+    String toString() {
+        authority
+    }
 }

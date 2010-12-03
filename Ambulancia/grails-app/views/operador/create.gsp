@@ -8,7 +8,7 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:link class="list" action="list"><g:message code="operador.list" default="Operador List"/></g:link></span>
+  <span class="menuButton"><g:linkIfAccess class="list" action="list"><g:message code="operador.list" default="Operador List"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="operador.create" default="Create Operador"/></h1>
@@ -73,6 +73,16 @@
             <g:passwordField name="senhaConfirmada" value=""/>
           </td>
         </tr>
+        
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="grupo"><g:message code="operador.grupo" default="Grupo"/>:</label>
+          </td>
+          <td valign="top" class="value">
+            <g:select name="grupo.id" from="${grupos}" optionKey="id" value="${operador?.grupo?.id}"/>
+          </td>
+        </tr>
+        
 
         %{--<tr class="prop">--}%
         %{--<td valign="top" class="name">--}%

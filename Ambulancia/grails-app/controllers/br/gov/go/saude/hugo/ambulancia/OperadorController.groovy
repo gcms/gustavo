@@ -17,19 +17,21 @@ class OperadorController {
 
     def create = {
         def operadorInstance = new Operador(params)
-        return [operadorInstance: operadorInstance]
+        return [operadorInstance: operadorInstance, grupos: Grupo.list().reverse()]
     }
 
     def save = {
+        Grupo grupo = Grupo.get(params.grupo.id)
+
         def operadorInstance = new Operador(params)
-        if (gerenciamentoGrupoService.crieOperador(operadorInstance, params.senha, params.senhaConfirmada)) {
+        if (gerenciamentoGrupoService.crieOperador(operadorInstance, params.senha, params.senhaConfirmada, grupo)) {
             flash.message = "operador.created"
             flash.args = [operadorInstance.id]
             flash.defaultMessage = "Operador ${operadorInstance.id} created"
             redirect(action: "show", id: operadorInstance.id)
         }
         else {
-            render(view: "create", model: [operadorInstance: operadorInstance])
+            render(view: "create", model: [operadorInstance: operadorInstance, grupos: Grupo.list().reverse()])
         }
     }
 
@@ -89,7 +91,8 @@ class OperadorController {
         def operadorInstance = Operador.get(params.id)
         if (operadorInstance) {
             try {
-                operadorInstance.delete()
+                gerenciamentoGrupoService.excluaOperador(operadorInstance)
+//                operadorInstance.delete()
                 flash.message = "operador.deleted"
                 flash.args = [params.id]
                 flash.defaultMessage = "Operador ${params.id} deleted"
