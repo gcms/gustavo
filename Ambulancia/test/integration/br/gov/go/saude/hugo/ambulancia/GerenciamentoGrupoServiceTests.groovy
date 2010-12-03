@@ -27,8 +27,10 @@ class GerenciamentoGrupoServiceTests extends GrailsUnitTestCase {
         assertNotNull Grupo.findByAuthority('ROLE_NOVO_GRUPO2')
         assertNotNull Operador.findByUsuario('teste')
 
-        Operador teste = Operador.list().first()
+        Operador teste = Operador.findByUsuario('teste')
         assertNotNull teste
+        assertEquals 'teste', teste.usuario
+        assertEquals 'Teste', teste.nome
 
         assertEquals 1, OperadorGrupo.findAllByOperador(teste).size()
     }
@@ -56,6 +58,6 @@ class GerenciamentoGrupoServiceTests extends GrailsUnitTestCase {
 
         operador = Operador.list().first()
         assertFalse gerenciamentoGrupoService.salveOperador(operador, 'teste', 'teste1')
-        assertEquals 'matches.invalid', operador.errors.getFieldError('senha').code
+        assertEquals 'operador.senha.matches.invalid', operador.errors.getFieldError('senha').code
     }
 }

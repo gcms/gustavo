@@ -17,7 +17,8 @@ class AmbulanciaFilters {
             }
 
             after = { model ->
-                model.operador = gerenciamentoGrupoService.operadorLogado 
+                if (model)
+                    model.operador = gerenciamentoGrupoService.operadorLogado 
             }
         }
     }

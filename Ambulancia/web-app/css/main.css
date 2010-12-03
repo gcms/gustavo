@@ -21,17 +21,35 @@ body {
 }
 
 #top-main .floating-left {
-    width: 400px;
+    /*width: 250px;*/
+    float: left;
+    padding-right: 10px;
+}
+
+#top-main .floating-center {
+    width: 300px;
+    float: left;
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+}
+
+#top-main .floating-center img {
     float: left;
 }
 
+#top-main .floating-center h1 {
+    font-weight: bolder;
+}
+
 #top-main .floating-right {
-    width: 300px;
+    /*width: 250px;*/
     float: left;
     text-align: right;
-    vertical-align: bottom;
+
     height: 80px;
-    padding: 10px;
+    padding-left: 10px;
+    padding-top: 20px;
 }
 
 #grailsLogo {
@@ -346,6 +364,14 @@ th.desc a {
 .buttons input.print {
     background: transparent url(../images/skin/print.png) 5px 50% no-repeat;
     padding-left: 28px;
+}
+
+.clear {
+    font: normal;
+    line-height: normal;
+    padding: 0px 0px;
+    text-align: inherit;
+    vertical-align: inherit;
 }
 
 .extjs td, .extjs th {

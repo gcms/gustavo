@@ -53,7 +53,7 @@ class GerenciamentoGrupoService {
     }
 
     public Operador crieOperador(String username, String password, Grupo grupo) {
-        Operador operador = new Operador(usuario: username, enabled: true)
+        Operador operador = new Operador(nome: username.capitalize(), usuario: username, enabled: true)
         crieOperador(operador, password, password, grupo) ? operador : null
     }
 
