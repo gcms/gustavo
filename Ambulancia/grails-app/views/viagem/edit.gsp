@@ -14,7 +14,7 @@
 
         showOn: 'button',
         buttonImageOnly: true,
-        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}"
+        buttonImage: "${createLinkTo(dir: 'images/skin', file: 'calendar.png')}",
       });
     });
   </script>

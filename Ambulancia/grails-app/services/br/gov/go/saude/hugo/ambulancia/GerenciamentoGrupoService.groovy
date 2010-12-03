@@ -70,10 +70,10 @@ class GerenciamentoGrupoService {
     }
 
     public GrailsUser getPrincipal() {
-        springSecurityService.principal
+        springSecurityService.loggedIn ? springSecurityService.principal : null
     }
 
     public Operador getOperadorLogado() {
-        Operador.findByUsuario(principal.username)
+        principal?.username ? Operador.findByUsuario(principal.username) : null
     }
 }

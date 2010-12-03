@@ -12,7 +12,7 @@
         defaultDate: new Date(${dataInicio.time}),
         showOn: 'button',
         buttonImageOnly: true,
-        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}",
+        buttonImage: "${createLinkTo(dir: 'images/skin', file: 'calendar.png')}",
         changeYear: true
       });
     });
@@ -23,7 +23,7 @@
         defaultDate: new Date(${dataFim.time}),
         showOn: 'button',
         buttonImageOnly: true,
-        buttonImage: "${createLinkTo(dir: 'css/custom-theme/images', file: 'icons-mini-calendar.gif')}",
+        buttonImage: "${createLinkTo(dir: 'images/skin', file: 'calendar.png')}",
         changeYear: true
       });
     });

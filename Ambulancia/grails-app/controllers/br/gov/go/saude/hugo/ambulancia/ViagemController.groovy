@@ -68,7 +68,7 @@ class ViagemController {
     }
 
     def print = {
-        [operador: gerenciamentoGrupoService.getOperadorLogado()] + obtenhaViagens([:]) 
+        obtenhaViagens([:])
     }
 
     def home = {
@@ -100,7 +100,7 @@ class ViagemController {
         }
 
         Viagem viagem = new Viagem(params)
-        viagem.operador = gerenciamentoGrupoService.getOperadorLogado()
+        viagem.operador = gerenciamentoGrupoService.operadorLogado
 
         // TODO: tentar colocar em um binding customizado
         viagem.paradas.clear()
