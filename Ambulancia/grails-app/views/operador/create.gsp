@@ -79,7 +79,7 @@
             <label for="grupo"><g:message code="operador.grupo" default="Grupo"/>:</label>
           </td>
           <td valign="top" class="value">
-            <g:select name="grupo.id" from="${grupos}" optionKey="id" value="${operador?.grupo?.id}"/>
+            <g:select name="grupo" from="${grupos}" optionKey="id" value="${grupo}"/>
           </td>
         </tr>
         
