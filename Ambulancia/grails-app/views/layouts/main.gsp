@@ -19,7 +19,7 @@
 
   <!-- DEFAULT -->
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
-  <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon"/>
+  <link rel="shortcut icon" href="${resource(dir: 'images/skin', file: 'ambulance.png')}" type="image/x-icon"/>
 
 
   <!-- JQUERY -->
@@ -57,6 +57,10 @@
       <img src="${resource(dir: 'images', file: 'hugo_logo.png')}" alt="Grails" border="0" alt="Home page do HUGO"/>
     </a>
   </div>
+  <div class="floating-center">
+    <img src="${resource(dir: 'images', file: 'ambulance64x64.png')}" border="0"/>
+    <h1>Sistema de Controle de Ambulâncias</h1>
+  </div>
   <div class="floating-right">
     <sec:ifLoggedIn>
       <p>
@@ -69,5 +73,10 @@
   </div>
 </div>
 <g:layoutBody/>
+
+<div style="clear: both; width: 750px; text-align: left; margin-left: 10px; padding-top: 20px;">
+  <hr style="color: #ddd"/>
+  Resolução mínima: 1024 x 768
+</div>
 </body>
 </html>
