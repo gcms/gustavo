@@ -37,6 +37,8 @@
 
         <th><g:message code="viagem.destino" default="Destinos"/></th>
 
+        <th><g:message code="viagem.paciente" default="Pacientes"/></th>
+
         <g:sortableColumn property="dataSaida" title="Data Saida" titleKey="viagem.dataSaida"/>
 
         <g:sortableColumn property="horaSaida" title="Hora Saida" titleKey="viagem.horaSaida"/>
@@ -51,7 +53,7 @@
       <g:each in="${viagens}" status="i" var="viagem">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          <td><g:linkIfAccess action="show" id="${viagem.id}">${fieldValue(bean: viagem, field: "id")}</g:linkIfAccess></td>
+          <td><g:linkIfAccess action="show" id="${viagem.id}">${viagem.id}</g:linkIfAccess></td>
 
           <td>${fieldValue(bean: viagem, field: "ambulancia")}</td>
 
@@ -62,6 +64,14 @@
           <td>
             <g:each var="parada" in="${viagem.paradas}">
               <p>${parada.destino}</p>
+            </g:each>
+          </td>
+
+          <td>
+            <g:each var="parada" in="${viagem.paradas}">
+              <g:if test="${parada.metaClass.hasProperty('paciente')}">
+                <p>${parada?.paciente}</p>
+              </g:if>
             </g:each>
           </td>
 

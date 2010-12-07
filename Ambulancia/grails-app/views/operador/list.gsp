@@ -44,7 +44,7 @@
       <g:each in="${operadorInstanceList}" status="i" var="operadorInstance">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          <td><g:linkIfAccess action="show" id="${operadorInstance.id}">${fieldValue(bean: operadorInstance, field: "id")}</g:linkIfAccess></td>
+          <td><g:linkIfAccess action="show" id="${operadorInstance.id}">${operadorInstance.id}</g:linkIfAccess></td>
 
           <td>${fieldValue(bean: operadorInstance, field: "usuario")}</td>
 

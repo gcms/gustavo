@@ -1,8 +1,12 @@
 package br.gov.go.saude.hugo.ambulancia
 
+import br.gov.go.saude.hugo.utilitario.UtilitarioNome
+
 class Motorista {
     String nome
     String telefone
+
+    Boolean disponivel = true
 
     static constraints = {
         nome blank: false, unique: true
@@ -10,6 +14,6 @@ class Motorista {
     }
 
     String toString() {
-        nome
+        UtilitarioNome.formateNomePessoa(nome)
     }
 }

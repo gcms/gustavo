@@ -40,6 +40,8 @@ class GerenciamentoViagemService {
     }
 
     boolean registreSaida(Viagem viagem) {
+        log.info "Registrando saida $viagem"
+
         if (obtenhaViagemNaoRetornou(viagem.ambulancia))
             verifiqueAtributo(viagem, 'ambulancia')
 
@@ -54,6 +56,8 @@ class GerenciamentoViagemService {
     }
 
     boolean registreRetorno(Viagem viagem) {
+        log.info "Registrando retorno $viagem"
+        
         !viagem.hasErrors() && viagem.save()
     }
 }

@@ -61,7 +61,7 @@ class ViagemController {
 
     def list = {
         [
-                motoristas: Motorista.list(),
+                motoristas: Motorista.findAllByDisponivel(true),
                 ambulancias: Ambulancia.list(),
                 destinos: destinoService.obtenhaDestinos()
         ] + obtenhaViagens(params)
