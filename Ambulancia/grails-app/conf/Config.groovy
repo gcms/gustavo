@@ -1,3 +1,5 @@
+import org.apache.log4j.DailyRollingFileAppender
+
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -68,8 +70,11 @@ log4j = {
     // appender:
     //
     appenders {
-        file name:'file', file: "${grails.util.Environment.currentEnvironment}.log"
-//        console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+//        file name:'file', file: "${grails.util.Environment.currentEnvironment}.log"
+        appender new DailyRollingFileAppender(name: 'stdout', datePattern: "'.'yyyy-MM-dd", file: "${grails.util.Environment.currentEnvironment}.log", layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c - %m%n'))
+
+//        rollingFile name:'stdout', maxFileSize:1024*1024/2, file:"${grails.util.Environment.currentEnvironment}.log"
+//        console name:'stdout', layout:pattern(conversionPattern: '[%d] %p %t %c - %m%n')
     }
 
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
@@ -86,6 +91,8 @@ log4j = {
 
     warn   'org.mortbay.log'
 
+    debug  'grails.app'
+    
     debug  'br.gov.go.saude.hugo'
 }
 

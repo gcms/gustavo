@@ -76,4 +76,13 @@ class MotoristaServiceTests extends GrailsUnitTestCase {
 
         assertEquals 0, motoristaService.obtenhaMotoristasDisponiveis().size()
     }
+
+    void testeMotoristaDesativado() {
+        assertEquals 3, motoristaService.obtenhaMotoristasDisponiveis().size()
+
+        motorista1.disponivel = false
+        motorista1.save()
+
+        assertEquals 2, motoristaService.obtenhaMotoristasDisponiveis().size()
+    }
 }

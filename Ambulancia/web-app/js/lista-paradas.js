@@ -126,6 +126,11 @@ Ambulancia.FieldSetList.TiposParadas = {
             allowBlank: true//false
         },
         {
+            fieldLabel: 'AIH',
+            name: 'aih',
+            allowBlank: true//false
+        },
+        {
             fieldLabel: 'Destino',
             name: 'destino',
             allowBlank: true//false

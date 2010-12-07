@@ -9,7 +9,7 @@ class MotoristaController {
 
     def list = {
         params.max = Math.min(params.max ? params.max.toInteger() : 10,  100)
-        [motoristaInstanceList: Motorista.list(params), motoristaInstanceTotal: Motorista.count()]
+        [motoristaInstanceList: Motorista.findAllByDisponivel(true, params), motoristaInstanceTotal: Motorista.count()]
     }
 
     def create = {

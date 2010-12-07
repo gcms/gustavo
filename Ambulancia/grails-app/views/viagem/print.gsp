@@ -7,11 +7,13 @@
   <style type="text/css">
   td, th {
     border: solid black 1px;
-    padding: 2pt 6pt;    
+    padding: 2pt 6pt;
   }
+
   th {
     background-color: #dddddd;
   }
+
   .table {
     padding: 0pt;
   }
@@ -34,6 +36,10 @@
   <tr>
     <td><g:message code="viagem.ambulancia" default="Ambulancia"/>:</td>
     <td>${ambulancia ?: 'Todas'}</td>
+  </tr>
+  <tr>
+    <td><g:message code="viagem.destino" default="Destino"/>:</td>
+    <td>${destino ?: 'Todos'}</td>
   </tr>
   <tr>
     <td>Período:</td>
@@ -79,7 +85,7 @@
             <td>${viagem.kmRetorno}</td>
             <td>${viagem.distancia}</td>
           </tr>
-        </g:each> 
+        </g:each>
       </table>
     </td>
   </tr>

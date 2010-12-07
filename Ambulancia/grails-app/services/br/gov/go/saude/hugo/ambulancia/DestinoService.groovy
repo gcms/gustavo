@@ -6,6 +6,7 @@ class DestinoService {
     SessionFactory sessionFactory
 
     List obtenhaDestinos() {
+        log.debug "Obtendo destinos disponíveis..."
         String hql = """
     select distinct p.destino
     from Viagem v join v.paradas p

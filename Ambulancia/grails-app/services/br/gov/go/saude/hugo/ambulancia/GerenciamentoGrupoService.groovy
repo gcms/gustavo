@@ -62,6 +62,8 @@ class GerenciamentoGrupoService {
     }
 
     public void excluaOperador(Operador operador) {
+        log.info "Excluindo operador $operador"
+        
         OperadorGrupo.findAllByOperador(operador).each { OperadorGrupo operadorGrupo ->
             operadorGrupo.delete()
         }

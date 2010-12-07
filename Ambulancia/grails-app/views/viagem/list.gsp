@@ -166,7 +166,7 @@
       <g:each in="${viagens}" status="i" var="viagemInstance">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          <td><g:linkIfAccess action="show" id="${viagemInstance.id}">${fieldValue(bean: viagemInstance, field: "id")}</g:linkIfAccess></td>
+          <td><g:linkIfAccess action="show" id="${viagemInstance.id}">${viagemInstance.id}</g:linkIfAccess></td>
 
           <td>${fieldValue(bean: viagemInstance, field: "ambulancia")}</td>
 

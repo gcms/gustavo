@@ -1,5 +1,7 @@
 package br.gov.go.saude.hugo.ambulancia
 
+import br.gov.go.saude.hugo.utilitario.UtilitarioNome
+
 class Operador {
 
     String nome
@@ -30,6 +32,6 @@ class Operador {
 	}
 
     String toString() {
-        nome
+        UtilitarioNome.formateNomePessoa(nome)
     }
 }
