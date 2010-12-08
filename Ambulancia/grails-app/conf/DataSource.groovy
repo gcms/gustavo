@@ -15,8 +15,9 @@ environments {
         dataSource {
 //            dbCreate = "create-drop" // one of 'create', 'create-drop','update'
 //            url = "jdbc:hsqldb:mem:devDB"
-            driverClassName = "org.postgresql.Driver"
+
             dbCreate = 'update'
+            driverClassName = "org.postgresql.Driver"
             url = 'jdbc:postgresql://localhost/ambulancia'
             username = 'ambulancia'
             password = 'ambulancia'
@@ -31,7 +32,13 @@ environments {
     production {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:hsqldb:file:prodDb;shutdown=true"
+//            url = "jdbc:hsqldb:file:prodDb;shutdown=true"
+
+//            driverClassName = "org.postgresql.Driver"
+//            url = 'jdbc:postgresql://localhost/ambulancia'
+//            username = 'ambulancia'
+//            password = 'ambulancia'
+            jndiName = "java:/comp/env/jdbc/postgres"
         }
     }
 }
