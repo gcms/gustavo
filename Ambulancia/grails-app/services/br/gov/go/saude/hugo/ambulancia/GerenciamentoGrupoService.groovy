@@ -17,7 +17,7 @@ class GerenciamentoGrupoService {
         log.info "Cadastrando grupo $authority ..."
 
         Grupo grupo = new Grupo(authority: authority)
-        grupo.save(flush: true)
+        grupo.save()
         grupo
     }
 
@@ -49,7 +49,7 @@ class GerenciamentoGrupoService {
         log.info "Cadastrando operador ${operador.usuario} ..."
 
         salveOperador(operador, password, passwordConfirm) &&
-                OperadorGrupo.create(operador, grupo, true)
+                OperadorGrupo.create(operador, grupo)
     }
 
     public Operador crieOperador(String username, String password, Grupo grupo) {

@@ -129,12 +129,12 @@ grails.plugins.springsecurity.interceptUrlMap = [
    '/ambulancia/list':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
    '/ambulancia/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
-   '/motorista/**':     ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/motorista/**':      ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
 //   '/motorista/index':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/motorista/list':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/motorista/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/motorista/list':    ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/motorista/show/*':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
-   '/viagem/**': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER']                
-
+   '/viagem/**':         ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+   '/console/**':         ['ROLE_SUPERUSER']
 ]
 
