@@ -61,7 +61,7 @@
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.horaRetorno" default="Hora Retorno"/>:</td>
 
-          <td valign="top" class="value"><g:formatDate date="${viagem?.horaRetorno}"/></td>
+          <td valign="top" class="value"><g:formatDate date="${viagem?.horaRetorno}" formatName="default.dateTime.format"/></td>
         </tr>
 
         <tr class="prop">
