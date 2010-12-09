@@ -57,19 +57,7 @@
 
           <td valign="top" class="value">${viagem.kmSaida}</td>
         </tr>
-
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="viagem.horaRetorno" default="Hora Retorno"/>:</td>
-
-          <td valign="top" class="value"><g:formatDate date="${viagem?.horaRetorno}"/></td>
-        </tr>
-
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="viagem.kmRetorno" default="Km Retorno"/>:</td>
-
-          <td valign="top" class="value">${viagem.kmRetorno}</td>
-        </tr>
-
+     
         <g:if test="${!viagem.paradas.empty}">
           <tr class="prop">
             <td valign="top" class="name"><g:message code="viagem.paradas" default="Paradas"/>:</td>
@@ -95,8 +83,8 @@
       </table>
     </div>
     <div class="buttons">
-      <span class="button"><g:actionSubmitIfAccess class="edit" action="edit" value="${message(code: 'edit', 'default': 'Edit')}"/></span>
-      <span class="button"><g:actionSubmitIfAccess class="delete" action="delete" value="${message(code: 'delete', 'default': 'Delete')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
+      <span class="button"><g:actionSubmitIfAccess class="next" action="editRetorno" value="${message(code: 'viagem.next', 'default': 'Edit')}"/></span>
+      <span class="button"><g:actionSubmitIfAccess class="delete" action="deleteSaida" value="${message(code: 'viagem.cancel', 'default': 'Cancel viagem')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
     </div>
   </g:form>
 </div>

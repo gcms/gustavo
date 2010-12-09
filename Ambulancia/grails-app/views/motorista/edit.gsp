@@ -33,7 +33,7 @@
             <label for="nome"><g:message code="motorista.nome" default="Nome"/>:</label>
           </td>
           <td valign="top" class="value ${hasErrors(bean: motoristaInstance, field: 'nome', 'errors')}">
-            <g:textField name="nome" value="${fieldValue(bean: motoristaInstance, field: 'nome')}"/>
+            <g:textField name="nome" value="${motoristaInstance.nome}"/>
           </td>
         </tr>
         
