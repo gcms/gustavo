@@ -1,4 +1,4 @@
-<%@ page import="br.gov.go.saude.hugo.ambulancia.Viagem" %>
+<%@ page import="br.gov.go.saude.hugo.ambulancia.ParadaPaciente; br.gov.go.saude.hugo.ambulancia.Viagem" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -69,7 +69,7 @@
 
           <td>
             <g:each var="parada" in="${viagem.paradas}">
-              <g:if test="${parada.metaClass.hasProperty('paciente')}">
+              <g:if test="${ParadaPaciente.isAssignableFrom(parada.realClass)}">
                 <p>${parada?.paciente}</p>
               </g:if>
             </g:each>

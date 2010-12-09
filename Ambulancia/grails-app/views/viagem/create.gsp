@@ -18,12 +18,6 @@
     });
   </script>
 
-  <style type="text/css">
-  div.ui-datepicker {
-    font-size: 14px;
-  }
-  </style>
-
   <script type="text/javascript">
     $(document).ready(function() {
       $('#horaSaida').timeEntry({

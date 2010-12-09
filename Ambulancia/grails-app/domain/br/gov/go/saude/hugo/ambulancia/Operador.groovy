@@ -24,6 +24,7 @@ class Operador {
 	}
 
 	static mapping = {
+        sort 'nome'
 		senha column: '`password`'
 	}
 

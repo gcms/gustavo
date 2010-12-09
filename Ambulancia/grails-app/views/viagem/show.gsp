@@ -1,4 +1,4 @@
-<%@ page import="grails.converters.deep.JSON; br.gov.go.saude.hugo.ambulancia.Viagem" %>
+<%@ page import="br.gov.go.saude.hugo.ambulancia.Viagem" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -26,64 +26,49 @@
           <td valign="top" class="name"><g:message code="viagem.id" default="Id"/>:</td>
 
           <td valign="top" class="value">${fieldValue(bean: viagem, field: "id")}</td>
-
         </tr>
 
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.motorista" default="Motorista"/>:</td>
 
           <td valign="top" class="value"><g:linkIfAccess controller="motorista" action="show" id="${viagem?.motorista?.id}">${viagem?.motorista?.encodeAsHTML()}</g:linkIfAccess></td>
-
         </tr>
 
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.ambulancia" default="Ambulancia"/>:</td>
 
           <td valign="top" class="value"><g:linkIfAccess controller="ambulancia" action="show" id="${viagem?.ambulancia?.id}">${viagem?.ambulancia?.encodeAsHTML()}</g:linkIfAccess></td>
-
         </tr>
 
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.operador" default="Operador"/>:</td>
 
           <td valign="top" class="value"><g:linkIfAccess controller="operador" action="show" id="${viagem?.operador?.id}">${viagem?.operador?.encodeAsHTML()}</g:linkIfAccess></td>
-
         </tr>
 
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.horaSaida" default="Hora Saida"/>:</td>
 
           <td valign="top" class="value"><g:formatDate date="${viagem?.horaSaida}" formatName="default.dateTime.format"/></td>
-
         </tr>
 
         <tr class="prop">
           <td valign="top" class="name"><g:message code="viagem.kmSaida" default="Km Saida"/>:</td>
 
           <td valign="top" class="value">${fieldValue(bean: viagem, field: "kmSaida")}</td>
-
         </tr>
 
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name"><g:message code="viagem.horaRetorno" default="Hora Retorno" />:</td>--}%
-        %{----}%
-        %{--<td valign="top" class="value"><g:formatDate date="${viagem?.horaRetorno}" /></td>--}%
-        %{----}%
-        %{--</tr>--}%
-        %{----}%
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name"><g:message code="viagem.kmRetorno" default="Km Retorno" />:</td>--}%
-        %{----}%
-        %{--<td valign="top" class="value">${fieldValue(bean: viagem, field: "kmRetorno")}</td>--}%
-        %{----}%
-        %{--</tr>--}%
+        <tr class="prop">
+          <td valign="top" class="name"><g:message code="viagem.horaRetorno" default="Hora Retorno"/>:</td>
 
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name"><g:message code="viagem.destino" default="Destino"/>:</td>--}%
+          <td valign="top" class="value"><g:formatDate date="${viagem?.horaRetorno}"/></td>
+        </tr>
 
-        %{--<td valign="top" class="value">${fieldValue(bean: viagem, field: "destino")}</td>--}%
+        <tr class="prop">
+          <td valign="top" class="name"><g:message code="viagem.kmRetorno" default="Km Retorno"/>:</td>
 
-        %{--</tr>--}%
+          <td valign="top" class="value">${fieldValue(bean: viagem, field: "kmRetorno")}</td>
+        </tr>
 
         <g:if test="${!viagem.paradas.empty}">
           <tr class="prop">
@@ -104,17 +89,7 @@
           <td valign="top" class="name"><g:message code="viagem.observacoes" default="Observacoes"/>:</td>
 
           <td valign="top" class="value">${fieldValue(bean: viagem, field: "observacoes")}</td>
-
         </tr>
-
-
-
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name"><g:message code="viagem.retornou" default="Retornou" />:</td>--}%
-        %{----}%
-        %{--<td valign="top" class="value"><g:formatBoolean boolean="${viagem?.retornou}" /></td>--}%
-        %{----}%
-        %{--</tr>--}%
 
         </tbody>
       </table>

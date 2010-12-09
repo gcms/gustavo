@@ -21,7 +21,7 @@ body {
 }
 
 #top-main .floating-left {
-    /*width: 250px;*/
+/*width: 250px;*/
     float: left;
     padding-right: 10px;
 }
@@ -43,7 +43,7 @@ body {
 }
 
 #top-main .floating-right {
-    /*width: 250px;*/
+/*width: 250px;*/
     float: left;
     text-align: right;
 
@@ -397,4 +397,8 @@ th.desc a {
     vertical-align: middle;
     padding-bottom: 3px;
     padding-left: 2px;
+}
+
+div.ui-datepicker {
+    font-size: 14px;
 }
