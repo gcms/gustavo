@@ -12,6 +12,9 @@
   <label>Paciente:</label> ${parada.paciente}
 </p>
 <p>
+  <label>AIH:</label> ${parada.aih}
+</p>
+<p>
   <label>Destino:</label> ${parada.destino}
 </p>
 </div>

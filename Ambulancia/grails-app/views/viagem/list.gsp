@@ -187,7 +187,8 @@
             params="${[dataInicio: formatDate(date: dataInicio, formatName: 'default.date.format'),
                        dataFim: formatDate(date: dataFim, formatName: 'default.date.format'),
                        'motorista.id': (motorista?.id ?: 0),
-                       'ambulancia.id': (ambulancia?.id ?: 0)]}"/>
+                       'ambulancia.id': (ambulancia?.id ?: 0),
+                       'destino': destino]}"/>
   </div>
 </div>
 </body>
