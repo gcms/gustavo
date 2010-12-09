@@ -28,7 +28,7 @@ class Viagem {
 
     static mapping = {
         distancia formula: 'km_retorno - km_saida'
-        paradas cascade: 'all-delete-orphan'
+        paradas cascade: 'all-delete-orphan', lazy: false
     }
 
     static hasMany = [paradas: Parada]

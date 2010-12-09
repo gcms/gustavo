@@ -8,7 +8,7 @@
 <body>
 <div class="nav">
   %{--<span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home" /></a></span>--}%
-  <span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:linkIfAccess></span>
+  <span class="menuButton"><g:linkIfAccess class="create" action="createSaida"><g:message code="viagem.new" default="New Viagem"/></g:linkIfAccess></span>
 
   <span class="menuButton"><g:linkIfAccess class="list" controller="viagem" action="list"><g:message code="viagem.list" default="Viagem List"/></g:linkIfAccess></span>
   <span class="menuButton"><g:linkIfAccess class="list" controller="motorista" action="list"><g:message code="motorista.list" default="Motorista List"/></g:linkIfAccess></span>
@@ -53,7 +53,7 @@
       <g:each in="${viagens}" status="i" var="viagem">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-          <td><g:linkIfAccess action="show" id="${viagem.id}">${viagem.id}</g:linkIfAccess></td>
+          <td><g:linkIfAccess action="showSaida" id="${viagem.id}">${viagem.id}</g:linkIfAccess></td>
 
           <td>${fieldValue(bean: viagem, field: "ambulancia")}</td>
 
@@ -82,7 +82,7 @@
           <td>${fieldValue(bean: viagem, field: "kmSaida")}</td>
 
           <td style="text-align: center;">
-            <g:linkIfAccess action="edit" id="${viagem.id}">
+            <g:linkIfAccess action="editRetorno" id="${viagem.id}">
               <img src="${resource(dir: 'images/skin', file: 'next.png')}" alt="Registrar retorno" border="0" height="12pt"/>
             </g:linkIfAccess>
           </td>

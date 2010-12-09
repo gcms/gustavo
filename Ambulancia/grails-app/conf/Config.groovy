@@ -15,19 +15,19 @@ import org.apache.log4j.DailyRollingFileAppender
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
-grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
-                      xml: ['text/xml', 'application/xml'],
-                      text: 'text/plain',
-                      js: 'text/javascript',
-                      rss: 'application/rss+xml',
-                      atom: 'application/atom+xml',
-                      css: 'text/css',
-                      csv: 'text/csv',
-                      all: '*/*',
-                      json: ['application/json','text/json'],
-                      form: 'application/x-www-form-urlencoded',
-                      multipartForm: 'multipart/form-data'
-                    ]
+grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
+        xml: ['text/xml', 'application/xml'],
+        text: 'text/plain',
+        js: 'text/javascript',
+        rss: 'application/rss+xml',
+        atom: 'application/atom+xml',
+        css: 'text/css',
+        csv: 'text/csv',
+        all: '*/*',
+        json: ['application/json', 'text/json'],
+        form: 'application/x-www-form-urlencoded',
+        multipartForm: 'multipart/form-data'
+]
 
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
@@ -89,11 +89,11 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    warn   'org.mortbay.log'
+    warn  'org.mortbay.log'
 
-    debug  'grails.app'
-    
-    debug  'br.gov.go.saude.hugo'
+    debug 'grails.app'
+
+    debug 'br.gov.go.saude.hugo'
 }
 
 // Added by the Spring Security Core plugin:
@@ -112,29 +112,39 @@ grails.plugins.springsecurity.rejectIfNoRule = true
 grails.plugins.springsecurity.securityConfigType = grails.plugins.springsecurity.SecurityConfigType.InterceptUrlMap
 
 grails.plugins.springsecurity.interceptUrlMap = [
-   '/**':                ['IS_AUTHENTICATED_REMEMBERED'],
-   '/js/**':             ['IS_AUTHENTICATED_ANONYMOUSLY'],
-   '/css/**':            ['IS_AUTHENTICATED_ANONYMOUSLY'],
-   '/images/**':         ['IS_AUTHENTICATED_ANONYMOUSLY'],
-   '/login/**':          ['IS_AUTHENTICATED_ANONYMOUSLY'],
-   '/logout/**':         ['IS_AUTHENTICATED_ANONYMOUSLY'],
+        '/**': ['IS_AUTHENTICATED_REMEMBERED'],
+        '/js/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+        '/css/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+        '/images/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+        '/login/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+        '/logout/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
 
-   '/operador/**':       ['ROLE_SUPERUSER'],
+        '/operador/**': ['ROLE_SUPERUSER'],
 //   '/operador/index':    ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/operador/list':     ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/operador/show/*':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/operador/list': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/operador/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
-   '/ambulancia/**':     ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/ambulancia/**': ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
 //   '/ambulancia/index':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/ambulancia/list':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/ambulancia/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/ambulancia/list': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/ambulancia/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
-   '/motorista/**':      ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/motorista/**': ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
 //   '/motorista/index':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/motorista/list':    ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/motorista/show/*':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/motorista/list': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/motorista/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
-   '/viagem/**':         ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-   '/console/**':         ['ROLE_SUPERUSER']
+        '/viagem/**': ['ROLE_SUPERUSER'],
+        '/viagem/createSaida': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/saveSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/showSaida/*':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/list':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/print':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+
+        '/viagem/editRetorno/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/updateRetorno/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+
+        '/viagem/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        
+        '/console/**': ['ROLE_SUPERUSER']
 ]
-

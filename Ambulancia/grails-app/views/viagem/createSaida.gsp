@@ -24,7 +24,6 @@
         show24Hours: true,
         spinnerImage: "${createLinkTo(dir: 'css', file: 'spinnerDefault.png')}"
       });
-
     });
   </script>
 
@@ -71,11 +70,7 @@
       <g:renderErrors bean="${viagem}" as="list"/>
     </div>
   </g:hasErrors>
-  <g:form action="save" method="post">
-
-  %{--<g:each var="paciente" in="${viagem?.pacientes}" status="i">--}%
-  %{--<g:hiddenField name="pacientes[${i}]" value="${paciente}"/>--}%
-  %{--</g:each>--}%
+  <g:form action="saveSaida" method="post">
 
     <div class="dialog">
       <table>
@@ -108,9 +103,6 @@
           </td>
           <td valign="top" class="value ${hasErrors(bean: viagem, field: 'dataSaida', 'errors')}">
             <input id="dataSaida" name="dataSaida" type="text" value="${formatDate(date: viagem?.dataSaida, formatName: 'default.date.format')}" readonly="readonly">
-            %{--<input type="text" readonly="readonly" id="dataSaida" name="dataSaida"--}%
-            %{--value="${formatDate(date: viagem?.horaSaida, format: 'dd/MM/yyyy')}" />--}%
-
           </td>
         </tr>
 
@@ -120,8 +112,6 @@
           </td>
           <td valign="top" class="value ${hasErrors(bean: viagem, field: 'horaSaida', 'errors')}">
             <input id="horaSaida" name="horaSaida" type="text" value="${formatDate(date: viagem?.horaSaida, formatName: 'default.time.format')}"/>
-            %{--<g:datePicker name="horaSaida" value="${viagem?.horaSaida}"  />--}%
-
           </td>
         </tr>
 
@@ -134,36 +124,6 @@
 
           </td>
         </tr>
-
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name">--}%
-        %{--<label for="horaRetorno"><g:message code="viagem.horaRetorno" default="Hora Retorno" />:</label>--}%
-        %{--</td>--}%
-        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'horaRetorno', 'errors')}">--}%
-        %{--<g:datePicker name="horaRetorno" value="${viagem?.horaRetorno}" noSelection="['': '']" />--}%
-
-        %{--</td>--}%
-        %{--</tr>--}%
-        %{----}%
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name">--}%
-        %{--<label for="kmRetorno"><g:message code="viagem.kmRetorno" default="Km Retorno" />:</label>--}%
-        %{--</td>--}%
-        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'kmRetorno', 'errors')}">--}%
-        %{--<g:textField name="kmRetorno" value="${fieldValue(bean: viagem, field: 'kmRetorno')}" />--}%
-
-        %{--</td>--}%
-        %{--</tr>--}%
-
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name">--}%
-        %{--<label for="destino"><g:message code="viagem.destino" default="Destino"/>:</label>--}%
-        %{--</td>--}%
-        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'destino', 'errors')}">--}%
-        %{--<g:textField name="destino" value="${fieldValue(bean: viagem, field: 'destino')}"/>--}%
-
-        %{--</td>--}%
-        %{--</tr>--}%
 
         <tr class="prop">
           <td valign="top" class="name">
@@ -187,12 +147,6 @@
           </td>
         </tr>
 
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'paradas', 'errors')} extjs" colspan="2">--}%
-        %{--<div id="paradas"></div>--}%
-        %{--</td>--}%
-        %{--</tr>--}%
-
         <tr class="prop">
           <td valign="top" class="name">
             <label for="observacoes"><g:message code="viagem.observacoes" default="Observacoes"/>:</label>
@@ -202,16 +156,6 @@
 
           </td>
         </tr>
-
-        %{--<tr class="prop">--}%
-        %{--<td valign="top" class="name">--}%
-        %{--<label for="retornou"><g:message code="viagem.retornou" default="Retornou" />:</label>--}%
-        %{--</td>--}%
-        %{--<td valign="top" class="value ${hasErrors(bean: viagem, field: 'retornou', 'errors')}">--}%
-        %{--<g:checkBox name="retornou" value="${viagem?.retornou}" />--}%
-
-        %{--</td>--}%
-        %{--</tr>--}%
 
         </tbody>
       </table>

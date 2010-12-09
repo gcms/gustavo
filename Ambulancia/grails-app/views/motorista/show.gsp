@@ -25,7 +25,7 @@
         <tr class="prop">
           <td valign="top" class="name"><g:message code="motorista.id" default="Id"/>:</td>
 
-          <td valign="top" class="value">${fieldValue(bean: motoristaInstance, field: "id")}</td>
+          <td valign="top" class="value">${motoristaInstance.id}</td>
         </tr>
 
         <tr class="prop">

@@ -13,11 +13,13 @@ class ViagemController {
     UtilitarioDataHorario dataHora = UtilitarioDataHorario.default
 
     def index = {
-        redirect(action: "home", params: params)
+        List viagens = Viagem.createCriteria().list(params) { eq('retornou', false) }
+
+        [viagens: viagens]
     }
 
     // the delete, save and update actions only accept POST requests
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [saveSaida: "POST", updateRetorno: "POST", deleteSaida: "POST", update: 'POST', delete: 'POST']
 
     private Map obtenhaViagens(Map listParams) {
         Date dataInicio = dataHora.inicioDoDia(params.dataInicio ? dataHora.dateFormat.parse(params.dataInicio) : dataHora.inicioDoMes())
@@ -27,27 +29,8 @@ class ViagemController {
         Ambulancia ambulancia = params?.ambulancia?.id ? Ambulancia.get(params.ambulancia.id) : null
         String destino = params.getInt('destino') != 0 ? params.destino : null
 
-        def criteria = {
-            and {
-                between("horaSaida", dataInicio, dataFim)
-                between("horaRetorno", dataInicio, dataFim)
-                eq("retornou", true)
-
-                if (motorista)
-                    eq("motorista.id", motorista.id)
-
-                if (ambulancia)
-                    eq("ambulancia.id", ambulancia.id)
-
-                if (destino)
-                    paradas {
-                        eq('destino', destino)
-                    }
-            }
-            projections {
-                sum("distancia")
-            }
-        }
+        def criteria = new ConstrutorCriteriaListaViagem(dataInicio: dataInicio, dataFim: dataFim,
+                motorista: motorista, ambulancia: ambulancia, destino: destino).obtenhaCriteria()
 
         def viagens = Viagem.createCriteria().list(listParams, criteria)
         def distanciaTotal = Viagem.createCriteria().get(criteria)
@@ -60,24 +43,20 @@ class ViagemController {
     }
 
     def list = {
-        [
-                motoristas: Motorista.findAllByDisponivel(true),
+        Map opcoes = [
+                motoristas: Motorista.list(),
                 ambulancias: Ambulancia.list(),
                 destinos: destinoService.obtenhaDestinos()
-        ] + obtenhaViagens(params)
+        ]
+
+        obtenhaViagens(params) + opcoes
     }
 
     def print = {
         obtenhaViagens([:])
     }
 
-    def home = {
-        List viagens = Viagem.createCriteria().list(params) { eq('retornou', false) }
-
-        [viagens: viagens]
-    }
-
-    def create = {
+    def createSaida = {
         List motoristas = motoristaService.obtenhaMotoristasDisponiveis()
         List ambulancias = ambulanciaService.obtenhaAmbulanciasDisponiveis()
 
@@ -88,7 +67,7 @@ class ViagemController {
         [viagem: viagem, motoristas: motoristas, ambulancias: ambulancias, hoje: new Date()]
     }
 
-    def save = {
+    def saveSaida = {
         params.horaSaida = dataHora.timeFormat.parse(params.horaSaida)
         params.dataSaida = dataHora.dateFormat.parse(params.dataSaida)
 
@@ -110,27 +89,28 @@ class ViagemController {
             flash.message = "viagem.created"
             flash.args = [viagem.id]
             flash.defaultMessage = "Viagem registrada com o identificador ${viagem.id}"
-            redirect(action: 'home')
+            redirect(action: 'index')
         } else {
             flash.viagem = viagem
-            redirect(action: "create")
+            redirect(action: "createSaida")
         }
     }
 
-    def show = {
+    def showSaida = {
         def viagem = Viagem.get(params.id)
         if (!viagem) {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
-            redirect(action: "list")
+            redirect(action: "index")
+        } else if (viagem.retornou) {
+            redirect(action: "show", params: params)
         } else {
             return [viagem: viagem]
         }
     }
 
-    // TODO: diferenciar ediçãoo de retorno
-    def edit = {
+    def editRetorno = {
         def viagemBanco = Viagem.get(params.id)
         def viagem = flash.viagem ?: viagemBanco
 
@@ -148,8 +128,7 @@ class ViagemController {
         }
     }
 
-    // TODO: diferenciar confirmação de retorno de atualização
-    def update = {
+    def updateRetorno = {
         params.horaRetorno = dataHora.timeFormat.parse(params.horaRetorno)
         params.dataRetorno = dataHora.dateFormat.parse(params.dataRetorno)
 
@@ -174,7 +153,7 @@ class ViagemController {
                 redirect(action: "show", id: viagem.id)
             } else {
                 flash.viagem = viagem
-                redirect(action: 'edit', id: params.id)
+                redirect(action: 'editRetorno', id: params.id)
             }
         }
         else {
@@ -185,24 +164,111 @@ class ViagemController {
         }
     }
 
-    def delete = {
+    def deleteSaida = {
         def viagem = Viagem.get(params.id)
 
-        if (viagem) {
-            if (viagem.retornou) {
-                flash.message = 'viagem.not.deleted'
-                flash.args = [params.id]
-                flash.defaultMessage = "Viagem ${params.id} já retornou, não pode ser cancelada"
+        if (viagem && viagem.retornou) {
+            flash.message = 'viagem.not.deleted'
+            flash.args = [params.id]
+            flash.defaultMessage = "Viagem ${params.id} já retornou, não pode ser cancelada"
 
-                redirect(action: 'show', id: params.id)
-            }
-
+            redirect(action: 'showSaida', id: params.id)
+        } else if (viagem) {
             try {
                 viagem.delete()
                 flash.message = "viagem.deleted"
                 flash.args = [params.id]
                 flash.defaultMessage = "Viagem com identificador ${params.id} foi excluída"
-                redirect(action: "home")
+                redirect(action: "index")
+            }
+            catch (org.springframework.dao.DataIntegrityViolationException e) {
+                flash.message = "viagem.not.deleted"
+                flash.args = [params.id]
+                flash.defaultMessage = "Viagem com identificador ${params.id} não pode ser excluída"
+                redirect(action: "showSaida", id: params.id)
+            }
+        } else {
+            flash.message = "viagem.not.found"
+            flash.args = [params.id]
+            flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
+            redirect(action: "index")
+        }
+    }
+
+    def show = {
+        def viagem = Viagem.get(params.id)
+        if (!viagem) {
+            flash.message = "viagem.not.found"
+            flash.args = [params.id]
+            flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
+            redirect(action: "index")
+        } else if (!viagem.retornou) {
+            redirect(action: "showSaida", params: params)
+        } else {
+            return [viagem: viagem]
+        }
+    }
+
+    def edit = {
+        def viagem = flash.viagem ?: Viagem.get(params.id)
+        if (!viagem) {
+            flash.message = "viagem.not.found"
+            flash.args = [params.id]
+            flash.defaultMessage = "Viagem not found with id ${params.id}"
+            redirect(action: "index")
+        }
+        else {
+            return [viagem: viagem]
+        }
+    }
+
+    def update = {
+        params.horaSaida = dataHora.timeFormat.parse(params.horaSaida)
+        params.dataSaida = dataHora.dateFormat.parse(params.dataSaida)
+        params.horaRetorno = dataHora.timeFormat.parse(params.horaRetorno)
+        params.dataRetorno = dataHora.dateFormat.parse(params.dataRetorno)
+
+        def viagem = Viagem.get(params.id)
+        if (viagem) {
+            if (params.version) {
+                def version = params.version.toLong()
+                if (viagem.version > version) {
+
+                    viagem.errors.rejectValue("version", "viagem.optimistic.locking.failure", "Another user has updated this Viagem while you were editing")
+                    render(view: "edit", model: [viagemInstance: viagem])
+                    return
+                }
+            }
+            viagem.properties = params
+            if (!viagem.hasErrors() && viagem.save()) {
+                flash.message = "viagem.updated"
+                flash.args = [params.id]
+                flash.defaultMessage = "Viagem ${params.id} updated"
+                redirect(action: "show", id: viagem.id)
+            }
+            else {
+                flash.viagem = viagem
+                redirect(action: "edit")
+            }
+        }
+        else {
+            flash.message = "viagem.not.found"
+            flash.args = [params.id]
+            flash.defaultMessage = "Viagem not found with id ${params.id}"
+            redirect(action: "edit", id: params.id)
+        }
+    }
+
+    def delete = {
+        def viagem = Viagem.get(params.id)
+
+        if (viagem) {
+            try {
+                viagem.delete()
+                flash.message = "viagem.deleted"
+                flash.args = [params.id]
+                flash.defaultMessage = "Viagem com identificador ${params.id} foi excluída"
+                redirect(action: "index")
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {
                 flash.message = "viagem.not.deleted"
@@ -215,7 +281,7 @@ class ViagemController {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
-            redirect(action: "home")
+            redirect(action: "index")
         }
     }
 }
