@@ -8,6 +8,10 @@ class Motorista {
 
     Boolean disponivel = true
 
+    static mapping = {
+        sort 'nome'
+    }
+
     static constraints = {
         nome blank: false, unique: true
         telefone nullable: true

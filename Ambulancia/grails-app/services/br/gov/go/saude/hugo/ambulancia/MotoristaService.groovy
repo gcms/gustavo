@@ -13,6 +13,7 @@ class MotoristaService {
         where m.disponivel = true
         and not exists (select 1 from Viagem v
                           where v.retornou = false and v.motorista = m)
+        order by nome
 """
         sessionFactory.currentSession.createQuery(hql).list()
     }

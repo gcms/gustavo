@@ -28,11 +28,6 @@
       });
     });
   </script>
-  <style type="text/css">
-  div.ui-datepicker {
-    font-size: 14px;
-  }
-  </style>
 </head>
 <body>
 <div class="nav">
@@ -98,16 +93,15 @@
             <input id="dataFim" name="dataFim" type="text" value="${formatDate(date: dataFim, formatName: 'default.date.format')}" readonly="readonly">
           </td>
         </tr>
-
         </tbody>
       </table>
-    </div>
+    </div>    
+
     <div class="buttons">
       <span class="button">
         <g:submitButton name="filter" class="filter" value="${message(code: 'viagem.filter', 'default': 'Filter')}"/>
       </span>
       <span class="button">
-        %{--<g:submitButton name="print" class="print" value="${message(code: 'print', 'default': 'Print')}" onclick="document.forms[0].action = 'print'; document.forms[0].target= '_blank'; document.forms[0].submit();"/>--}%
         <g:actionSubmitIfAccess name="print" class="print" value="${message(code: 'viagem.print', 'default': 'Print')}" action="print"/>
       </span>
     </div>
@@ -118,18 +112,11 @@
   <div class="dialog">
     <table>
       <tbody>
-
       <tr class="prop">
         <td valign="top" class="name"><g:message code="distancia.total" default="Distância total"/>:</td>
 
         <td valign="top" class="value">${distanciaTotal ?: 0} km</td>
       </tr>
-
-      %{--<tr class="prop">--}%
-      %{--<td valign="top" class="name"><g:message code="tempo.total" default="Tempo total"/>:</td>--}%
-
-      %{--<td valign="top" class="value"></td>--}%
-      %{--</tr>--}%
       </tbody>
     </table>
   </div>
@@ -139,14 +126,13 @@
     <table>
       <thead>
       <tr>
-
         <g:sortableColumn property="id" title="Id" titleKey="viagem.id"/>
 
         <th><g:message code="viagem.ambulancia" default="Ambulancia"/></th>
 
         <th><g:message code="viagem.motorista" default="Motorista"/></th>
 
-        %{--<th><g:message code="viagem.operador" default="Operador" /></th>--}%
+        <th><g:message code="viagem.operador" default="Operador" /></th>
 
         <th><g:message code="viagem.destino" default="Destinos"/></th>
 
@@ -159,9 +145,9 @@
         <g:sortableColumn property="kmSaida" title="Km Saida" titleKey="viagem.kmSaida"/>
         <g:sortableColumn property="kmRetorno" title="Km Retorno" titleKey="viagem.kmRetorno"/>
         <g:sortableColumn property="distancia" title="Distancia" titleKey="viagem.distancia"/>
-
       </tr>
       </thead>
+
       <tbody>
       <g:each in="${viagens}" status="i" var="viagemInstance">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
@@ -173,7 +159,7 @@
           <td>${fieldValue(bean: viagemInstance, field: "motorista")}</td>
 
 
-          %{--<td>${fieldValue(bean: viagemInstance, field: "operador")}</td>--}%
+          <td>${fieldValue(bean: viagemInstance, field: "operador")}</td>
 
           <td>
             <g:each var="parada" in="${viagemInstance.paradas}">
