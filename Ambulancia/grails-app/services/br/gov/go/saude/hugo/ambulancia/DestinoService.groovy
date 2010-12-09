@@ -15,4 +15,18 @@ class DestinoService {
 
         sessionFactory.currentSession.createQuery(hql).list()
     }
+
+    List obtenhaDestinosLike(String nome) {
+        log.debug "Obtendo destinos like '$nome'..."
+
+        String hql = """
+    select distinct p.destino
+    from Viagem v join v.paradas p
+    where v.retornou = true
+    and upper(p.destino) like upper('%$nome%') 
+"""
+
+        sessionFactory.currentSession.createQuery(hql).list()
+
+    }
 }
