@@ -118,6 +118,19 @@ Ambulancia.FieldSetList.prototype = {
     }
 };
 
+var destinosStore = new Ext.data.Store({
+    proxy: new Ext.data.HttpProxy({
+        url: 'listDestinos'
+    }),
+    reader: new Ext.data.JsonReader({
+        root: 'destinos',
+        totalProperty: 'totalCount',
+        id: 'nome'
+    }, [
+        {name: 'nome', mapping: 'nome'}
+    ])
+});
+
 Ambulancia.FieldSetList.TiposParadas = {
     'br.gov.go.saude.hugo.ambulancia.ParadaPaciente': [
         {
@@ -131,10 +144,24 @@ Ambulancia.FieldSetList.TiposParadas = {
             allowBlank: true//false
         },
         {
+            xtype: 'combo',
+            store: destinosStore,
+            displayField:'nome',
+            typeAhead: false,
+            hideTrigger:true,
+            minChars: 3,
+            onSelect: function(record) { // override default onSelect to do redirect
+                this.setValue(record.data.nome);
+                this.collapse();
+            },
             fieldLabel: 'Destino',
-            name: 'destino',
-            allowBlank: true//false
+            name: 'destino'
         },
+        //        {
+        //            fieldLabel: 'Destino',
+        //            name: 'destino',
+        //            allowBlank: true//false
+        //        },
         {
             xtype: 'hidden',
             name: 'class',
@@ -148,10 +175,24 @@ Ambulancia.FieldSetList.TiposParadas = {
             allowBlank: true//false
         },
         {
+            xtype: 'combo',
+            store: destinosStore,
+            displayField:'nome',
+            typeAhead: false,
+            hideTrigger:true,
+            minChars: 3,
+            onSelect: function(record) { // override default onSelect to do redirect
+                this.setValue(record.data.nome);
+                this.collapse();
+            },
             fieldLabel: 'Destino',
-            name: 'destino',
-            allowBlank: true//false
+            name: 'destino'
         },
+        //        {
+        //            fieldLabel: 'Destino',
+        //            name: 'destino',
+        //            allowBlank: true//false
+        //        },
         {
             xtype: 'hidden',
             name: 'class',

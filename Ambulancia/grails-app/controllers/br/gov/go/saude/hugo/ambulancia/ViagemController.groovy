@@ -1,6 +1,7 @@
 package br.gov.go.saude.hugo.ambulancia
 
 import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
+import grails.converters.JSON
 
 class ViagemController {
     MotoristaService motoristaService
@@ -283,5 +284,12 @@ class ViagemController {
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
             redirect(action: "index")
         }
+    }
+
+    def listDestinos = {
+        List destinos = destinoService.obtenhaDestinosLike(params.query).collect { [nome: it] }
+        Map result = [totalCount: destinos.size(), destinos: destinos]
+
+        render (result as JSON)
     }
 }
