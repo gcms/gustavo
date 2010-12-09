@@ -137,12 +137,13 @@ grails.plugins.springsecurity.interceptUrlMap = [
         '/viagem/**': ['ROLE_SUPERUSER'],
         '/viagem/createSaida': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
         '/viagem/saveSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/deleteSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
         '/viagem/showSaida/*':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
         '/viagem/list':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
         '/viagem/print':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
         '/viagem/editRetorno/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/updateRetorno/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/updateRetorno': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
         '/viagem/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
         
