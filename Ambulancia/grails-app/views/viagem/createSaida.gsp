@@ -13,7 +13,7 @@
 
         showOn: 'button',
         buttonImageOnly: true,
-        buttonImage: "${createLinkTo(dir: 'images/skin', file: 'calendar.png')}",
+        buttonImage: "${createLinkTo(dir: 'images/skin', file: 'calendar.png')}"
       });
     });
   </script>
