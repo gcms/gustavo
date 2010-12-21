@@ -290,6 +290,15 @@ class ViagemController {
         List destinos = destinoService.obtenhaDestinosLike(params.query).collect { [nome: it] }
         Map result = [totalCount: destinos.size(), destinos: destinos]
 
-        render (result as JSON)
+        render(result as JSON)
+    }
+
+    def obtenhaKmAmbulancia = {
+        Viagem viagem = new Viagem(params)
+        Ambulancia ambulancia = viagem.ambulancia
+
+        String result = ambulancia ? ambulanciaService.obtenhaKmRetornoUltimaViagem(ambulancia) : ''
+
+        render text: result
     }
 }
