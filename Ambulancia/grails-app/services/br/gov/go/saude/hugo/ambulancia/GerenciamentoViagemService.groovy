@@ -42,10 +42,10 @@ class GerenciamentoViagemService {
     boolean registreSaida(Viagem viagem) {
         log.info "Registrando saida $viagem"
 
-        if (obtenhaViagemNaoRetornou(viagem.ambulancia))
+        if (viagem.ambulancia && obtenhaViagemNaoRetornou(viagem.ambulancia))
             verifiqueAtributo(viagem, 'ambulancia')
 
-        if (obtenhaViagemNaoRetornou(viagem.motorista))
+        if (viagem.motorista && obtenhaViagemNaoRetornou(viagem.motorista))
             verifiqueAtributo(viagem, 'motorista')
 
         if (viagem.ambulancia != null) {

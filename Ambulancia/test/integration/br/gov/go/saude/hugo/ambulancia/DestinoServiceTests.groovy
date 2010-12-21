@@ -40,8 +40,8 @@ class DestinoServiceTests extends GrailsUnitTestCase {
         List destinos = destinoService.obtenhaDestinos()
         assertEquals 2, destinos.size()
 
-        assertTrue destinos.contains('Hemocentro')
-        assertTrue destinos.contains('Hospital Santa Lúcia')
+        assertTrue destinos.contains('HEMOCENTRO')
+        assertTrue destinos.contains('HOSPITAL SANTA LÚCIA')
     }
 
     void testeObtenhaDestinosRepetidos() {
@@ -59,7 +59,7 @@ class DestinoServiceTests extends GrailsUnitTestCase {
         List destinos = destinoService.obtenhaDestinos()
         assertEquals 2, destinos.size()
 
-        assertTrue destinos.contains('Hemocentro')
-        assertTrue destinos.contains('Hospital Santa Lúcia')
+        assertTrue destinos.contains('HEMOCENTRO')
+        assertTrue destinos.contains('HOSPITAL SANTA LÚCIA')
     }
 }

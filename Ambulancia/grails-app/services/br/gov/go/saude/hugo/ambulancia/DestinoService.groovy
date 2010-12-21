@@ -8,9 +8,10 @@ class DestinoService {
     List obtenhaDestinos() {
         log.debug "Obtendo destinos disponíveis..."
         String hql = """
-    select distinct p.destino
+    select distinct upper(p.destino)
     from Viagem v join v.paradas p
-    where v.retornou = true 
+    where v.retornou = true
+    order by upper(p.destino) 
 """
 
         sessionFactory.currentSession.createQuery(hql).list()
@@ -23,7 +24,8 @@ class DestinoService {
     select distinct p.destino
     from Viagem v join v.paradas p
     where v.retornou = true
-    and upper(p.destino) like upper('%$nome%') 
+    and upper(p.destino) like upper('%$nome%')
+    order by p.destino
 """
 
         sessionFactory.currentSession.createQuery(hql).list()

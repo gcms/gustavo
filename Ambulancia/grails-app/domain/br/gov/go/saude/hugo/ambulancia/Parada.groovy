@@ -8,4 +8,8 @@ class Parada {
     static constraints = {
         destino(blank: false)
     }
+
+    public void setDestino(String destino) {
+        this.destino = destino.trim().toUpperCase()
+    }
 }

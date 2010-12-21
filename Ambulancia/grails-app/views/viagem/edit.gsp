@@ -50,7 +50,7 @@
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
   <span class="menuButton"><g:link class="list" action="list"><g:message code="viagem.list" default="Viagem List"/></g:link></span>
-  <span class="menuButton"><g:link class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:link></span>
+  <span class="menuButton"><g:link class="createSaida" action="create"><g:message code="viagem.new" default="New Viagem"/></g:link></span>
 </div>
 <div class="body">
   <h1><g:message code="viagem.edit" default="Edit Viagem"/></h1>

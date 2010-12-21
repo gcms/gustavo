@@ -22,14 +22,15 @@
   <link rel="shortcut icon" href="${resource(dir: 'images/skin', file: 'ambulance.png')}" type="image/x-icon"/>
 
 
+
   <!-- JQUERY -->
-  <g:javascript library="jquery-1.4.2.min"/>
-  <g:javascript library="jquery-ui-1.8.6.custom.min"/>
-  <g:javascript library="jquery.ui.datepicker-pt-BR"/>
+  <g:javascript library="jquery/jquery-1.4.2.min"/>
+  <g:javascript library="jquery/jquery-ui-1.8.6.custom.min"/>
+  <g:javascript library="jquery/jquery.ui.datepicker-pt-BR"/>
 
 
-  <g:javascript library="jquery.timeentry.min"/>
-  <g:javascript library="jquery.timeentry-pt-BR"/>
+  <g:javascript library="jquery/jquery.timeentry.min"/>
+  <g:javascript library="jquery/jquery.timeentry-pt-BR"/>
 
   <!-- EXT.JS -->
   <script type="text/javascript" src="${resource(dir: 'js/ext-3.3.0', file: 'adapter/ext/ext-base.js')}"></script>

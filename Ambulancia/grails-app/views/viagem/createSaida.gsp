@@ -52,7 +52,21 @@
     });
 
   </script>
-  %{--<script type="text/javascript" src="${createLinkTo(dir: 'js', file: 'paciente-editor.js')}"></script>--}%
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#ambulancia').change(function() {
+        $('#kmSaida-td > img').show();
+        $.get('obtenhaKmAmbulancia', {'ambulancia.id': this.value}, function(data) {
+          $('#kmSaida-td > input').each(function(input) {
+            $(this).get(0).value = data;
+            $(this).effect('highlight', {color: '#c3ffc3'});
+          });
+          $('#kmSaida-td > img').hide();
+        });
+      });
+    });
+  </script>
 
 </head>
 <body>
@@ -81,7 +95,8 @@
             <label for="motorista"><g:message code="viagem.motorista" default="Motorista"/>:</label>
           </td>
           <td valign="top" class="value ${hasErrors(bean: viagem, field: 'motorista', 'errors')}">
-            <g:select name="motorista.id" from="${motoristas}" optionKey="id" value="${viagem?.motorista?.id}"/>
+            <g:select id="motorista" name="motorista.id" from="${motoristas}" optionKey="id" value="${viagem?.motorista?.id}"
+                    noSelection="['null': 'Escolha o motorista']"/>
 
           </td>
         </tr>
@@ -91,7 +106,8 @@
             <label for="ambulancia"><g:message code="viagem.ambulancia" default="Ambulancia"/>:</label>
           </td>
           <td valign="top" class="value ${hasErrors(bean: viagem, field: 'ambulancia', 'errors')}">
-            <g:select name="ambulancia.id" from="${ambulancias}" optionKey="id" value="${viagem?.ambulancia?.id}"/>
+            <g:select id="ambulancia" name="ambulancia.id" from="${ambulancias}" optionKey="id" value="${viagem?.ambulancia?.id}"
+                    noSelection="['null': 'Escolha a ambulância']"/>
 
           </td>
         </tr>
@@ -119,9 +135,9 @@
           <td valign="top" class="name">
             <label for="kmSaida"><g:message code="viagem.kmSaida" default="Km Saida"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'kmSaida', 'errors')}">
+          <td id="kmSaida-td" valign="top" class="value ${hasErrors(bean: viagem, field: 'kmSaida', 'errors')}">
             <g:textField name="kmSaida" value="${viagem?.kmSaida}"/>
-
+            <img src="/Ambulancia/images/spinner.gif" alt="..." title="..." style="display: none;"/>
           </td>
         </tr>
 
