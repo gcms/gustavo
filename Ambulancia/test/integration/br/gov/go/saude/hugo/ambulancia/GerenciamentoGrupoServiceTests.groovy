@@ -60,4 +60,16 @@ class GerenciamentoGrupoServiceTests extends GrailsUnitTestCase {
         assertFalse gerenciamentoGrupoService.salveOperador(operador, 'teste', 'teste1')
         assertEquals 'operador.senha.matches.invalid', operador.errors.getFieldError('senha').code
     }
+
+    void testeRegistroUsuarioDuplicado() {
+        Operador operador1 = new Operador(usuario: 'teste', enabled: true)
+        assertTrue gerenciamentoGrupoService.crieOperador(operador1, 'teste', 'teste')
+        assertNotNull Operador.findByUsuario('teste')
+
+        Operador operador2 = new Operador(usuario: 'teste', enabled: true)
+        assertFalse gerenciamentoGrupoService.crieOperador(operador2, 'teste', 'teste')
+
+        assertEquals 1, Operador.executeQuery("from Operador o where o.usuario = 'teste'").size()
+        assertEquals 1, OperadorGrupo.executeQuery("from OperadorGrupo og where og.operador.usuario = 'teste'").size()
+    }
 }

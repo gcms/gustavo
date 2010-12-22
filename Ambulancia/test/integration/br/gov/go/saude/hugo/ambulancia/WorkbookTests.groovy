@@ -2,6 +2,7 @@ package br.gov.go.saude.hugo.ambulancia
 
 import br.gov.go.saude.hugo.ambulancia.importacao.ImportadorPlanilha
 import br.gov.go.saude.hugo.ambulancia.importacao.ImportadorPlanilhaBanco
+import grails.test.GrailsUnitTestCase
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +11,7 @@ import br.gov.go.saude.hugo.ambulancia.importacao.ImportadorPlanilhaBanco
  * Time: 12:19:43
  * To change this template use File | Settings | File Templates.
  */
-class WorkbookTests extends GroovyTestCase {
+class WorkbookTests extends GrailsUnitTestCase {
     ImportadorPlanilha importador = new ImportadorPlanilha()
 
 
