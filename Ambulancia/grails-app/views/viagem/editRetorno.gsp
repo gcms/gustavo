@@ -45,6 +45,12 @@
       <g:renderErrors bean="${viagem}" as="list"/>
     </div>
   </g:hasErrors>
+  <g:if test="${flash.aviso}">
+    <div class="warning">
+      <ul><li>${flash.aviso}</li></ul>
+    </div>
+  </g:if>
+
   <g:form method="post">
     <g:hiddenField name="id" value="${viagem?.id}"/>
     <g:hiddenField name="version" value="${viagem?.version}"/>
@@ -138,8 +144,8 @@
           <td valign="top" class="name">
             <label for="kmRetorno"><g:message code="viagem.kmRetorno" default="Km Retorno"/>:</label>
           </td>
-          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'kmRetorno', 'errors')}">
-            <g:textField name="kmRetorno" value="${fieldValue(bean: viagem, field: 'kmRetorno')}"/>
+          <td valign="top" class="value ${hasErrors(bean: viagem, field: 'kmRetorno', 'errors')}  ${flash.aviso ? 'warning' : ''}">
+            <g:textField name="kmRetorno" value="${viagem?.kmRetorno}"/>
           </td>
         </tr>
 
@@ -151,10 +157,12 @@
             <g:textArea name="observacoes" value="${fieldValue(bean: viagem, field: 'observacoes')}"/>
           </td>
         </tr>
-
         </tbody>
       </table>
     </div>
+
+    <g:hiddenField name="confirme" value="${flash.aviso}"/>
+
     <div class="buttons">
       <span class="button"><g:actionSubmitIfAccess class="save" action="updateRetorno" value="${message(code: 'viagem.update', 'default': 'Update')}"/></span>
       <span class="button"><g:actionSubmitIfAccess class="delete" action="deleteSaida" value="${message(code: 'viagem.cancel', 'default': 'Cancel viagem')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>

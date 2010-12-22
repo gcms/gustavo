@@ -129,6 +129,8 @@ class ViagemController {
         }
     }
 
+    private static final VALOR_NORMAL_MAXIMO = 50
+
     def updateRetorno = {
         params.horaRetorno = dataHora.timeFormat.parse(params.horaRetorno)
         params.dataRetorno = dataHora.dateFormat.parse(params.dataRetorno)
@@ -142,12 +144,16 @@ class ViagemController {
                 flash.defaultMessage = "Viagem ${params.id} já retornou, não pode ser atualizada"
 
                 redirect(action: 'show', id: params.id)
+                return
             }
 
             viagem.properties = params
-            viagem.retornou = true
 
-            if (gerenciamentoViagemService.registreRetorno(viagem)) {
+            if (viagem.distancia > VALOR_NORMAL_MAXIMO && !params.confirme) {
+                flash.viagem = viagem
+                flash.aviso = "A distância percorrida [${viagem.distancia}] é superior a média.<br/>Verifique se o valor está correto e continue o registro."
+                redirect(action: 'editRetorno', id: params.id)
+            } else if (gerenciamentoViagemService.registreRetorno(viagem)) {
                 flash.message = "viagem.updated"
                 flash.args = [params.id]
                 flash.defaultMessage = "Retorno da viagem ${params.id} foi registrado"
