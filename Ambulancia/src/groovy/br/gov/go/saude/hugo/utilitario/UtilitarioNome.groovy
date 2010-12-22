@@ -9,8 +9,10 @@ package br.gov.go.saude.hugo.utilitario
  */
 class UtilitarioNome {
     public static String formateNomePessoa(String nome) {
-        List nomes = nome.split('\\s+') as List
+        if (nome == null)
+            return nome
 
+        List nomes = nome.split('\\s+') as List
         nomes.size() == 1 ? nome.toUpperCase() : "${nomes.first()} ${nomes.last()}".toUpperCase()
     }
 }

@@ -129,7 +129,7 @@ class ViagemController {
         }
     }
 
-    private static final VALOR_NORMAL_MAXIMO = 50
+    private static final VALOR_NORMAL_MAXIMO = 20
 
     def updateRetorno = {
         params.horaRetorno = dataHora.timeFormat.parse(params.horaRetorno)
