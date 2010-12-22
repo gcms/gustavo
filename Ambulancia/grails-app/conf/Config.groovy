@@ -1,4 +1,5 @@
 import org.apache.log4j.DailyRollingFileAppender
+import br.gov.go.saude.hugo.utilitario.Ambiente
 
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
@@ -71,7 +72,7 @@ log4j = {
     //
     appenders {
 //        file name:'file', file: "${grails.util.Environment.currentEnvironment}.log"
-        appender new DailyRollingFileAppender(name: 'stdout', datePattern: "'.'yyyy-MM-dd", file: "${grails.util.Environment.currentEnvironment}.log", layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c - %m%n'))
+        appender new DailyRollingFileAppender(name: 'stdout', datePattern: "'.'yyyy-MM-dd", file: Ambiente.instancia.logFile, layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c - %m%n'))
 
 //        rollingFile name:'stdout', maxFileSize:1024*1024/2, file:"${grails.util.Environment.currentEnvironment}.log"
 //        console name:'stdout', layout:pattern(conversionPattern: '[%d] %p %t %c - %m%n')
@@ -148,6 +149,7 @@ grails.plugins.springsecurity.interceptUrlMap = [
         '/viagem/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
         '/viagem/listDestinos': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/obtenhaKmAmbulancia': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
         
         '/console/**': ['ROLE_SUPERUSER']
 ]
