@@ -23,7 +23,11 @@ class Viagem {
     Long distancia
 
     Long getDistancia() {
-        distancia ?: (kmRetorno ? kmRetorno - kmSaida : null)
+        distancia ?: (kmRetorno && kmSaida ? kmRetorno - kmSaida : null)
+    }
+
+    void setDistancia(Long distancia) {
+        this.distancia = null
     }
 
     static mapping = {

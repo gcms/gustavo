@@ -57,6 +57,7 @@ class GerenciamentoViagemService {
 
     boolean registreRetorno(Viagem viagem) {
         log.info "Registrando retorno $viagem"
+        viagem.retornou = true
         
         !viagem.hasErrors() && viagem.save()
     }
