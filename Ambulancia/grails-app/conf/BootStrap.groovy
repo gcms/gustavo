@@ -10,8 +10,6 @@ class BootStrap {
 
     // TODO: mover inicialização para partes separadas
     def init = { servletContext ->
-        Locale.default = new Locale("pt", "BR")
-
         gerenciamentoGrupoService.registreGrupo('ROLE_SUPERUSER')
         gerenciamentoGrupoService.registreGrupo('ROLE_ADMIN')
         gerenciamentoGrupoService.registreGrupo('ROLE_USER')
