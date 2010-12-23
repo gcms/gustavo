@@ -1,5 +1,5 @@
 import org.apache.log4j.DailyRollingFileAppender
-import br.gov.go.saude.hugo.utilitario.Ambiente
+import br.gov.go.saude.hugo.ambulancia.utilitario.Ambiente
 
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
