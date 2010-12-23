@@ -154,7 +154,7 @@
             <label for="observacoes"><g:message code="viagem.observacoes" default="Observacoes"/>:</label>
           </td>
           <td valign="top" class="value ${hasErrors(bean: viagem, field: 'observacoes', 'errors')}">
-            <g:textArea name="observacoes" value="${fieldValue(bean: viagem, field: 'observacoes')}"/>
+            <g:textArea name="observacoes" value="${viagem?.observacoes}"/>
           </td>
         </tr>
         </tbody>

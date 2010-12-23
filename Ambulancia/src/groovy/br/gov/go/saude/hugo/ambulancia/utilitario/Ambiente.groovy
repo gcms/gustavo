@@ -1,6 +1,5 @@
-package br.gov.go.saude.hugo.utilitario
+package br.gov.go.saude.hugo.ambulancia.utilitario
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import grails.util.Environment
 
@@ -34,5 +33,9 @@ class Ambiente {
 
     public File getLogFile() {
         new File(getLogFolder(), "${Environment.current}.log")
+    }
+
+    public String getAppName() {
+        ApplicationHolder.application.metadata['app.name']
     }
 }
