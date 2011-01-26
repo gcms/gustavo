@@ -11,11 +11,9 @@
 
   <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/resources/css', file: 'ext-all.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/resources/css', file: 'xtheme-gray.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/examples/grid', file: 'grid-examples.css')}"/>
 
   <!-- Common Styles for the examples -->
   <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/examples', file: 'shared/examples.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(dir: 'js/ext-3.3.0/examples', file: 'ux/css/RowEditor.css')}"/>
 
   <!-- DEFAULT -->
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>

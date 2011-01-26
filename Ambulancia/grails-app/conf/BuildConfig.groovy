@@ -30,13 +30,5 @@ grails.project.dependency.resolution = {
         runtime 'postgresql:postgresql:9.0-801.jdbc4'
         compile 'org.apache.poi:poi:3.7'
 
-//        test "net.sourceforge.htmlunit:htmlunit:2.8", {
-//            excludes "xml-apis", "commons-logging"
-//        }
-
-//        test('net.sourceforge.htmlunit:htmlunit:2.7') {
-//            excludes 'xalan' // IVY-1006 - use xalan 2.7.0 to avoid (see below)
-//            excludes 'xml-apis' // GROOVY-3356
-//        }
     }
 }
