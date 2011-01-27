@@ -7,6 +7,7 @@ class ViagemController {
     MotoristaService motoristaService
     AmbulanciaService ambulanciaService
     DestinoService destinoService
+    PacienteService pacienteService
 
     GerenciamentoGrupoService gerenciamentoGrupoService
     GerenciamentoViagemService gerenciamentoViagemService
@@ -23,21 +24,24 @@ class ViagemController {
     static allowedMethods = [saveSaida: "POST", updateRetorno: "POST", deleteSaida: "POST", update: 'POST', delete: 'POST']
 
     private Map obtenhaViagens(Map listParams) {
-        Date dataInicio = dataHora.inicioDoDia(params.dataInicio ? dataHora.dateFormat.parse(params.dataInicio) : dataHora.inicioDoMes())
+        Date dataInicio = dataHora.inicioDoDia(params.dataInicio ? dataHora.dateFormat.parse(params.dataInicio) : new Date() /*dataHora.inicioDoMes()*/)
         Date dataFim = dataHora.fimDoDia(params.dataFim ? dataHora.dateFormat.parse(params.dataFim) : new Date())
 
         Motorista motorista = params?.motorista?.id ? Motorista.get(params.motorista.id) : null
         Ambulancia ambulancia = params?.ambulancia?.id ? Ambulancia.get(params.ambulancia.id) : null
         String destino = params.getInt('destino') != 0 ? params.destino : null
+        String paciente = params.getInt('paciente') != 0 ? params.paciente : null
 
         def criteria = new ConstrutorCriteriaListaViagem(dataInicio: dataInicio, dataFim: dataFim,
-                motorista: motorista, ambulancia: ambulancia, destino: destino).obtenhaCriteria()
+                motorista: motorista, ambulancia: ambulancia, destino: destino, paciente: paciente).obtenhaCriteria()
 
+        listParams.sort = listParams.sort ?: 'horaSaida'
         def viagens = Viagem.createCriteria().list(listParams, criteria)
         def distanciaTotal = Viagem.createCriteria().get(criteria)
 
         [
-                motorista: motorista, ambulancia: ambulancia, destino: destino,
+                motorista: motorista, ambulancia: ambulancia,
+                destino: destino, paciente: paciente,
                 dataInicio: dataInicio, dataFim: dataFim,
                 viagens: viagens, distanciaTotal: distanciaTotal
         ]
@@ -47,7 +51,8 @@ class ViagemController {
         Map opcoes = [
                 motoristas: Motorista.list(),
                 ambulancias: Ambulancia.list(),
-                destinos: destinoService.obtenhaDestinos()
+                destinos: destinoService.obtenhaDestinos(),
+                pacientes: pacienteService.obtenhaPacientes()
         ]
 
         obtenhaViagens(params) + opcoes

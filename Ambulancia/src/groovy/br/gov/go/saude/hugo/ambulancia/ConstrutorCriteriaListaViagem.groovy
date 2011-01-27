@@ -15,6 +15,7 @@ class ConstrutorCriteriaListaViagem {
     private Ambulancia ambulancia
 
     private String destino
+    private String paciente
 
     public Closure obtenhaCriteria() {
         def criteria = {
@@ -32,6 +33,11 @@ class ConstrutorCriteriaListaViagem {
                 if (destino)
                     paradas {
                         eq('destino', destino)
+                    }
+
+                if (paciente)
+                    paradas {
+                        eq('paciente', paciente)
                     }
             }
             projections {

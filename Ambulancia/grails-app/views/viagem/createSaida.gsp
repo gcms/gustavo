@@ -9,7 +9,7 @@
       $('#dataSaida').datepicker({
         constrainInput: true,
         defaultDate: new Date(${viagem?.dataSaida.time}),
-        minDate: new Date(${hoje.time}),
+        %{--minDate: new Date(${hoje.time}),--}%
 
         showOn: 'button',
         buttonImageOnly: true,

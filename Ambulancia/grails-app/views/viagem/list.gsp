@@ -1,4 +1,4 @@
-<%@ page import="br.gov.go.saude.hugo.ambulancia.Viagem" %>
+<%@ page import="br.gov.go.saude.hugo.ambulancia.ParadaPaciente; br.gov.go.saude.hugo.ambulancia.Viagem" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -32,7 +32,7 @@
 <body>
 <div class="nav">
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}"><g:message code="home" default="Home"/></a></span>
-  <span class="menuButton"><g:linkIfAccess class="create" action="create"><g:message code="viagem.new" default="New Viagem"/></g:linkIfAccess></span>
+  <span class="menuButton"><g:linkIfAccess class="create" action="createSaida"><g:message code="viagem.new" default="New Viagem"/></g:linkIfAccess></span>
 </div>
 <div class="body">
   <h1><g:message code="viagem.list.retornou" default="Viagem List"/></h1>
@@ -64,7 +64,7 @@
                     noSelection="${[0:'Todos']}"/>
           </td>
         </tr>
-        
+
         <tr class="prop">
           <td valign="top" class="name">
             <label for="destino"><g:message code="viagem.parada.destino" default="Destino"/>:</label>
@@ -74,7 +74,18 @@
                     noSelection="${[0:'Todos']}"/>
           </td>
         </tr>
-
+        
+        <tr class="prop">
+          <td valign="top" class="name">
+            <label for="paciente"><g:message code="viagem.parada.paciente" default="Paciente"/>:</label>
+          </td>
+          <td valign="top" class="value">
+            <g:select name="paciente" from="${pacientes}" value="${paciente}"
+                    noSelection="${[0:'Todos']}"/>
+          </td>
+        </tr>
+        
+        
 
         <tr class="prop">
           <td valign="top" class="name">
@@ -95,7 +106,7 @@
         </tr>
         </tbody>
       </table>
-    </div>    
+    </div>
 
     <div class="buttons">
       <span class="button">
@@ -123,28 +134,34 @@
 
 
   <div class="list">
+    <g:set var="filterParams" value="${[dataInicio: formatDate(date: dataInicio, formatName: 'default.date.format'),
+                       dataFim: formatDate(date: dataFim, formatName: 'default.date.format'),
+                       'motorista.id': (motorista?.id ?: 0),
+                       'ambulancia.id': (ambulancia?.id ?: 0),
+                       'destino': destino]}"/>
     <table>
       <thead>
       <tr>
-        <g:sortableColumn property="id" title="Id" titleKey="viagem.id"/>
+        <g:sortableColumn property="id" title="Id" titleKey="viagem.id" params="${filterParams}"/>
 
         <th><g:message code="viagem.ambulancia" default="Ambulancia"/></th>
 
         <th><g:message code="viagem.motorista" default="Motorista"/></th>
 
-        <th><g:message code="viagem.operador" default="Operador" /></th>
+        %{--<th><g:message code="viagem.operador" default="Operador"/></th>--}%
 
         <th><g:message code="viagem.destino" default="Destinos"/></th>
+        <th><g:message code="viagem.paciente" default="Pacientes"/></th>
 
-        <g:sortableColumn property="dataSaida" title="Data Saida" titleKey="viagem.dataSaida"/>
-        <g:sortableColumn property="horaSaida" title="Hora Saida" titleKey="viagem.horaSaida"/>
+        <g:sortableColumn property="dataSaida" title="Data Saida" titleKey="viagem.dataSaida" params="${filterParams}"/>
+        %{--<g:sortableColumn property="horaSaida" title="Hora Saida" titleKey="viagem.horaSaida" params="${filterParams}"/>--}%
 
-        <g:sortableColumn property="dataRetorno" title="Data Retorno" titleKey="viagem.dataRetorno"/>
-        <g:sortableColumn property="horaRetorno" title="Hora Retorno" titleKey="viagem.horaRetorno"/>
+        %{--<g:sortableColumn property="dataRetorno" title="Data Retorno" titleKey="viagem.dataRetorno" params="${filterParams}"/>--}%
+        %{--<g:sortableColumn property="horaRetorno" title="Hora Retorno" titleKey="viagem.horaRetorno" params="${filterParams}"/>--}%
 
-        <g:sortableColumn property="kmSaida" title="Km Saida" titleKey="viagem.kmSaida"/>
-        <g:sortableColumn property="kmRetorno" title="Km Retorno" titleKey="viagem.kmRetorno"/>
-        <g:sortableColumn property="distancia" title="Distancia" titleKey="viagem.distancia"/>
+        <g:sortableColumn property="kmSaida" title="Km Saida" titleKey="viagem.kmSaida" params="${filterParams}"/>
+        <g:sortableColumn property="kmRetorno" title="Km Retorno" titleKey="viagem.kmRetorno" params="${filterParams}"/>
+        <g:sortableColumn property="distancia" title="Distancia" titleKey="viagem.distancia" params="${filterParams}"/>
       </tr>
       </thead>
 
@@ -159,7 +176,7 @@
           <td>${fieldValue(bean: viagemInstance, field: "motorista")}</td>
 
 
-          <td>${fieldValue(bean: viagemInstance, field: "operador")}</td>
+          %{--<td>${fieldValue(bean: viagemInstance, field: "operador")}</td>--}%
 
           <td>
             <g:each var="parada" in="${viagemInstance.paradas}">
@@ -167,11 +184,19 @@
             </g:each>
           </td>
 
-          <td><g:formatDate date="${viagemInstance.dataSaida}" formatName="default.date.format"/></td>
-          <td><g:formatDate date="${viagemInstance.horaSaida}" formatName="default.time.format"/></td>
+          <td>
+            <g:each var="parada" in="${viagemInstance.paradas}">
+              <g:if test="${ParadaPaciente.isAssignableFrom(parada.realClass)}">
+                <p>${parada?.paciente}</p>
+              </g:if>
+            </g:each>
+          </td>
 
-          <td><g:formatDate date="${viagemInstance.dataRetorno}" formatName="default.date.format"/></td>
-          <td><g:formatDate date="${viagemInstance.horaRetorno}" formatName="default.time.format"/></td>
+          <td><g:formatDate date="${viagemInstance.dataSaida}" formatName="default.date.format"/></td>
+          %{--<td><g:formatDate date="${viagemInstance.horaSaida}" formatName="default.time.format"/></td>--}%
+
+          %{--<td><g:formatDate date="${viagemInstance.dataRetorno}" formatName="default.date.format"/></td>--}%
+          %{--<td><g:formatDate date="${viagemInstance.horaRetorno}" formatName="default.time.format"/></td>--}%
 
           <td>${fieldValue(bean: viagemInstance, field: "kmSaida")}</td>
           <td>${fieldValue(bean: viagemInstance, field: "kmRetorno")}</td>
@@ -183,12 +208,7 @@
     </table>
   </div>
   <div class="paginateButtons">
-    <g:paginate total="${viagens.totalCount}"
-            params="${[dataInicio: formatDate(date: dataInicio, formatName: 'default.date.format'),
-                       dataFim: formatDate(date: dataFim, formatName: 'default.date.format'),
-                       'motorista.id': (motorista?.id ?: 0),
-                       'ambulancia.id': (ambulancia?.id ?: 0),
-                       'destino': destino]}"/>
+    <g:paginate total="${viagens.totalCount}" params="${filterParams}"/>
   </div>
 </div>
 </body>
