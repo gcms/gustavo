@@ -45,6 +45,10 @@
       <td>${destino ?: 'Todos'}</td>
     </tr>
     <tr>
+      <td><g:message code="viagem.paciente" default="Paciente"/>:</td>
+      <td>${paciente ?: 'Todos'}</td>
+    </tr>
+    <tr>
       <td>Período:</td>
       <td>${formatDate(date: dataInicio, formatName: 'default.date.format')} a ${formatDate(date: dataFim, formatName: 'default.date.format')}</td>
     </tr>

@@ -154,7 +154,7 @@
         <th><g:message code="viagem.paciente" default="Pacientes"/></th>
 
         <g:sortableColumn property="dataSaida" title="Data Saida" titleKey="viagem.dataSaida" params="${filterParams}"/>
-        %{--<g:sortableColumn property="horaSaida" title="Hora Saida" titleKey="viagem.horaSaida" params="${filterParams}"/>--}%
+        <g:sortableColumn property="horaSaida" title="Hora Saida" titleKey="viagem.horaSaida" params="${filterParams}"/>
 
         %{--<g:sortableColumn property="dataRetorno" title="Data Retorno" titleKey="viagem.dataRetorno" params="${filterParams}"/>--}%
         %{--<g:sortableColumn property="horaRetorno" title="Hora Retorno" titleKey="viagem.horaRetorno" params="${filterParams}"/>--}%
@@ -193,7 +193,7 @@
           </td>
 
           <td><g:formatDate date="${viagemInstance.dataSaida}" formatName="default.date.format"/></td>
-          %{--<td><g:formatDate date="${viagemInstance.horaSaida}" formatName="default.time.format"/></td>--}%
+          <td><g:formatDate date="${viagemInstance.horaSaida}" formatName="default.time.format"/></td>
 
           %{--<td><g:formatDate date="${viagemInstance.dataRetorno}" formatName="default.date.format"/></td>--}%
           %{--<td><g:formatDate date="${viagemInstance.horaRetorno}" formatName="default.time.format"/></td>--}%
