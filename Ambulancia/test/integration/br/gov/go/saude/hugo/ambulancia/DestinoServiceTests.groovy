@@ -29,7 +29,7 @@ class DestinoServiceTests extends GrailsUnitTestCase {
     void testeObtenhaDestinosBasico() {
         Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
-                new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
+                new ParadaPaciente(destino: 'Hospital Santa LÃºcia', paciente: "JoÃ£o de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
         ]
         viagem.registreSaida(new Date(), 12453)
@@ -41,13 +41,13 @@ class DestinoServiceTests extends GrailsUnitTestCase {
         assertEquals 2, destinos.size()
 
         assertTrue destinos.contains('HEMOCENTRO')
-        assertTrue destinos.contains('HOSPITAL SANTA LÚCIA')
+        assertTrue destinos.contains('HOSPITAL SANTA LÃšCIA')
     }
 
     void testeObtenhaDestinosRepetidos() {
         Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
-                new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
+                new ParadaPaciente(destino: 'Hospital Santa LÃºcia', paciente: "JoÃ£o de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue'),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Entrega de sangue')
         ]
@@ -60,6 +60,6 @@ class DestinoServiceTests extends GrailsUnitTestCase {
         assertEquals 2, destinos.size()
 
         assertTrue destinos.contains('HEMOCENTRO')
-        assertTrue destinos.contains('HOSPITAL SANTA LÚCIA')
+        assertTrue destinos.contains('HOSPITAL SANTA LÃšCIA')
     }
 }

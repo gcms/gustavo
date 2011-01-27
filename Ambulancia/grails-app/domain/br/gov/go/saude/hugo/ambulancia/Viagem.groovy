@@ -7,10 +7,12 @@ class Viagem {
     Motorista motorista
     Ambulancia ambulancia
     Operador operador
-    
+
+    Date dataSaida
     Date horaSaida
     Long kmSaida
 
+    Date dataRetorno
     Date horaRetorno
     Long kmRetorno
 
@@ -30,14 +32,18 @@ class Viagem {
         this.distancia = null
     }
 
+    static auditable = true
+
     static mapping = {
         distancia formula: 'km_retorno - km_saida'
         paradas cascade: 'all-delete-orphan', lazy: false
+        dataSaida insertable: false, updateable: false, column: 'hora_saida'
+        horaSaida column: 'hora_saida'
+        dataRetorno insertable: false, updateable: false, column: 'hora_retorno'
+        horaRetorno column: 'hora_retorno'
     }
 
     static hasMany = [paradas: Parada]
-
-    static transients = [ 'dataSaida', 'dataRetorno' ]
 
     Date getDataSaida() {
         horaSaida
@@ -72,6 +78,14 @@ class Viagem {
         horaSaida nullable: false
         kmSaida nullable: false
 
+        dataRetorno nullable: true, validator: { val, obj ->
+            if (val == null && obj.retornou)
+                return 'nullable'
+            if (val != null && val < obj.dataSaida)
+                return ['min.notmet', obj.dataSaida ]
+
+            true
+        }
         horaRetorno nullable: true, validator: { val, obj ->
             if (val == null && obj.retornou)
                 return 'nullable'
