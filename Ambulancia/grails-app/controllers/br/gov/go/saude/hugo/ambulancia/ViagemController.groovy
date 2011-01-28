@@ -21,7 +21,7 @@ class ViagemController {
     }
 
     // the delete, save and update actions only accept POST requests
-    static allowedMethods = [saveSaida: "POST", updateRetorno: "POST", deleteSaida: "POST", update: 'POST', delete: 'POST']
+    static allowedMethods = [saveSaida: "POST", updateSaida: 'POST', deleteSaida: "POST", updateRetorno: "POST", update: 'POST', delete: 'POST']
 
     private Map obtenhaViagens(Map listParams) {
         Date dataInicio = dataHora.inicioDoDia(params.dataInicio ? dataHora.dateFormat.parse(params.dataInicio) : new Date() /*dataHora.inicioDoMes()*/)
@@ -116,6 +116,19 @@ class ViagemController {
         }
     }
 
+    def editSaida = {
+        def viagem = flash.viagem ?: Viagem.get(params.id)
+        if (!viagem) {
+            flash.message = "viagem.not.found"
+            flash.args = [params.id]
+            flash.defaultMessage = "Viagem not found with id ${params.id}"
+            redirect(action: "index")
+        }
+        else {
+            return [viagem: viagem]
+        }
+    }
+
     def editRetorno = {
         def viagemBanco = Viagem.get(params.id)
         def viagem = flash.viagem ?: viagemBanco
@@ -173,6 +186,42 @@ class ViagemController {
             flash.args = [params.id]
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
             redirect(action: "edit", id: params.id)
+        }
+    }
+
+    def updateSaida = {
+        params.horaSaida = dataHora.timeFormat.parse(params.horaSaida)
+        params.dataSaida = dataHora.dateFormat.parse(params.dataSaida)
+
+        def viagem = Viagem.get(params.id)
+
+        if (viagem) {
+            if (viagem.retornou) {
+                flash.message = 'viagem.not.deleted'
+                flash.args = [params.id]
+                flash.defaultMessage = "Viagem ${params.id} já retornou, não pode ser atualizada"
+
+                redirect(action: 'showSaida', id: params.id)
+                return
+            }
+
+            viagem.properties = params
+
+            if (gerenciamentoViagemService.registreSaida(viagem)) {
+                flash.message = "viagem.created"
+                flash.args = [params.id]
+                flash.defaultMessage = "Viagem atualizada com o identificador ${viagem.id}"
+                redirect(action: 'index')
+            } else {
+                flash.viagem = viagem
+                redirect(action: 'editSaida', id: params.id)
+            }
+        }
+        else {
+            flash.message = "viagem.not.found"
+            flash.args = [params.id]
+            flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
+            redirect(action: "editSaida", id: params.id)
         }
     }
 

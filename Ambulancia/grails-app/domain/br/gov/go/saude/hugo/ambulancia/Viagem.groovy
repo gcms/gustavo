@@ -32,6 +32,9 @@ class Viagem {
         this.distancia = null
     }
 
+//    Date dateCreated
+//    Date lastUpdated
+
     static auditable = true
 
     static mapping = {
@@ -56,7 +59,7 @@ class Viagem {
     void setHoraSaida(Date data) {
         horaSaida = horaSaida ? UtilitarioDataHorario.default.copieHora(horaSaida, data) : data
     }
-    
+
     Date getDataRetorno() {
         horaRetorno
     }
@@ -112,7 +115,7 @@ class Viagem {
                 if (!parada.validate())
                     return 'blank'
             }
-            
+
            true
         }
     }

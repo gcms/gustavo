@@ -107,7 +107,7 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
 
         viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
         viagem.registreSaida(new Date(), 2000)
-        assertFalse gerenciamentoViagemService.registreSaida(viagem); // km anterior ao de retorno da última viagem
+        assertFalse gerenciamentoViagemService.registreSaida(viagem); // km anterior ao de retorno da ï¿½ltima viagem
 
         assertEquals 'viagem.kmSaida.min.notmet', viagem.errors.getFieldError('kmSaida').code        
     }
@@ -115,7 +115,7 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
     void testeCascadeDlete() {
         Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
-                new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
+                new ParadaPaciente(destino: 'Hospital Santa LÃºcia', paciente: "JoÃ£o de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
         ]
 
@@ -128,5 +128,29 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
 
         assertEquals 0, Viagem.count()
         assertEquals 0, Parada.count()
+    }
+
+    void testeAtualizaSaida() {
+        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        viagem.paradas = [
+                new ParadaPaciente(destino: 'Hospital Santa LÃºcia', paciente: "JoÃ£o de Deus"),
+                new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
+        ]
+
+        viagem.registreSaida(new Date(), 1500)
+        assertTrue gerenciamentoViagemService.registreSaida(viagem)
+        assertEquals 1, Viagem.count()
+
+        viagem = Viagem.get(viagem.id)
+        assertEquals 1500, viagem.kmSaida
+        assertFalse viagem.retornou
+
+        viagem.kmSaida = 1510
+        assertTrue gerenciamentoViagemService.registreSaida(viagem)
+        assertEquals 1, Viagem.count()
+
+        viagem = Viagem.get(viagem.id)
+        assertEquals 1510, viagem.kmSaida
+        assertFalse viagem.retornou
     }
 }

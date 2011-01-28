@@ -36,7 +36,7 @@
   <span class="menuButton"><g:linkIfAccess class="create" action="createSaida"><g:message code="viagem.new" default="New Viagem"/></g:linkIfAccess></span>
 </div>
 <div class="body">
-  <h1><g:message code="viagem.edit" default="Edit Viagem"/></h1>
+  <h1><g:message code="viagem.editRetorno" default="Edit Viagem"/></h1>
   <g:if test="${flash.message}">
     <div class="message"><g:message code="${flash.message}" args="${flash.args}" default="${flash.defaultMessage}"/></div>
   </g:if>
