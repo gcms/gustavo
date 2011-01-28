@@ -5,6 +5,9 @@ import br.gov.go.saude.hugo.ambulancia.utilitario.Ambiente
 import br.gov.go.saude.hugo.ambulancia.Motorista
 import br.gov.go.saude.hugo.ambulancia.Ambulancia
 import br.gov.go.saude.hugo.ambulancia.Viagem
+import br.gov.go.saude.hugo.ambulancia.GerenciamentoGrupoService
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.GrailsApplication
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +21,7 @@ class AmbulanciaSeleniumAware extends SeleniumAware {
         selenium.open "/${Ambiente.instancia.appName}/"
 
         assertEquals("Login", selenium.getTitle())
-        selenium.type("username", "admin")
+        selenium.type("username", "usuario")
         selenium.type("password", "12345")
         selenium.click("//input[@value='Login']")
         selenium.waitForPageToLoad()
@@ -36,9 +39,13 @@ class AmbulanciaSeleniumAware extends SeleniumAware {
     }
 
     void carregueBanco() {
+        GrailsApplication application = ApplicationHolder.application
+        GerenciamentoGrupoService gerenciamentoGrupoService = application.mainContext.gerenciamentoGrupoService
+        gerenciamentoGrupoService.registreUsuario('usuario', '12345', 'ROLE_USER')
+        
         assertEquals 0, Viagem.list().size()
 
-        Motorista.withTransaction {
+//        Motorista.withTransaction {
             Motorista elias = new Motorista(nome: 'Elias Coelho', telefone: '2222-2222')
             elias.save()
 
@@ -53,14 +60,14 @@ class AmbulanciaSeleniumAware extends SeleniumAware {
 
             Ambulancia amb1010 = new Ambulancia(prefixo: '1010', placa: 'NKV-4401', disponivel: false)
             amb1010.save()
-        }
+//        }
     }
 
     void limpeBanco() {
-         Motorista.withTransaction {
+//         Motorista.withTransaction {
              Viagem.list()*.delete()
              Motorista.list()*.delete()
              Ambulancia.list()*.delete()
-         }
+//         }
     }
 }

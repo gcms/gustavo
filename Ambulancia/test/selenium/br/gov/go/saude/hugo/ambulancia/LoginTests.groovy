@@ -17,7 +17,13 @@ class LoginTests extends GrailsUnitTestCase {
     void testeLogin() {
         selenium.open "/${Ambiente.instancia.appName}/"
 
-        login()
+        selenium.open "/${Ambiente.instancia.appName}/"
+
+        assertEquals("Login", selenium.getTitle())
+        selenium.type("username", "admin")
+        selenium.type("password", "12345")
+        selenium.click("//input[@value='Login']")
+        selenium.waitForPageToLoad()
 
         assertEquals("Viagens", selenium.getTitle())
         selenium.isTextPresent("Admin")

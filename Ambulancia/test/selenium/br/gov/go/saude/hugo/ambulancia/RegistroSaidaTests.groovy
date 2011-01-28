@@ -12,8 +12,6 @@ import br.gov.go.saude.hugo.ambulancia.test.AmbulanciaSeleniumAware
  */
 @Mixin(AmbulanciaSeleniumAware)
 class RegistroSaidaTests extends GrailsUnitTestCase {
-    static transactional = true
-
     protected void setUp() {
         super.setUp()
         carregueBanco()
@@ -125,9 +123,29 @@ class RegistroSaidaTests extends GrailsUnitTestCase {
         assertTrue(selenium.isElementPresent("//tr/td[contains(., '976 - NKW-6031')]"))
         assertEquals("HOSPITAL XYZ", selenium.getText("//tr[contains(., '976 - NKW-6031')]/td[5]"))
         assertEquals("Fulano da Silva", selenium.getText("//tr[contains(., '976 - NKW-6031')]/td[6]"))
+        assertEquals("0", selenium.getText("//tr[contains(., '976 - NKW-6031')]/td[9]"))
 
         assertEquals 1, Viagem.list().size()
         Viagem viagem = Viagem.list().first()
         assertEquals 1, viagem.paradas.size()
+    }
+
+    void testeAlteracaoKmSaida() {
+        testeRegistroOkComPaciente()
+
+        selenium.click("//tr[contains(., '976 - NKW-6031')]/td[1]/a")
+        selenium.waitForPageToLoad()
+        assertTrue(selenium.isTextPresent("Informações da viagem"))
+
+        selenium.click('_action_editSaida')
+        selenium.waitForPageToLoad()
+        assertTrue(selenium.isTextPresent("Alteração de viagem"))
+
+        selenium.type("name=kmSaida", "10")
+        selenium.click('_action_updateSaida')
+        selenium.waitForPageToLoad()
+
+        assertTrue(selenium.isTextPresent("Viagem atualizada com o identificador"))
+        assertEquals("10", selenium.getText("//tr[contains(., '976 - NKW-6031')]/td[9]"))
     }
 }
