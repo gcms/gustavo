@@ -51,16 +51,17 @@ grails.logging.jul.usebridge = true
 // packages to include in Spring bean scanning
 grails.spring.bean.packages = []
 
+serverPort = System.getProperty('server.port') ?: 8080
 // set per-environment serverURL stem for creating absolute links
 environments {
     production {
-        grails.serverURL = "http://www.changeme.com"
+        grails.serverURL = "http://intranet-hugo.saude-go.net:8080/${appName}"
     }
     development {
-        grails.serverURL = "http://localhost:8080/${appName}"
+        grails.serverURL = "http://localhost:$serverPort/${appName}"
     }
     test {
-        grails.serverURL = "http://localhost:8080/${appName}"
+        grails.serverURL = "http://localhost:$serverPort/${appName}"
     }
 
 }
@@ -140,12 +141,13 @@ grails.plugins.springsecurity.interceptUrlMap = [
         '/viagem/print':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
 
         '/viagem/createSaida': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/saveSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/deleteSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/saveSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],        
         '/viagem/showSaida/*':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        
-        '/viagem/editSaida': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/updateSaida': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/editSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/editSaida/*':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/deleteSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+
+
 
         '/viagem/editRetorno': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
         '/viagem/editRetorno/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
