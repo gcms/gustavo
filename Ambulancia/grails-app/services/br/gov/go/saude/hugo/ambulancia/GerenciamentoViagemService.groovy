@@ -6,15 +6,19 @@ class GerenciamentoViagemService {
     AmbulanciaService ambulanciaService
     MessageSource messageSource
 
-    private Viagem obtenhaViagemNaoRetornou(Ambulancia ambulancia) {
-        Viagem.findByAmbulanciaAndRetornou(ambulancia, false)
+    private Viagem obtenhaViagemNaoRetornou(Viagem viagem, String atributo) {
+        Viagem.findWhere(["${atributo}": viagem."$atributo", retornou: false]) ?: viagem
     }
 
-    private Viagem obtenhaViagemNaoRetornou(Motorista motorista) {
-        Viagem.findByMotoristaAndRetornou(motorista, false)
+    private boolean ambulanciaNaoRetornou(Viagem viagem) {
+        obtenhaViagemNaoRetornou(viagem, 'ambulancia') != viagem
     }
 
-    private void verifiqueAtributo(Viagem viagem, String atributo) {
+    private boolean motoristaNaoRetornou(Viagem viagem) {
+        obtenhaViagemNaoRetornou(viagem, 'motorista') != viagem
+    }    
+
+    private void marqueAtributoInvalido(Viagem viagem, String atributo) {
         log.warn "Viagem inválida, '$atributo' em trânsito"
 
         if (!viagem.errors.hasErrors())
@@ -42,11 +46,11 @@ class GerenciamentoViagemService {
     boolean registreSaida(Viagem viagem) {
         log.info "Registrando saida $viagem"
 
-        if (viagem.ambulancia && obtenhaViagemNaoRetornou(viagem.ambulancia))
-            verifiqueAtributo(viagem, 'ambulancia')
+        if (ambulanciaNaoRetornou(viagem))
+            marqueAtributoInvalido(viagem, 'ambulancia')
 
-        if (viagem.motorista && obtenhaViagemNaoRetornou(viagem.motorista))
-            verifiqueAtributo(viagem, 'motorista')
+        if (motoristaNaoRetornou(viagem))
+            marqueAtributoInvalido(viagem, 'motorista')
 
         if (viagem.ambulancia != null) {
             verifiqueKmAmbulancia(viagem, viagem.ambulancia)
