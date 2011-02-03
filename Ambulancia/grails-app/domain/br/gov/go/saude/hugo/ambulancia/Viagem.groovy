@@ -1,8 +1,10 @@
 package br.gov.go.saude.hugo.ambulancia
 
 import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
+import org.springframework.validation.Errors
 
 class Viagem {
+    def gerenciamentoViagemService
 
     Motorista motorista
     Ambulancia ambulancia
@@ -42,8 +44,10 @@ class Viagem {
         paradas cascade: 'all-delete-orphan', lazy: false
         dataSaida insertable: false, updateable: false, column: 'hora_saida'
         horaSaida column: 'hora_saida'
+        kmSaida column: 'km_saida'
         dataRetorno insertable: false, updateable: false, column: 'hora_retorno'
         horaRetorno column: 'hora_retorno'
+        kmRetorno column: 'km_retorno'
     }
 
     static hasMany = [paradas: Parada]
@@ -53,11 +57,13 @@ class Viagem {
     }
 
     void setDataSaida(Date data) {
-        horaSaida = horaSaida ? UtilitarioDataHorario.default.copieData(horaSaida, data) : data
+        if (data)
+            horaSaida = UtilitarioDataHorario.default.copieData(horaSaida ?: new Date(0), data)
     }
 
-    void setHoraSaida(Date data) {
-        horaSaida = horaSaida ? UtilitarioDataHorario.default.copieHora(horaSaida, data) : data
+    void setHoraSaida(Date hora) {
+        if (hora)
+            horaSaida = UtilitarioDataHorario.default.copieHora(horaSaida ?: new Date(0), hora)
     }
 
     Date getDataRetorno() {
@@ -65,27 +71,36 @@ class Viagem {
     }
 
     void setDataRetorno(Date data) {
-        horaRetorno = horaRetorno ? UtilitarioDataHorario.default.copieData(horaRetorno, data) : data
+        if (data)
+            horaRetorno = UtilitarioDataHorario.default.copieData(horaRetorno ?: new Date(0), data)
     }
 
-    void setHoraRetorno(Date data) {
-        horaRetorno = horaRetorno ? UtilitarioDataHorario.default.copieHora(horaRetorno, data) : data
+    void setHoraRetorno(Date hora) {
+        if (hora)
+            horaRetorno = UtilitarioDataHorario.default.copieHora(horaRetorno ?: new Date(0), hora)
     }
 
 
     static constraints = {
-        motorista nullable: false
-        ambulancia nullable: false
+        motorista nullable: false, validator: { Motorista motorista, Viagem viagem, Errors errors ->
+            viagem.gerenciamentoViagemService?.verifiqueMotorista(viagem)
+        }
+        ambulancia nullable: false, validator: { Ambulancia ambulancia, Viagem viagem, Errors errors ->
+            viagem.gerenciamentoViagemService?.verifiqueAmbulancia(viagem)
+        }
+
         operador nullable: false
 
         horaSaida nullable: false
-        kmSaida nullable: false
+        kmSaida nullable: false, validator: { Long kmSaida, Viagem viagem, Errors errors ->
+            viagem.gerenciamentoViagemService?.verifiqueKmSaida(viagem)
+        }
 
         dataRetorno nullable: true, validator: { val, obj ->
             if (val == null && obj.retornou)
                 return 'nullable'
             if (val != null && val < obj.dataSaida)
-                return ['min.notmet', obj.dataSaida ]
+                return ['min.notmet', obj.dataSaida]
 
             true
         }
@@ -93,7 +108,7 @@ class Viagem {
             if (val == null && obj.retornou)
                 return 'nullable'
             if (val != null && val < obj.horaSaida)
-                return ['min.notmet', obj.horaSaida ]
+                return ['min.notmet', obj.horaSaida]
 
             true
         }
@@ -101,7 +116,7 @@ class Viagem {
             if (val == null && obj.retornou)
                 return 'nullable'
             if (val != null && val < obj.kmSaida)
-                return ['min.notmet', obj.kmSaida ]
+                return ['min.notmet', obj.kmSaida]
 
             true
         }
@@ -116,16 +131,16 @@ class Viagem {
                     return 'blank'
             }
 
-           true
+            true
         }
     }
 
-    void registreSaida(Date horaSaida, int kmSaida) {
+    void registreSaida(Date horaSaida, Long kmSaida) {
         this.horaSaida = horaSaida
         this.kmSaida = kmSaida
     }
 
-    void registreRetorno(Date horaRetorno, int kmRetorno) {
+    void registreRetorno(Date horaRetorno, Long kmRetorno) {
         this.horaRetorno = horaRetorno
         this.kmRetorno = kmRetorno
         retornou = true

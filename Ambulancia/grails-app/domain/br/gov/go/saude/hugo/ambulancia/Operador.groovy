@@ -7,32 +7,45 @@ class Operador {
     String nome
     String telefone
 
-	String usuario
-	String senha
+    String usuario
+    String senha
 
-	boolean enabled
-	boolean accountExpired
-	boolean accountLocked
-	boolean passwordExpired
+    boolean enabled
+    boolean accountExpired
+    boolean accountLocked
+    boolean passwordExpired
 
-	static constraints = {
+    static constraints = {
         nome nullable: true
         telefone nullable: true
-        
-		usuario blank: false, unique: true
-		senha blank: false
-	}
 
-	static mapping = {
+        usuario blank: false, unique: true
+        senha blank: false
+    }
+
+    static mapping = {
         sort 'nome'
-		senha column: '`password`'
-	}
+        senha column: '`password`'
+    }
 
-	Set<Grupo> getAuthorities() {
-		OperadorGrupo.findAllByOperador(this).collect { it.grupo } as Set
-	}
+    Set<Grupo> getAuthorities() {
+        OperadorGrupo.findAllByOperador(this).collect { it.grupo } as Set
+    }
 
     String toString() {
         UtilitarioNome.formateNomePessoa(nome)
+    }
+
+    boolean equals(Object objeto) {
+        if (!Operador.isInstance(objeto))
+            return false
+
+        Operador outro = objeto
+
+        outro.usuario == usuario
+    }
+
+    int hashCode() {
+        usuario.hashCode()
     }
 }

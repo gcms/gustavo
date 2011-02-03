@@ -117,21 +117,20 @@ class ViagemController {
     }
 
     def editSaida = {
-        def viagem = flash.viagem ?: Viagem.get(params.id)
+        def viagem = flash.viagem ?: Viagem.read(params.id)
         if (!viagem) {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Viagem not found with id ${params.id}"
             redirect(action: "index")
-        }
-        else {
+        } else {
             return [viagem: viagem]
         }
     }
 
     def editRetorno = {
-        def viagemBanco = Viagem.get(params.id)
-        def viagem = flash.viagem ?: viagemBanco
+        def viagemBanco = Viagem.read(params.id)
+        def viagem = flash.viagem ?: viagemBanco 
 
         viagem.dataRetorno = viagem.dataRetorno ?: [new Date(), viagem.dataSaida].max()
         viagem.horaRetorno = viagem.horaRetorno ?: [new Date(), viagem.horaSaida].max()
@@ -141,8 +140,7 @@ class ViagemController {
             flash.args = [params.id]
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
             redirect(action: "list")
-        }
-        else {
+        } else {
             return [viagem: viagem, viagemBanco: viagemBanco]
         }
     }
@@ -168,8 +166,9 @@ class ViagemController {
             viagem.properties = params
 
             if (viagem.distancia > VALOR_NORMAL_MAXIMO && !params.confirme) {
+                viagem.discard()
                 flash.viagem = viagem
-                flash.aviso = "A distância percorrida [${viagem.distancia}] é superior a média.<br/>Verifique se o valor está correto e continue o registro."
+                flash.aviso = "A distância percorrida [${viagem.distancia}] é superior a média.<br/>Verifique se o valor está correto e continue o registro."                
                 redirect(action: 'editRetorno', id: params.id)
             } else if (gerenciamentoViagemService.registreRetorno(viagem)) {
                 flash.message = "viagem.updated"
@@ -180,8 +179,7 @@ class ViagemController {
                 flash.viagem = viagem
                 redirect(action: 'editRetorno', id: params.id)
             }
-        }
-        else {
+        } else {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
@@ -216,8 +214,7 @@ class ViagemController {
                 flash.viagem = viagem
                 redirect(action: 'editSaida', id: params.id)
             }
-        }
-        else {
+        } else {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
@@ -271,14 +268,13 @@ class ViagemController {
     }
 
     def edit = {
-        def viagem = flash.viagem ?: Viagem.get(params.id)
+        def viagem = flash.viagem ?: Viagem.read(params.id)
         if (!viagem) {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Viagem not found with id ${params.id}"
             redirect(action: "index")
-        }
-        else {
+        } else {
             return [viagem: viagem]
         }
     }
@@ -296,23 +292,23 @@ class ViagemController {
                 if (viagem.version > version) {
 
                     viagem.errors.rejectValue("version", "viagem.optimistic.locking.failure", "Another user has updated this Viagem while you were editing")
-                    render(view: "edit", model: [viagemInstance: viagem])
+
+                    flash.viagem = viagem
+                    redirect(action: "edit")
                     return
                 }
             }
             viagem.properties = params
-            if (!viagem.hasErrors() && viagem.save()) {
+            if (gerenciamentoViagemService.atualizeViagem(viagem)) {
                 flash.message = "viagem.updated"
                 flash.args = [params.id]
                 flash.defaultMessage = "Viagem ${params.id} updated"
                 redirect(action: "show", id: viagem.id)
-            }
-            else {
+            } else {
                 flash.viagem = viagem
                 redirect(action: "edit")
             }
-        }
-        else {
+        } else {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Viagem not found with id ${params.id}"
@@ -337,8 +333,7 @@ class ViagemController {
                 flash.defaultMessage = "Viagem com identificador ${params.id} não pode ser excluída"
                 redirect(action: "show", id: params.id)
             }
-        }
-        else {
+        } else {
             flash.message = "viagem.not.found"
             flash.args = [params.id]
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"

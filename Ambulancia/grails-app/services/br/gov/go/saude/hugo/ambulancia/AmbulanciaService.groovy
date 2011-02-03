@@ -1,6 +1,7 @@
 package br.gov.go.saude.hugo.ambulancia
 
 import org.hibernate.SessionFactory
+import org.hibernate.Query
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +14,7 @@ class AmbulanciaService {
     SessionFactory sessionFactory
 
     List obtenhaAmbulanciasDisponiveis() {
-        log.debug "Obtendo ambul�ncias dispon�veis..."
+        log.debug "Obtendo ambulâncias disponíveis..."
 
         String hql = """
         from Ambulancia a
@@ -26,12 +27,31 @@ class AmbulanciaService {
     }
 
     Long obtenhaKmRetornoUltimaViagem(Ambulancia ambulancia) {
-        log.debug "Obtendo km da ambulancia $ambulancia..."
+        log.debug "Obtendo km da ambulância $ambulancia..."
 
         String hql = """
         select max(kmRetorno) from Viagem v
-        where v.retornou = true and v.ambulancia.id = ${ambulancia.id})
+        where v.retornou = true and v.ambulancia.id = :id)
 """
-        sessionFactory.currentSession.createQuery(hql).uniqueResult() ?: 0
+        Query query = sessionFactory.currentSession.createQuery(hql)
+        query.setParameter('id', ambulancia.id)
+
+        query.uniqueResult() ?: 0
+    }
+
+    Long obtenhaKmRetornoUltimaViagem(Ambulancia ambulancia, Date dataHora) {
+        log.debug "Obtendo km da ambulância $ambulancia em $dataHora..."
+
+        String hql = """
+        select max(kmRetorno) from Viagem v
+        where v.retornou = true
+        and v.ambulancia.id = :id
+        and v.horaRetorno < :dataHora)
+"""
+        Query query = sessionFactory.currentSession.createQuery(hql)
+        query.setParameter('id', ambulancia.id)
+        query.setParameter('dataHora', dataHora)
+
+        query.uniqueResult() ?: 0
     }
 }

@@ -27,7 +27,7 @@ class UtilitarioDataHorario {
         return new UtilitarioDataHorario(dateFormat, timeFormat)
     }
 
-    // TODO: melhorar coes„o... est· apenas armazenando estes formatos, n„o utiliza para nada.
+    // TODO: melhorar coes√£o... est√° apenas armazenando estes formatos, n√£o utiliza para nada.
     final DateFormat dateFormat
     final DateFormat timeFormat
     

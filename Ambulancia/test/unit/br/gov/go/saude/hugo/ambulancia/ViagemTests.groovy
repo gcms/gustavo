@@ -92,7 +92,7 @@ class ViagemTests extends GrailsUnitTestCase {
         Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
         viagem.registreSaida(new Date(), 12453)
         viagem.paradas = [
-                new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
+                new ParadaPaciente(destino: 'Hospital Santa LÃºcia', paciente: "JoÃ£o de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
         ]
         viagem.save()
