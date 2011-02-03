@@ -21,4 +21,17 @@ class Ambulancia {
     String toString() {
         "$prefixo - $placa"
     }
+
+    boolean equals(Object objeto) {
+        if (!Ambulancia.isInstance(objeto))
+            return false
+
+        Ambulancia outra = objeto
+
+        outra.prefixo == prefixo && outra.placa == placa
+    }
+
+    int hashCode() {
+        prefixo.hashCode() ^ 3 + placa.hashCode() ^ 5
+    }
 }

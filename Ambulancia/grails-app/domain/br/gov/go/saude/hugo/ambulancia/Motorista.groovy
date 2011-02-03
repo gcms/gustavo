@@ -20,4 +20,17 @@ class Motorista {
     String toString() {
         UtilitarioNome.formateNomePessoa(nome)
     }
+
+    boolean equals(Object objeto) {
+        if (!Motorista.isInstance(objeto))
+            return false
+
+        Motorista outro = objeto
+
+        outro.nome == nome
+    }
+
+    int hashCode() {
+        nome.hashCode()
+    }
 }

@@ -229,7 +229,7 @@ class ImportadorPlanilha {
         if (isNullOrEmpty(parseString(row.getCell(1))) && isNullOrEmpty(parseString(row.getCell(3))))
             return false
 
-        // Ambul‚ncia
+        // Ambul√¢ncia
         String prefixo
         String placa
 
@@ -279,6 +279,7 @@ class ImportadorPlanilha {
 
     boolean parseOperador(Row row, Map result) {
         String nomeControlador = parseString(row.getCell(1))
+        String usuarioControlador = nomeControlador.replaceAll('\\s+', '').toLowerCase()
 
         if (nomeControlador == null)
             return false
@@ -308,7 +309,7 @@ class ImportadorPlanilha {
         if (isNullOrEmpty(nomeControlador)) {
             result.operador = Operador.findByUsuario('admin')
         } else {
-            Operador novo = new Operador(nome: nomeControlador)
+            Operador novo = new Operador(usuario: usuarioControlador, nome: nomeControlador)
             Operador obtido = operadores.obtenha(nomeControlador)
             result.operador = operadores.adicione(obtido, novo)
         }
