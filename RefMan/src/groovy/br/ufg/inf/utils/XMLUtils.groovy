@@ -1,4 +1,5 @@
 package br.ufg.inf.utils
+
 import org.w3c.dom.Node
 import com.sun.org.apache.xml.internal.serialize.OutputFormat
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer
@@ -26,16 +27,16 @@ class XMLUtils {
         outputFormat.indenting = true
         outputFormat.preserveSpace = false
     }
-    
+
     public String nodeToHTML(Node node) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream()
+        StringWriter writer = new StringWriter()
 
         XMLSerializer serializer = new XMLSerializer()
         serializer.setOutputFormat(outputFormat)
-        serializer.setOutputByteStream(stream)
+        serializer.setOutputCharStream(writer)
         serializer.asDOMSerializer()
         serializer.serialize(node)
 
-        stream.toString()
+        writer.toString()
     }
 }
