@@ -31,7 +31,8 @@ class ACMResultParser implements ResultParser {
     }
 
     private String parseDescription(Node node) {
-        xpath.evaluate("td[2]//div[@class='abstract2']//p", node).trim()
+        xpath.evaluate("td[2]//div[@class='abstract2']//p", node).trim() ?:
+            xpath.evaluate("td[2]//div[@class='abstract2']", node).replaceAll('Keywords.*', '').trim()    
     }
 
     public List parseAuthors(Node node) {
