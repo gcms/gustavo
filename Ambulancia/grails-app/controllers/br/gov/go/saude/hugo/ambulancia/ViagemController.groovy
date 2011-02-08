@@ -1,7 +1,9 @@
 package br.gov.go.saude.hugo.ambulancia
 
-import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
+import br.gov.go.saude.hugo.utilitario.FormatadorDataHora
 import grails.converters.JSON
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
+import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
 
 class ViagemController {
     MotoristaService motoristaService
@@ -12,7 +14,7 @@ class ViagemController {
     GerenciamentoGrupoService gerenciamentoGrupoService
     GerenciamentoViagemService gerenciamentoViagemService
 
-    UtilitarioDataHorario dataHora = UtilitarioDataHorario.default
+    FormatadorDataHora dataHora = FormatadorDataHora.default
 
     def index = {
         List viagens = Viagem.createCriteria().list(params) { eq('retornou', false) }
@@ -24,8 +26,8 @@ class ViagemController {
     static allowedMethods = [saveSaida: "POST", updateSaida: 'POST', deleteSaida: "POST", updateRetorno: "POST", update: 'POST', delete: 'POST']
 
     private Map obtenhaViagens(Map listParams) {
-        Date dataInicio = dataHora.inicioDoDia(params.dataInicio ? dataHora.dateFormat.parse(params.dataInicio) : new Date() /*dataHora.inicioDoMes()*/)
-        Date dataFim = dataHora.fimDoDia(params.dataFim ? dataHora.dateFormat.parse(params.dataFim) : new Date())
+        Date dataInicio = UtilitarioDataHorario.inicioDoDia(params.dataInicio ? dataHora.dateFormat.parse(params.dataInicio) : new Date() /*dataHora.inicioDoMes()*/)
+        Date dataFim = UtilitarioDataHorario.fimDoDia(params.dataFim ? dataHora.dateFormat.parse(params.dataFim) : new Date())
 
         Motorista motorista = params?.motorista?.id ? Motorista.get(params.motorista.id) : null
         Ambulancia ambulancia = params?.ambulancia?.id ? Ambulancia.get(params.ambulancia.id) : null
@@ -130,10 +132,7 @@ class ViagemController {
 
     def editRetorno = {
         def viagemBanco = Viagem.read(params.id)
-        def viagem = flash.viagem ?: viagemBanco 
-
-        viagem.dataRetorno = viagem.dataRetorno ?: [new Date(), viagem.dataSaida].max()
-        viagem.horaRetorno = viagem.horaRetorno ?: [new Date(), viagem.horaSaida].max()
+        def viagem = flash.viagem ?: viagemBanco
 
         if (!viagem) {
             flash.message = "viagem.not.found"
@@ -141,6 +140,8 @@ class ViagemController {
             flash.defaultMessage = "Não foi encontrada viagem com identificador ${params.id}"
             redirect(action: "list")
         } else {
+            viagem.horaRetorno = (viagem.horaRetorno ?: [new Date(), viagem.horaSaida].max())
+            
             return [viagem: viagem, viagemBanco: viagemBanco]
         }
     }
@@ -168,7 +169,7 @@ class ViagemController {
             if (viagem.distancia > VALOR_NORMAL_MAXIMO && !params.confirme) {
                 viagem.discard()
                 flash.viagem = viagem
-                flash.aviso = "A distância percorrida [${viagem.distancia}] é superior a média.<br/>Verifique se o valor está correto e continue o registro."                
+                flash.aviso = "A distância percorrida [${viagem.distancia}] é superior a média.<br/>Verifique se o valor está correto e continue o registro."
                 redirect(action: 'editRetorno', id: params.id)
             } else if (gerenciamentoViagemService.registreRetorno(viagem)) {
                 flash.message = "viagem.updated"
@@ -355,5 +356,14 @@ class ViagemController {
         String result = ambulancia ? ambulanciaService.obtenhaKmRetornoUltimaViagem(ambulancia) : ''
 
         render text: result
+    }
+
+    def history = {
+        if (!params.max) params.max = 10
+
+        [
+                auditLogEventInstanceList: AuditLogEvent.findAllByPersistedObjectId(params.id, params),
+                auditLogEventInstanceTotal: AuditLogEvent.countByPersistedObjectId(params.id)
+        ]
     }
 }

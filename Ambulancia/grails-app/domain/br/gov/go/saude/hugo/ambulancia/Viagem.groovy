@@ -34,17 +34,16 @@ class Viagem {
         this.distancia = null
     }
 
-//    Date dateCreated
-//    Date lastUpdated
-
     static auditable = true
 
     static mapping = {
         distancia formula: 'km_retorno - km_saida'
         paradas cascade: 'all-delete-orphan', lazy: false
+
         dataSaida insertable: false, updateable: false, column: 'hora_saida'
         horaSaida column: 'hora_saida'
         kmSaida column: 'km_saida'
+
         dataRetorno insertable: false, updateable: false, column: 'hora_retorno'
         horaRetorno column: 'hora_retorno'
         kmRetorno column: 'km_retorno'
@@ -57,13 +56,17 @@ class Viagem {
     }
 
     void setDataSaida(Date data) {
-        if (data)
-            horaSaida = UtilitarioDataHorario.default.copieData(horaSaida ?: new Date(0), data)
+        if (data && horaSaida) {
+            horaSaida = UtilitarioDataHorario.copieData(horaSaida, data)
+        } else if (horaSaida) {
+            horaSaida = UtilitarioDataHorario.copieData(horaSaida, new Date())
+        } else {
+            horaSaida = data
+        }
     }
 
     void setHoraSaida(Date hora) {
-        if (hora)
-            horaSaida = UtilitarioDataHorario.default.copieHora(horaSaida ?: new Date(0), hora)
+        horaSaida = hora
     }
 
     Date getDataRetorno() {
@@ -71,15 +74,18 @@ class Viagem {
     }
 
     void setDataRetorno(Date data) {
-        if (data)
-            horaRetorno = UtilitarioDataHorario.default.copieData(horaRetorno ?: new Date(0), data)
+        if (data && horaRetorno) {
+            horaRetorno = UtilitarioDataHorario.copieData(horaRetorno, data)
+        } else if (horaRetorno) {
+            horaRetorno = UtilitarioDataHorario.copieData(horaRetorno, new Date())
+        } else {
+            horaRetorno = data
+        }
     }
 
     void setHoraRetorno(Date hora) {
-        if (hora)
-            horaRetorno = UtilitarioDataHorario.default.copieHora(horaRetorno ?: new Date(0), hora)
+        horaRetorno = hora
     }
-
 
     static constraints = {
         motorista nullable: false, validator: { Motorista motorista, Viagem viagem, Errors errors ->

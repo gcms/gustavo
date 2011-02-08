@@ -79,19 +79,19 @@ log4j = {
 //        console name:'stdout', layout:pattern(conversionPattern: '[%d] %p %t %c - %m%n')
     }
 
-    error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
-           'org.codehaus.groovy.grails.web.pages', //  GSP
-           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-           'org.codehaus.groovy.grails.web.mapping', // URL mapping
-           'org.codehaus.groovy.grails.commons', // core / classloading
-           'org.codehaus.groovy.grails.plugins', // plugins
-           'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-           'org.springframework',
-           'org.hibernate',
-           'net.sf.ehcache.hibernate'
+    error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
+            'org.codehaus.groovy.grails.web.pages', //  GSP
+            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+            'org.codehaus.groovy.grails.web.mapping', // URL mapping
+            'org.codehaus.groovy.grails.commons', // core / classloading
+            'org.codehaus.groovy.grails.plugins', // plugins
+            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+            'org.springframework',
+            'org.hibernate',
+            'net.sf.ehcache.hibernate'
 
-    warn  'org.mortbay.log'
+    warn 'org.mortbay.log'
 
     debug 'grails.app'
 
@@ -113,6 +113,12 @@ grails.plugins.springsecurity.authority.className = 'br.gov.go.saude.hugo.ambula
 grails.plugins.springsecurity.rejectIfNoRule = true
 grails.plugins.springsecurity.securityConfigType = grails.plugins.springsecurity.SecurityConfigType.InterceptUrlMap
 
+
+grails.plugins.springsecurity.roleHierarchy = '''
+   ROLE_SUPERUSER > ROLE_ADMIN
+   ROLE_ADMIN > ROLE_USER
+'''
+
 grails.plugins.springsecurity.interceptUrlMap = [
         '/**': ['IS_AUTHENTICATED_REMEMBERED'],
         '/js/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
@@ -123,40 +129,40 @@ grails.plugins.springsecurity.interceptUrlMap = [
 
         '/operador/**': ['ROLE_SUPERUSER'],
 //   '/operador/index':    ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/operador/list': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/operador/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/operador/list': ['ROLE_USER'],
+        '/operador/show/*': ['ROLE_USER'],
 
-        '/ambulancia/**': ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/ambulancia/**': ['ROLE_ADMIN'],
 //   '/ambulancia/index':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/ambulancia/list': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/ambulancia/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/ambulancia/list': ['ROLE_USER'],
+        '/ambulancia/show/*': ['ROLE_USER'],
 
-        '/motorista/**': ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/motorista/**': ['ROLE_ADMIN'],
 //   '/motorista/index':  ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/motorista/list': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/motorista/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/motorista/list': ['ROLE_USER'],
+        '/motorista/show/*': ['ROLE_USER'],
 
         '/viagem/**': ['ROLE_SUPERUSER'],
-        '/viagem/list':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/print':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/list': ['ROLE_USER'],
+        '/viagem/print': ['ROLE_USER'],
 
-        '/viagem/createSaida': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/saveSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],        
-        '/viagem/showSaida/*':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/editSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/editSaida/*':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/deleteSaida':   ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/createSaida': ['ROLE_USER'],
+        '/viagem/saveSaida': ['ROLE_USER'],
+        '/viagem/showSaida/*': ['ROLE_USER'],
+        '/viagem/editSaida': ['ROLE_USER'],
+        '/viagem/editSaida/*': ['ROLE_USER'],
+        '/viagem/deleteSaida': ['ROLE_USER'],
 
 
 
-        '/viagem/editRetorno': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/editRetorno/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/updateRetorno': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/editRetorno': ['ROLE_USER'],
+        '/viagem/editRetorno/*': ['ROLE_USER'],
+        '/viagem/updateRetorno': ['ROLE_USER'],
 
-        '/viagem/show/*': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
+        '/viagem/show/*': ['ROLE_USER'],
 
-        '/viagem/listDestinos': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        '/viagem/obtenhaKmAmbulancia': ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERUSER'],
-        
+        '/viagem/listDestinos': ['ROLE_USER'],
+        '/viagem/obtenhaKmAmbulancia': ['ROLE_USER'],
+
         '/console/**': ['ROLE_SUPERUSER']
 ]

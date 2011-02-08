@@ -1,6 +1,8 @@
 package br.gov.go.saude.hugo.ambulancia
 
 import grails.test.*
+import java.text.SimpleDateFormat
+import static java.util.Calendar.*
 
 class ViagemTests extends GrailsUnitTestCase {
     Operador operador
@@ -100,5 +102,45 @@ class ViagemTests extends GrailsUnitTestCase {
 
         viagem = Viagem.list().first()
         assertEquals 2, viagem.paradas.size()
+    }
+
+    void testeDataHora() {
+        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+
+        Calendar diaHora = Calendar.instance
+        diaHora.time = new SimpleDateFormat('dd/MM/yyyy HH:mm').parse('12/12/2010 09:31')
+        Calendar horaSaida = Calendar.instance
+        Calendar dataSaida = Calendar.instance
+
+
+        viagem.dataSaida = diaHora.time
+        dataSaida.time = viagem.dataSaida
+
+        assertEquals 2010, dataSaida[YEAR]
+        assertEquals 11, dataSaida[MONTH]
+        assertEquals 12, dataSaida[DAY_OF_MONTH]
+
+
+        viagem.horaSaida = diaHora.time
+        horaSaida.time = viagem.horaSaida
+        dataSaida.time = viagem.dataSaida
+
+        assertEquals 2010, dataSaida[YEAR]
+        assertEquals 11, dataSaida[MONTH]
+        assertEquals 12, dataSaida[DAY_OF_MONTH]
+        assertEquals 9, horaSaida[HOUR]
+        assertEquals 31, horaSaida[MINUTE]
+
+
+        viagem.dataSaida = diaHora.time
+        horaSaida.time = viagem.horaSaida
+        dataSaida.time = viagem.dataSaida
+
+        assertEquals 2010, dataSaida[YEAR]
+        assertEquals 11, dataSaida[MONTH]
+        assertEquals 12, dataSaida[DAY_OF_MONTH]
+        assertEquals 9, horaSaida[HOUR]
+        assertEquals 31, horaSaida[MINUTE]
+
     }
 }
