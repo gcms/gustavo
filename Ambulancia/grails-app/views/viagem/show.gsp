@@ -95,6 +95,9 @@
       </table>
     </div>
     <div class="buttons">
+      <!--
+      <span class="button"><g:actionSubmitIfAccess class="history" action="history" value="${message(code: 'history', 'default': 'History')}"/></span>
+      -->
       <span class="button"><g:actionSubmitIfAccess class="edit" action="edit" value="${message(code: 'edit', 'default': 'Edit')}"/></span>
       <span class="button"><g:actionSubmitIfAccess class="delete" action="delete" value="${message(code: 'delete', 'default': 'Delete')}" onclick="return confirm('${message(code: 'delete.confirm', 'default': 'Are you sure?')}');"/></span>
     </div>

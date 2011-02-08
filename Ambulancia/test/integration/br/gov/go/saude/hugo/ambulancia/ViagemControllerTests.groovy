@@ -3,6 +3,8 @@ package br.gov.go.saude.hugo.ambulancia
 import br.gov.go.saude.hugo.utilitario.UtilitarioDataHorario
 import grails.test.ControllerUnitTestCase
 import org.hibernate.SessionFactory
+import br.gov.go.saude.hugo.utilitario.FormatadorDataHora
+import grails.test.GrailsMock
 
 class ViagemControllerTests extends ControllerUnitTestCase {
     GerenciamentoViagemService gerenciamentoViagemService
@@ -47,12 +49,12 @@ class ViagemControllerTests extends ControllerUnitTestCase {
         mockParams['ambulancia.id'] = viagem.ambulancia.id
         mockParams['motorista.id'] = viagem.motorista.id
 
-        mockParams.dataSaida = UtilitarioDataHorario.default.dateFormat.format(viagem.dataSaida)
-        mockParams.horaSaida = UtilitarioDataHorario.default.timeFormat.format(viagem.horaSaida)
+        mockParams.dataSaida = FormatadorDataHora.default.dateFormat.format(viagem.dataSaida)
+        mockParams.horaSaida = FormatadorDataHora.default.timeFormat.format(viagem.horaSaida)
         mockParams.kmSaida = viagem.kmSaida
 
-        mockParams.dataRetorno = UtilitarioDataHorario.default.dateFormat.format(viagem.dataRetorno)
-        mockParams.horaRetorno = UtilitarioDataHorario.default.timeFormat.format(viagem.horaRetorno)
+        mockParams.dataRetorno = FormatadorDataHora.default.dateFormat.format(viagem.dataRetorno)
+        mockParams.horaRetorno = FormatadorDataHora.default.timeFormat.format(viagem.horaRetorno)
         mockParams.kmRetorno = 125
         controller.update()
 
@@ -70,12 +72,12 @@ class ViagemControllerTests extends ControllerUnitTestCase {
         mockParams['ambulancia.id'] = viagem.ambulancia.id
         mockParams['motorista.id'] = viagem.motorista.id
 
-        mockParams.dataSaida = UtilitarioDataHorario.default.dateFormat.format(viagem.dataSaida)
-        mockParams.horaSaida = UtilitarioDataHorario.default.timeFormat.format(viagem.horaSaida)
+        mockParams.dataSaida = FormatadorDataHora.default.dateFormat.format(viagem.dataSaida)
+        mockParams.horaSaida = FormatadorDataHora.default.timeFormat.format(viagem.horaSaida)
         mockParams.kmSaida = viagem.kmSaida
 
-        mockParams.dataRetorno = UtilitarioDataHorario.default.dateFormat.format(viagem.dataRetorno)
-        mockParams.horaRetorno = UtilitarioDataHorario.default.timeFormat.format(viagem.horaRetorno)
+        mockParams.dataRetorno = FormatadorDataHora.default.dateFormat.format(viagem.dataRetorno)
+        mockParams.horaRetorno = FormatadorDataHora.default.timeFormat.format(viagem.horaRetorno)
         mockParams.kmSaida = 131
         controller.update()
 
@@ -85,4 +87,34 @@ class ViagemControllerTests extends ControllerUnitTestCase {
         viagem = Viagem.get(viagem.id)
         assertEquals 131, viagem.kmSaida
     }
+
+    void testeRegistroSaida() {
+        GrailsMock mock = mockFor(GerenciamentoGrupoService)
+		mock.demand.getOperadorLogado(1..1) { -> return operador }
+        controller.gerenciamentoGrupoService = mock.createMock()
+
+        mockParams['ambulancia.id'] = ambulancia.id
+        mockParams['motorista.id'] = motorista.id
+        mockParams.dataSaida = FormatadorDataHora.default.dateFormat.format(new Date())
+        mockParams.horaSaida = FormatadorDataHora.default.timeFormat.format(new Date())
+        mockParams.kmSaida = 12
+        mockParams.observacoes = ''
+
+        controller.saveSaida()
+
+        println mockResponse.dump()
+
+        sessionFactory.currentSession.clear()
+
+        assertEquals 1, Viagem.count()
+
+        Viagem viagem = Viagem.list().first()
+        assertEquals ambulancia.placa, viagem.ambulancia.placa
+        assertEquals motorista.nome, viagem.motorista.nome
+        assertEquals 12, viagem.kmSaida
+
+        assertNull viagem.horaRetorno
+        assertNull viagem.dataRetorno        
+    }
 }
+
