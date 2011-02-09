@@ -13,25 +13,76 @@ import org.apache.log4j.Logger
  */
 class ACMSiteDirector implements SiteDirector {
     private static Logger log = Logger.getLogger(ACMSiteDirector)
+
     public List collectPages(String url, Closure closure) {
         List result = []
-        int start = 1
-
+        int start = 0
 
         log.debug "URL: ${url}"
-        QueryURI queryURI = new QueryURI(url)
+        new ACMRandomFetcher(url, closure).fetchAll()
+    }
+}
+
+class ACMRandomFetcher {
+    int max = 10
+    Map pages = [:]
+    ACMPageFetcher fetcher
+
+    public ACMRandomFetcher(String url, Closure closure) {
+        fetcher = new ACMPageFetcher(url, closure)
+    }
+
+    private int nextPageNumber() {
+        assert pages.size() < max
+
         while (true) {
-            queryURI.setQueryParam('start', start)
-            //String url = "http://portal.acm.org/results.cfm?CFID=85171659&CFTOKEN=97314837&adv=1&COLL=ACM&DL=ACM&Go.x=48&Go.y=12&termzone=Title&allofem=${URLEncoder.encode(query)}&anyofem=&noneofem=&peoplezone=Name&people=&peoplehow=and&keyword=&keywordhow=AND&affil=&affilhow=AND&pubin=&pubinhow=and&pubby=&pubbyhow=OR&since_year=&before_year=&pubashow=OR&sponsor=&sponsorhow=AND&confdate=&confdatehow=OR&confloc=&conflochow=OR&isbnhow=OR&isbn=&doi=&ccs=&subj=&start=${start}"
+            int nextPage = Math.random() * max
 
-            List itens = closure(queryURI.getURI())
-            result.addAll(itens)
-            if (itens.size() < 20)
-                break
+            if (!pages[nextPage])
+                return nextPage
+        }
+    }
 
-            start += 20
+    public List fetchNextPage(int nextPage) {
+        assert nextPage >= 0 && nextPage < max
+        assert !pages[nextPage]
+
+        List itens = fetcher.getPage(nextPage)
+        if (itens.size() == 0) {
+            max = nextPage
+            return null
+        } else if (itens.size() < 20) {
+            max = nextPage + 1
+        } else if (nextPage == max - 1) { // && itens.size() == 20
+            max += Math.random() * 10
         }
 
-        result
+        return itens
+    }
+
+    public List fetchAll() {
+        while (pages.size() < max) {
+            int nextPage = nextPageNumber()
+            List page = fetchNextPage(nextPage)
+            if (page)
+                pages[nextPage] = page
+        }
+
+        pages.values().flatten()
+    }
+}
+
+class ACMPageFetcher {
+    QueryURI queryURI
+    Closure transform
+
+    public ACMPageFetcher(String url, Closure closure) {
+        queryURI = new QueryURI(url)
+        transform = closure
+    }
+
+    public List getPage(int pageNumber) {
+        queryURI.setQueryParam('start', pageNumber * 20 + 1)
+        transform(queryURI.getURI())
     }
 }
