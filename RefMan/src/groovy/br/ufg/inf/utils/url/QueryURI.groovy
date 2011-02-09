@@ -17,7 +17,7 @@ class QueryURI {
 
     public QueryURI(URI uri) {
         this.uri = uri
-        query = new URLQuery(uri.query)
+        query = new URLQuery(uri.query ?: '')
     }
 
     public String getQueryParam(String key) {
