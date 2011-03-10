@@ -38,7 +38,7 @@ environments {
 //            url = 'jdbc:postgresql://localhost/ambulancia'
 //            username = 'ambulancia'
 //            password = 'ambulancia'
-            jndiName = "java:/comp/env/jdbc/postgres"
+            jndiName = "java:/comp/env/jdbc/ambulancia"
         }
     }
 }

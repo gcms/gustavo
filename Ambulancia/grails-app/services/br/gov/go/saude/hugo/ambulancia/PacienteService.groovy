@@ -7,6 +7,7 @@ class PacienteService {
 
     List obtenhaPacientes() {
         log.debug "Obtendo pacientes disponíveis..."
+
         String hql = """
     select distinct upper(p.paciente)
     from Viagem v join v.paradas p

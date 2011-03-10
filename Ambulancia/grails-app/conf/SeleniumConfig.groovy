@@ -2,8 +2,8 @@ selenium {
 
 	slow = false 									// true to run tests in slow resources mode
 	singleWindow = true								// true for single window mode, false for multi-window mode
-    browser = "*firefox"
-//	browser = "*firefox ${System.getProperty('user.home')}/Configurações locais/Dados de aplicativos/Mozilla Firefox/firefox.exe"							// can include full path to executable, default value is *firefox or *iexplore on Windows
+//    browser = "*firefox"
+	browser = "*firefox ${System.getProperty('user.home')}/Configurações locais/Dados de aplicativos/Mozilla Firefox/firefox.exe"							// can include full path to executable, default value is *firefox or *iexplore on Windows
 	url = null										// the base URL for tests, defaults to Grails server url
     defaultTimeout = 60000  						// the timeout after which selenium commands will fail
 	windowMaximize = true  						// true to maximize browser on startup

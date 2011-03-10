@@ -27,10 +27,10 @@ class GerenciamentoGrupoService {
 
     public boolean salveOperador(Operador operador, String password, String passwordConfirm) {
         if (password.empty && passwordConfirm.empty) {
-            log.info "Salvando operador... Ambas senhas vazias"
+            log.info "Salvando operador... Ambas senhas vazias!"
             operador.validate()
         } else if (password != passwordConfirm) {
-            log.info "Salvando operador... Senhas diferem"
+            log.info "Salvando operador... Senhas diferem!"
             operador.validate()
             operador.errors.rejectValue('senha', 'operador.senha.matches.invalid')
         } else {

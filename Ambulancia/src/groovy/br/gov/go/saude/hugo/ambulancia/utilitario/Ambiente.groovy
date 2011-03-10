@@ -19,8 +19,8 @@ class Ambiente {
     private Ambiente() {        
     }
 
-    public File getLogFolder() {
-        production ? new File(catalinaHome, 'logs') : new File(".")
+    public File getLogFolder(String appName) {
+        production ? new File(catalinaHome, "logs/$appName") : new File(".")
     }
 
     boolean isProduction() {
@@ -31,8 +31,8 @@ class Ambiente {
         System.getProperty("catalina.base") ?: "."
     }
 
-    public File getLogFile() {
-        new File(getLogFolder(), "${Environment.current}.log")
+    public File getLogFile(String appName) {
+        new File(getLogFolder(appName), "${Environment.current}.log")
     }
 
     public String getAppName() {

@@ -6,7 +6,7 @@ class MotoristaService {
     SessionFactory sessionFactory
 
     List obtenhaMotoristasDisponiveis() {
-        log.debug 'Obtendo motoristas disponíveis...'
+        log.debug 'Obtendo motoristas disponÃ­veis...'
         
         String hql = """
         from Motorista m
