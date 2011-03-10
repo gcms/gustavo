@@ -73,7 +73,7 @@ log4j = {
     //
     appenders {
 //        file name:'file', file: "${grails.util.Environment.currentEnvironment}.log"
-        appender new DailyRollingFileAppender(name: 'stdout', datePattern: "'.'yyyy-MM-dd", file: Ambiente.instancia.logFile, layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c - %m%n'))
+        appender new DailyRollingFileAppender(name: 'stdout', datePattern: "'.'yyyy-MM-dd", file: Ambiente.instancia.getLogFile(appName), layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c - %m%n'))
 
 //        rollingFile name:'stdout', maxFileSize:1024*1024/2, file:"${grails.util.Environment.currentEnvironment}.log"
 //        console name:'stdout', layout:pattern(conversionPattern: '[%d] %p %t %c - %m%n')

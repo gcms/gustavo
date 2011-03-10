@@ -25,7 +25,7 @@ class GerenciamentoViagemService {
         List viagens = Viagem.executeQuery(hql, [ viagem."$atributo".id, viagem.horaSaida, viagem.horaSaida])
 
         if (viagens.size() > 1) {
-            log.error "Não devem haver viagens com mesmo motorista ou ambulancia com horarios em interesecção"
+            log.error "Não devem haver viagens com mesmo motorista ou ambulancia com horarios em interesecção. Viagems: ${viagens*.id}"
         }
 
         viagens.empty ? viagem : viagens.last()
@@ -67,6 +67,7 @@ class GerenciamentoViagemService {
     }
 
     boolean atualizeViagem(Viagem viagem) {
+        log.info "Atualizando dados da viagem ${viagem.dump()}"
         viagem.validate() && viagem.save(flush: true)
     }
 }
