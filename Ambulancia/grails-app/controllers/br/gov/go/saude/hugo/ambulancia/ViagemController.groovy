@@ -165,6 +165,7 @@ class ViagemController {
             }
 
             viagem.properties = params
+            viagem.operadorRetorno = gerenciamentoGrupoService.operadorLogado
 
             if (viagem.distancia > VALOR_NORMAL_MAXIMO && !params.confirme) {
                 viagem.discard()

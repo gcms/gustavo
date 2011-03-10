@@ -27,13 +27,13 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
     }
 
     void testeSaidasSimultaneas() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem( ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+        viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
@@ -42,8 +42,8 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
     }
 
     void testeSaidasOk() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
@@ -55,23 +55,23 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
         motorista2.save()
         assertEquals 2, Motorista.count()
 
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia2, motorista: motorista2)
-        viagem.registreSaida(new Date(), 12453)
+        viagem = new Viagem(ambulancia: ambulancia2, motorista: motorista2)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 2, Viagem.count()
     }
 
     void testeSaidasMsmMotorista() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
         Ambulancia ambulancia2 = new Ambulancia(placa: 'nsw-1234', prefixo: '902')
         ambulancia2.save()
 
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia2, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+        viagem = new Viagem(ambulancia: ambulancia2, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
         
@@ -79,47 +79,47 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
     }
 
     void testeSaidaRetorno() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
-        viagem.registreRetorno(new Date(), 12456)
+        viagem.registreRetorno(operador, new Date(), 12456)
         gerenciamentoViagemService.registreRetorno(viagem)
 
         assertEquals 1, Viagem.count()
 
         // Retornou... pode iniciar uma nova viagem com mesma ambulancia/motorista
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12456)
+        viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12456)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 2, Viagem.count()
     }
 
     void testeMsmAmbulanciaKmAnterior() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
 
-        viagem.registreSaida(new Date(), 1500)
+        viagem.registreSaida(operador, new Date(), 1500)
         assertTrue gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
-        viagem.registreRetorno(new Date(), 3000)
+        viagem.registreRetorno(operador, new Date(), 3000)
         assertTrue gerenciamentoViagemService.registreRetorno(viagem)
         assertEquals 1, Viagem.count()
 
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 2000)
+        viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 2000)
         assertFalse gerenciamentoViagemService.registreSaida(viagem); // km anterior ao de retorno da �ltima viagem
 
         assertEquals 'viagem.kmSaida.min.notmet', viagem.errors.getFieldError('kmSaida').code        
     }
 
-    void testeCascadeDlete() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+    void testeCascadeDelete() {
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
         ]
 
-        viagem.registreSaida(new Date(), 1500)
+        viagem.registreSaida(operador, new Date(), 1500)
         assertTrue gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
         assertEquals 2, Parada.count()
@@ -131,13 +131,13 @@ class GerenciamentoViagemServiceTests extends GrailsUnitTestCase {
     }
 
     void testeAtualizaSaida() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
         ]
 
-        viagem.registreSaida(new Date(), 1500)
+        viagem.registreSaida(operador, new Date(), 1500)
         assertTrue gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 

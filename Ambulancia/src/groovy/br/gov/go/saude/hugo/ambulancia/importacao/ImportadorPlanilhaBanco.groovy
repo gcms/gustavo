@@ -82,6 +82,7 @@ class ImportadorPlanilhaBanco {
         }
 
         println "OperadorID: ${operador.id}"
+        item.operadorRetorno = item.operador
 
         Motorista motorista = item.motorista
         if (motorista.id  == null) {

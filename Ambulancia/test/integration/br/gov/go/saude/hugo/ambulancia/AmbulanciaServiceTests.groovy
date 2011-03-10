@@ -46,8 +46,8 @@ class AmbulanciaServiceTests extends GrailsUnitTestCase {
     }
 
     void testeUmaAmbulanciaOcupada() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia1, motorista: motorista1)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia1, motorista: motorista1)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
@@ -55,22 +55,22 @@ class AmbulanciaServiceTests extends GrailsUnitTestCase {
     }
 
     void testeAmbulanciasOcupadas() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia1, motorista: motorista1)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia1, motorista: motorista1)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
         assertEquals 2, ambulanciaService.obtenhaAmbulanciasDisponiveis().size()
 
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia2, motorista: motorista2)
-        viagem.registreSaida(new Date(), 12453)
+        viagem = new Viagem(ambulancia: ambulancia2, motorista: motorista2)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 2, Viagem.count()
 
         assertEquals 1, ambulanciaService.obtenhaAmbulanciasDisponiveis().size()
 
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia3, motorista: motorista3)
-        viagem.registreSaida(new Date(), 12453)
+        viagem = new Viagem(ambulancia: ambulancia3, motorista: motorista3)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 3, Viagem.count()
 
@@ -90,11 +90,11 @@ class AmbulanciaServiceTests extends GrailsUnitTestCase {
         assertEquals 0, ambulanciaService.obtenhaKmRetornoUltimaViagem(ambulancia2)
         assertEquals 0, ambulanciaService.obtenhaKmRetornoUltimaViagem(ambulancia3)
 
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia1, motorista: motorista1)
-        viagem.registreSaida(new Date(), 0)
+        Viagem viagem = new Viagem(ambulancia: ambulancia1, motorista: motorista1)
+        viagem.registreSaida(operador, new Date(), 0)
         assertTrue gerenciamentoViagemService.registreSaida(viagem)
 
-        viagem.registreRetorno(new Date(), 1024)
+        viagem.registreRetorno(operador, new Date(), 1024)
         assertTrue gerenciamentoViagemService.registreRetorno(viagem)
 
         assertEquals 1024, ambulanciaService.obtenhaKmRetornoUltimaViagem(ambulancia1)

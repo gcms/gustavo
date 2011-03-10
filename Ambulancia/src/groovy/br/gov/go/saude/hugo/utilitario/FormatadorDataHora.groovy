@@ -16,7 +16,7 @@ class FormatadorDataHora {
     private static FormatadorDataHora defaultInstance
 
     public static FormatadorDataHora getDefault() {
-            defaultInstance ?: (defaultInstance = createInstancia(Locale.default))
+        defaultInstance ?: (defaultInstance = createInstancia(Locale.default))
     }
 
     public static FormatadorDataHora createInstancia(Locale locale) {

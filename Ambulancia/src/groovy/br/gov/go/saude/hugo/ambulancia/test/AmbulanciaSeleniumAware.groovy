@@ -18,11 +18,15 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
  */
 class AmbulanciaSeleniumAware extends SeleniumAware {
     void login() {
-        selenium.open "/${Ambiente.instancia.appName}/"
+        login('usuario', '12345')
+    }
+
+    void login(String usuario, String senha) {
+        inicio()
 
         assertEquals("Login", selenium.getTitle())
-        selenium.type("username", "usuario")
-        selenium.type("password", "12345")
+        selenium.type("username", usuario)
+        selenium.type("password", senha)
         selenium.click("//input[@value='Login']")
         selenium.waitForPageToLoad()
     }
@@ -38,11 +42,15 @@ class AmbulanciaSeleniumAware extends SeleniumAware {
         selenium.waitForPageToLoad()
     }
 
-    void carregueBanco() {
+    void registreUsuario(String usuario, String senha, String grupo) {
         GrailsApplication application = ApplicationHolder.application
         GerenciamentoGrupoService gerenciamentoGrupoService = application.mainContext.gerenciamentoGrupoService
-        gerenciamentoGrupoService.registreUsuario('usuario', '12345', 'ROLE_USER')
-        
+        gerenciamentoGrupoService.registreUsuario(usuario, senha, grupo)
+    }
+
+    void carregueBanco() {
+        registreUsuario('usuario', '12345', 'ROLE_USER')
+
         assertEquals 0, Viagem.list().size()
 
 //        Motorista.withTransaction {
