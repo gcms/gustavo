@@ -34,8 +34,8 @@ class ViagemTests extends GrailsUnitTestCase {
     }
 
     void testeViagemSemMotoristaAmbulancia() {
-        Viagem viagem = new Viagem(operador: operador)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem()
+        viagem.registreSaida(operador, new Date(), 12453)
         assertFalse viagem.validate()
         
         assertEquals 'nullable', viagem.errors['ambulancia']
@@ -51,31 +51,65 @@ class ViagemTests extends GrailsUnitTestCase {
     }
 
     void testeRetorno() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         viagem.save()
         assertEquals 1, Viagem.count()
 
         viagem = Viagem.list().first()
         assertFalse viagem.jaRetornou()
 
-        viagem.registreRetorno(new Date(), 12454)
+        viagem.registreRetorno(operador, new Date(), 12454)
         viagem.save()
 
         viagem = Viagem.list().first()
         assertTrue viagem.jaRetornou()
     }
 
-    void testeRetornoDistancia() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+    void testeRetornoSemOperador() {
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         viagem.save()
         assertEquals 1, Viagem.count()
 
         viagem = Viagem.list().first()
         assertFalse viagem.jaRetornou()
 
-        viagem.registreRetorno(new Date(), 12464)
+        viagem.registreRetorno(null, new Date(), 12454)
+        assertFalse viagem.validate()
+    }
+
+    void testeRetornoOutroOperador() {
+        Operador outro = new Operador(usuario: 'fulano', senha: 'hello')
+        outro.save()
+
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
+        viagem.save()
+        assertEquals 1, Viagem.count()
+
+        viagem = Viagem.list().first()
+        assertFalse viagem.jaRetornou()
+
+        viagem.registreRetorno(outro, new Date(), 12454)
+        viagem.save()
+
+        viagem = Viagem.list().first()
+        assertTrue viagem.jaRetornou()
+        assertEquals 'gustavocms', viagem.operador.usuario
+        assertEquals 'fulano', viagem.operadorRetorno.usuario
+    }
+
+    void testeRetornoDistancia() {
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
+        viagem.save()
+        assertEquals 1, Viagem.count()
+
+        viagem = Viagem.list().first()
+        assertFalse viagem.jaRetornou()
+
+        viagem.registreRetorno(operador, new Date(), 12464)
         viagem.save()
 
         viagem = Viagem.list().first()
@@ -84,15 +118,15 @@ class ViagemTests extends GrailsUnitTestCase {
     }
 
     void testeRetornoIncorreto() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
-        viagem.registreRetorno(null, 12456)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
+        viagem.registreRetorno(operador, null, 12456)
         assertFalse viagem.validate()
     }
 
     void testeParadas() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
+        viagem.registreSaida(operador, new Date(), 12453)
         viagem.paradas = [
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
@@ -141,6 +175,5 @@ class ViagemTests extends GrailsUnitTestCase {
         assertEquals 12, dataSaida[DAY_OF_MONTH]
         assertEquals 9, horaSaida[HOUR]
         assertEquals 31, horaSaida[MINUTE]
-
     }
 }

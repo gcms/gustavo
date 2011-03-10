@@ -41,7 +41,7 @@
         </tr>
 
         <tr class="prop">
-          <td valign="top" class="name"><g:message code="viagem.operador" default="Operador"/>:</td>
+          <td valign="top" class="name"><g:message code="viagem.operador" default="Operador Saida"/>:</td>
 
           <td valign="top" class="value"><g:linkIfAccess controller="operador" action="show" id="${viagem?.operador?.id}">${viagem?.operador?.encodeAsHTML()}</g:linkIfAccess></td>
         </tr>
@@ -56,6 +56,12 @@
           <td valign="top" class="name"><g:message code="viagem.kmSaida" default="Km Saida"/>:</td>
 
           <td valign="top" class="value">${viagem.kmSaida}</td>
+        </tr>
+        
+        <tr class="prop">
+          <td valign="top" class="name"><g:message code="viagem.operadorRetorno" default="Operador Retorno"/>:</td>
+
+          <td valign="top" class="value"><g:linkIfAccess controller="operador" action="show" id="${viagem?.operadorRetorno?.id}">${viagem?.operadorRetorno?.encodeAsHTML()}</g:linkIfAccess></td>
         </tr>
 
         <tr class="prop">

@@ -46,8 +46,8 @@ class MotoristaServiceTests extends GrailsUnitTestCase {
     }
 
     void testeUmMotoristaOcupado() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia1, motorista: motorista1)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia1, motorista: motorista1)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
@@ -55,22 +55,22 @@ class MotoristaServiceTests extends GrailsUnitTestCase {
     }
 
     void testeMotoristasOcupados() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia1, motorista: motorista1)
-        viagem.registreSaida(new Date(), 12453)
+        Viagem viagem = new Viagem(ambulancia: ambulancia1, motorista: motorista1)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 1, Viagem.count()
 
         assertEquals 2, motoristaService.obtenhaMotoristasDisponiveis().size()
 
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia2, motorista: motorista2)
-        viagem.registreSaida(new Date(), 12453)
+        viagem = new Viagem(ambulancia: ambulancia2, motorista: motorista2)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 2, Viagem.count()
 
         assertEquals 1, motoristaService.obtenhaMotoristasDisponiveis().size()
 
-        viagem = new Viagem(operador: operador, ambulancia: ambulancia3, motorista: motorista3)
-        viagem.registreSaida(new Date(), 12453)
+        viagem = new Viagem(ambulancia: ambulancia3, motorista: motorista3)
+        viagem.registreSaida(operador, new Date(), 12453)
         gerenciamentoViagemService.registreSaida(viagem)
         assertEquals 3, Viagem.count()
 

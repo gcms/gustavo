@@ -27,13 +27,13 @@ class DestinoServiceTests extends GrailsUnitTestCase {
     }
 
     void testeObtenhaDestinosBasico() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue')
         ]
-        viagem.registreSaida(new Date(), 12453)
-        viagem.registreRetorno(new Date(), 12454)
+        viagem.registreSaida(operador, new Date(), 12453)
+        viagem.registreRetorno(operador, new Date(), 12454)
         viagem.save()
         assertEquals 1, Viagem.count()
 
@@ -45,14 +45,14 @@ class DestinoServiceTests extends GrailsUnitTestCase {
     }
 
     void testeObtenhaDestinosRepetidos() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Coleta de sangue'),
                 new ParadaServicos(destino: 'Hemocentro', descricao: 'Entrega de sangue')
         ]
-        viagem.registreSaida(new Date(), 12453)
-        viagem.registreRetorno(new Date(), 12454)
+        viagem.registreSaida(operador, new Date(), 12453)
+        viagem.registreRetorno(operador, new Date(), 12454)
         viagem.save()
         assertEquals 1, Viagem.count()
 

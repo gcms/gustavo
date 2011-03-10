@@ -27,15 +27,15 @@ class PacienteServiceTests extends GrailsUnitTestCase {
     }
 
     void testeObtenhaPacienteBasico() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "Fulano de Oliveira"),
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "Fabio Santana"),
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "Gustavo Sousa")
         ]
-        viagem.registreSaida(new Date(), 12453)
-        viagem.registreRetorno(new Date(), 12454)
+        viagem.registreSaida(operador, new Date(), 12453)
+        viagem.registreRetorno(operador, new Date(), 12454)
         viagem.save()
         assertEquals 1, Viagem.count()
 
@@ -49,15 +49,15 @@ class PacienteServiceTests extends GrailsUnitTestCase {
     }
 
     void testeObtenhaPacientesRepetidos() {
-        Viagem viagem = new Viagem(operador: operador, ambulancia: ambulancia, motorista: motorista)
+        Viagem viagem = new Viagem(ambulancia: ambulancia, motorista: motorista)
         viagem.paradas = [
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "João de Deus"),
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "Fulano de Oliveira"),
                 new ParadaPaciente(destino: 'Hospital Santa Lúcia', paciente: "Fabio Santana"),
                 new ParadaPaciente(destino: 'Hemocentro', paciente: "João de Deus")
         ]
-        viagem.registreSaida(new Date(), 12453)
-        viagem.registreRetorno(new Date(), 12454)
+        viagem.registreSaida(operador, new Date(), 12453)
+        viagem.registreRetorno(operador, new Date(), 12454)
         viagem.save()
         assertEquals 1, Viagem.count()
 
