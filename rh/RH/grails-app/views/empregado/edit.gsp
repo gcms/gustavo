@@ -85,7 +85,12 @@
         </ul>
         <button class="btn">Left</button>
         <button class="btn">Middle</button>
-        <button class="btn">Right</button>
+        <script type="text/javascript">
+          function salvar() {
+            document.forms[0].submit()
+          }
+        </script>
+        <button class="btn" onclick="salvar()">Salvar</button>
       </div>
     </div>
 
@@ -122,7 +127,7 @@
 
         %{--<input type="text" value="Novo empregado" style="font-weight: bolder; font-size: 20pt; height: 25pt; width: 25em;"/>--}%
 
-        <form class="empregado-form">
+        <form class="empregado-form" action="salve" method="POST">
 
           <div id="form-tabs" class="tabbable"><!-- Only required for left/right tabs -->
             <ul class="nav nav-tabs">
@@ -137,53 +142,52 @@
                 <fieldset>
                   <div class="pessoa-header-info-nome">
                     <label for="nome">Nome</label>
-                    <input type="text" name="nome" value=""/>
+                    <input type="text" name="nome" value="${pessoa.nome}"/>
                   </div>
 
                   <div class="pessoa-header-info-dataNascimento">
                     <label for="dataNascimento">Data nascimento</label>
-                    <input type="text" name="dataNascimento" value=""/>
+                    <input type="text" name="dataNascimento" value="${pessoa.dataNascimento}"/>
                   </div>
 
                   <div class="pessoa-header-info-nomeMae">
                     <label for="nomeMae">Nome da mãe</label>
-                    <input type="text" name="nomeMae" value=""/>
+                    <input type="text" name="nomeMae" value="${pessoa.nomeMae}"/>
                   </div>
 
                   <div class="pessoa-header-info-sexo">
                     <label for="sexo">Sexo</label>
-                    M <input type="radio" name="sexo" value="M"/>
-                    F <input type="radio" name="sexo" value="F"/>
+                    <g:radioGroup values="['M', 'F']" name="sexo" value="${pessoa.sexo}"/>
                   </div>
 
                   <div class="pessoa-header-info-nomePai">
                     <label for="nomePai">Nome do pai</label>
-                    <input type="text" name="nomePai" value=""/>
+                    <input type="text" name="nomePai" value="${pessoa.nomePai}"/>
                   </div>
 
                   <div class="pessoa-header-info-pne">
                     <label for="pne">PNE</label>
-                    <input type="checkbox" name="pne" value=""/>
+                    <g:checkBox name="pne" value="${pessoa.pne}"/>
                   </div>
 
                   <div class="pessoa-info-naturalidade">
                     <label for="naturalidade">Naturalidade</label>
-                    <input type="text" name="naturalidade" value=""/>
+                    <input type="text" name="naturalidade" value="${pessoa.codigoNaturalidade}"/>
                   </div>
 
                   <div class="pessoa-info-estadoCivil">
                     <label for="estadoCivil">estadoCivil</label>
-                    <input type="text" name="estadoCivil" value=""/>
+                    <input type="text" name="estadoCivil" value="${pessoa.estadoCivil}"/>
                   </div>
 
                   <div class="pessoa-info-cpf">
                     <label for="cpf">cpf</label>
-                    <input type="text" name="cpf" value=""/>
+                    <input type="text" name="cpf" value="${pessoa.cpf}"/>
                   </div>
 
                   <div class="pessoa-info-rg">
                     <label for="rg">rg</label>
-                    <input type="text" name="rg" value=""/>
+                    <input type="text" name="rg" value="${pessoa.rg}"/>
                   </div>
 
                 </fieldset>
