@@ -12,7 +12,7 @@
 <html>
 <head>
   <title></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="pessoa.viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="${resource(dir: 'bootstrap/css', file: 'bootstrap.css')}" type="text/css" media="screen">
 
@@ -140,54 +140,56 @@
               <div class="tab-pane active" id="tab1">
 
                 <fieldset>
+                    
+                  <g:hiddenField name="id" value="${empregado.id}"/>
                   <div class="pessoa-header-info-nome">
-                    <label for="nome">Nome</label>
-                    <input type="text" name="nome" value="${pessoa.nome}"/>
+                    <label for="pessoa.nome">Nome</label>
+                    <input type="text" name="pessoa.nome" value="${empregado.pessoa.nome}"/>
                   </div>
 
                   <div class="pessoa-header-info-dataNascimento">
-                    <label for="dataNascimento">Data nascimento</label>
-                    <input type="text" name="dataNascimento" value="${pessoa.dataNascimento}"/>
+                    <label for="pessoa.dataNascimento">Data nascimento</label>
+                    <g:datePicker precision="day" name="pessoa.dataNascimento" value="${empregado.pessoa.dataNascimento}"/>
                   </div>
 
                   <div class="pessoa-header-info-nomeMae">
-                    <label for="nomeMae">Nome da mãe</label>
-                    <input type="text" name="nomeMae" value="${pessoa.nomeMae}"/>
+                    <label for="pessoa.nomeMae">Nome da mãe</label>
+                    <input type="text" name="pessoa.nomeMae" value="${empregado.pessoa.nomeMae}"/>
                   </div>
 
                   <div class="pessoa-header-info-sexo">
-                    <label for="sexo">Sexo</label>
-                    <g:radioGroup values="['M', 'F']" name="sexo" value="${pessoa.sexo}"/>
+                    <label for="pessoa.sexo">Sexo</label>
+                    <g:radioGroup values="['M', 'F']" name="pessoa.sexo" value="${empregado.pessoa.sexo}"/>
                   </div>
 
                   <div class="pessoa-header-info-nomePai">
-                    <label for="nomePai">Nome do pai</label>
-                    <input type="text" name="nomePai" value="${pessoa.nomePai}"/>
+                    <label for="pessoa.nomePai">Nome do pai</label>
+                    <input type="text" name="pessoa.nomePai" value="${empregado.pessoa.nomePai}"/>
                   </div>
 
                   <div class="pessoa-header-info-pne">
-                    <label for="pne">PNE</label>
-                    <g:checkBox name="pne" value="${pessoa.pne}"/>
+                    <label for="pessoa.pne">PNE</label>
+                    <g:checkBox name="pessoa.pne" value="${empregado.pessoa.pne}"/>
                   </div>
 
                   <div class="pessoa-info-naturalidade">
-                    <label for="naturalidade">Naturalidade</label>
-                    <input type="text" name="naturalidade" value="${pessoa.codigoNaturalidade}"/>
+                    <label for="pessoa.naturalidade">Naturalidade</label>
+                    <input type="text" name="pessoa.naturalidade" value="${empregado.pessoa.codigoNaturalidade}"/>
                   </div>
 
                   <div class="pessoa-info-estadoCivil">
-                    <label for="estadoCivil">estadoCivil</label>
-                    <input type="text" name="estadoCivil" value="${pessoa.estadoCivil}"/>
+                    <label for="pessoa.estadoCivil">estadoCivil</label>
+                    <input type="text" name="pessoa.estadoCivil" value="${empregado.pessoa.estadoCivil}"/>
                   </div>
 
                   <div class="pessoa-info-cpf">
-                    <label for="cpf">cpf</label>
-                    <input type="text" name="cpf" value="${pessoa.cpf}"/>
+                    <label for="pessoa.cpf">cpf</label>
+                    <input type="text" name="pessoa.cpf" value="${empregado.pessoa.cpf}"/>
                   </div>
 
                   <div class="pessoa-info-rg">
-                    <label for="rg">rg</label>
-                    <input type="text" name="rg" value="${pessoa.rg}"/>
+                    <label for="pessoa.rg">rg</label>
+                    <input type="text" name="pessoa.rg" value="${empregado.pessoa.rg}"/>
                   </div>
 
                 </fieldset>
