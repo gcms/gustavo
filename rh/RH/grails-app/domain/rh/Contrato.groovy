@@ -9,6 +9,8 @@ class Contrato {
     int cargaHoraria
     BigDecimal salarioBase
 
+    static belongsTo = Empregado
+
     static constraints = {
     }
 }
