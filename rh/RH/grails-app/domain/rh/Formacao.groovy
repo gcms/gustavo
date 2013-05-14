@@ -8,4 +8,6 @@ package rh
  * To change this template use File | Settings | File Templates.
  */
 class Formacao {
+    String descricao
+    Escolaridade nivel
 }

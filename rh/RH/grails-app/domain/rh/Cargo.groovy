@@ -9,4 +9,8 @@ package rh
  */
 class Cargo {
     String nome
+
+    String toString() {
+        nome
+    }
 }

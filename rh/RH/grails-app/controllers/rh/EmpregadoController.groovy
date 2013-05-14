@@ -1,33 +1,46 @@
 package rh
 
+import org.codehaus.groovy.grails.web.util.TypeConvertingMap
+
 class EmpregadoController {
 
-    def index = { }
+    def index = {
+        redirect action: list
+    }
 
-    def novo = {
-        render view: 'edit', model: [empregado: new Empregado()]
+    def list = {
+        [empregados: Empregado.list()]
+    }
+
+    def listAtivos = {
+        render view: 'list', model: []
+    }
+
+    def listInativos = {
+        render view: 'list', model: []
     }
 
     def edit = {
         Empregado empregado = params.id ? Empregado.get(params.id) : new Empregado()
 
-        render view: 'edit', model: [empregado: empregado]
+        [empregado: empregado]
     }
 
-    def salve = {
+    def save = {
         println params
-//        Empregado empregado = params.empregado?.id ? loadEmpregado() : new Empregado()
-//
-//        if (!empregado.hasErrors() && empregado.save()) {
-//            flash.message = 'Empregado salvo com sucesso'
-//            redirect action: index
-//        }
-        flash.message = 'Empregado cadastrado!'
-        redirect action: index
+        Empregado empregado = params.id ? loadEmpregado(params) : new Empregado(params)
+
+        if (!empregado.hasErrors() && empregado.save()) {
+            flash.message = 'Empregado salvo com sucesso'
+            redirect action: index
+        } else {
+            flash.message = 'Erro!'
+            render view: edit, model: [empregado: empregado], params: params
+        }
     }
 
-    private loadEmpregado() {
-        Empregado empregado = Empregado.get(params.empregado.id)
+    static private loadEmpregado(TypeConvertingMap params) {
+        Empregado empregado = Empregado.get(params.id)
         empregado.properties = params.empregado
         empregado
     }
