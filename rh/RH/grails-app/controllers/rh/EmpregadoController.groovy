@@ -1,5 +1,6 @@
 package rh
 
+import grails.converters.JSON
 import org.codehaus.groovy.grails.web.util.TypeConvertingMap
 
 class EmpregadoController {
@@ -29,13 +30,14 @@ class EmpregadoController {
     def save = {
         println params
         Empregado empregado = params.id ? loadEmpregado(params) : new Empregado(params)
+        println empregado.dump()
 
-        if (!empregado.hasErrors() && empregado.save()) {
+        if (!empregado.pessoa.hasErrors() && empregado.pessoa.save() && !empregado.hasErrors() && empregado.save()) {
             flash.message = 'Empregado salvo com sucesso'
             redirect action: index
         } else {
             flash.message = 'Erro!'
-            render view: edit, model: [empregado: empregado], params: params
+            render(view: 'edit', model: [empregado: empregado], params: params)
         }
     }
 
@@ -43,5 +45,11 @@ class EmpregadoController {
         Empregado empregado = Empregado.get(params.id)
         empregado.properties = params.empregado
         empregado
+    }
+
+    def pessoas = {
+        List pessoas = Pessoa.executeQuery("from Pessoa where upper(nome) like upper(:nome || '%')", [nome: params.term])
+        pessoas = pessoas.collect { it.properties + [label: it.nome]}
+        render(pessoas as JSON)
     }
 }

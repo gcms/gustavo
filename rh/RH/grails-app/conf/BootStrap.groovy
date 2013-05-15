@@ -1,4 +1,5 @@
 import rh.Cargo
+import rh.Contrato
 import rh.Empregado
 import rh.Escolaridade
 import rh.Formacao
@@ -18,6 +19,7 @@ class BootStrap {
         formacao.save()
 
         Empregado professorGustavo = new Empregado(pessoa: gustavo, formacao: formacao)
+        professorGustavo.contrato = new Contrato(cargo: professor)
         professorGustavo.save()
 
     }

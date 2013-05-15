@@ -8,12 +8,20 @@
 
 <!DOCTYPE html>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="rh.Sexo; rh.Cargo; rh.Escolaridade" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title></title>
     <meta name="pessoa.viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- JQUERY -->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+    %{--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>--}%
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.js"></script>
+    %{--<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>--}%
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
+
+    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="${resource(dir: 'bootstrap/css', file: 'bootstrap.css')}" type="text/css"
           media="screen">
 
@@ -100,172 +108,249 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row-fluid">
-        <div class="span3">
-            <g:render template="../comum/menu"/>
+<div class="row-fluid">
+<div class="span3">
+    <g:render template="../comum/menu"/>
 
-        </div><!--/span-->
-        <div class="span9">
-            <div class="hero-unit" style="padding: 10px;">
+</div><!--/span-->
+<div class="span9">
+<div class="hero-unit" style="padding: 10px;">
 
-            %{--<input type="text" value="Novo empregado" style="font-weight: bolder; font-size: 20pt; height: 25pt; width: 25em;"/>--}%
+%{--<input type="text" value="Novo empregado" style="font-weight: bolder; font-size: 20pt; height: 25pt; width: 25em;"/>--}%
 
-                <g:form class="empregado-form" action="save" method="POST">
+    <g:form class="empregado-form" action="save" method="POST">
 
-                    <div id="form-tabs" class="tabbable"><!-- Only required for left/right tabs -->
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tab1" data-toggle="tab">Pessoal</a></li>
-                            <li><a href="#tab2" data-toggle="tab">Profissional</a></li>
-                            <li><a href="#tab3" data-toggle="tab">Contrato</a></li>
-                        </ul>
+        <div id="form-tabs" class="tabbable"><!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab">Pessoal</a></li>
+                <li><a href="#tab2" data-toggle="tab">Profissional</a></li>
+                <li><a href="#tab3" data-toggle="tab">Contrato</a></li>
+            </ul>
 
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="tab1">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
 
-                                <fieldset>
+                    <fieldset>
 
-                                    <g:hiddenField name="id" value="${empregado.id}"/>
-                                    <div class="pessoa-header-info-nome">
-                                        <label for="pessoa.nome">Nome</label>
-                                        <input type="text" name="pessoa.nome" value="${empregado.pessoa.nome}"/>
-                                    </div>
+                        <g:hiddenField name="id" value="${empregado.id}"/>
+                        <g:hiddenField name="pessoa-id" value="${empregado.pessoa.id}"/>
 
-                                    <div class="pessoa-header-info-dataNascimento">
-                                        <label for="pessoa.dataNascimento">Data nascimento</label>
-                                        <g:datePicker precision="day" name="pessoa.dataNascimento"
-                                                      value="${empregado.pessoa.dataNascimento}"/>
-                                    </div>
-
-                                    <div class="pessoa-header-info-nomeMae">
-                                        <label for="pessoa.nomeMae">Nome da mãe</label>
-                                        <input type="text" name="pessoa.nomeMae" value="${empregado.pessoa.nomeMae}"/>
-                                    </div>
-
-                                    <div class="pessoa-header-info-sexo">
-                                        <label for="pessoa.sexo">Sexo</label>
-                                        <g:radioGroup values="['M', 'F']" name="pessoa.sexo"
-                                                      value="${empregado.pessoa.sexo}"/>
-                                    </div>
-
-                                    <div class="pessoa-header-info-nomePai">
-                                        <label for="pessoa.nomePai">Nome do pai</label>
-                                        <input type="text" name="pessoa.nomePai" value="${empregado.pessoa.nomePai}"/>
-                                    </div>
-
-                                    <div class="pessoa-header-info-pne">
-                                        <label for="pessoa.pne">PNE</label>
-                                        <g:checkBox name="pessoa.pne" value="${empregado.pessoa.pne}"/>
-                                    </div>
-
-                                    <div class="pessoa-info-naturalidade">
-                                        <label for="pessoa.naturalidade">Naturalidade</label>
-                                        <input type="text" name="pessoa.naturalidade"
-                                               value="${empregado.pessoa.codigoNaturalidade}"/>
-                                    </div>
-
-                                    <div class="pessoa-info-estadoCivil">
-                                        <label for="pessoa.estadoCivil">estadoCivil</label>
-                                        <input type="text" name="pessoa.estadoCivil"
-                                               value="${empregado.pessoa.estadoCivil}"/>
-                                    </div>
-
-                                    <div class="pessoa-info-cpf">
-                                        <label for="pessoa.cpf">cpf</label>
-                                        <input type="text" name="pessoa.cpf" value="${empregado.pessoa.cpf}"/>
-                                    </div>
-
-                                    <div class="pessoa-info-rg">
-                                        <label for="pessoa.rg">rg</label>
-                                        <input type="text" name="pessoa.rg" value="${empregado.pessoa.rg}"/>
-                                    </div>
-
-                                </fieldset>
-                            </div>
-
-                            <div class="tab-pane" id="tab2">
-                                <fieldset>
-                                    <div class="pessoa-header-info-nome">
-                                        <label for="pessoa.nome">Nome</label>
-                                        <input type="text" name="pessoa.nome" value="${empregado.pessoa.nome}"/>
-                                    </div>
-                                </fieldset>
-                            </div>
-
-                            <div class="tab-pane" id="tab3">
-                                <p>Howdy, I'm in Section 3.</p>
-                            </div>
+                        <div class="pessoa-header-info-nome">
+                            <label for="pessoa.nome">Nome</label>
+                            <input id="pessoa-nome" type="text" name="pessoa.nome" value="${empregado.pessoa.nome}"/>
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('#pessoa-nome').autocomplete({
+                                        source: 'pessoas',
+                                        minLength: 5,
+                                        select: function (event, ui) {
+                                            loadPessoa(ui.item);
+                                        }
+                                    });
+                                });
+                            </script>
                         </div>
-                    </div>
 
-                </g:form>
+                        <div class="pessoa-header-info-dataNascimento">
+                            <label for="pessoa.dataNascimento">Data nascimento</label>
+                            <g:datePicker precision="day" name="pessoa.dataNascimento"
+                                          value="${empregado.pessoa.dataNascimento}"/>
+                        </div>
 
-            %{--<h1>Hello, world!</h1>--}%
+                        <div class="pessoa-header-info-nomeMae">
+                            <label for="pessoa.nomeMae">Nome da mãe</label>
+                            <input id="pessoa-nomeMae" type="text" name="pessoa.nomeMae"
+                                   value="${empregado.pessoa.nomeMae}"/>
+                        </div>
 
-            %{--<p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>--}%
+                        <div class="pessoa-header-info-sexo">
+                            <label for="pessoa.sexo">Sexo</label>
+                            <g:radioGroup id="pessoa-sexo" values="${Sexo.values()}" labels="${Sexo.values()}"
+                                          name="pessoa.sexo"
+                                          value="${empregado.pessoa.sexo}">
+                                ${it.label} ${it.radio}&nbsp;&nbsp;&nbsp;
+                            </g:radioGroup>
 
-            %{--<p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>--}%
+                        </div>
+
+                        <div class="pessoa-header-info-nomePai">
+                            <label for="pessoa.nomePai">Nome do pai</label>
+                            <input id="pessoa-nomePai" type="text" name="pessoa.nomePai"
+                                   value="${empregado.pessoa.nomePai}"/>
+                        </div>
+
+                        <div class="pessoa-header-info-pne">
+                            <label for="pessoa.pne">PNE</label>
+                            <g:checkBox name="pessoa.pne" value="${empregado.pessoa.pne}"/>
+                        </div>
+
+                        <div class="pessoa-info-naturalidade">
+                            <label for="pessoa.naturalidade">Naturalidade</label>
+                            <input type="text" name="pessoa.naturalidade"
+                                   value="${empregado.pessoa.codigoNaturalidade}"/>
+                        </div>
+
+                        <div class="pessoa-info-estadoCivil">
+                            <label for="pessoa.estadoCivil">estadoCivil</label>
+                            <input type="text" name="pessoa.estadoCivil"
+                                   value="${empregado.pessoa.estadoCivil}"/>
+                        </div>
+
+                        <div class="pessoa-info-cpf">
+                            <label for="pessoa.cpf">cpf</label>
+                            <input type="text" name="pessoa.cpf" value="${empregado.pessoa.cpf}"/>
+                        </div>
+
+                        <div class="pessoa-info-rg">
+                            <label for="pessoa.rg">rg</label>
+                            <input type="text" name="pessoa.rg" value="${empregado.pessoa.rg}"/>
+                        </div>
+
+                        <div class="pessoa-info-pis">
+                            <label for="pis">pis</label>
+                            <input type="text" name="pis" value="${empregado.pis}"/>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <div class="tab-pane" id="tab2">
+                    <fieldset>
+                        <g:hiddenField name="formacao.id" value="${empregado.formacao.id}"/>
+                        <div>
+                            <label for="formacao.descricao">Formacao</label>
+                            <g:textField name="formacao.descricao" value="${empregado.formacao.descricao}"/>
+                            %{--<input type="text" name="pessoa.nome" value="${empregado.pessoa.nome}"/>--}%
+                        </div>
+
+                        <div>
+                            <label for="formacao.nivel">Nível</label>
+                            <g:select name="formacao.nivel" from="${Escolaridade.values()}"
+                                      value="${empregado.formacao.nivel}" noSelection="['': '- Escolha o nível -']"/>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="tab-pane" id="tab3">
+                    <fieldset>
+                        <div>
+                            <label for="contrato.dataAdmissao">Data admissão</label>
+                            <g:datePicker precision="day" name="contrato.dataAdmissao"
+                                          value="${empregado.contrato.dataAdmissao}"/>
+                        </div>
+
+                        <div>
+                            <label for="contrato.dataRegistro">Data registro</label>
+                            <g:datePicker precision="day" name="contrato.dataRegistro"
+                                          value="${empregado.contrato.dataRegistro}"/>
+                        </div>
+
+                        <div>
+                            <label for="contrato.dataDemissao">Data demissão</label>
+                            <g:datePicker precision="day" name="contrato.dataDemissao"
+                                          value="${empregado.contrato.dataDemissao}"/>
+                        </div>
+
+                        <div>
+                            <label for="contrato.cargaHoraria">Carga horária semanal</label>
+                            <g:textField name="contrato.cargaHoraria" value="${empregado.contrato.cargaHoraria}"/>
+                        </div>
+
+                        <div>
+                            <label for="contrato.salarioBase">Salário base</label>
+                            <g:textField name="contrato.salarioBase" value="${empregado.contrato.salarioBase}"/>
+                        </div>
+
+                        <div>
+                            <label for="contrato.cargo.id">Cargo</label>
+                            <g:select name="contrato.cargo.id" from="${Cargo.list()}" optionValue="nome" optionKey="id"
+                                      value="${empregado.contrato.cargo?.id}"
+                                      noSelection="['': '- Escolha o cargo -']"/>
+                        </div>
+
+                    </fieldset>
+                </div>
             </div>
+        </div>
 
-            %{--<div class="row-fluid">--}%
-            %{--<div class="span4">--}%
-            %{--<h2>Heading</h2>--}%
+    </g:form>
 
-            %{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
+%{--<h1>Hello, world!</h1>--}%
 
-            %{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
-            %{--</div><!--/span-->--}%
-            %{--<div class="span4">--}%
-            %{--<h2>Heading</h2>--}%
+%{--<p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>--}%
 
-            %{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
+%{--<p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>--}%
+</div>
 
-            %{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
-            %{--</div><!--/span-->--}%
-            %{--<div class="span4">--}%
-            %{--<h2>Heading</h2>--}%
+%{--<div class="row-fluid">--}%
+%{--<div class="span4">--}%
+%{--<h2>Heading</h2>--}%
 
-            %{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
+%{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
 
-            %{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
-            %{--</div><!--/span-->--}%
-            %{--</div><!--/row-->--}%
-            %{--<div class="row-fluid">--}%
-            %{--<div class="span4">--}%
-            %{--<h2>Heading</h2>--}%
+%{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
+%{--</div><!--/span-->--}%
+%{--<div class="span4">--}%
+%{--<h2>Heading</h2>--}%
 
-            %{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
+%{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
 
-            %{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
-            %{--</div><!--/span-->--}%
-            %{--<div class="span4">--}%
-            %{--<h2>Heading</h2>--}%
+%{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
+%{--</div><!--/span-->--}%
+%{--<div class="span4">--}%
+%{--<h2>Heading</h2>--}%
 
-            %{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
+%{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
 
-            %{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
-            %{--</div><!--/span-->--}%
-            %{--<div class="span4">--}%
-            %{--<h2>Heading</h2>--}%
+%{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
+%{--</div><!--/span-->--}%
+%{--</div><!--/row-->--}%
+%{--<div class="row-fluid">--}%
+%{--<div class="span4">--}%
+%{--<h2>Heading</h2>--}%
 
-            %{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
+%{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
 
-            %{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
-            %{--</div><!--/span-->--}%
-            %{--</div><!--/row-->--}%
-        </div><!--/span-->
-    </div><!--/row-->
+%{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
+%{--</div><!--/span-->--}%
+%{--<div class="span4">--}%
+%{--<h2>Heading</h2>--}%
 
-    <hr>
+%{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
 
-    <footer>
-        %{--<p>&copy; Company 2013</p>--}%
-    </footer>
+%{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
+%{--</div><!--/span-->--}%
+%{--<div class="span4">--}%
+%{--<h2>Heading</h2>--}%
+
+%{--<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>--}%
+
+%{--<p><a class="btn" href="#">View details &raquo;</a></p>--}%
+%{--</div><!--/span-->--}%
+%{--</div><!--/row-->--}%
+</div><!--/span-->
+</div><!--/row-->
+
+<hr>
+
+<footer>
+    %{--<p>&copy; Company 2013</p>--}%
+</footer>
 
 </div>
 
 
-<script src="http://code.jquery.com/jquery.js"></script>
+%{--<script src="http://code.jquery.com/jquery.js"></script>--}%
 <script type="text/javascript" src="${resource(dir: 'bootstrap/js', file: 'bootstrap.js')}"></script>
+
+<script type="text/javascript">
+    function loadPessoa(pessoa) {
+        $("input[name='pessoa.id']").val(pessoa.id);
+        $("input[name='pessoa.nomeMae']").val(pessoa.nomeMae);
+        $("input[name='pessoa.nomePai']").val(pessoa.nomePai);
+        $("input[name='pessoa.sexo']").val(pessoa.sexo);
+    }
+</script>
 
 </body>
 </html>
