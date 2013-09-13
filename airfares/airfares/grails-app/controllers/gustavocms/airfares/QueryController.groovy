@@ -10,6 +10,7 @@ class QueryController {
     }
 
     def list() {
+        println Query.findAllByContentLike('BSB;MIA%')
         [ queries: Query.list().sort { it.currentPrice ? it.currentPrice.price : Integer.MAX_VALUE } ]
     }
 

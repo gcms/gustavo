@@ -12,11 +12,22 @@
   <title></title>
 </head>
 <body>
-<g:each var="query" in="${queries}">
-    <p>
-        <g:link action="view" id="${query.id}">${query}</g:link>
-        <g:link action="best" id="${query.id}">${query.currentPrice}</g:link>
-    </p>
-</g:each>
+<table>
+    <tr>
+        <th>Pesquisa</th>
+        <th>Melhor preço hoje</th>
+    </tr>
+    <g:each var="query" in="${queries}">
+        <tr>
+            <td>
+                <g:link action="view" id="${query.id}">${query}</g:link>
+            </td>
+            <td>
+                <g:link action="best" id="${query.id}">${query.currentPrice}</g:link>
+            </td>
+        </tr>
+    </g:each>
+
+</table>
 </body>
 </html>

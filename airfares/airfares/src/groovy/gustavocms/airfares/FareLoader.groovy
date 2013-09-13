@@ -1,8 +1,4 @@
 package gustavocms.airfares
-
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.PriorityBlockingQueue
-
 /**
  * Created with IntelliJ IDEA.
  * User: gustavosousa
@@ -24,6 +20,9 @@ class FareLoader implements Runnable {
 
 
     public void stop() {
+        if (!ativo)
+            throw new IllegalStateException()
+
         ativo = false
     }
 
