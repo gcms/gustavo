@@ -22,9 +22,12 @@ class Query {
         content nullable: false, blank: false, unique: true
     }
 
-    static transients = [ 'flightQuery', 'currentPrice']
+    static transients = [ 'flightQueryCache', 'flightQuery', 'currentPrice']
+
+    private FlightQuery flightQueryCache
 
     void setFlightQuery(FlightQuery  fq) {
+        this.flightQueryCache = fq
         DateFormat df = new SimpleDateFormat('dd/MM/yyyy HH:mm')
         StringBuilder sb = new StringBuilder()
         fq.routes.each { FlightQueryRoute fqr ->
@@ -37,6 +40,9 @@ class Query {
         if (content == null || content.empty)
             return null
 
+        if (flightQueryCache != null)
+            return flightQueryCache
+
         DateFormat df = new SimpleDateFormat('dd/MM/yyyy HH:mm')
 
         List routes = []
@@ -44,7 +50,8 @@ class Query {
             List values = it.tokenize(';')
             routes << new FlightQueryRoute(values[0], values[1], df.parse(values[2]), df.parse(values[3]))
         }
-        new FlightQuery(routes: routes)
+
+        flightQueryCache = new FlightQuery(routes: routes)
     }
 
     String toString() {
