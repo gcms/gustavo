@@ -19,10 +19,10 @@ class Query {
     String content
 
     static constraints = {
-        content nullable: false, blank: false
+        content nullable: false, blank: false, unique: true
     }
 
-    static transients = [ 'flightQuery']
+    static transients = [ 'flightQuery', 'currentPrice']
 
     void setFlightQuery(FlightQuery  fq) {
         DateFormat df = new SimpleDateFormat('dd/MM/yyyy HH:mm')
@@ -39,12 +39,12 @@ class Query {
 
         DateFormat df = new SimpleDateFormat('dd/MM/yyyy HH:mm')
 
-        FlightQuery fq = new FlightQuery()
+        List routes = []
         content.tokenize(LINE_SEPARATOR).each {
             List values = it.tokenize(';')
-            fq.routes << new FlightQueryRoute(values[0], values[1], df.parse(values[2]), df.parse(values[3]))
+            routes << new FlightQueryRoute(values[0], values[1], df.parse(values[2]), df.parse(values[3]))
         }
-        fq
+        new FlightQuery(routes: routes)
     }
 
     String toString() {
@@ -58,5 +58,9 @@ class Query {
         }
 
         flightQuery.toString()
+    }
+
+    BestPrice getCurrentPrice() {
+        BestPrice.findByQueryAndDay(this, new Date().clearTime())
     }
 }

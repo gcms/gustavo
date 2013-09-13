@@ -1,5 +1,7 @@
 package gustavocms.airfares
 
+import grails.plugin.cache.Cacheable
+
 class QueryController {
     QueryService queryService
 
@@ -8,7 +10,7 @@ class QueryController {
     }
 
     def list() {
-        [ queries: Query.list() ]
+        [ queries: Query.list().sort { it.currentPrice ? it.currentPrice.price : Integer.MAX_VALUE } ]
     }
 
     def view() {
@@ -17,5 +19,12 @@ class QueryController {
         println bestPrices
 
         [ query: q, bestPrices: bestPrices ]
+    }
+
+    @Cacheable("bestItinerary")
+    def best() {
+        Query q = Query.get(params.id)
+
+        [ itinerary: queryService.getBestItinerary(q) ]
     }
 }

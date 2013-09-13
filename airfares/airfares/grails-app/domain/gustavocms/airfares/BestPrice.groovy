@@ -1,5 +1,7 @@
 package gustavocms.airfares
 
+import java.text.DecimalFormat
+
 /**
  * Created with IntelliJ IDEA.
  * User: gustavosousa
@@ -16,6 +18,12 @@ class BestPrice {
     String currency
 
     static mapping = {
-        day sqlType: 'date'//, unique: 'query'
+        day sqlType: 'date', unique: 'query'
+    }
+
+    String toString() {
+        Currency cur = Currency.getInstance(currency)
+        DecimalFormat format = new DecimalFormat(currency: cur)
+        cur.symbol + ' ' + format.format(price)
     }
 }

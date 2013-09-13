@@ -11,10 +11,17 @@ class BootStrap {
     QueryService queryService
 
     def init = { servletContext ->
+        if (Query.count() == 0)
+            initDB()
+
+        new FareLoader(queryService).start()
+    }
+
+    private void initDB() {
         DateFormat format = new SimpleDateFormat('dd/MM/yyyy HH:mm')
 
-        DateTimeInterval leave = new DateTimeInterval(format.parse('23/10/2013 15:00'), format.parse('24/10/2013 09:00'))
-        DateTimeInterval retur = new DateTimeInterval(format.parse('27/10/2013 12:00'), format.parse('28/10/2013 12:00'))
+        DateTimeInterval leave = new DateTimeInterval(format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+        DateTimeInterval retur = new DateTimeInterval(format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
 
         createQuery('GYN', 'BSB', leave, retur)
         createQuery('GYN', 'SAO', leave, retur)
@@ -25,8 +32,6 @@ class BootStrap {
             createQuery('BSB', dst, leave, retur)
             createQuery('SAO', dst, leave, retur)
         }
-
-        new FareLoader(queryService).start()
     }
 
     private static void createQuery(String src, String dst, DateTimeInterval leave, DateTimeInterval retur) {

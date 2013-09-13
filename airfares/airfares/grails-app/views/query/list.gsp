@@ -13,7 +13,10 @@
 </head>
 <body>
 <g:each var="query" in="${queries}">
-    <p><g:link action="view" id="${query.id}">${query}</g:link></p>
+    <p>
+        <g:link action="view" id="${query.id}">${query}</g:link>
+        <g:link action="best" id="${query.id}">${query.currentPrice}</g:link>
+    </p>
 </g:each>
 </body>
 </html>
