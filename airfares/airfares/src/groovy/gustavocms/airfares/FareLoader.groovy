@@ -22,9 +22,6 @@ class FareLoader implements Runnable {
         queries = queryService.queries
     }
 
-    public addFare(Query query) {
-        queries.add(query)
-    }
 
     public void stop() {
         ativo = false
@@ -37,7 +34,9 @@ class FareLoader implements Runnable {
                 if (!ativo)
                     return
 
+//                println "checkList(${queries.size()})"
                 checkList()
+//                println "check(it)"
                 check(it)
             }
         }
@@ -45,7 +44,6 @@ class FareLoader implements Runnable {
 
     void checkList() {
         while (ativo && !queries.empty) {
-            println "checkList()"
             check(queries.remove(0))
         }
     }

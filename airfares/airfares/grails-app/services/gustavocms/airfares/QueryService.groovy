@@ -15,8 +15,6 @@ class QueryService {
         today.setFirstDayOfWeek(Calendar.SUNDAY)
         today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
 
-        println "from ${today.time} to ${today.time + 7}"
-
         BestPrice.executeQuery("from BestPrice where query.id = :query and day between :inicio and :fim", [query: query.id, inicio: today.time, fim: today.time + 7])
 //        BestPrice.executeQuery("from BestPrice where query.id = :query", [query: query.id])
     }
@@ -31,5 +29,10 @@ class QueryService {
             bp.save()
             bp.errors.allErrors.each { println it }
         }
+    }
+
+    Itinerary getBestItinerary(Query query) {
+        List<Itinerary> itineraries = new DecolarProvider().getBestItineraries(query.flightQuery)
+        itineraries.empty ? null : itineraries.first()
     }
 }
