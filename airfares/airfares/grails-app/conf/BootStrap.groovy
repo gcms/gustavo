@@ -1,4 +1,3 @@
-import gustavocms.airfares.CSVImporter
 import gustavocms.airfares.CurrencyUpdater
 import gustavocms.airfares.FareLoader
 import gustavocms.airfares.Query
@@ -28,12 +27,14 @@ class BootStrap {
 
         createQuery('GYN', 'BSB', leave, retur)
         createQuery('GYN', 'SAO', leave, retur)
+        createQuery('GYN', 'RIO', leave, retur)
 
-        List destinations = ['SLA', 'YEA', 'AKL', 'BOG', 'VIE', 'PAR', 'DUB', 'MIA', 'NYC', 'MEX', 'COR', 'LIM', 'MUC', 'BCN', 'YMQ', 'YYZ', 'CPT', 'LON', 'ROM', 'PRG', 'FLO', 'SYD', 'KRK', 'BEG', 'BUD', 'ZRH', 'SFO', 'LIS', 'SCL', 'ORL']
+        List destinations = ['YBQ', 'MIL', 'FRA', 'SLA', 'YEA', 'AKL', 'BOG', 'VIE', 'PAR', 'DUB', 'MIA', 'NYC', 'MEX', 'COR', 'LIM', 'MUC', 'BCN', 'YMQ', 'YYZ', 'CPT', 'LON', 'ROM', 'PRG', 'FLO', 'SYD', 'KRK', 'BEG', 'BUD', 'ZRH', 'SFO', 'LIS', 'SCL', 'ORL']
         destinations.each { String dst ->
             createQuery('GYN', dst, leave, retur)
             createQuery('BSB', dst, leave, retur)
             createQuery('SAO', dst, leave, retur)
+            createQuery('RIO', dst, leave, retur)
         }
     }
 

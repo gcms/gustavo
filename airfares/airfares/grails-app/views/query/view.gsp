@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title></title>
@@ -22,10 +22,31 @@
     Chegando entre ${inbound.departureInterval.start.format('dd/MM/yyyy HH:mm')} e ${inbound.departureInterval.end.format('dd/MM/yyyy HH:mm')}
 </p>
 
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var JSONObject = ${dataTable as JSON};
+        var data = new google.visualization.DataTable(JSONObject);
+
+        var options = {
+            title: '${query}',
+            hAxis: {title: 'Day',  titleTextStyle: {color: '#333'}},
+            vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>
+
 
 <h2>Últimos preços</h2>
 <g:each var="price" in="${bestPrices}">
     <p>${price.day.format('dd/MM/yyyy')} ${price.currency} ${price.price}</p>
 </g:each>
+
+<div id="chart_div"></div>
 </body>
 </html>
