@@ -15,7 +15,7 @@ class QueryService {
 //        today.setFirstDayOfWeek(Calendar.SUNDAY)
 //        today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
 
-        BestPrice.executeQuery("from BestPrice where query.id = :query and day between :inicio and :fim order by day desc", [query: query.id, inicio: today.time - 7, fim: today.time + 7])
+        BestPrice.executeQuery("from BestPrice where query.id = :query and day between :inicio and :fim order by day desc", [query: query.id, inicio: today.time - 14, fim: today.time])
 //        BestPrice.executeQuery("from BestPrice where query.id = :query", [query: query.id])
     }
 

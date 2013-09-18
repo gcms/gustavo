@@ -1,0 +1,22 @@
+;Day flights
+
+select strftime('%Y-%m-%d', datetime(h.queryDate/1000, 'unixepoch')), h.src, h.dst, h.price, avg(o.price),  round(100* (1.0 - h.price * 1.0 / avg(o.price)), 2) || '%' as desconto
+from bestflights h, bestflights o
+where strftime('%Y-%m-%d', datetime(h.queryDate/1000, 'unixepoch')) == '2013-09-09'
+and h.queryDate <> o.queryDate
+and h.src = o.src and h.dst = o.dst
+group by h.src, h.dst, h.price
+having h.price < avg(o.price)
+
+
+select strftime('%Y-%m-%d', datetime(h.queryDate/1000, 'unixepoch')), h.src, h.dst,
+	strftime('%Y-%m-%d %H:%M', datetime(h.leaveDepart/1000, 'unixepoch')),
+	strftime('%Y-%m-%d %H:%M', datetime(h.returnDepart/1000, 'unixepoch')),
+	h.price, avg(o.price),  round(100* (1.0 - h.price * 1.0 / avg(o.price)), 2) || '%' as desconto
+from bestflights h, bestflights o
+where strftime('%Y-%m-%d', datetime(h.queryDate/1000, 'unixepoch')) == '2013-09-09'
+and h.queryDate <> o.queryDate
+and h.src = o.src and h.dst = o.dst
+group by h.src, h.dst, h.price, h.leaveDepart, h.returnDepart
+having h.price < avg(o.price)
+order by h.price

@@ -49,7 +49,16 @@ class FareLoader implements Runnable {
 
     void check(Query query) {
         try {
-            queryService.checkPrice(query)
+            Thread th = new Thread() {
+                public void run() {
+                    queryService.checkPrice(query)
+                }
+            }
+            th.start()
+            th.join(60 * 1000)
+            if (th.alive)
+                th.interrupt()
+
         } catch (Exception ex) {
             ex.printStackTrace()
         }
