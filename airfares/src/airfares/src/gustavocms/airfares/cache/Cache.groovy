@@ -1,7 +1,4 @@
 package gustavocms.airfares.cache
-
-import gustavocms.airfares.Itinerary
-
 /**
  * Created with IntelliJ IDEA.
  * User: gustavo
@@ -14,6 +11,7 @@ public interface Cache {
 
     public Object get(String key)
     public void put(String key, Object map)
+    public boolean remove(String key)
     void flush()
 
     void close()

@@ -31,7 +31,7 @@
         var data = new google.visualization.DataTable(JSONObject);
 
         var options = {
-            title: '${query}',
+            title: '${query.encodeAsJavaScript()}',
             hAxis: {title: 'Day',  titleTextStyle: {color: '#333'}},
             vAxis: {minValue: 0}
         };
@@ -48,5 +48,11 @@
 </g:each>
 
 <div id="chart_div"></div>
+
+<g:form action="reload" method="POST">
+    <g:hiddenField name="redirectAction" value="view"/>
+    <g:hiddenField name="id" value="${query.id}"/>
+    <g:submitButton name="reload" value="Recarregar"/>
+</g:form>
 </body>
 </html>

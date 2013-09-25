@@ -10,6 +10,16 @@ class QueryController {
         redirect action: 'list'
     }
 
+    def reload() {
+        Query q = Query.get(params.getLong('id'))
+        BestPrice current = q.currentPrice
+        if (current)
+            current.delete()
+        queryService.checkPrice(q)
+
+        redirect action: params.redirectAction, params: [id: q.id]
+    }
+
     def list() {
         String query = ''
         if (params.from || params.to) {
@@ -45,6 +55,12 @@ class QueryController {
 
     def drops() {
         List<Deal> deals = queryService.getPriceDrops()
+
+        render view: 'deals', model: [ deals: deals ]
+    }
+
+    def realDrops() {
+        List<Deal> deals = queryService.getAllTimePriceDrops()
 
         render view: 'deals', model: [ deals: deals ]
     }

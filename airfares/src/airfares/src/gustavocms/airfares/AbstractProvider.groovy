@@ -13,18 +13,21 @@ abstract class AbstractProvider implements Provider {
 
     @Override
     List<Itinerary> getBestItineraries(FlightQuery itinerary) {
-        List<Itinerary> itineraries = getItineraries(itinerary).unique().sort { it.getPrice() }
-        if (itineraries.empty)
-            return itineraries
+        List<Itinerary> itineraries = getItineraries(itinerary)
+        itineraries.empty ? itineraries : getBestItinerariesSorted(itineraries)
+    }
 
-        Price bestPrice = itineraries.first().price
+    protected List<Itinerary> getBestItinerariesSorted(List<Itinerary> itineraries) {
+        List<Itinerary> sorted = itineraries.unique().sort { it.price }
 
-        List<Itinerary> best = itineraries.findAll { it.getPrice() == bestPrice}
-        best.sort { -it.getNumDays() * 24 * 60 * 60 * 1000 + it.getTotalDuration() }
+        Price bestPrice = sorted.first().price
+        List<Itinerary> best = sorted.findAll { it.price == bestPrice }
+        best.sort { -it.numDays * 24 * 60 * 60 * 1000 + it.totalDuration }
     }
 
     @Override
     Price getBestPrice(FlightQuery itinerary) {
-        getBestItineraries(itinerary).first().getPrice()
+        List<Itinerary> itineraries = getBestItineraries(itinerary)
+        itineraries.empty ? null : itineraries.first().getPrice()
     }
 }

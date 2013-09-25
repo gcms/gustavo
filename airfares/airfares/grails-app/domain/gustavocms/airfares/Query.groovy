@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
  * To change this template use File | Settings | File Templates.
  */
 class Query {
-    public static final LINE_SEPARATOR = System.getProperty('line.separator')
+    public static final LINE_SEPARATOR = '\n'
 
     String content
 
@@ -59,12 +59,20 @@ class Query {
             return 'null'
 
         DateFormat df = new SimpleDateFormat('dd/MM/yyyy')
+        Date first = flightQuery.routes.first().departureInterval.start
+        Date last = flightQuery.routes.last().departureInterval.end
+
         if (flightQuery.roundTrip) {
             return "${flightQuery.routes.first().from}-${flightQuery.routes.first().to} " +
-                    "${df.format(flightQuery.routes.first().departureInterval.start)} - ${df.format(flightQuery.routes.last().departureInterval.end)}"
+                    "${df.format(first)} - ${df.format(last)}"
         }
 
-        flightQuery.toString()
+        List destinations = []
+        flightQuery.routes.each {
+            destinations << it.from
+            destinations << it.to
+        }
+        "${destinations.unique().join('-')} ${df.format(first)} - ${df.format(last)}"
     }
 
     BestPrice getCurrentPrice() {
