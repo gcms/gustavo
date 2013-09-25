@@ -3,7 +3,6 @@ package gustavocms.airfares.travelocity
 import gustavocms.airfares.AbstractProvider
 import gustavocms.airfares.Itinerary
 import gustavocms.airfares.SiteDirector
-import gustavocms.airfares.decolar.DecolarLoader
 import gustavocms.airfares.LoadThread
 import gustavocms.airfares.query.FlightQuery
 import gustavocms.airfares.query.fetch.ItineraryQuery

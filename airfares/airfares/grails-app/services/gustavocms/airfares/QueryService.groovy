@@ -1,6 +1,6 @@
 package gustavocms.airfares
 
-import gustavocms.airfares.decolar.DecolarProvider
+import gustavocms.airfares.despegar.DecolarProvider
 
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -29,17 +29,22 @@ class QueryService {
         getBestDeals(yesterday, yesterday)
     }
 
+    List<Deal> getAllTimePriceDrops() {
+        Date yesterday = new Date().clearTime() - 1
+        getBestDeals(yesterday - 365, yesterday, 'min')
+    }
 
-    List<Deal> getBestDeals(Date start, Date end) {
+
+    List<Deal> getBestDeals(Date start, Date end, String func = 'avg') {
         Date today = new Date().clearTime()
 
         Query.executeQuery("""
-select q, avg(bpOthers.price), (1 - (bpToday.price / avg(bpOthers.price))) as discount
+select q, ${func}(bpOthers.price), (1 - (bpToday.price / ${func}(bpOthers.price))) as discount
 from Query q, BestPrice bpToday, BestPrice bpOthers
 where q.id = bpToday.query.id and bpToday.day = :today
 and q.id = bpOthers.query.id and bpOthers.day <> :today and bpOthers.day between :start and :end
 group by q, q.content, q.version, bpToday, bpToday.price, bpToday.version
-having bpToday.price < avg(bpOthers.price)
+having bpToday.price <= ${func}(bpOthers.price)
 """, [today: today, start: start.clone().clearTime(), end: end.clone().clearTime()]).
         sort { -it[2] }.
         collect {
@@ -53,6 +58,9 @@ having bpToday.price < avg(bpOthers.price)
         if (!BestPrice.findByQueryAndDay(query, today)) {
             print "Not found ${query.id} ${today}"
             Price p = new DecolarProvider().getBestPrice(query.flightQuery)
+            if (p == null)
+                return
+
             BestPrice bp = new BestPrice(query: query, day: today, price: p.getPrice('USD'), currency: 'USD' )
             bp.save()
             bp.errors.allErrors.each { println it }

@@ -38,7 +38,7 @@ class CachedJsonLoader implements JsonLoader {
     }
 
     public String getKey(String url) {
-        key + new Date().format('yyyyMMdd') + url
+        key + new Date().format('yyyyMMdd') + url.replaceAll('\\W', '')
     }
 
     private Map getFromCache(String key) {

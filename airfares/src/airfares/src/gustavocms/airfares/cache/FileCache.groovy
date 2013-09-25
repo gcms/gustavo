@@ -1,8 +1,5 @@
 package gustavocms.airfares.cache
 
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter
 import java.security.MessageDigest
 
@@ -14,6 +11,7 @@ import java.security.MessageDigest
  * To change this template use File | Settings | File Templates.
  */
 abstract class FileCache implements Cache {
+    long expireTime = 1000 * 60 * 60 * 12
     File dir
 
     public FileCache(String dirname) {
@@ -34,8 +32,8 @@ abstract class FileCache implements Cache {
         getFromFile(file)
     }
 
-    private static boolean hasExpired(File file) {
-        if (file.lastModified() < System.currentTimeMillis() - 1000 * 60 * 60 * 12) {
+    private boolean hasExpired(File file) {
+        if (file.lastModified() < System.currentTimeMillis() - expireTime) {
             file.delete()
             return true
         }

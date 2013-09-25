@@ -1,4 +1,3 @@
-import gustavocms.airfares.BestPrice
 import gustavocms.airfares.CurrencyUpdater
 import gustavocms.airfares.FareLoader
 import gustavocms.airfares.Query
@@ -15,6 +14,7 @@ class BootStrap {
 
     def init = { servletContext ->
         initDB()
+//        initOutubro()
 //        CSVImporter.importFile()
 
         DateFormat format = new SimpleDateFormat('dd/MM/yyyy HH:mm')
@@ -24,6 +24,30 @@ class BootStrap {
         dub_par.routes << new FlightQueryRoute('PAR', 'DUB', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
         dub_par.routes << new FlightQueryRoute('DUB', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
         saveQuery(dub_par)
+
+        def mex_mia = new FlightQuery()
+        mex_mia.routes << new FlightQueryRoute('GYN', 'MEX', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+        mex_mia.routes << new FlightQueryRoute('MEX', 'MIA', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
+        mex_mia.routes << new FlightQueryRoute('MIA', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+        saveQuery(mex_mia)
+
+        def bog_mia = new FlightQuery()
+        bog_mia.routes << new FlightQueryRoute('GYN', 'BOG', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+        bog_mia.routes << new FlightQueryRoute('BOG', 'MIA', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
+        bog_mia.routes << new FlightQueryRoute('MIA', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+        saveQuery(bog_mia)
+
+        def lim_sfo = new FlightQuery()
+        lim_sfo.routes << new FlightQueryRoute('SAO', 'LIM', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+        lim_sfo.routes << new FlightQueryRoute('LIM', 'SFO', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
+        lim_sfo.routes << new FlightQueryRoute('LIM', 'SAO', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+        saveQuery(lim_sfo)
+
+        def mex_pty = new FlightQuery()
+        mex_pty.routes << new FlightQueryRoute('GYN', 'PTY', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+//        mex_pty.routes << new FlightQueryRoute('PTY', 'MEX', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
+        mex_pty.routes << new FlightQueryRoute('MEX', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+        saveQuery(mex_pty)
 
         def rio_lim = new FlightQuery()
         rio_lim.routes << new FlightQueryRoute('GYN', 'RIO', format.parse('07/02/2014 15:00'), format.parse('08/02/2014 13:40'))
@@ -38,8 +62,6 @@ class BootStrap {
         rio_par.routes << new FlightQueryRoute('PAR', 'RIO', format.parse('27/02/2014 00:00'), format.parse('02/03/2014 23:59'))
         rio_par.routes << new FlightQueryRoute('RIO', 'GYN', format.parse('03/03/2014 04:00'), format.parse('05/03/2014 23:59'))
         saveQuery(rio_par)
-
-
 
 
         new FareLoader(queryService).start()
@@ -71,13 +93,25 @@ class BootStrap {
         }
     }
 
+    private void initOutubro() {
+        DateFormat format = new SimpleDateFormat('dd/MM/yyyy HH:mm')
+
+        DateTimeInterval leave = new DateTimeInterval(format.parse('23/10/2013 14:00'), format.parse('24/10/2013 10:00'))
+        DateTimeInterval retur = new DateTimeInterval(format.parse('28/10/2013 16:00'), format.parse('29/10/2013 12:30'))
+
+        ['BEL', 'MAO', 'REC', 'FOR', 'RIO', 'MCZ', 'AJU', 'NAT'].each { String dst ->
+            createQuery('GYN', dst, leave, retur)
+        }
+    }
+
     private static void createQuery(String src, String dst, DateTimeInterval leave, DateTimeInterval retur) {
-        if (Query.findAllByContentLike("${src};${dst}%"))
+        if (Query.findAllByContentLike("${src};${dst};%${dst};${src};%"))
             return
 
         def fq = FlightQuery.createRoundTripQuery(src, dst, leave, retur)
+
         def q = new Query(flightQuery: fq)
-        q.save(failOnError: true)
+        q.save()
         println q
     }
 

@@ -4,7 +4,7 @@ import gustavocms.airfares.Itinerary
 import gustavocms.airfares.Price
 import gustavocms.airfares.Provider
 import gustavocms.airfares.cache.Cache
-import gustavocms.airfares.decolar.DecolarProvider
+import gustavocms.airfares.despegar.DespegarProvider
 import gustavocms.airfares.query.DateTimeInterval
 import gustavocms.airfares.query.FlightQuery
 import gustavocms.airfares.query.FlightQueryRoute
@@ -29,7 +29,7 @@ class Main {
     public Main() {
         dbWriter = new DBWriter()
         travelocity = new TravelocityProvider()
-        decolar = new DecolarProvider()
+        decolar = new DespegarProvider()
     }
 
     static void main(String[] args) {
@@ -103,7 +103,7 @@ class Main {
         def rtfq = FlightQuery.createRoundTripQuery(src, dest, new DateTimeInterval(departureStart, departureEnd), new DateTimeInterval(arrivalStart, arrivalEnd))
 //                Price price = travelocity.getBestPrice(rtfq)
 
-//        [ executeWithProvider(travelocity, rtfq, src, dest), executeWithProvider(decolar, rtfq, src, dest) ].last()
+//        [ executeWithProvider(travelocity, rtfq, src, dest), executeWithProvider(despegar, rtfq, src, dest) ].last()
         executeWithProvider(decolar, rtfq, src, dest)
     }
 
