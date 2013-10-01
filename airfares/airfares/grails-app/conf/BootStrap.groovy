@@ -27,7 +27,7 @@ class BootStrap {
 
         def mex_mia = new FlightQuery()
         mex_mia.routes << new FlightQueryRoute('GYN', 'MEX', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
-        mex_mia.routes << new FlightQueryRoute('MEX', 'MIA', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
+        mex_mia.routes << new FlightQueryRoute('MEX', 'MIA', format.parse('09/02/2014 08:00'), format.parse('12/02/2014 23:59'))
         mex_mia.routes << new FlightQueryRoute('MIA', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
         saveQuery(mex_mia)
 
@@ -40,7 +40,7 @@ class BootStrap {
         def lim_sfo = new FlightQuery()
         lim_sfo.routes << new FlightQueryRoute('SAO', 'LIM', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
         lim_sfo.routes << new FlightQueryRoute('LIM', 'SFO', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
-        lim_sfo.routes << new FlightQueryRoute('LIM', 'SAO', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+        lim_sfo.routes << new FlightQueryRoute('SFO', 'SAO', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
         saveQuery(lim_sfo)
 
         def mex_pty = new FlightQuery()
@@ -49,12 +49,25 @@ class BootStrap {
         mex_pty.routes << new FlightQueryRoute('MEX', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
         saveQuery(mex_pty)
 
+        def mex_cun = new FlightQuery()
+        mex_cun.routes << new FlightQueryRoute('GYN', 'MEX', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+//        mex_pty.routes << new FlightQueryRoute('PTY', 'MEX', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
+        mex_cun.routes << new FlightQueryRoute('CUN', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+        saveQuery(mex_cun)
+
         def rio_lim = new FlightQuery()
         rio_lim.routes << new FlightQueryRoute('GYN', 'RIO', format.parse('07/02/2014 15:00'), format.parse('08/02/2014 13:40'))
         rio_lim.routes << new FlightQueryRoute('RIO', 'LIM', format.parse('09/02/2014 00:00'), format.parse('12/02/2014 23:59'))
         rio_lim.routes << new FlightQueryRoute('LIM', 'RIO', format.parse('27/02/2014 00:00'), format.parse('02/03/2014 23:59'))
         rio_lim.routes << new FlightQueryRoute('RIO', 'GYN', format.parse('03/03/2014 04:00'), format.parse('05/03/2014 23:59'))
         saveQuery(rio_lim)
+
+        def rio_bog = new FlightQuery()
+        rio_bog.routes << new FlightQueryRoute('GYN', 'RIO', format.parse('07/02/2014 15:00'), format.parse('08/02/2014 13:40'))
+        rio_bog.routes << new FlightQueryRoute('RIO', 'LIM', format.parse('09/02/2014 00:00'), format.parse('12/02/2014 23:59'))
+        rio_bog.routes << new FlightQueryRoute('LIM', 'BOG', format.parse('27/02/2014 00:00'), format.parse('02/03/2014 23:59'))
+        rio_bog.routes << new FlightQueryRoute('BOG', 'GYN', format.parse('03/03/2014 04:00'), format.parse('05/03/2014 23:59'))
+        saveQuery(rio_bog)
 
         def rio_par = new FlightQuery()
         rio_par.routes << new FlightQueryRoute('GYN', 'RIO', format.parse('07/02/2014 15:00'), format.parse('08/02/2014 13:40'))
