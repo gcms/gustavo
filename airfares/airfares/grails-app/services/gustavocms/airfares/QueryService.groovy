@@ -57,13 +57,21 @@ having bpToday.price <= ${func}(bpOthers.price)
         Date today = new Date().clearTime()
         if (!BestPrice.findByQueryAndDay(query, today)) {
             print "Not found ${query.id} ${today}"
-            Price p = new DecolarProvider().getBestPrice(query.flightQuery)
+            Price p = getBestPrice(query)
             if (p == null)
                 return
 
             BestPrice bp = new BestPrice(query: query, day: today, price: p.getPrice('USD'), currency: 'USD' )
             bp.save()
             bp.errors.allErrors.each { println it }
+        }
+    }
+
+    private Price getBestPrice(Query query) {
+        try {
+            return new DecolarProvider().getBestPrice(query.flightQuery)
+        } catch (Exception ignored) {
+            return null
         }
     }
 

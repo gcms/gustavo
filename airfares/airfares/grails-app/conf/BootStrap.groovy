@@ -19,6 +19,23 @@ class BootStrap {
 
         DateFormat format = new SimpleDateFormat('dd/MM/yyyy HH:mm')
 
+        ['BSB', 'GYN', 'RIO', 'SAO'].each { String from ->
+            def mia_orl = new FlightQuery()
+            mia_orl.routes << new FlightQueryRoute(from, 'MIA', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+            mia_orl.routes << new FlightQueryRoute('ORL', from, format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+            saveQuery(mia_orl)
+
+            def orl_mia = new FlightQuery()
+            orl_mia.routes << new FlightQueryRoute(from, 'ORL', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+            orl_mia.routes << new FlightQueryRoute('MIA', from, format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+            saveQuery(orl_mia)
+        }
+
+        def zrh_par_dub = new FlightQuery()
+        zrh_par_dub.routes << new FlightQueryRoute('GYN', 'ZRH', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
+        zrh_par_dub.routes << new FlightQueryRoute('DUB', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
+        saveQuery(zrh_par_dub)
+
         def dub_par = new FlightQuery()
         dub_par.routes << new FlightQueryRoute('GYN', 'PAR', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
         dub_par.routes << new FlightQueryRoute('PAR', 'DUB', format.parse('16/02/2014 08:00'), format.parse('19/02/2014 23:59'))
@@ -30,6 +47,21 @@ class BootStrap {
         mex_mia.routes << new FlightQueryRoute('MEX', 'MIA', format.parse('09/02/2014 08:00'), format.parse('12/02/2014 23:59'))
         mex_mia.routes << new FlightQueryRoute('MIA', 'GYN', format.parse('01/03/2014 12:00'), format.parse('05/03/2014 23:59'))
         saveQuery(mex_mia)
+
+        def mex_mia2 = FlightQuery.createRoundTripQuery('MEX', 'MIA',
+                new DateTimeInterval(format.parse('12/02/2014 11:00'), format.parse('16/02/2014 23:59')),
+                new DateTimeInterval(format.parse('20/02/2014 11:00'), format.parse('28/02/2014 23:59')))
+        saveQuery(mex_mia2)
+
+        def mex_mia_orl = new FlightQuery()
+        mex_mia_orl.routes << new FlightQueryRoute('MEX', 'MIA', new DateTimeInterval(format.parse('12/02/2014 11:00'), format.parse('16/02/2014 23:59')))
+        mex_mia_orl.routes << new FlightQueryRoute('ORL', 'MEX', new DateTimeInterval(format.parse('20/02/2014 11:00'), format.parse('28/02/2014 23:59')))
+        saveQuery(mex_mia_orl)
+
+        def mex_orl_mia = new FlightQuery()
+        mex_orl_mia.routes << new FlightQueryRoute('MEX', 'ORL', new DateTimeInterval(format.parse('12/02/2014 11:00'), format.parse('16/02/2014 23:59')))
+        mex_orl_mia.routes << new FlightQueryRoute('MIA', 'MEX', new DateTimeInterval(format.parse('20/02/2014 11:00'), format.parse('28/02/2014 23:59')))
+        saveQuery(mex_orl_mia)
 
         def bog_mia = new FlightQuery()
         bog_mia.routes << new FlightQueryRoute('GYN', 'BOG', format.parse('07/02/2014 15:00'), format.parse('09/02/2014 23:59'))
@@ -97,7 +129,7 @@ class BootStrap {
         createQuery('GYN', 'SAO', leave, retur)
         createQuery('GYN', 'RIO', leave, retur)
 
-        List destinations = ['YQB', 'MIL', 'FRA', 'SLA', 'YEA', 'AKL', 'BOG', 'VIE', 'PAR', 'DUB', 'MIA', 'NYC', 'MEX', 'COR', 'LIM', 'MUC', 'BCN', 'YMQ', 'YYZ', 'CPT', 'LON', 'ROM', 'PRG', 'FLO', 'SYD', 'KRK', 'BEG', 'BUD', 'ZRH', 'SFO', 'LIS', 'SCL', 'ORL']
+        List destinations = ['LIS', 'YQB', 'MIL', 'FRA', 'SLA', 'YEA', 'AKL', 'BOG', 'VIE', 'PAR', 'DUB', 'MIA', 'NYC', 'MEX', 'COR', 'LIM', 'MUC', 'BCN', 'YMQ', 'YYZ', 'CPT', 'LON', 'ROM', 'PRG', 'FLO', 'SYD', 'KRK', 'BEG', 'BUD', 'ZRH', 'SFO', 'LIS', 'SCL', 'ORL', 'UIO']
         destinations.each { String dst ->
             createQuery('GYN', dst, leave, retur)
             createQuery('BSB', dst, leave, retur)
