@@ -61,6 +61,7 @@ class CachedJsonLoader implements JsonLoader {
 
             return result
         } catch (Exception ignored) {
+            ignored.printStackTrace()
             return null
         }
     }

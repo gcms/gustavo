@@ -1,5 +1,7 @@
 package gustavocms.airfares.query.fetch
 
+import gustavocms.airfares.query.FlightQueryRoute
+
 /**
  * Created with IntelliJ IDEA.
  * User: gustavosousa
@@ -40,5 +42,4 @@ class ItineraryQuery {
     static boolean isRoundTrip(ItineraryQueryRoute leave, ItineraryQueryRoute retur) {
         leave.from == retur.to && leave.to == retur.from
     }
-
 }

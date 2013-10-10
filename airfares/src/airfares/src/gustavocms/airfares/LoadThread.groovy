@@ -1,6 +1,7 @@
 package gustavocms.airfares
 
 import gustavocms.airfares.SiteDirector
+import gustavocms.airfares.query.fetch.CompositeItineraryQuery
 import gustavocms.airfares.query.fetch.ItineraryQuery
 
 /**
@@ -18,6 +19,7 @@ class LoadThread extends Thread {
 
     public void run() {
         result = director.loadItineraries(query)
+//        result = CompositeItineraryQuery.loadItineraries(query, director) as List
         print "."
     }
 }

@@ -10,9 +10,9 @@
     <ignored path="airfares.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Cache.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380117269546" ignored="false" />
-    <file path="/Main.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379507629921" ignored="false" />
+    <file path="/Main.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380667851492" ignored="false" />
     <file path="/DecolarParser.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378986920419" ignored="false" />
-    <file path="/Itinerary.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379508561718" ignored="false" />
+    <file path="/Itinerary.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380835521678" ignored="false" />
     <file path="$PROJECT_DIR$/../../../escalas/EscalaMedica/grails-app/controllers/br.gov.go.saude.hugo.escalas/EscalacaoController.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378389544507" ignored="false" />
     <file path="/CentroCustoService.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378294192750" ignored="false" />
     <file path="$PROJECT_DIR$/../../../escalas/EscalaMedica/grails-app/services/br/gov/go/saude/hugo/escalas/CentroCustoService.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378294214578" ignored="false" />
@@ -28,7 +28,7 @@
     <file path="$PROJECT_DIR$/../../../escalas/EscalaMedica/target/test-reports/TEST-integration-integration-br.gov.go.saude.hugo.escalas.WarelineServiceTests.xml" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378295311706" ignored="false" />
     <file path="/DecolarProvider.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379346670730" ignored="false" />
     <file path="/Test.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378319431969" ignored="false" />
-    <file path="/fragment.java" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379418889575" ignored="false" />
+    <file path="/fragment.java" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380661801986" ignored="false" />
     <file path="/DBWriter.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378391534609" ignored="false" />
     <file path="/CurrencyConverterExample.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378378681121" ignored="false" />
     <file path="/CurrencyConverter.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378379816673" ignored="false" />
@@ -56,8 +56,8 @@
     <file path="/Periodo.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378388271712" ignored="false" />
     <file path="/a.dummy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379000743911" ignored="false" />
     <file path="/index.gsp" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378390137433" ignored="false" />
-    <file path="/Dummy.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379686885591" ignored="false" />
-    <file path="/LoadThread.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378991421095" ignored="false" />
+    <file path="/Dummy.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380667201351" ignored="false" />
+    <file path="/LoadThread.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380666845532" ignored="false" />
     <file path="/JsonCache.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378752998337" ignored="false" />
     <file path="/queries.txt" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378741057792" ignored="false" />
     <file path="/CacheEntry.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378753022248" ignored="false" />
@@ -67,8 +67,8 @@
     <file path="/log4j.properties" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378763713917" ignored="false" />
     <file path="/EhCache.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378811334771" ignored="false" />
     <file path="/ehcache.xml" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378812234123" ignored="false" />
-    <file path="/FileCache.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380117234393" ignored="false" />
-    <file path="/MemoryCache.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378822033634" ignored="false" />
+    <file path="/FileCache.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380660931465" ignored="false" />
+    <file path="/MemoryCache.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380660852391" ignored="false" />
     <file path="/RoundTripFlightQuery.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378896479198" ignored="false" />
     <file path="/SearchResult.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378819383872" ignored="false" />
     <file path="/AbstractProvider.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379685120286" ignored="false" />
@@ -141,11 +141,11 @@
     <file path="/ExpediaProvider.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378827212173" ignored="false" />
     <file path="/DateTimeInterval.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378996374082" ignored="false" />
     <file path="/FlightQueryRoute.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378998457402" ignored="false" />
-    <file path="/FlightQuery.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378998434735" ignored="false" />
+    <file path="/FlightQuery.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380658293781" ignored="false" />
     <file path="/RoundTripFlightQueryTests.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378896557868" ignored="false" />
     <file path="/DecolarURLBuilder.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379685407555" ignored="false" />
     <file path="/URLBuilder.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378897888657" ignored="false" />
-    <file path="/ItineraryQuery.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379344604731" ignored="false" />
+    <file path="/ItineraryQuery.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380658804627" ignored="false" />
     <file path="/ItineraryQueryRoute.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378898410385" ignored="false" />
     <file path="/DayRange.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378899100590" ignored="false" />
     <file path="/FlightQueryTests.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378900699796" ignored="false" />
@@ -162,8 +162,8 @@
     <file path="$PROJECT_DIR$/../../airfares/grails-app/views/query/list.gsp" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380118663470" ignored="false" />
     <file path="$PROJECT_DIR$/../../airfares/target/stacktrace.log" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379082125062" ignored="false" />
     <file path="$PROJECT_DIR$/../../airfares/lib/airfares.jar!/gustavocms/airfares/query/FlightQueryRoute.class" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1378998520780" ignored="false" />
-    <file path="$PROJECT_DIR$/../../airfares/grails-app/services/gustavocms/airfares/QueryService.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380123823730" ignored="false" />
-    <file path="/QueryService.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380123820929" ignored="false" />
+    <file path="$PROJECT_DIR$/../../airfares/grails-app/services/gustavocms/airfares/QueryService.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380888394682" ignored="false" />
+    <file path="/QueryService.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380887792888" ignored="false" />
     <file path="$PROJECT_DIR$/../../airfares/grails-app/views/query/view.gsp" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380117904029" ignored="false" />
     <file path="/view.gsp" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380117896403" ignored="false" />
     <file path="$PROJECT_DIR$/../../airfares/src/groovy/gustavocms/airfares/FareLoader.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379510794175" ignored="false" />
@@ -193,11 +193,12 @@
     <file path="/JsonLoader.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379506346235" ignored="false" />
     <file path="/TravelocitySiteDirector.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379422671194" ignored="false" />
     <file path="/TravelocityProvider.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379418992635" ignored="false" />
-    <file path="/CachedJsonLoader.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379686739119" ignored="false" />
+    <file path="/CachedJsonLoader.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1381265099197" ignored="false" />
     <file path="/CompositeProvider.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379422904223" ignored="false" />
     <file path="/CompoundFlightQuery.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379515542535" ignored="false" />
     <file path="/httpwwwusdespegarcomshopflightsdatasearchonewaybsbmia20140208100TOTALFAREASCENDINGNANANANA" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1379687151553" ignored="false" />
     <file path="/DespegarLoader.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380119144787" ignored="false" />
+    <file path="/CompositeItineraryQuery.groovy" changelist="1ffab86b-b149-4c85-82bd-df9277cec345" time="1380835538553" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,6 +213,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -264,7 +266,52 @@
         <option name="CONDITION" value="o == null || o.get('loadTime') == null || get('loadTime') == null&#13;&#13;Groovy" />
         <option name="LOG_MESSAGE" value="&#13;&#13;Groovy" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy" line="59" class="gustavocms.airfares.impl.CachedJsonLoader" package="gustavocms.airfares.impl">
+      <breakpoint url="file://$PROJECT_DIR$/test/gustavocms/airfares/despegar/DecolarProviderTests.groovy" line="77" class="gustavocms.airfares.despegar.DecolarProviderTests" package="gustavocms.airfares.despegar">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/query/fetch/CompositeItineraryQuery.groovy" line="94" class="gustavocms.airfares.query.fetch.CompositeItineraryQuery" package="gustavocms.airfares.query.fetch">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/query/fetch/CompositeItineraryQuery.groovy" line="90" class="gustavocms.airfares.query.fetch.CompositeItineraryQuery" package="gustavocms.airfares.query.fetch">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/Itinerary.groovy" line="61" class="gustavocms.airfares.Itinerary" package="gustavocms.airfares">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -294,7 +341,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy" line="55" class="gustavocms.airfares.impl.CachedJsonLoader" package="gustavocms.airfares.impl">
+      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarProvider.groovy" line="40" class="gustavocms.airfares.despegar.DespegarProvider" package="gustavocms.airfares.despegar">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -309,82 +356,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy" line="40" class="gustavocms.airfares.impl.CachedJsonLoader" package="gustavocms.airfares.impl">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/cache/FileCache.groovy" line="30" class="gustavocms.airfares.cache.FileCache" package="gustavocms.airfares.cache">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/cache/FileCache.groovy" line="45" class="gustavocms.airfares.cache.FileCache" package="gustavocms.airfares.cache">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy" line="46" class="gustavocms.airfares.impl.CachedJsonLoader" package="gustavocms.airfares.impl">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/test/gustavocms/airfares/despegar/DecolarProviderTests.groovy" line="77" class="gustavocms.airfares.despegar.DecolarProviderTests" package="gustavocms.airfares.despegar">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/cache/JsonFileCache.groovy" line="21" class="gustavocms.airfares.cache.JsonFileCache" package="gustavocms.airfares.cache">
+      <breakpoint url="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarProvider.groovy" line="37" class="gustavocms.airfares.despegar.DespegarProvider" package="gustavocms.airfares.despegar">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -400,7 +372,6 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </line_breakpoints>
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -413,27 +384,7 @@
       <file leaf-file-name="CachedJsonLoader.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="0" selection-start="1246" selection-end="1246" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FileCache.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/cache/FileCache.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="15" selection-start="304" selection-end="304" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#35#93#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="JsonFileCache.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/cache/JsonFileCache.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="23" selection-start="741" selection-end="741" vertical-scroll-proportion="0.0">
+            <state line="63" column="36" selection-start="1924" selection-end="1924" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -442,16 +393,25 @@
       <file leaf-file-name="DespegarProvider.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarProvider.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="67" selection-start="779" selection-end="779" vertical-scroll-proportion="0.0">
+            <state line="40" column="29" selection-start="1367" selection-end="1367" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DespegarLoader.groovy" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarLoader.groovy">
+      <file leaf-file-name="DespegarParser.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarParser.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="26" selection-start="457" selection-end="457" vertical-scroll-proportion="0.37532467">
+            <state line="20" column="22" selection-start="653" selection-end="653" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CompositeItineraryQuery.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/query/fetch/CompositeItineraryQuery.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="15" column="39" selection-start="409" selection-end="424" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -460,19 +420,35 @@
       <file leaf-file-name="Provider.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/Provider.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="17" selection-start="309" selection-end="309" vertical-scroll-proportion="0.0">
+            <state line="14" column="27" selection-start="412" selection-end="412" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DecolarProviderTests.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/gustavocms/airfares/despegar/DecolarProviderTests.groovy">
+      <file leaf-file-name="AbstractProvider.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/AbstractProvider.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="93" column="53" selection-start="3750" selection-end="3750" vertical-scroll-proportion="0.0">
-              <folding>
-                <marker date="1379687649487" expanded="true" signature="540:839" placeholder="..." />
-              </folding>
+            <state line="12" column="33" selection-start="288" selection-end="288" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Itinerary.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/Itinerary.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="17" column="18" selection-start="380" selection-end="380" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LoadThread.groovy" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/LoadThread.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="22" column="42" selection-start="623" selection-end="623" vertical-scroll-proportion="0.6331471">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -480,7 +456,16 @@
       <file leaf-file-name="DespegarSiteDirector.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarSiteDirector.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="24" selection-start="926" selection-end="926" vertical-scroll-proportion="0.0">
+            <state line="30" column="0" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Main.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/example/Main.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="96" column="106" selection-start="3890" selection-end="3890" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -496,22 +481,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/decolar/DecolarSiteDirector.groovy" />
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/decolar/DecolarURLBuilder.groovy" />
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/example/Main.groovy" />
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/Itinerary.groovy" />
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/query/CompoundFlightQuery.groovy" />
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/despegar/DecolarLoader.groovy" />
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/AbstractProvider.groovy" />
         <option value="$PROJECT_DIR$/src/gustavocms/airfares/despegar/DecolarURLBuilder.groovy" />
         <option value="$PROJECT_DIR$/src/gustavocms/airfares/despegar/DecolarSiteDirector.groovy" />
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy" />
         <option value="$PROJECT_DIR$/testdb/httpwwwusdespegarcomshopflightsdatasearchonewaybsbmia20140208100TOTALFAREASCENDINGNANANANA" />
         <option value="$PROJECT_DIR$/test/gustavocms/airfares/despegar/DecolarProviderTests.groovy" />
         <option value="$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarSiteDirector.groovy" />
-        <option value="$PROJECT_DIR$/src/gustavocms/airfares/cache/FileCache.groovy" />
         <option value="$PROJECT_DIR$/src/gustavocms/airfares/cache/Cache.groovy" />
         <option value="$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarLoader.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/query/FlightQuery.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/query/fetch/ItineraryQuery.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/cache/MemoryCache.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/cache/FileCache.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/Itinerary.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/query/fetch/CompositeItineraryQuery.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/example/Main.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy" />
+        <option value="$PROJECT_DIR$/src/gustavocms/airfares/LoadThread.groovy" />
       </list>
     </option>
   </component>
@@ -550,12 +535,123 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="airfares" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="airfares" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; 1.7 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="airfares" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; 1.7 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rt.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="airfares" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; 1.7 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rt.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="airfares" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; 1.7 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rt.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lang" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="airfares" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; 1.7 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rt.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="io" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -746,7 +842,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="travelocity" />
+              <option name="myItemId" value="query" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -775,6 +871,10 @@
               <option name="myItemId" value="query" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fetch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -799,6 +899,32 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="impl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="airfares" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="airfares" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gustavocms" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="airfares" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="example" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -856,7 +982,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -874,12 +999,12 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
+    <property name="FullScreen" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -1061,6 +1186,15 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
+    <configuration default="true" type="GroovyScriptRunConfiguration" factoryName="Groovy">
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="file://$PROJECT_DIR$" />
+      <setting name="debug" value="false" />
+      <method />
+    </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -1073,6 +1207,19 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -1101,19 +1248,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -1205,12 +1339,13 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1696" height="1026" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32641292" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39561707" sideWeight="0.57723576" order="3" side_tool="false" content_ui="tabs" />
@@ -1219,18 +1354,17 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32451093" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32410613" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2495935" sideWeight="0.5775076" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3984088" sideWeight="0.60438293" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24724603" sideWeight="0.6735871" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4025375" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32641292" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1300,106 +1434,112 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test/gustavocms/airfares/cache/JsonFileCacheTests.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="6" selection-start="195" selection-end="195" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testdb/httpwwwusdespegarcomshopflightsdatasearchroundtripgyndub2014020720140304100TOTALFAREASCENDINGNANANANANA">
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_25/src.zip!/java/io/File.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testdb/httpwwwusdespegarcomshopflightsdatasearchroundtripgynmia2014020720140304100TOTALFAREASCENDINGNANANANANA">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testdb/httpwwwusdespegarcomshopflightsdatasearchroundtripgynmia2014020720140305100TOTALFAREASCENDINGNANANANANA">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/filecache/130089E9F13B867DFFB2F9474B7A351F105">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testdb/httpwwwusdespegarcomshopflightsdatasearchonewaybsbmia20140208100TOTALFAREASCENDINGNANANANA">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="323212" selection-start="323212" selection-end="323212" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testdb/httpwwwusdespegarcomshopflightsdatasearchroundtripgyndub2014020720140305100TOTALFAREASCENDINGNANANANANA">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="28" selection-start="0" selection-end="480320" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarSiteDirector.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="24" selection-start="926" selection-end="926" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/gustavocms/airfares/despegar/DecolarProviderTests.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="93" column="53" selection-start="3750" selection-end="3750" vertical-scroll-proportion="0.0">
-          <folding>
-            <marker date="1379687649487" expanded="true" signature="540:839" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/Provider.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="17" selection-start="309" selection-end="309" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="0" selection-start="1246" selection-end="1246" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/cache/FileCache.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="15" selection-start="304" selection-end="304" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#35#93#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarProvider.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="67" selection-start="779" selection-end="779" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/cache/Cache.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="24" selection-start="237" selection-end="237" vertical-scroll-proportion="0.18658537">
+        <state line="45" column="0" selection-start="1036" selection-end="1036" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/cache/JsonFileCache.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="23" selection-start="741" selection-end="741" vertical-scroll-proportion="0.0">
+        <state line="21" column="0" selection-start="486" selection-end="486" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarLoader.groovy">
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/Route.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="26" selection-start="457" selection-end="457" vertical-scroll-proportion="0.37532467">
+        <state line="11" column="6" selection-start="242" selection-end="242" vertical-scroll-proportion="-0.07641921">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarURLBuilder.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="26" selection-start="561" selection-end="561" vertical-scroll-proportion="0.22198276">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/SiteDirector.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarSiteDirector.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="0" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/Provider.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="27" selection-start="412" selection-end="412" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/AbstractProvider.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="33" selection-start="288" selection-end="288" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/Itinerary.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="18" selection-start="380" selection-end="380" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/example/Main.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="106" selection-start="3890" selection-end="3890" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarProvider.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="29" selection-start="1367" selection-end="1367" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/despegar/DespegarParser.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="22" selection-start="653" selection-end="653" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/impl/CachedJsonLoader.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="63" column="36" selection-start="1924" selection-end="1924" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/query/fetch/CompositeItineraryQuery.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="39" selection-start="409" selection-end="424" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gustavocms/airfares/LoadThread.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="42" selection-start="623" selection-end="623" vertical-scroll-proportion="0.6331471">
           <folding />
         </state>
       </provider>

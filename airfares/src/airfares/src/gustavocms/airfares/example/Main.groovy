@@ -43,9 +43,21 @@ class Main {
     }
 
     public void execute() {
-        executeMultiDest()
 
         DateFormat format = new SimpleDateFormat('dd/MM/yyyy HH:mm')
+
+        def fq = new FlightQuery()
+        fq.routes << new FlightQueryRoute('GYN', 'RIO', format.parse('07/02/2014 15:00'), format.parse('08/02/2014 23:59'))
+        fq.routes << new FlightQueryRoute('RIO', 'LIM', format.parse('09/02/2014 12:00'), format.parse('12/02/2014 23:59'))
+        fq.routes << new FlightQueryRoute('LIM', 'RIO', format.parse('28/02/2014 14:00'), format.parse('02/03/2014 23:59'))
+        fq.routes << new FlightQueryRoute('RIO', 'GYN', format.parse('01/03/2014 15:00'), format.parse('05/03/2014 23:59'))
+        decolar.getBestItineraries(fq).each {
+            println it
+        }
+
+//        System.exit(0)
+
+        executeMultiDest()
 
         Date departureStart = format.parse('07/02/2014 15:00')
         Date departureEnd = format.parse('08/02/2014 23:59')

@@ -32,7 +32,7 @@ abstract class FileCache implements Cache {
         getFromFile(file)
     }
 
-    private boolean hasExpired(File file) {
+    protected boolean hasExpired(File file) {
         if (file.lastModified() < System.currentTimeMillis() - expireTime) {
             file.delete()
             return true
