@@ -20,6 +20,11 @@ class MemoryCache implements Cache {
     }
 
     @Override
+    boolean remove(String key) {
+        cache.remove(key)
+    }
+
+    @Override
     void flush() {
         //To change body of implemented methods use File | Settings | File Templates.
     }

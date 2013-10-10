@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat
 class Itinerary {
     List<Route> routes
     Price price
+    String comment
 
     public int hashCode() {
         routes.hashCode() + price.hashCode()
@@ -47,5 +48,18 @@ class Itinerary {
 
     String toRoundTripString() {
         "${price} ${routes.first()} / ${routes.last()} [${DateFormatUtils.format(getTotalDuration(), "HH:mm")}]"
+    }
+
+    boolean isValid() {
+        routes.every { !conflict(it) }
+    }
+
+    boolean conflict(Route route) {
+        routes.every { it == route || (!conflict(it, route) && !conflict(route, it))}
+    }
+
+    static boolean conflict(Route r1, Route r2) {
+        (r2.departure <= r1.departure && r1.departure <= r2.arrival) ||
+                (r2.departure <= r1.arrival && r1.arrival <= r2.arrival)
     }
 }
