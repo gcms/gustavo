@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rsync -avz -e "ssh -i $HOME/.ssh/id_dsa.pub" ~/Downloads/site/ sousa@synchro-lil:/public_html/sousa/

@@ -1,0 +1,1101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+      xmlns:css="http://macVmlSchemaUri"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+    <meta name="Title" content="">
+    <meta name="Keywords" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="highlight/styles/default.css">
+    <script type="text/javascript" src="highlight/highlight.pack.js"></script>
+    <script type="text/javascript">
+        hljs.registerLanguage('output', function(e) {
+            return {};
+        });
+        hljs.registerLanguage('hljs-cloud-services', function(e) {
+            return {
+                cI: true,
+                k: {keyword: 'services ontology service value some and or cloud instanceGroup global deploy role'},
+                c:[e.CLCM,e.CBCM,e.ASM,e.QSM,e.NM,e.RM]
+            };
+        });
+        hljs.listLanguages();
+        hljs.initHighlightingOnLoad();
+//        hljs.initHighlighting();
+
+    </script>
+    <script type="text/javascript">
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-67283584-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    <link rel="File-List" href="icse16_files/filelist.xml">
+    <!--[if gte mso 9]>
+    <xml>
+        <o:DocumentProperties>
+            <o:Template>Normal.dotm</o:Template>
+            <o:LastAuthor>Gustavo Sousa</o:LastAuthor>
+            <o:Revision>36</o:Revision>
+            <o:TotalTime>86</o:TotalTime>
+            <o:Created>2015-09-02T11:34:00Z</o:Created>
+            <o:LastSaved>2015-09-02T14:06:00Z</o:LastSaved>
+            <o:Pages>1</o:Pages>
+            <o:Lines>1</o:Lines>
+            <o:Paragraphs>1</o:Paragraphs>
+            <o:Version>12.0</o:Version>
+        </o:DocumentProperties>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+        </o:OfficeDocumentSettings>
+    </xml><![endif]--><!--[if gte mso 9]>
+    <xml>
+        <w:WordDocument>
+            <w:TrackMoves>false</w:TrackMoves>
+            <w:TrackFormatting/>
+            <w:PunctuationKerning/>
+            <w:DrawingGridHorizontalSpacing>18 pt</w:DrawingGridHorizontalSpacing>
+            <w:DrawingGridVerticalSpacing>18 pt</w:DrawingGridVerticalSpacing>
+            <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+            <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+            <w:ValidateAgainstSchemas/>
+            <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+            <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+            <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+            <w:Compatibility>
+                <w:BreakWrappedTables/>
+                <w:DontGrowAutofit/>
+                <w:DontAutofitConstrainedTables/>
+                <w:DontVertAlignInTxbx/>
+            </w:Compatibility>
+        </w:WordDocument>
+    </xml><![endif]--><!--[if gte mso 9]>
+    <xml>
+        <w:LatentStyles DefLockedState="false" LatentStyleCount="276">
+        </w:LatentStyles>
+    </xml><![endif]-->
+    <style>
+        <!--
+        /* Font Definitions */
+        @font-face {
+            font-family: Arial;
+            panose-1: 2 11 6 4 2 2 2 2 2 4;
+            mso-font-charset: 0;
+            mso-generic-font-family: auto;
+            mso-font-pitch: variable;
+            mso-font-signature: 3 0 0 0 1 0;
+        }
+
+        @font-face {
+            font-family: "Courier New";
+            panose-1: 2 7 3 9 2 2 5 2 4 4;
+            mso-font-charset: 0;
+            mso-generic-font-family: auto;
+            mso-font-pitch: variable;
+            mso-font-signature: 3 0 0 0 1 0;
+        }
+
+        @font-face {
+            font-family: Times;
+            panose-1: 2 0 5 0 0 0 0 0 0 0;
+            mso-font-charset: 0;
+            mso-generic-font-family: auto;
+            mso-font-pitch: variable;
+            mso-font-signature: 3 0 0 0 1 0;
+        }
+
+        @font-face {
+            font-family: Wingdings;
+            panose-1: 5 2 1 2 1 8 4 8 7 8;
+            mso-font-charset: 2;
+            mso-generic-font-family: auto;
+            mso-font-pitch: variable;
+            mso-font-signature: 0 0 65536 0 -2147483648 0;
+        }
+
+        @font-face {
+            font-family: Cambria;
+            panose-1: 2 4 5 3 5 4 6 3 2 4;
+            mso-font-charset: 0;
+            mso-generic-font-family: auto;
+            mso-font-pitch: variable;
+            mso-font-signature: 3 0 0 0 1 0;
+        }
+
+        /* Style Definitions */
+        p.MsoNormal, li.MsoNormal, div.MsoNormal {
+            mso-style-parent: "";
+            margin-top: 0cm;
+            margin-right: 0cm;
+            margin-bottom: 10.0pt;
+            margin-left: 0cm;
+            mso-pagination: widow-orphan;
+            font-size: 12.0pt;
+            font-family: Cambria;
+            mso-ascii-font-family: Cambria;
+            mso-ascii-theme-font: minor-latin;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-hansi-font-family: Cambria;
+            mso-hansi-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+
+        h1 {
+            mso-style-link: "Heading 1 Char";
+            mso-style-next: Normal;
+            margin-top: 24.0pt;
+            margin-right: 0cm;
+            margin-bottom: 0cm;
+            margin-left: 0cm;
+            margin-bottom: .0001pt;
+            mso-pagination: widow-orphan lines-together;
+            page-break-after: avoid;
+            mso-outline-level: 1;
+            font-size: 18.0pt;
+            mso-bidi-font-size: 16.0pt;
+            font-family: Arial;
+            mso-fareast-font-family: "Times New Roman";
+            mso-fareast-theme-font: major-fareast;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: major-bidi;
+            mso-font-kerning: 0pt;
+            font-weight: bold;
+        }
+
+        h2 {
+            mso-style-link: "Heading 2 Char";
+            mso-style-next: Normal;
+            margin-top: 10.0pt;
+            margin-right: 0cm;
+            margin-bottom: 0cm;
+            margin-left: 0cm;
+            margin-bottom: .0001pt;
+            mso-pagination: widow-orphan lines-together;
+            page-break-after: avoid;
+            mso-outline-level: 2;
+            font-size: 14.0pt;
+            mso-bidi-font-size: 13.0pt;
+            font-family: Arial;
+            mso-fareast-font-family: "Times New Roman";
+            mso-fareast-theme-font: major-fareast;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: major-bidi;
+            font-weight: bold;
+        }
+
+        a:link, span.MsoHyperlink {
+            color: blue;
+            text-decoration: underline;
+            text-underline: single;
+        }
+
+        a:visited, span.MsoHyperlinkFollowed {
+            color: purple;
+            text-decoration: underline;
+            text-underline: single;
+        }
+
+        p {
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            mso-pagination: widow-orphan;
+            font-size: 10.0pt;
+            font-family: Times;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+        }
+
+        p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph {
+            margin-top: 0cm;
+            margin-right: 0cm;
+            margin-bottom: 4.0pt;
+            margin-left: 36.0pt;
+            mso-pagination: widow-orphan;
+            font-size: 12.0pt;
+            font-family: Cambria;
+            mso-ascii-font-family: Cambria;
+            mso-ascii-theme-font: minor-latin;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-hansi-font-family: Cambria;
+            mso-hansi-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+
+        span.Heading1Char {
+            mso-style-name: "Heading 1 Char";
+            mso-style-locked: yes;
+            mso-style-link: "Heading 1";
+            mso-ansi-font-size: 18.0pt;
+            mso-bidi-font-size: 16.0pt;
+            font-family: Arial;
+            mso-ascii-font-family: Arial;
+            mso-fareast-font-family: "Times New Roman";
+            mso-fareast-theme-font: major-fareast;
+            mso-hansi-font-family: Arial;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: major-bidi;
+            font-weight: bold;
+        }
+
+        span.Heading2Char {
+            mso-style-name: "Heading 2 Char";
+            mso-style-locked: yes;
+            mso-style-link: "Heading 2";
+            mso-ansi-font-size: 14.0pt;
+            mso-bidi-font-size: 13.0pt;
+            font-family: Arial;
+            mso-ascii-font-family: Arial;
+            mso-fareast-font-family: "Times New Roman";
+            mso-fareast-theme-font: major-fareast;
+            mso-hansi-font-family: Arial;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: major-bidi;
+            font-weight: bold;
+        }
+
+        span.path {
+            mso-style-name: path;
+            font-family: Courier;
+            mso-ascii-font-family: Courier;
+            mso-hansi-font-family: Courier;
+        }
+
+        @page Section1 {
+            size: 595.0pt 842.0pt;
+            margin: 72.0pt 90.0pt 72.0pt 90.0pt;
+            mso-header-margin: 35.4pt;
+            mso-footer-margin: 35.4pt;
+            mso-paper-source: 0;
+        }
+
+        div.Section1 {
+            page: Section1;
+        }
+
+        /* List Definitions */
+        @list l0 {
+            mso-list-id: 119493335;
+            mso-list-template-ids: -1787557502;
+            mso-list-style-name: Listing;
+        }
+        @list l0:level1 {
+            mso-level-start-at: 0;
+            mso-level-number-format: bullet;
+            mso-level-text: -;
+        mso-level-tab-stop:none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Cambria;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+        @list l0:level2 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l0:level3 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l0:level4 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l0:level5 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l0:level6 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l0:level7 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l0:level8 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l0:level9 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l1 {
+            mso-list-id: 301928120;
+            mso-list-template-ids: -1787557502;
+            mso-list-style-id: 119493335;
+        }
+        @list l1:level1 {
+            mso-level-start-at: 0;
+            mso-level-number-format: bullet;
+            mso-level-text: -;
+        mso-level-tab-stop:none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Cambria;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+        @list l1:level2 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l1:level3 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l1:level4 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l1:level5 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l1:level6 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l1:level7 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l1:level8 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l1:level9 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l2 {
+            mso-list-id: 420562743;
+            mso-list-type: hybrid;
+            mso-list-template-ids: -1787557502 673619756 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;
+        }
+        @list l2:level1 {
+            mso-level-start-at: 0;
+            mso-level-number-format: bullet;
+            mso-level-text: -;
+        mso-level-tab-stop:none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Cambria;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+        @list l3 {
+            mso-list-id: 1148088312;
+            mso-list-template-ids: -1787557502;
+            mso-list-style-id: 119493335;
+        }
+        @list l3:level1 {
+            mso-level-start-at: 0;
+            mso-level-number-format: bullet;
+            mso-level-text: -;
+        mso-level-tab-stop:none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Cambria;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+        @list l3:level2 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l3:level3 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l3:level4 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l3:level5 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l3:level6 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l3:level7 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l3:level8 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l3:level9 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l4 {
+            mso-list-id: 1303736240;
+            mso-list-template-ids: -1787557502;
+            mso-list-style-id: 119493335;
+        }
+        @list l4:level1 {
+            mso-level-start-at: 0;
+            mso-level-number-format: bullet;
+            mso-level-text: -;
+        mso-level-tab-stop:none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Cambria;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+        @list l4:level2 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l4:level3 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l4:level4 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l4:level5 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l4:level6 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l4:level7 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l4:level8 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l4:level9 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l5 {
+            mso-list-id: 1481969161;
+            mso-list-template-ids: -1787557502;
+            mso-list-style-id: 119493335;
+        }
+        @list l5:level1 {
+            mso-level-start-at: 0;
+            mso-level-number-format: bullet;
+            mso-level-text: -;
+        mso-level-tab-stop:none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Cambria;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+        @list l5:level2 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l5:level3 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l5:level4 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l5:level5 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l5:level6 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l5:level7 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l5:level8 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l5:level9 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l6 {
+            mso-list-id: 1580365473;
+            mso-list-template-ids: -1787557502;
+            mso-list-style-id: 119493335;
+        }
+        @list l6:level1 {
+            mso-level-start-at: 0;
+            mso-level-number-format: bullet;
+            mso-level-text: -;
+        mso-level-tab-stop:none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Cambria;
+            mso-fareast-font-family: Cambria;
+            mso-fareast-theme-font: minor-latin;
+            mso-bidi-font-family: "Times New Roman";
+            mso-bidi-theme-font: minor-bidi;
+        }
+        @list l6:level2 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l6:level3 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l6:level4 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l6:level5 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l6:level6 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        @list l6:level7 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0B7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Symbol;
+        }
+        @list l6:level8 {
+            mso-level-number-format: bullet;
+            mso-level-text: o;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: "Courier New";
+        }
+        @list l6:level9 {
+            mso-level-number-format: bullet;
+            mso-level-text: \F0A7;
+            mso-level-tab-stop: none;
+            mso-level-number-position: left;
+            text-indent: -18.0pt;
+            font-family: Wingdings;
+        }
+        ol {
+            margin-bottom: 0cm;
+        }
+
+        ul {
+            margin-bottom: 0cm;
+        }
+
+        -->
+    </style>
+    <!--[if gte mso 10]>
+    <style>
+        /* Style Definitions */
+        table.MsoNormalTable {
+            mso-style-name: "Table Normal";
+            mso-tstyle-rowband-size: 0;
+            mso-tstyle-colband-size: 0;
+            mso-style-noshow: yes;
+            mso-style-parent: "";
+            mso-padding-alt: 0cm 5.4pt 0cm 5.4pt;
+            mso-para-margin-top: 0cm;
+            mso-para-margin-right: 0cm;
+            mso-para-margin-bottom: 10.0pt;
+            mso-para-margin-left: 0cm;
+            mso-pagination: widow-orphan;
+            font-size: 12.0pt;
+            font-family: Cambria;
+            mso-ascii-font-family: Cambria;
+            mso-ascii-theme-font: minor-latin;
+            mso-hansi-font-family: Cambria;
+            mso-hansi-theme-font: minor-latin;
+        }
+    </style>
+    <![endif]--><!--[if gte mso 9]>
+    <xml>
+        <o:shapedefaults v:ext="edit" spidmax="1026"/>
+    </xml><![endif]--><!--[if gte mso 9]>
+    <xml>
+        <o:shapelayout v:ext="edit">
+            <o:idmap v:ext="edit" data="1"/>
+        </o:shapelayout>
+    </xml><![endif]-->
+    <title></title>
+</head>
+<body style="padding: 0em 2em;" lang="EN-US" link="blue"
+      vlink="purple">
+<div class="Section1">
+    <h1 style="text-align: center;" align="center">Automated Setup of
+        Multi-Cloud Environments for Microservices-Based Applications</h1>
+
+    <p class="MsoNormal">
+        <o:p>&nbsp;</o:p>
+    </p>
+    <p class="MsoNormal" style="text-align: center;" align="center"><a
+            href="http://researchers.lille.inria.fr/%7Esousa/">Gustavo
+        Sousa</a> - <a href="http://rudametw.github.io/">Walter
+        Rudametkin</a> - <a href="http://www.lifl.fr/%7Educhien/">Laurence
+
+
+        Duchien</a></p>
+
+    <p class="MsoNormal" style="text-align: center;" align="center"><a
+            href="http://team.inria.fr/spirals/">Spirals</a> - <a
+            href="http://www.univ-lille1.fr/">Université Lille 1</a> / <a
+            href="http://cristal.univ-lille.fr/">CRIStAL</a> / <a
+            href="http://www.ec-lille.fr/">École Centrale de Lille</a> / <a
+            href="http://www.inria.fr/en/centre/lille">Inria</a></p>
+
+    <p class="MsoNormal">
+        <o:p>&nbsp;</o:p>
+    </p>
+    <h2 style="text-align: justify;">Summary</h2>
+
+    <p class="MsoNormal" style="text-align: justify;">
+        <o:p>&nbsp;</o:p>
+    </p>
+    <p class="MsoNormal" style="text-align: justify;">This
+        accompanying site contains additional information about the
+        research conducted on the use of software product lines tools
+        and ontology reasoning for automated setup of multi-cloud
+        environments for microservices-based applications. Here we make
+        available the developed modeling tools, code base of the
+        implementation and experimentation, as well as the resulting
+        data obtained. All the files and paths mentioned here can be
+        found in the <a href="mmcloud.zip">bundle zip</a>.</p>
+
+    <p class="MsoNormal" style="text-align: justify;">
+        <o:p>&nbsp;</o:p>
+    </p>
+    <h2 style="text-align: justify;">Modeling tools<br>
+    </h2>
+
+    <p class="MsoNormal" style="text-align: justify;">
+        <o:p>&nbsp;</o:p>
+    </p>
+    <p class="MsoNormal" style="text-align: justify;">The domain
+        specific languages and editor was developed using <a
+                href="http://www.eclipse.org/Xtext/">Xtext</a> and EMF
+        technology on <a href="https://eclipse.org/luna/">Eclipse Luna</a>.
+        <span style="">&nbsp;</span>The language meta-model was designed
+        using <a href="https://wiki.eclipse.org/Ecore">Ecore</a> and
+        the Eclipse support for <a
+                href="https://wiki.eclipse.org/OCL/OCLinEcore">OCLinEcore</a>.
+        The three proposed languages allow for describing (i)
+        multi-cloud application requirements; (ii) <a
+                href="../relativecard/">cloud provider feature models</a> and
+        (iii) cloud provider mappings.</p>
+
+    <p class="MsoNormal" style="text-align: justify;"> The Eclipse
+        workspace containing the meta-model, grammar and code used to
+        implement the DSLs can be found in the <span class="path">eclipse-workspace</span>
+        subdirectory. The generated plugin files, which can be used to
+        install the modeling tool in Eclipse can be found in <span
+                class="path">lib/plugins/</span>.</p>
+
+    <p class="MsoNormal" style="text-align: justify;">To load the
+        workspace or use the editor plugin you need to download Eclipse
+        Luna and install the following software into it:</p>
+
+    <p class="MsoListParagraph" style="text-align: justify;
+        text-indent: -18pt;"><!--[if !supportLists]--><span style=""><span
+            style="">-<span style="font-family: &quot;Times New
+              Roman&quot;; font-style: normal; font-variant: normal;
+              font-weight: normal; font-size: 7pt; line-height: normal;
+              font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+            </span></span></span><!--[endif]-->Xtext Complete SDK</p>
+
+    <p class="MsoListParagraph" style="text-align: justify;
+        text-indent: -18pt;"><!--[if !supportLists]--><span style=""><span
+            style="">-<span style="font-family: &quot;Times New
+              Roman&quot;; font-style: normal; font-variant: normal;
+              font-weight: normal; font-size: 7pt; line-height: normal;
+              font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+            </span></span></span><!--[endif]-->OCL Classic SDK:
+        Ecore/UML Parsers,Evaluator,Edit</p>
+
+    <p class="MsoListParagraph" style="text-align: justify;
+        text-indent: -18pt;"><!--[if !supportLists]--><span style=""><span
+            style="">-<span style="font-family: &quot;Times New
+              Roman&quot;; font-style: normal; font-variant: normal;
+              font-weight: normal; font-size: 7pt; line-height: normal;
+              font-size-adjust: none; font-stretch: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+            </span></span></span><!--[endif]-->OCL Examples and Editors
+        SDK</p>
+
+    <p class="MsoNormal" style="text-align: justify;">
+        <o:p>&nbsp;</o:p>
+    </p>
+    <p class="MsoNormal" style="text-align: justify;">You can either
+        install the plugins by copying the files from <span
+                class="path">lib/plugins/</span> to the plugins directory of
+        the your Eclipse instalation or execute the editor directly from
+        the code base workspace.</p>
+
+    <p class="MsoNormal" style="text-align: justify;">The subdirectory
+        <span class="path">src/main/resources/workspace/</span> contains
+        an Eclipse workspace with some providers decriptions and application
+        requirements used in our experimentation.
+        <o:p><br>
+        </o:p>
+    </p>
+
+    <p class="MsoNormal" style="text-align: justify;">
+        <o:p>&nbsp;</o:p>
+    </p>
+<!--<h2 style="text-align: justify;">Modeling tools<br>-->
+<!--</h2>-->
+    <!--<p class="MsoNormal" style="text-align: justify;">-->
+        <!--<o:p>&nbsp;</o:p>-->
+    <!--</p>-->
+    <!--<p class="MsoNormal" style="text-align: justify;">The subdirectory-->
+        <!--<span class="path">src/main/resources/workspace/</span> contains-->
+        <!--an Eclipse workspace with some providers decriptions and application-->
+        <!--requirements used in our experimentation. To re-execute-->
+        <!--experiments you can use the command-line tool-->
+        <!--<o:p><br>-->
+        <!--</o:p>-->
+    <!--</p>-->
+
+<!--<pre><code class="hljs-cloud-services hljs">-->
+<!--services Ecommerce-->
+
+<!--ontology "Ecommerce.owl"-->
+
+<!--service product_catalog {-->
+  <!--requires AppContainer {-->
+    <!--memory value 1GB-->
+    <!--software some (JavaWebContainer or canRun some JavaWebContainer)-->
+  <!--}-->
+<!--}-->
+
+<!--service product_catalog_db {-->
+  <!--requires MongoDB {-->
+    <!--version some number[ >= 3, < 4]-->
+    <!--architecture value ShardedCluster-->
+  <!--}-->
+<!--}-->
+
+<!--deploy Ecommerce {-->
+  <!--cloud A { self.location = WesternEurope }-->
+  <!--cloud B { self.location = A.location & self.provider != A.provider }-->
+
+  <!--instanceGroup  product_catalog {-->
+    <!--cloud A { numInstances 1..20 options AcrossAZs AutoScale }-->
+    <!--cloud B { numInstances 1..5 options AcrossAZs AutoScale }-->
+    <!--global { numInstances 2..21 }-->
+  <!--}-->
+
+  <!--instanceGroup product_catalog_db {-->
+    <!--global { role MasterDB }-->
+  <!--}-->
+<!--}-->
+<!--</code></pre>-->
+
+    <h2 style="text-align: justify;">Implementation</h2>
+
+    <p class="MsoNormal" style="text-align: justify;">
+        <o:p>&nbsp;</o:p>
+    </p>
+    <p class="MsoNormal" style="text-align: justify;">The tool for generating configurations is mostly coded in
+        <a href="http://www.groovy-lang.org/">Groovy</a> with some small
+        portions in Java. It uses the developed Xtext plugin for parsing
+        artifacts, the <a href="http://www.hermit-reasoner.com/">HermiT OWL Reasoner</a> to reason over ontologies and
+            the <a href="http://choco-solver.org/">Choco Solver</a> to solve feature models as Constraint Satisfaction Problems (CSP).
+    </p>
+
+
+    <p class="MsoNormal" style="text-align: justify;">The tool can be easily built using
+        <a href="https://gradle.org/">Gradle</a>, all needed dependencies are either automatically
+        fetched or are included in the bundle. The <span class="path">solve</span> command
+        line script is a wrapper for the <span class="path">fr.inria.spirals.mmcloud.main.Main</span>
+        class that lets you execute the tool to generate multi-cloud configurations from a set of provider
+        descriptions and a requirements file. It includes several parameters for defining the path from where to load files,
+        adding randomly generated providers, logging options, etc. For instance, the following command could be used to generate two
+        configurations and print the output.
+    </p>
+
+<pre>
+    <code class="hljs output">
+./solve -w src/main/resources/workspace/eval/world/ -r src/main/resources/workspace/eval/requirements/Ecommerce.Application.config -n 2 -p
+    </code>
+</pre>
+
+    <p class="MsoNormal" style="text-align: justify;">
+        For the experimental evaluation we also created an script that calls <span class="path">solve</span> subsequently to log
+        different parameters from the execution.
+        To reproduce the experiments you can run the script <span class="path">experiment</span> and indicate an output file.
+        Then, you can and use the <span class="path">analyse</span> script to process the results.
+    </p>
+
+<pre>
+    <code class="output hljs">
+$ ./experiment -f output.json
+
+Running id: 1456067689
+Persistence key: drGwYkTYaH
+Logging options: All
+Writing status log to output.json
+Number of providers: 4
+
+...
+
+$ ./analyse -f output.json
+Reading data from output.json
+================================================================================
+Operation                               Avg (ms)  Std Dev (ms)   Number
+--------------------------------------------------------------------------------
+Validate cloud conditions                   3.56         5.12       25
+Translate service to feature set         1796.83      2215.70       29
+Build and solve CSP for FM               3350.48       827.35       21
+Total time                               6620.60      6431.53       25
+================================================================================
+    </code>
+</pre>
+
+
+    <p class="MsoNormal" style="text-align: justify;">
+        The data collected for the paper was captured in this same way and is available in
+        <span class="path">src/main/resources/eval/cloud/provider4sol20.json</span>.
+        The command line analyse can also be used to process it.
+    </p>
+    <p></p>
+
+    <p class="MsoNormal" style="text-align: justify;">
+        <o:p>&nbsp;</o:p>
+    </p>
+
+</div>
+
+</body>
+</html>
